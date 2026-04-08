@@ -1,0 +1,209 @@
+@use '../helpers/variables' as *;
+@use 'sass:color';
+
+:root {
+  --header-height: 100px;
+}
+
+#product,
+#category {
+  scroll-margin-top: var(--header-height);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: $neutral-500;
+  margin-bottom: 8px;
+}
+
+.section-subtitle {
+  font-size: 0.95rem;
+  color: $neutral-500;
+  letter-spacing: 0.5px;
+}
+
+// category-section
+.category-section {
+  position: relative;
+  background: $neutral-100;
+  padding: 64px 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+  }
+
+  .section-title {
+    color: $color-accent;
+    // color: var(--season-bg, $color-accent);
+  }
+  .section-subtitle {
+    color: $color-primary;
+    // color: var(--season-primary, $color-primary);
+  }
+}
+
+.card-category {
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  &__image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 16px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__title {
+    margin-top: 12px;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  // // 浮水 overlay
+  // &__overlay {
+  //   position: absolute;
+  //   inset: 0;
+
+  //   display: flex;
+  //   align-items: flex-end;
+  //   justify-content: center;
+
+  //   padding: 16px;
+
+  //   background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+
+  //   opacity: 0;
+  //   transform: translateY(20px);
+  //   transition: all 0.3s ease;
+  // }
+  // &:hover &__overlay {
+  //   opacity: 1;
+  //   transform: translateY(0);
+  // }
+}
+
+.seasonal-section {
+  opacity: 1;
+  transition: 0.5s;
+  background: var(--season-bg, $color-bg);
+  &.inactive {
+    opacity: 0.3;
+  }
+
+  .card-img-top {
+    height: 220px;
+    object-fit: cover;
+  }
+
+  .section-title {
+    color: var(--season-primary, $color-primary);
+  }
+  .section-subtitle {
+    color: var(--season-bg, $color-accent);
+  }
+
+  .btn {
+    background: var(--season-primary, $color-primary);
+  }
+}
+
+.product-slider {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.product-slider-item {
+  flex: 0 0 auto;
+  width: 25%;
+
+  scroll-snap-align: start;
+}
+
+.brand-section {
+  background: #faf7f2;
+
+  .brand-image {
+    overflow: hidden;
+    border-radius: 8px;
+
+    img {
+      transition: transform 0.4s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+
+  .brand-content {
+    max-width: 480px;
+
+    h2 {
+      font-weight: 600;
+    }
+
+    p {
+      line-height: 1.8;
+    }
+  }
+}
+
+.garden-tips {
+  background: #f8f9f7;
+
+  .garden-tip-card {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    img {
+      height: 220px;
+      object-fit: cover;
+    }
+  }
+}
+
+/* tablet */
+@media (max-width: 992px) {
+  .product-slider-item {
+    width: 33%;
+  }
+}
+
+/* mobile */
+@media (max-width: 576px) {
+  .product-slider-item {
+    width: 50%;
+  }
+}

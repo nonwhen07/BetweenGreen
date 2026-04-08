@@ -1,0 +1,18 @@
+// 前台視角暫時不搬遷使用，需要一點時間去排整全部前台scss，暫時維持在_variables.scss引用
+
+// breakpoints 視覺分段點-mobile/pad/desktop/desktop-xl
+$breakpoints: (
+  mobile: 0,
+  pad: 576px,
+  desktop: 992px,
+  desktop-xl: 1296px,
+);
+
+// 後台統一引用
+$admin-breakpoints: (
+  mobile: 0,
+  tablet: 768px,
+  laptop: 1024px,
+  desktop: 1280px,
+  wide: 1440px,
+);

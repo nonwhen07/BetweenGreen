@@ -1,0 +1,68 @@
+@use '../helpers/variables' as *;
+@use 'sass:color';
+
+/* =========================
+  Base Spinner
+========================= */
+
+@mixin spinner($size: 1.25rem, $speed: 0.7s) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+
+  // background: conic-gradient(
+  //   $color-primary 0deg,
+  //   color.mix($color-accent, $color-accent, 50%) 60deg,
+  //   $ui-warning 120deg,
+  //   transparent 120deg 360deg
+  // );
+
+  // 未來嘗試 seasontheme：--season-primary、--season-bg
+  background: conic-gradient(
+    $color-accent 0deg,
+    color.mix($color-accent, $color-primary, 50%) 80deg,
+    $color-primary 140deg,
+    transparent 120deg 360deg
+  );
+
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 0.25rem),
+    black calc(100% - 0.25rem)
+  );
+
+  animation: ui-spin $speed linear infinite;
+}
+
+/* =========================
+  Spinner Variants
+========================= */
+
+//ui-spinner → base
+.ui-spinner {
+  @include spinner(1.25rem, 0.7s);
+}
+
+.ui-spinner--btn {
+  @include spinner(1.25rem, 0.7s);
+}
+
+.ui-spinner--page {
+  @include spinner(3rem, 1s);
+}
+
+.ui-spinner--sm {
+  @include spinner(1.25rem, 0.7s);
+}
+
+//未來還可以加：card、lg、sm 等等
+
+/* =========================
+  Animation
+========================= */
+
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

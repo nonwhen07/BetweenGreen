@@ -1,0 +1,31 @@
+// _admin-layout
+
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin-layout {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  background: $admin-bg;
+}
+
+.admin-wrapper {
+  display: flex;
+  min-height: calc(100vh - 64px);
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0; // 必加（解 overflow 核心），不搞auto會變成：「內容多寬，我就多寬」
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 24px;
+  overflow-x: hidden; //  可接受（只限 content）
+}
+
+// admin-content內部設定，未來抽出到其他components

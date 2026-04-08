@@ -1,0 +1,32 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin {
+  .admin-stat {
+    background: #fff;
+    border-radius: $admin-radius;
+    padding: 16px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .admin-stat__title {
+    font-size: 14px;
+    color: $admin-text-light;
+  }
+
+  .admin-stat__value {
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+
+// Stat Card（Dashboard用）
+// <div className="admin-stat">
+//   <div>
+//     <div className="admin-stat__title">總訂單</div>
+//     <div className="admin-stat__value">128</div>
+//   </div>
+// </div>

@@ -1,0 +1,36 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+// .admin-page {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 20px;
+// }
+
+.admin-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+
+  // 滑動更順
+  scroll-behavior: smooth;
+
+  // 隱藏 scrollbar（可選）
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.admin-scroll__item {
+  flex: 0 0 calc(33.333% - 10px);
+  min-width: 260px; // 保底（避免太擠）
+}
+
+.admin-card__body {
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}

@@ -1,0 +1,16 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin {
+  .admin-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+// <div className="admin-grid">
+//   <div className="admin-card">A</div>
+//   <div className="admin-card">B</div>
+//   <div className="admin-card">C</div>
+// </div>

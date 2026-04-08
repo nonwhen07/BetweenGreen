@@ -1,0 +1,108 @@
+@use '../helpers/variables' as *;
+@use 'sass:color';
+
+.ui-btn {
+  padding: 10px 16px;
+  border-radius: $radius-sm;
+  border: none;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &--primary {
+    background: $color-primary;
+    color: white;
+
+    &:hover {
+      background: darken($color-primary, 8%);
+    }
+  }
+
+  &--accent {
+    background: $color-accent;
+    color: $neutral-100;
+  }
+
+  &--outline {
+    border: 1px solid $color-primary;
+    color: $color-primary;
+    background: transparent;
+
+    &:hover {
+      background: $color-primary;
+      color: $neutral-100;
+    }
+  }
+
+  &--season {
+    background: var(--season-primary, $color-primary);
+    color: $neutral-100;
+  }
+}
+
+.ui-btn-gotop {
+  position: fixed;
+  right: 2.5rem;
+  bottom: 2.5rem;
+  z-index: 1200;
+
+  width: 3rem;
+  height: 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  cursor: pointer;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+
+  // 主體（可以吃 seasontheme）
+  background: var(--season-primary, $color-primary);
+  color: $neutral-100;
+  border: none;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+  // 顯示
+  &.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // hover（重點：不是亂變色，是「同色系變化」）
+  &:hover {
+    transform: translateY(-3px) scale(1.05);
+
+    color: darken($color-primary, 10%);
+
+    background: darken($color-primary, 10%);
+    // 如果有 theme，就用 theme 色
+    // background: var(--season-primary, darken($color-primary, 40%));
+    background: var(--season-bg, darken($color-primary, 40%));
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  }
+
+  // 點擊感
+  &:active {
+    transform: scale(0.95);
+  }
+
+  //  RWD
+  @media (max-width: 991.98px) {
+    right: 1.2rem;
+    bottom: 1.2rem;
+    width: 42px;
+    height: 42px;
+  }
+
+  @media (max-width: 575.98px) {
+    right: 0.8rem;
+    bottom: 0.8rem;
+    width: 38px;
+    height: 38px;
+  }
+}

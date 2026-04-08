@@ -1,0 +1,38 @@
+.product-img {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-img-small {
+  width: 60px;
+  height: 60px;
+}
+
+.product-img-medium {
+  width: 200px;
+  height: 150px;
+}
+
+.product-img-large {
+  width: 100%;
+  height: 400px;
+}
+
+/* 浮水印 */
+.img-watermark {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: rgba(100, 100, 100, 0.8);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 2px 8px;
+  border-radius: 4px;
+}

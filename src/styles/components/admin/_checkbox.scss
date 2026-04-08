@@ -1,0 +1,19 @@
+.petType-checkbox {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &.checked {
+    background: #2f6382;
+    color: white;
+    border-color: #2f6382;
+  }
+
+  input {
+    display: none;
+  }
+}

@@ -1,0 +1,27 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin {
+  .admin-card {
+    background: #fff;
+    border-radius: $admin-radius;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .admin-card__header {
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  // .admin-card__body {
+  // }
+}
+
+// 用法（Dashboard.jsx）
+// <div className="admin-card">
+//   <div className="admin-card__header">最近訂單</div>
+//   <div className="admin-card__body">
+//     假資料...
+//   </div>
+// </div>

@@ -1,0 +1,45 @@
+// _layout.scss：所有共用版面骨架 像 ui-container, ui-section
+
+@use '../helpers/mixins' as *;
+@use '../helpers/breakpoints' as *;
+@use '../helpers/variables' as *;
+
+// ui-container 系列 依照畫面切割看來，主要有三種寬度：1296px / 1840px / 1920px
+// 大致上為main/header/footer(.ui-layout 1920px) => section(.ui-section 1840px) => content( .ui-container 1296px)
+
+// ui-layout為 main/header/footer 共用版型  1920px，
+// 要注意 bootstarp row 的 padding 設定
+.ui-layout {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0px;
+}
+
+// 共用 section 版型 "暫定" 1840px
+.ui-section {
+  max-width: 1840px;
+  margin: 0 auto;
+  padding: 60px 0;
+  background: $color-bg;
+
+  &-alt {
+    background: $neutral-200;
+  }
+
+  @include respond($breakpoints, desktop) {
+    padding: 96px 0;
+  }
+}
+
+// 滿版 section
+.section-full {
+  width: 100%;
+  position: relative;
+}
+
+// section 的實際內容區域 1296px
+.ui-container {
+  max-width: 1296px;
+  margin: 0 auto;
+  padding: 0px;
+}

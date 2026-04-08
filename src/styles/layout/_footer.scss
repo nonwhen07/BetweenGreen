@@ -1,0 +1,7 @@
+@use '../helpers/variables' as *;
+@use 'sass:color';
+
+.footer {
+  background: darken($color-primary, 15%);
+  color: white;
+}

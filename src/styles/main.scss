@@ -1,0 +1,42 @@
+// // @use "bootstrap/scss/bootstrap" as *;
+
+// // @use './helpers/variables';
+@use './helpers/variables' as *;
+@use './helpers/mixins';
+@use './helpers/custom-text' as *;
+
+// // 多人協作reset 由框架組維護，base 由設計組維護
+// // @use './base/reset'; // 已合併到 base.scss，保留作為參考(小專案無須拆分)
+@use './base/base';
+
+@use './layout/layout';
+@use './layout/header';
+@use './layout/footer';
+@use './layout/theme';
+
+// @use './layout/articles';
+// @use './layout/herosection';
+// @use './layout/infosection';
+// @use './layout/hotspot';
+// @use './layout/trending';
+// @use './layout/scam';
+// @use './layout/repostpost';
+// @use './layout/findStores';
+
+@use './components/hero';
+@use './components/buttons';
+@use './components/spinners';
+@use './components/page-loader';
+@use './components/product-img';
+@use './components/card';
+@use './components/toast';
+@use './components/sidebar';
+// @use './components/carousel';
+// @use './components/pagination';
+// @use './components/checkbox';
+// @use './components/dropdown-skin';
+// @use './components/searchbar';
+// @use './components/cards';
+
+// @use './pages/index';
+@use './pages/home';

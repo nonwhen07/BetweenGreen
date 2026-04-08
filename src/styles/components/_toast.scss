@@ -1,0 +1,131 @@
+@use '../helpers/variables' as *;
+@use 'sass:color';
+
+.ui-toast-container {
+  pointer-events: none; // 不擋 UI
+}
+.ui-toast {
+  pointer-events: auto;
+
+  min-width: 280px;
+  max-width: 420px;
+
+  border-radius: 12px;
+  overflow: hidden;
+
+  // glassmorphism
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+  // 初始動畫狀態
+  opacity: 0;
+  transform: translateY(-30px) scale(0.96);
+
+  // 進場動畫
+  animation: toast-slide-down 0.4s ease forwards;
+}
+
+@keyframes toast-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast-exit {
+  animation: toast-fade-out 0.3s ease forwards;
+}
+
+@keyframes toast-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.ui-toast-header {
+  background: transparent;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 0 8px rgba(0, 0, 0, 0.2);
+  // border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  border-bottom: 0px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center; // 讓標題置中
+}
+
+.ui-toast-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 0.75rem;
+  font-weight: 600; // semi-bold（比 bold 精緻）
+  letter-spacing: 0.02em;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.ui-toast-message {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ui-toast-header .btn-close {
+  padding: 0.5rem;
+  margin-left: auto;
+
+  filter: invert(1) brightness(1.5);
+  opacity: 0.85;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    filter: invert(1) brightness(2);
+    transform: scale(1.05);
+  }
+}
+
+// .ui-toast-body {
+//   background: transparent;
+//   text-shadow:
+//     0 1px 2px rgba(0, 0, 0, 0.6),
+//     0 0 8px rgba(0, 0, 0, 0.2);
+// }
+
+.toast-success {
+  background:
+    linear-gradient(rgba($ui-success, 0.25), rgba($ui-success, 0.25)), rgba(255, 255, 255, 0.08);
+}
+
+.toast-warning {
+  background:
+    linear-gradient(rgba($ui-warning, 0.25), rgba($ui-warning, 0.25)), rgba(255, 255, 255, 0.08);
+}
+
+.toast-danger {
+  background:
+    linear-gradient(rgba($ui-danger, 0.25), rgba($ui-danger, 0.25)), rgba(255, 255, 255, 0.08);
+}
+.toast-info {
+  background:
+    linear-gradient(rgba($ui-info, 0.25), rgba($ui-info, 0.25)), rgba(255, 255, 255, 0.08);
+}

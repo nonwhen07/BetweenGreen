@@ -1,0 +1,47 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin {
+  .admin-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 12px;
+    border-bottom: 1px solid $admin-border;
+    text-align: left;
+  }
+
+  .admin-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+  }
+}
+
+// 用法
+// <div className="admin-card">
+//   <div className="admin-card__header">產品列表</div>
+
+//   <div className="admin-table-wrapper">
+//     <table className="admin-table">
+//       <thead>
+//         <tr>
+//           <th>名稱</th>
+//           <th>價格</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         <tr>
+//           <td>咖啡豆</td>
+//           <td>$200</td>
+//         </tr>
+//       </tbody>
+//     </table>
+//   </div>
+// </div>

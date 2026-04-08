@@ -1,0 +1,13 @@
+.sidebar-link {
+  transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+
+.sidebar-link.active {
+  border-left: 4px solid #ffc107;
+  background: rgba(255, 255, 255, 0.08);
+}

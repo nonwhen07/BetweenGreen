@@ -1,0 +1,155 @@
+@use '../helpers/variables' as *;
+@use '../helpers/mixins' as *;
+@use 'sass:color';
+
+.hero-banner {
+  --hero-text-primary: #2f3e2f;
+  --hero-text-secondary: #5c6b5c;
+
+  position: relative;
+  min-height: clamp(520px, 72vh, 760px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--section-bg);
+
+  /* ===== 前景（柔化景深）===== */
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   inset: 0;
+
+  //   background: url('./images/leaf-overlay.png') no-repeat left center;
+  //   background-size: 420px;
+
+  //   opacity: 0.18;
+  //   filter: blur(6px);
+
+  //   z-index: 1;
+  //   pointer-events: none;
+  // }
+}
+
+/* ========================================
+  Background（動態呼吸）
+======================================== */
+.hero-banner__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    transform: scale(1);
+    transform-origin: center;
+
+    will-change: transform; // 避免某些裝置掉幀（尤其手機）
+
+    // heroZoom一次「呼吸」= 16 秒
+    // 非 alternate 16s = 一次動畫週期（0s → 8s，8s → 16s）
+    // alternate 16s = 一次動畫週期來回
+    animation: heroZoom 16s ease-in-out infinite alternate; // alternate（來回更自然）
+  }
+  /* 無障礙：減少動畫 */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-banner__bg img {
+      animation: none;
+    }
+  }
+}
+
+/* ========================================
+  Overlay（控光）
+======================================== */
+.hero-banner__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.25) 35%,
+    rgba(0, 0, 0, 0.1) 55%,
+    rgba(0, 0, 0, 0) 75%
+  );
+
+  animation: overlayBreath 16s ease-in-out infinite alternate; // 光感調整
+}
+@keyframes overlayBreath {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.92;
+  }
+}
+
+/* ========================================
+  Content
+======================================== */
+.hero-banner__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+/* ===== Glass Card ===== */
+.hero-banner__text {
+  max-width: 640px;
+  padding: 18px;
+
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: $radius-md;
+
+  color: $neutral-100;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+
+  /* 進場動畫（可開可關） */
+  opacity: 0;
+  transform: translateY(12px);
+  animation: heroTextIn 1s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+/* 按鈕區 */
+.hero-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+
+  .ui-btn {
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+  }
+}
+
+/* ========================================
+  Animations
+======================================== */
+/* 背景呼吸 */
+@keyframes heroZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.04);
+  }
+}
+
+/* 文字進場 */
+@keyframes heroTextIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

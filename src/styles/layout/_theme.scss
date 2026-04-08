@@ -1,0 +1,44 @@
+@use '../helpers/variables' as *;
+@use 'sass:color';
+
+// 預設（沒有 theme）
+:root {
+  --season-primary: #$color-primary;
+  --season-bg: #$color-bg;
+}
+
+.theme-light {
+  --color-bg: #$color-bg;
+  --color-text: #$color-text;
+  --color-primary: #$color-primary;
+}
+
+.theme-dark {
+  --color-bg: #1a1a1a;
+  --color-text: #f1f1f1;
+  --color-primary: #4caf50;
+}
+
+// 🧧 春節
+.theme-lunar {
+  --season-primary: #c1121f;
+  --season-accent: #fcbf49;
+}
+
+// 🎄 Christmas
+.theme-christmas {
+  --season-primary: #2a9d8f;
+  --season-accent: #e63946;
+}
+
+// 🎃 Halloween
+.theme-halloween {
+  --season-primary: #ff6b00;
+  --season-bg: #2b1d16;
+}
+
+// ❤️ Valentine
+.theme-valentine {
+  --season-primary: #e63946;
+  --season-bg: #fff0f3;
+}

@@ -1,0 +1,14 @@
+@use '../helpers/variables' as *;
+@use 'sass:color';
+
+.ui-card {
+  background: $neutral-100;
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+  transition: $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-md;
+  }
+}

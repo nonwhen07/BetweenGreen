@@ -1,0 +1,85 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin {
+  .admin-sidebar {
+    background: $admin-sidebar-bg;
+    color: #fff;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+
+    width: 150px; // 預設（mobile / tablet）
+
+    @include respond($admin-breakpoints, laptop) {
+      width: 200px; // Sidebar 固定寬
+    }
+
+    &.collapsed {
+      width: 60px;
+
+      .text {
+        display: none;
+      }
+
+      .admin-sidebar__brand span {
+        display: none;
+      }
+
+      @include respond($admin-breakpoints, laptop) {
+        width: 60px;
+      }
+    }
+  }
+
+  .admin-sidebar__brand {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    button {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+
+  .admin-sidebar__menu {
+    padding: 12px 0;
+  }
+
+  .admin-sidebar__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: $admin-text-light;
+    text-decoration: none;
+    transition: 0.2s;
+
+    .icon {
+      font-size: 18px;
+      min-width: 20px;
+
+      @include respond($admin-breakpoints, laptop) {
+        margin-right: 16px; // Sidebar 固定寬
+      }
+    }
+
+    &:hover {
+      background: $admin-sidebar-hover;
+      color: #fff;
+    }
+
+    &.active {
+      background: $admin-sidebar-active;
+      color: #fff;
+    }
+  }
+}
