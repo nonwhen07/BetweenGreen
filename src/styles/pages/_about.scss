@@ -1,0 +1,12 @@
+.placeholder-image {
+  width: 100%;
+  height: 200px;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-about-story__block.reverse {
+  flex-direction: row-reverse;
+}

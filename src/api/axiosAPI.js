@@ -33,7 +33,7 @@ const axiosAPI = axios.create({
 // ⭐一樣帶 token
 axiosAPI.interceptors.request.use((config) => {
   // const token = document.cookie.replace(
-  //   /(?:(?:^|.*;\s*)hexToken_week7\s*=\s*([^;]*).*$)|^.*$/,
+  //   /(?:(?:^|.*;\s*)bg-user-data\s*=\s*([^;]*).*$)|^.*$/,
   //   '$1',
   // );
 

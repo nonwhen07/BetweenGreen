@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import PageLoader from '@/components/PageLoader';
-
-import { login } from '@/services/authService';
-import { handleApiError } from '@/utils/apiErrorHandler';
-import { loginSuccess } from '@/features/auth/authSlice';
-
 import { useDispatch } from 'react-redux';
+
+// services
+import { login } from '@/services/authService';
+// features
+import { loginSuccess } from '@/features/auth/authSlice';
+// hooks
 import { useToast } from '@/hooks/useToast';
+// components
+import PageLoader from '@/components/PageLoader';
+// import PoinsettiaIcon from '@/components/PoinsettiaIcon';
+// utils
+import { handleApiError } from '@/utils/apiErrorHandler';
 
 const LoginPage = () => {
-  // 初始化 dispatch
   const dispatch = useDispatch();
-  // 初始化 navigate
   const navigate = useNavigate();
   const { success, showError, warning } = useToast();
 
@@ -42,9 +44,7 @@ const LoginPage = () => {
     try {
       const res = await login(account);
       const { token, expired } = res;
-      document.cookie = `hexToken_week7=${token}; path=/; expires=${new Date(
-        expired,
-      ).toUTCString()}`;
+      document.cookie = `bg-user-data=${token}; path=/; expires=${new Date(expired).toUTCString()}`;
 
       success('登入成功，將導向後台首頁');
       dispatch(
@@ -83,6 +83,7 @@ const LoginPage = () => {
     <>
       <div className="d-flex flex-column justify-content-center align-items-center vh-100">
         <h1 className="mb-5">請先登入</h1>
+        {/* <PoinsettiaIcon /> */}
         {errorMessage && <div className="alert alert-danger w-100">{errorMessage}</div>}
         <form onSubmit={handleLogin} className="d-flex flex-column gap-3">
           <div className="form-floating mb-3">

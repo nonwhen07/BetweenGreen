@@ -10,7 +10,7 @@
 - 前端架構分層（Page / Service / Utility）
 
 🔗 Live Demo  
-https://nonwhen07.github.io/react_week7_2026
+https://nonwhen07.github.io/BetweenGreen
 
 ---
 

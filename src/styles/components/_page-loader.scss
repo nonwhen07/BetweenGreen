@@ -1,4 +1,4 @@
-@use '../helpers/variables' as *;
+@use '@/styles/helpers/variables' as *;
 
 .ui-fullpage-loader {
   position: fixed;
@@ -11,4 +11,59 @@
   align-items: center;
 
   backdrop-filter: blur(2px);
+}
+
+#ribbon {
+  transform-origin: center;
+  animation: tie 3s infinite;
+
+  fill: rgba(220, 80, 80, 0.2);
+}
+
+@keyframes tie {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1);
+  }
+}
+
+#plant-group {
+  animation: moveLeft 3s infinite;
+}
+
+@keyframes moveLeft {
+  0% {
+    transform: translateX(0);
+  }
+  80% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-120px);
+  }
+}
+
+#leaf-group {
+  transform-origin: center;
+  animation: leafFloat 3s infinite ease-in-out;
+
+  stroke: #000;
+  fill: rgba(220, 60, 60, 0.15);
+}
+
+@keyframes leafFloat {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
 }
