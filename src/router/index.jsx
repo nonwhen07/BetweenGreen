@@ -31,6 +31,7 @@ import FrontLayout from '@/layouts/FrontLayout';
 import AdminLayout from '@/layouts/AdminLayout';
 
 import HomePage from '@/pages/front/HomePage';
+import AboutPage from '@/pages/front/AboutPage';
 import ProductsPage from '@/pages/front/ProductsPage';
 import ProductDetailPage from '@/pages/front/ProductDetailPage';
 import CartPage from '@/pages/front/CartPage';
@@ -48,6 +49,7 @@ const routes = [
     element: <FrontLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: 'about', element: <AboutPage /> },
       // { path: 'products', element: <ProductsPage /> },
       { path: 'products', element: <ProductsPage /> },
       { path: 'product/:product_id', element: <ProductDetailPage /> },

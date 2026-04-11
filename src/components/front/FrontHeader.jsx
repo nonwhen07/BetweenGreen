@@ -8,6 +8,7 @@ import { handleApiError } from '@/utils/apiErrorHandler';
 
 const routes = [
   { path: '/', name: '首頁' },
+  { path: '/about', name: '關於我們' },
   { path: '/products', name: '產品列表' },
   { path: '/cart', name: '購物車' },
   //   { path: '/about', name: 'About' },
@@ -78,9 +79,10 @@ const FrontHeader = () => {
               </button>
             </>
           ) : (
-            <NavLink to="/login" className="nav-item nav-link text-light me-4">
-              登入
-            </NavLink>
+            // <NavLink to="/login" className="nav-item nav-link text-light me-4">
+            //   登入
+            // </NavLink>
+            <></>
           )}
         </div>
       </nav>

@@ -1,12 +1,494 @@
-.placeholder-image {
-  width: 100%;
-  height: 200px;
-  background: #ddd;
+@use '@/styles/helpers/custom-text' as *;
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+
+.ui-about {
+  background: #f5f3ef;
+  color: #2b2b2b;
+}
+
+/* ========================
+  共用 section
+======================== */
+.ui-about-section {
+  padding: 96px 0;
+
+  @include respond($breakpoints, pad) {
+    padding: 120px 0;
+  }
+
+  @include respond($breakpoints, desktop) {
+    padding: 140px 0;
+  }
+}
+
+.ui-about-section__title {
+  margin-bottom: 40px;
+  text-align: center;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: #2f6d4f;
+  font-size: 28px;
+  font-weight: 700;
+
+  @include respond($breakpoints, pad) {
+    margin-bottom: 48px;
+    font-size: 32px;
+  }
+
+  @include respond($breakpoints, desktop) {
+    margin-bottom: 56px;
+    font-size: 36px;
+  }
+}
+
+/* ========================
+  About Hero
+======================== */
+.ui-about-hero {
+  position: relative;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  padding: 120px 16px 80px;
+
+  @include respond($breakpoints, pad) {
+    padding: 140px 24px 96px;
+  }
+
+  @include respond($breakpoints, desktop) {
+    padding: 160px 32px 120px;
+  }
 }
 
-.ui-about-story__block.reverse {
-  flex-direction: row-reverse;
+.ui-about-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(rgba(20, 20, 20, 0.28), rgba(20, 20, 20, 0.28)),
+    url('/images/about/about-hero.jpg') center / cover no-repeat;
+
+  /* 之後要做微動可開 */
+  // animation: aboutHeroZoom 16s ease-in-out infinite;
 }
+
+.ui-about-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(to bottom, rgba(15, 15, 15, 0.18), rgba(15, 15, 15, 0.3));
+}
+
+.ui-about-hero__content {
+  position: relative;
+  z-index: 3;
+  max-width: 760px;
+  text-align: center;
+  color: #fff;
+}
+
+.ui-about-hero__title {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  font-size: 42px;
+  font-weight: 700;
+
+  @include respond($breakpoints, pad) {
+    font-size: 52px;
+  }
+
+  @include respond($breakpoints, desktop) {
+    font-size: 64px;
+  }
+
+  span {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    opacity: 0.92;
+
+    @include respond($breakpoints, pad) {
+      font-size: 22px;
+    }
+
+    @include respond($breakpoints, desktop) {
+      font-size: 26px;
+    }
+  }
+}
+
+.ui-about-hero__subtitle {
+  margin: 0;
+  line-height: 1.8;
+  letter-spacing: 0.08em;
+  font-size: 18px;
+  font-weight: 400;
+
+  @include respond($breakpoints, pad) {
+    font-size: 20px;
+  }
+
+  @include respond($breakpoints, desktop) {
+    font-size: 24px;
+  }
+}
+
+/* ========================
+  Brand Statement
+======================== */
+.ui-about-statement {
+  background: #f8f6f1;
+}
+
+.ui-about-statement__content {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+
+  p {
+    margin-bottom: 28px;
+    line-height: 2;
+    letter-spacing: 0.04em;
+    font-size: 18px;
+    font-weight: 500;
+
+    @include respond($breakpoints, pad) {
+      font-size: 20px;
+    }
+
+    @include respond($breakpoints, desktop) {
+      font-size: 22px;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* ========================
+  Brand Story
+======================== */
+.ui-about-story {
+  background: #fff;
+}
+
+.ui-about-story__block {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 72px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @include respond($breakpoints, desktop) {
+    flex-direction: row;
+    gap: 56px;
+    align-items: stretch;
+    margin-bottom: 96px;
+  }
+
+  &.reverse {
+    @include respond($breakpoints, desktop) {
+      flex-direction: row-reverse;
+    }
+  }
+}
+
+.ui-about-story__image,
+.ui-about-story__text {
+  width: 100%;
+
+  @include respond($breakpoints, desktop) {
+    width: calc(50% - 28px);
+  }
+}
+
+.ui-about-story__image {
+  .placeholder-image {
+    min-height: 280px;
+    border-radius: 24px;
+    background: #d9dfd3;
+    color: #5f6b5d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+
+    @include respond($breakpoints, pad) {
+      min-height: 340px;
+    }
+
+    @include respond($breakpoints, desktop) {
+      min-height: 420px;
+    }
+  }
+}
+
+.ui-about-story__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  p {
+    margin-bottom: 20px;
+    line-height: 2;
+    letter-spacing: 0.03em;
+    font-size: 16px;
+    font-weight: 400;
+    color: #3a3a3a;
+
+    @include respond($breakpoints, pad) {
+      font-size: 17px;
+    }
+
+    @include respond($breakpoints, desktop) {
+      font-size: 18px;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* ========================
+  Lifestyle Concept
+======================== */
+.ui-about-lifestyle {
+  background: #f8f6f1;
+}
+
+.ui-about-lifestyle__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @include respond($breakpoints, pad) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond($breakpoints, desktop) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+}
+
+.ui-about-lifestyle__card {
+  padding: 20px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(43, 43, 43, 0.06);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  @include respond($breakpoints, pad) {
+    padding: 24px;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(43, 43, 43, 0.1);
+  }
+
+  .placeholder-image {
+    width: 100%;
+    min-height: 220px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    background: #d9dfd3;
+    color: #5f6b5d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.08em;
+
+    @include respond($breakpoints, desktop) {
+      min-height: 260px;
+    }
+  }
+
+  h3 {
+    margin-bottom: 10px;
+    color: #2f6d4f;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.8;
+    color: #4d4d4d;
+    font-size: 15px;
+
+    @include respond($breakpoints, pad) {
+      font-size: 16px;
+    }
+  }
+}
+
+/* ========================
+  Scene Transformation
+======================== */
+.ui-about-transform {
+  background: #fff;
+}
+
+.ui-about-transform__compare {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @include respond($breakpoints, desktop) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+}
+
+.ui-about-transform__item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .placeholder-image {
+    width: 100%;
+    min-height: 260px;
+    border-radius: 24px;
+    background: #d9dfd3;
+    color: #5f6b5d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.08em;
+
+    @include respond($breakpoints, pad) {
+      min-height: 320px;
+    }
+
+    @include respond($breakpoints, desktop) {
+      min-height: 400px;
+    }
+  }
+
+  span {
+    display: block;
+    text-align: center;
+    color: #2f6d4f;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+/* ========================
+  Philosophy
+======================== */
+.ui-about-philosophy {
+  background: #f3f0e9;
+}
+
+.ui-about-philosophy__content {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+
+  p {
+    margin-bottom: 24px;
+    line-height: 1.95;
+    letter-spacing: 0.06em;
+    color: #2f6d4f;
+    font-size: 20px;
+    font-weight: 500;
+
+    @include respond($breakpoints, pad) {
+      font-size: 22px;
+    }
+
+    @include respond($breakpoints, desktop) {
+      font-size: 26px;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* ========================
+  CTA
+======================== */
+.ui-about-cta {
+  background: #f8f6f1;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 24px;
+    line-height: 1.4;
+    color: #2f6d4f;
+    font-size: 30px;
+    font-weight: 700;
+
+    @include respond($breakpoints, pad) {
+      font-size: 34px;
+    }
+
+    @include respond($breakpoints, desktop) {
+      font-size: 40px;
+    }
+  }
+
+  .ui-btn-primary {
+    min-width: 180px;
+    padding: 12px 24px;
+    border-radius: 999px;
+  }
+}
+
+/* ========================
+  動畫預留 class（先不實作）
+======================== */
+.is-fade-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.is-fade-left {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.is-fade-right {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ========================
+  Demo keyframes（先註解）
+======================== */
+// @keyframes aboutHeroZoom {
+//   0% {
+//     transform: scale(1);
+//   }
+//   50% {
+//     transform: scale(1.05);
+//   }
+//   100% {
+//     transform: scale(1);
+//   }
+// }
