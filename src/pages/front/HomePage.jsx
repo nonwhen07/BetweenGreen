@@ -1,17 +1,25 @@
 import { useEffect, useState } from 'react';
 
+// services
+import { getProducts } from '@/services/productService';
+// hooks
+import { useToast } from '@/hooks/useToast';
+
+// components
 import HeroBanner from '@/components/front/home/HeroBanner';
 import CategorySection from '@/components/front/home/Category/CategorySection';
-import SeasonalSection from '@/components/front/home/Seasonal/SeasonalSection';
+import LifestyleSection from '@/components/front/home/Lifestyle/LifestyleSection';
+import SceneShowcase from '@/components/front/home/SceneShowcase';
+import SeasonalCollection from '@/components/front/home/Seasonal/SeasonalSection';
 import ProductSection from '@/components/front/home/Product/ProductSection';
 import GardenTipsSection from '@/components/front/home/GardenTips/GardenTipsSection';
 import ReviewSection from '@/components/front/home/ReviewSection';
 import NewsletterSection from '@/components/front/home/NewsletterSection';
-
-import { getProducts } from '@/services/productService';
-import { useToast } from '@/hooks/useToast';
-import { handleApiError } from '@/utils/apiErrorHandler';
 import PageLoader from '@/components/PageLoader';
+import BrandStory from '@/components/front/home/BrandStory';
+
+// utils
+import { handleApiError } from '@/utils/apiErrorHandler';
 
 const HomePage = () => {
   const { showError } = useToast();
@@ -55,10 +63,15 @@ const HomePage = () => {
       <HeroBanner />
 
       <CategorySection />
+      <LifestyleSection />
 
-      {isSeasonActive && <SeasonalSection />}
+      <SceneShowcase />
+
+      {isSeasonActive && <SeasonalCollection />}
 
       <ProductSection topProducts={topProducts} />
+
+      <BrandStory />
 
       <GardenTipsSection />
 
