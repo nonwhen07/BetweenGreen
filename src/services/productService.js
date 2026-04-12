@@ -1,30 +1,57 @@
 import axiosAPI from '@/api/axiosAPI';
-// import axiosAdmin from '@/api/axiosAdmin';
 
-// ===== Front API =====
-// 取得商品列表
-export const getProducts = async () => {
-  const res = await axiosAPI.get('/products');
-  return res.data.products;
-};
+/**
+ * =====================================
+ * Product Service
+ * =====================================
+ */
 
-// 取得商品列表 By Category
-export const getProductsByCategory = async (category = 'Tools') => {
-  const res = await axiosAPI.get('/products', {
-    params: {
-      category: category,
-    },
+/**
+ * ===== Front API =====
+ */
+
+// 取得商品列表（分頁和分類的 params）
+// params 使用方式：
+// getProducts({ page: 1 });、getProducts({ category: '咖啡' });、getProducts({ page: 2, category: '咖啡' });
+export const getProducts = async (params = {}) => {
+  const { data } = await axiosAPI.get('/products', {
+    params,
   });
-  return res.data.products;
+
+  return {
+    data: data.products,
+    pagination: data.pagination,
+  };
 };
 
-// 取得商品詳細
+// // 依分類取得商品（分頁）
+// export const getProductsByCategory = async ({ page = 1, category } = {}) => {
+//   const { data } = await axiosAPI.get('/products', {
+//     params: {
+//       page,
+//       ...(category && { category }),
+//     },
+//   });
+
+//   return {
+//     data: data.products,
+//     pagination: data.pagination,
+//   };
+// };
+
+// 取得單一商品
 export const getProductDetail = async (productId) => {
-  const res = await axiosAPI.get(`/product/${productId}`);
-  return res.data.product;
+  const { data } = await axiosAPI.get(`/product/${productId}`);
+
+  return {
+    data: data.product,
+  };
 };
 
-// ===== Admin API =====
+/**
+ * ===== Admin API =====
+ */
+
 // 後台商品列表
 export const getAdminProducts = async (page = 1) => {
   const { data } = await axiosAPI.get('/admin/products', {
@@ -32,29 +59,32 @@ export const getAdminProducts = async (page = 1) => {
   });
 
   return {
-    products: data.products,
+    data: data.products,
     pagination: data.pagination,
   };
 };
 
 // 新增商品
 export const createProduct = async (productData) => {
-  const res = await axiosAPI.post('/admin/product', {
+  const { data } = await axiosAPI.post('/admin/product', {
     data: productData,
   });
-  return res.data;
+
+  return data;
 };
 
 // 更新商品
 export const updateProduct = async (productId, productData) => {
-  const res = await axiosAPI.put(`/admin/product/${productId}`, {
+  const { data } = await axiosAPI.put(`/admin/product/${productId}`, {
     data: productData,
   });
-  return res.data;
+
+  return data;
 };
 
 // 刪除商品
 export const deleteProduct = async (productId) => {
-  const res = await axiosAPI.delete(`/admin/product/${productId}`);
-  return res.data;
+  const { data } = await axiosAPI.delete(`/admin/product/${productId}`);
+
+  return data;
 };

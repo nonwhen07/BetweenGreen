@@ -6,17 +6,27 @@ const ProductCard = ({ productItem }) => {
   // };
 
   return (
-    <div className="card-product">
-      <div className="card-product__image">
+    <>
+      {/* <div className="card-product">
+        <div className="card-product__image">
+          <img src={productItem.imageUrl} alt={productItem.title} loading="lazy" />
+        </div>
+
+        <div className="card-product__body">
+          <h3 className="card-product__title">{productItem.title}</h3>
+
+          <p className="card-product__price">${productItem.price}</p>
+        </div>
+      </div> */}
+      <div className="card">
         <img src={productItem.imageUrl} alt={productItem.title} loading="lazy" />
-      </div>
 
-      <div className="card-product__body">
-        <h3 className="card-product__title">{productItem.title}</h3>
-
-        <p className="card-product__price">${productItem.price}</p>
+        <div className="card-body">
+          <h3 className="card-title">{productItem.title}</h3>
+          <p className="card-price">${productItem.price}</p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
