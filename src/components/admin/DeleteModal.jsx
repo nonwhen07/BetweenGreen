@@ -2,7 +2,14 @@ import { useEffect, useRef } from 'react';
 import { Modal } from 'bootstrap';
 // import PropTypes from 'prop-types';
 
-const DeleteModal = ({ isOpen, onClose, onConfirm, productTitle }) => {
+const DeleteModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title = '刪除項目',
+  message,
+  confirmText = '刪除',
+}) => {
   // Modal Ref 定義
   const deleteModalRef = useRef(null);
 
@@ -54,12 +61,16 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, productTitle }) => {
             ></button>
           </div>
           <div className="modal-body">
-            你是否要刪除
-            <span className="text-danger fw-bold">{productTitle}</span>
+            {message || (
+              <>
+                你是否確定要刪除
+                <span className="text-danger fw-bold">{title}</span>
+              </>
+            )}
           </div>
           <div className="modal-footer">
             <button type="button" onClick={onConfirm} className="btn btn-danger">
-              刪除
+              {confirmText}
             </button>
             <button type="button" onClick={onClose} className="btn btn-secondary">
               取消
