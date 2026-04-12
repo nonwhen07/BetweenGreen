@@ -6,7 +6,7 @@ import { getToken } from '@/utils/auth';
 import { checkAuth } from '@/services/authService';
 import { loginSuccess, logoutAction } from '@/features/auth/authSlice';
 
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 import { useToast } from '@/hooks/useToast';
 
 export const useAuthInit = () => {
@@ -40,7 +40,7 @@ export const useAuthInit = () => {
         }
       } catch (error) {
         dispatch(logoutAction());
-        const errorMessage = handleApiError(error, null, '請先登入，將導向登入頁面。');
+        const errorMessage = extractErrorMessage(error, null, '請先登入，將導向登入頁面。');
         showError(errorMessage);
         navigate('/login');
       }

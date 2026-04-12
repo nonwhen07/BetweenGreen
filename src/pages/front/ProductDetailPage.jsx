@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { getProductDetail } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 
 import PageLoader from '@/components/PageLoader';
 import ProductImage from '@/components/front/product/ProductImage';
@@ -38,7 +38,7 @@ const ProductDetailPage = () => {
         setProduct(product);
         setQtySelect(1);
       } catch (error) {
-        const errorMessage = handleApiError(error, setErrorMessage, '取得產品細項失敗');
+        const errorMessage = extractErrorMessage(error, setErrorMessage, '取得產品細項失敗');
         showError(errorMessage);
       } finally {
         setIsScreenLoading(false);
@@ -66,7 +66,7 @@ const ProductDetailPage = () => {
         setIsAdded(false);
       }, 2000);
     } catch (error) {
-      const errorMessage = handleApiError(error, setErrorMessage, '加入購物車失敗');
+      const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
       showError(errorMessage);
     } finally {
       setIsLoading(false);

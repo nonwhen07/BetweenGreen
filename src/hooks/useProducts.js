@@ -28,8 +28,8 @@ export const useProducts = () => {
 
   //===========================================================================
   const getProducts = useCallback(async (page = 1) => {
-    const { products, pagination } = await getAdminProducts(page);
-    setProducts(products);
+    const { data, pagination } = await getAdminProducts(page);
+    setProducts(data);
     setPageInfo(pagination);
   }, []);
 

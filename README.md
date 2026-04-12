@@ -153,7 +153,7 @@ export const getCartItems = async () => {
 ```bash
 utils/
  ├─ cartUtils.js
- └─ handleApiError.js
+ └─ errorHandler.js
 ```
 
 ```JS
@@ -214,14 +214,14 @@ loadingItems[cart.id] === "delete"
 
 ```bash
 utils/
-└─ handleApiError.js
+└─ errorHandler.js
 ```
 
 範例：
 
 ```JS
 catch (error) {
-handleApiError(error, setErrorMessage);
+errorHandler(error, setErrorMessage);
 }
 ```
 
@@ -267,7 +267,7 @@ src/
 │   └─ cartService.js
 ├─ utils/
 │   ├─ cartUtils.js
-│   └─ handleApiError.js
+│   └─ errorHandler.js
 ```
 
 ---

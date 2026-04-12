@@ -6,7 +6,7 @@ import {
   deleteProduct,
 } from '@/services/productService';
 // utils
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useProducts } from '@/hooks/useProducts';
@@ -146,7 +146,7 @@ function ProductsPage() {
       setIsScreenLoading(true);
       await getProducts(page);
     } catch (error) {
-      const errorMessage = handleApiError(error, null, '取得產品列表分頁失敗。');
+      const errorMessage = extractErrorMessage(error, null, '取得產品列表分頁失敗。');
       showError(errorMessage);
     } finally {
       setIsScreenLoading(false);
@@ -232,7 +232,7 @@ function ProductsPage() {
 
       success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！'); // 成功訊息
     } catch (error) {
-      const errorMessage = handleApiError(error, null, '更新產品失敗，請稍後再試。');
+      const errorMessage = extractErrorMessage(error, null, '更新產品失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
       setIsScreenLoading(false);
@@ -250,7 +250,7 @@ function ProductsPage() {
       setIsDeleteModalOpen(false);
       success('產品刪除成功！'); // 成功訊息
     } catch (error) {
-      const errorMessage = handleApiError(
+      const errorMessage = extractErrorMessage(
         error,
         null,
         '刪除產品失敗，請稍後再試。失敗，請稍後再試。',
@@ -294,7 +294,7 @@ function ProductsPage() {
       try {
         await getProducts(1);
       } catch (error) {
-        const errorMessage = handleApiError(error, null, '取得產品列表失敗，請稍後再試。');
+        const errorMessage = extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。');
         showError(errorMessage);
       } finally {
         setIsScreenLoading(false);
@@ -396,8 +396,14 @@ function ProductsPage() {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        productTitle={tempProduct.title}
         onConfirm={handleDeleteProduct}
+        title={`刪除產品 - ${tempProduct.title}`}
+        message={
+          <>
+            你是否要刪除
+            <span className="text-danger fw-bold">{tempProduct.title}</span>
+          </>
+        }
       />
     </>
   );

@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Link } from 'react-router-dom';
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 // hooks
 import { useToast } from '@/hooks/useToast';
 
@@ -78,7 +78,7 @@ const CartPage = () => {
       await fetchCart();
       setErrorMessage('');
     } catch (error) {
-      const errorMessage = handleApiError(error, setErrorMessage, '調整購物車數量失敗');
+      const errorMessage = extractErrorMessage(error, setErrorMessage, '調整購物車數量失敗');
       showError(errorMessage);
     } finally {
       setLoadingItems((prev) => {
@@ -102,7 +102,7 @@ const CartPage = () => {
       await fetchCart();
       setErrorMessage('');
     } catch (error) {
-      const errorMessage = handleApiError(error, setErrorMessage, '刪除購物車品項失敗');
+      const errorMessage = extractErrorMessage(error, setErrorMessage, '刪除購物車品項失敗');
       showError(errorMessage);
     } finally {
       setLoadingItems((prev) => {
@@ -123,7 +123,7 @@ const CartPage = () => {
 
       success('清空全部購物車成功。');
     } catch (error) {
-      const errorMessage = handleApiError(error, setErrorMessage, '清空全部購物車失敗');
+      const errorMessage = extractErrorMessage(error, setErrorMessage, '清空全部購物車失敗');
       showError(errorMessage);
     } finally {
       setIsScreenLoading(false);
@@ -141,7 +141,7 @@ const CartPage = () => {
       reset(); // 提交成功後重設表單
       success('已送出訂單。');
     } catch (error) {
-      const errorMessage = handleApiError(error, setErrorMessage, '訂單送出失敗。');
+      const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單送出失敗。');
       showError(errorMessage);
     } finally {
       setIsScreenLoading(false);
@@ -175,7 +175,7 @@ const CartPage = () => {
         await fetchCart();
         setErrorMessage('');
       } catch (error) {
-        const errorMessage = handleApiError(error, setErrorMessage);
+        const errorMessage = extractErrorMessage(error, setErrorMessage);
         showError(errorMessage);
       } finally {
         setIsScreenLoading(false);

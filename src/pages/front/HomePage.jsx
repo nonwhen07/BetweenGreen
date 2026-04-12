@@ -19,7 +19,7 @@ import PageLoader from '@/components/PageLoader';
 import BrandStory from '@/components/front/home/BrandStory';
 
 // utils
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 
 const HomePage = () => {
   const { showError } = useToast();
@@ -46,7 +46,7 @@ const HomePage = () => {
       // 取 productData的 Category(必須 Number(item.is_enabled) === 1) 種類 給CategorySection使用(todo)
     } catch (error) {
       console.error(error);
-      const errorMessage = handleApiError(error, null, '取得產品細項失敗');
+      const errorMessage = extractErrorMessage(error, null, '取得產品細項失敗');
       showError(errorMessage);
     } finally {
       setIsScreenLoading(false);

@@ -4,7 +4,7 @@ import { useState } from 'react';
 // hooks
 // import { useToast } from '@/hooks/useToast';
 // utils
-// import { handleApiError } from '@/utils/apiErrorHandler';
+// import { extractErrorMessage } from '@/utils/errorHandler';
 
 // Modal 資料狀態的預設值，由於六角API可以彈性新增欄位(rating: 0,)，
 // 因此在這裡也要確保即使API回傳的產品物件中沒有rating欄位，

@@ -5,7 +5,7 @@ import Pagination from '@/components/Pagination';
 import DeleteModal from '@/components/admin/DeleteModal';
 import PageLoader from '@/components/PageLoader';
 import { useToast } from '@/hooks/useToast';
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 
 function OrdersPage() {
   const { success, showError } = useToast();
@@ -25,7 +25,7 @@ function OrdersPage() {
       setOrders(res.orders);
       setPageInfo(res.pagination);
     } catch (error) {
-      showError(handleApiError(error));
+      showError(extractErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
@@ -39,7 +39,7 @@ function OrdersPage() {
       setIsDeleteModalOpen(false);
       getOrders(pageInfo.current_page);
     } catch (error) {
-      showError(handleApiError(error));
+      showError(extractErrorMessage(error));
     }
   };
 

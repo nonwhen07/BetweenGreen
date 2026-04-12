@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 // import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 
-import { getProducts, getProductsByCategory } from '@/services/productService';
+import { getProducts } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 
 import PageLoader from '@/components/PageLoader';
 import BtnLoader from '@/components/BtnLoader';
@@ -38,7 +38,7 @@ const ProductsPage = () => {
     try {
       let result = [];
       if (category) {
-        result = await getProductsByCategory(category);
+        result = await getProducts(category);
       } else {
         result = await getProducts();
       }
@@ -55,7 +55,11 @@ const ProductsPage = () => {
       }
       setProducts(result);
     } catch (error) {
-      const errorMessage = handleApiError(error, setErrorMessage, '取得產品失敗，請重新刷新頁面。');
+      const errorMessage = extractErrorMessage(
+        error,
+        setErrorMessage,
+        '取得產品失敗，請重新刷新頁面。',
+      );
       showError(errorMessage);
     } finally {
       setIsScreenLoading(false);
@@ -80,7 +84,7 @@ const ProductsPage = () => {
     try {
       await addsCartItem(product_id, qty);
     } catch (error) {
-      const errorMessage = handleApiError(error, setErrorMessage, '加入購物車失敗');
+      const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
       showError(errorMessage);
     } finally {
       setLoadingItems((prev) => ({

@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/useToast';
 import PageLoader from '@/components/PageLoader';
 // import PoinsettiaIcon from '@/components/PoinsettiaIcon';
 // utils
-import { handleApiError } from '@/utils/apiErrorHandler';
+import { extractErrorMessage } from '@/utils/errorHandler';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -59,10 +59,10 @@ const LoginPage = () => {
       }, 500);
     } catch (err) {
       // 如果其他page沒有const [errorMessage, setErrorMessage] = useState('');，
-      // 去顯示錯誤訊息或其他資訊可以改填 handleApiError(error, undefined, '登出失敗');
-      // 或 handleApiError(error, null);
-      // ex： const message = handleApiError(error, null, '登出失敗，請重新嘗試。');
-      const errorMessage = handleApiError(err, setErrorMessage, '登出失敗，請重新嘗試。');
+      // 去顯示錯誤訊息或其他資訊可以改填 extractErrorMessage(error, undefined, '登出失敗');
+      // 或 extractErrorMessage(error, null);
+      // ex： const message = extractErrorMessage(error, null, '登出失敗，請重新嘗試。');
+      const errorMessage = extractErrorMessage(err, setErrorMessage, '登出失敗，請重新嘗試。');
 
       showError(errorMessage);
     } finally {
