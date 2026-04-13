@@ -1,4 +1,5 @@
 import ProductCard from '@/components/front/home/Product/ProductCard';
+// import noImage from '@/assets/images/no-image.png';
 
 // 日後可以改成 Swiper
 // const ProductGrid = ({ products }) => {

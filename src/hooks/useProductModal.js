@@ -1,32 +1,10 @@
 import { useState } from 'react';
-// import { createProduct, updateProduct } from '@/services/productService';
 
-// hooks
-// import { useToast } from '@/hooks/useToast';
-// utils
-// import { extractErrorMessage } from '@/utils/errorHandler';
-
-// Modal 資料狀態的預設值，由於六角API可以彈性新增欄位(rating: 0,)，
-// 因此在這裡也要確保即使API回傳的產品物件中沒有rating欄位，
-// tempProduct的初始狀態仍然包含rating: 0，避免後續操作出錯
-// const DEFAULT_PRODUCT = {
-//   imageUrl: '',
-//   title: '',
-//   category: '',
-//   unit: '',
-//   origin_price: '',
-//   price: '',
-//   description: '',
-//   content: '',
-//   is_enabled: 0,
-//   imagesUrl: [''],
-//   rating: 0, // ⭐新增
-// };
 // 為了避免在多個地方重複定義 DEFAULT_PRODUCT，將其抽離到 constants/productConstants.js 中，
 import { DEFAULT_PRODUCT } from '@/constants/productConstants';
 
 export const useProductModal = () => {
-  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create');
   const [tempProduct, setTempProduct] = useState(DEFAULT_PRODUCT);
   const [modalError, setModalError] = useState('');
@@ -40,18 +18,7 @@ export const useProductModal = () => {
     imagesUrl: Array.isArray(p.imagesUrl) && p.imagesUrl.length > 0 ? [...p.imagesUrl] : [''],
   });
 
-  // ProductModal
-  // const handleOpenProductModal = (mode, product = DEFAULT_PRODUCT) => {
-  //   setModalMode(mode);
-
-  //   if (mode === 'create') {
-  //     setTempProduct({ ...DEFAULT_PRODUCT });
-  //   } else {
-  //     setTempProduct(normalizeProduct(product));
-  //   }
-  //   setIsProductModalOpen(true);
-  // };
-  const openModal = (mode, product = null) => {
+  const openProductModal = (mode, product = null) => {
     setModalMode(mode);
 
     if (mode === 'create') {
@@ -60,7 +27,14 @@ export const useProductModal = () => {
       setTempProduct(normalizeProduct(product));
     }
     setModalError('');
-    setIsProductModalOpen(true);
+    setIsModalOpen(true);
+  };
+
+  // 關閉 modal
+  const closeProductModal = () => {
+    setIsModalOpen(false);
+    setModalError('');
+    setTempProduct({ ...DEFAULT_PRODUCT });
   };
 
   // Modal表單
@@ -100,13 +74,15 @@ export const useProductModal = () => {
 
   return {
     modalMode,
-    openModal,
     tempProduct,
     setTempProduct,
     modalError,
     setModalError,
-    isProductModalOpen,
-    setIsProductModalOpen,
+
+    isModalOpen,
+    // setIsModalOpen,
+    openProductModal,
+    closeProductModal,
 
     handleModalInputChange,
     handleImageChange,

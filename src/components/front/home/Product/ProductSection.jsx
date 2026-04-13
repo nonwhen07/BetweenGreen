@@ -1,3 +1,4 @@
+// components
 import SectionHeader from '@/components/front/home/Product/SectionHeader';
 import ProductSlider from '@/components/front/home/Product/ProductSlider';
 

@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react';
-// import axios from 'axios';
+import { FaCartPlus, FaSearch } from 'react-icons/fa';
 import { Link, useSearchParams } from 'react-router-dom';
 
-import { getProducts } from '@/services/productService';
+// services
+// import { getProducts } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
+// hooks
+import { useToast } from '@/hooks/useToast';
+import { useProducts } from '@/hooks/useProducts';
+// utils
 import { extractErrorMessage } from '@/utils/errorHandler';
-
+// components
 import PageLoader from '@/components/PageLoader';
 import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
 
-import { FaCartPlus, FaSearch } from 'react-icons/fa';
-
-import { useToast } from '@/hooks/useToast';
-
 const ProductsPage = () => {
+  const { showError } = useToast();
+  const { products, isLoading, fetchProducts } = useProducts({ isAdmin: false });
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
-  const { showError } = useToast();
-  const [products, setProducts] = useState([]);
-  // const [pageInfo, setPageInfo] = useState({});
-  // const [tempProduct, setTempProduct] = useState([]);
+  // const [products, setProducts] = useState([]);
   // show 錯誤訊息狀態
   const [errorMessage, setErrorMessage] = useState('');
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  // const [isScreenLoading, setIsScreenLoading] = useState(false);
   // const [isLoading, setIsLoading] = useState(false); //改用下面的loadingItems，先儲存商品ID來標定loading位置
   const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
 
@@ -31,43 +31,43 @@ const ProductsPage = () => {
   const isEmpty = Array.isArray(products) && products.length === 0;
 
   // 取得商品列表
-  const fetchProducts = async () => {
-    setIsScreenLoading(true);
+  const initProducts = async () => {
     setErrorMessage('');
 
     try {
-      let result = [];
+      // let result = [];
+      // if (category) {
+      //   result = await getProducts(category);
+      // } else {
+      //   result = await getProducts();
+      // }
+      // // 防呆：確保是陣列，避免API 出問題或回 undefined
+      // if (!Array.isArray(result)) {
+      //   throw new Error('產品資料格式錯誤');
+      // }
+      // if (category && result.length === 0) {
+      //   setErrorMessage('目前此分類沒有商品');
+      // }
+      // setProducts(result);
+
       if (category) {
-        result = await getProducts(category);
+        await fetchProducts({ category: category });
       } else {
-        result = await getProducts();
+        await fetchProducts();
       }
-
-      // 防呆：確保是陣列，避免API 出問題或回 undefined
-      if (!Array.isArray(result)) {
-        throw new Error('產品資料格式錯誤');
-      }
-
-      // 空資料（只顯示畫面，不一定要 toast）
-      if (category && result.length === 0) {
-        setErrorMessage('目前此分類沒有商品');
-        // showError('目前此分類沒有商品'); // 不一定要 toast
-      }
-      setProducts(result);
     } catch (error) {
       const errorMessage = extractErrorMessage(
         error,
         setErrorMessage,
-        '取得產品失敗，請重新刷新頁面。',
+        '取得產品列表失敗，請稍後再試。',
       );
       showError(errorMessage);
-    } finally {
-      setIsScreenLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
+    initProducts();
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [category]);
 
   // 加入購物車
@@ -167,7 +167,7 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      <PageLoader show={isScreenLoading} zIndex={2000} />
+      <PageLoader show={isLoading} zIndex={2000} />
     </>
   );
 };

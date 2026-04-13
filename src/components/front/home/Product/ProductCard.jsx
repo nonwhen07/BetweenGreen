@@ -1,9 +1,13 @@
+import noImage from '@/assets/images/no-image.png';
+
 const ProductCard = ({ productItem }) => {
   // const productItem = {
   //   title: 'Monstera Deliciosa',
   //   price: 35,
   //   image: '/img/product-plant.jpg',
   // };
+
+  const isEmptySrc = !productItem.imageUrl || productItem.imageUrl.trim() === '';
 
   return (
     <>
@@ -19,7 +23,12 @@ const ProductCard = ({ productItem }) => {
         </div>
       </div> */}
       <div className="card">
-        <img src={productItem.imageUrl} alt={productItem.title} loading="lazy" />
+        {/* <img src={productItem.imageUrl} alt={productItem.title} loading="lazy" /> */}
+        <img
+          src={!isEmptySrc ? productItem.imageUrl : noImage}
+          alt={productItem.title}
+          loading="lazy"
+        />
 
         <div className="card-body">
           <h3 className="card-title">{productItem.title}</h3>

@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
+
+// services
 import {
   // getAdminProducts,
   createProduct,
   updateProduct,
   deleteProduct,
 } from '@/services/productService';
-// utils
-import { extractErrorMessage } from '@/utils/errorHandler';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useProducts } from '@/hooks/useProducts';
 import { useProductModal } from '@/hooks/useProductModal';
+import { useDeleteModal } from '@/hooks/useDeleteModal';
+// utils
+import { extractErrorMessage } from '@/utils/errorHandler';
 // constants
-import { DEFAULT_PRODUCT } from '@/constants/productConstants';
+// import { DEFAULT_PRODUCT } from '@/constants/productConstants';
 
 // components
 import Pagination from '@/components/Pagination';
@@ -20,23 +23,6 @@ import ProductModal from '@/components/admin/ProductModal';
 import DeleteModal from '@/components/admin/DeleteModal';
 import StarRating from '@/components/admin/StarRating';
 import PageLoader from '@/components/PageLoader';
-
-// Modal 資料狀態的預設值，由於六角API可以彈性新增欄位(rating: 0,)，
-// 因此在這裡也要確保即使API回傳的產品物件中沒有rating欄位，
-// tempProduct的初始狀態仍然包含rating: 0，避免後續操作出錯
-// const DEFAULT_PRODUCT = {
-//   imageUrl: '',
-//   title: '',
-//   category: '',
-//   unit: '',
-//   origin_price: '',
-//   price: '',
-//   description: '',
-//   content: '',
-//   is_enabled: 0,
-//   imagesUrl: [''],
-//   rating: 0, // ⭐新增
-// };
 
 /**
  * =========================================
@@ -111,16 +97,18 @@ function ProductsPage() {
   // hooks
   const { success, showError } = useToast();
   // products, pageInfo, getProducts 拆分出去了hooks/useProducts.js
-  const { products, pageInfo, getProducts } = useProducts();
+  // const { products, pageInfo, getProducts } = useProducts();
+  const { products, pageInfo, isLoading, fetchProducts } = useProducts({ isAdmin: true });
   const {
     modalMode,
-    openModal,
     tempProduct,
-    setTempProduct,
+    // setTempProduct,
     modalError,
     setModalError,
-    isProductModalOpen,
-    setIsProductModalOpen,
+
+    isModalOpen: isProductModalOpen,
+    openProductModal,
+    closeProductModal,
 
     handleModalInputChange,
     handleImageChange,
@@ -128,9 +116,12 @@ function ProductsPage() {
     handleDeleteImage,
   } = useProductModal();
 
-  // 管理Modal元件開關
-  // const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const {
+    isOpen: isDeleteModalOpen,
+    targetItem: deleteTarget,
+    openDeleteModal,
+    closeDeleteModal,
+  } = useDeleteModal();
 
   // 狀態管理 (State)
   const [isScreenLoading, setIsScreenLoading] = useState(false);
@@ -141,16 +132,8 @@ function ProductsPage() {
   // const [modalMode, setModalMode] = useState(null);
 
   // 產品列表分頁
-  const handlePageChange = async (page = 1) => {
-    try {
-      setIsScreenLoading(true);
-      await getProducts(page);
-    } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '取得產品列表分頁失敗。');
-      showError(errorMessage);
-    } finally {
-      setIsScreenLoading(false);
-    }
+  const handlePageChange = (page = 1) => {
+    fetchProducts({ page });
   };
 
   // // Modal表單
@@ -198,9 +181,9 @@ function ProductsPage() {
   });
   //做前端驗證函式 - 確保必填欄位都有填寫，並回傳對應的錯誤訊息
   const validateProduct = (product) => {
-    if (!product.title) return '請輸入產品標題';
-    if (!product.category) return '請輸入產品分類';
-    if (!product.unit) return '請輸入產品單位';
+    if (!product.title?.trim()) return '請輸入產品標題';
+    if (!product.category?.trim()) return '請輸入產品分類';
+    if (!product.unit?.trim()) return '請輸入產品單位';
     if (product.origin_price === '' || Number(product.origin_price) <= 0) return '請輸入原價';
     if (product.price === '' || Number(product.price) <= 0) return '請輸入售價';
 
@@ -226,10 +209,9 @@ function ProductsPage() {
       } else {
         await updateProduct(tempProduct.id, formatProductData(tempProduct));
       }
-      await getProducts(pageInfo.current_page || 1);
+      await fetchProducts({ page: pageInfo.current_page || 1 });
 
-      setIsProductModalOpen(false); // 成功才關閉 Modal
-
+      closeProductModal();
       success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！'); // 成功訊息
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '更新產品失敗，請稍後再試。');
@@ -241,20 +223,18 @@ function ProductsPage() {
 
   // 刪除產品
   const handleDeleteProduct = async () => {
+    if (!deleteTarget?.id) return;
     setIsScreenLoading(true);
 
     try {
-      await deleteProduct(tempProduct.id);
-      await getProducts(pageInfo.current_page || 1);
+      // await deleteProduct(tempProduct.id);
+      await deleteProduct(deleteTarget.id);
+      await fetchProducts({ page: pageInfo.current_page || 1 });
 
-      setIsDeleteModalOpen(false);
+      closeDeleteModal();
       success('產品刪除成功！'); // 成功訊息
     } catch (error) {
-      const errorMessage = extractErrorMessage(
-        error,
-        null,
-        '刪除產品失敗，請稍後再試。失敗，請稍後再試。',
-      );
+      const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
       setIsScreenLoading(false);
@@ -278,29 +258,31 @@ function ProductsPage() {
   //   } else {
   //     setTempProduct(normalizeProduct(product));
   //   }
-  //   setIsProductModalOpen(true);
+  //   isModalOpen(true);
   // };
 
   // DeleteModal
-  const handleOpenDeleteModal = (product) => {
-    setTempProduct(product || DEFAULT_PRODUCT);
-    setIsDeleteModalOpen(true);
-  };
+  // const handleOpenDeleteModal = (product) => {
+  //   setTempProduct(product || DEFAULT_PRODUCT);
+  //   setIsDeleteModalOpen(true);
+  // };
 
-  // useEffect getProducts 初始載入產品資料
+  // useEffect(() => {
+  //   console.log('products changed:', products);
+  // }, [products]);
+
+  // useEffect getProducts 初始載入產品資料，先page=1，category先不指定
   useEffect(() => {
-    const fetchProducts = async () => {
-      setIsScreenLoading(true);
+    const initProducts = async () => {
       try {
-        await getProducts(1);
+        await fetchProducts({ page: 1 });
       } catch (error) {
         const errorMessage = extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。');
         showError(errorMessage);
-      } finally {
-        setIsScreenLoading(false);
       }
     };
-    fetchProducts();
+
+    initProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -312,7 +294,7 @@ function ProductsPage() {
           <button
             className="btn btn-primary"
             onClick={() => {
-              openModal('create');
+              openProductModal('create');
             }}
           >
             新增產品
@@ -354,7 +336,7 @@ function ProductsPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        openModal('edit', product);
+                        openProductModal('edit', product);
                       }}
                       className="btn btn-outline-primary btn-sm"
                     >
@@ -362,10 +344,11 @@ function ProductsPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        handleOpenDeleteModal(product);
-                      }}
                       className="btn btn-outline-danger btn-sm"
+                      // onClick={() => {
+                      //   handleOpenDeleteModal(product);
+                      // }}
+                      onClick={() => openDeleteModal(product)}
                     >
                       刪除
                     </button>
@@ -378,22 +361,23 @@ function ProductsPage() {
         <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
       </div>
       {/* ScreenLoading */}
-      <PageLoader show={isScreenLoading} zIndex={2000} />
+      <PageLoader show={isLoading || isScreenLoading} zIndex={2000} />
 
+      {/* Modals */}
       <ProductModal
         isOpen={isProductModalOpen}
-        onClose={() => setIsProductModalOpen(false)}
+        // onClose={() => setIsModalOpen(false)}
+        onClose={closeProductModal}
         modalMode={modalMode}
         tempProduct={tempProduct}
+        modalError={modalError}
         onModalChange={handleModalInputChange}
         onImageChange={handleImageChange}
         addImage={handleAddImage}
         deleteImage={handleDeleteImage}
-        modalError={modalError}
         onConfirm={handleUpdateProduct}
       />
-
-      <DeleteModal
+      {/* <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteProduct}
@@ -402,6 +386,18 @@ function ProductsPage() {
           <>
             你是否要刪除
             <span className="text-danger fw-bold">{tempProduct.title}</span>
+          </>
+        }
+      /> */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={handleDeleteProduct}
+        title={`刪除產品 - ${deleteTarget?.title}`}
+        message={
+          <>
+            你是否要刪除
+            <span className="text-danger fw-bold">{deleteTarget?.title}</span>
           </>
         }
       />

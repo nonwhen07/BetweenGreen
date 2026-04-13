@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+// services
 import { getProductDetail } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
+// hooks
+import { useToast } from '@/hooks/useToast';
+// utils
 import { extractErrorMessage } from '@/utils/errorHandler';
-
+// components
 import PageLoader from '@/components/PageLoader';
 import ProductImage from '@/components/front/product/ProductImage';
 import ProductInfo from '@/components/front/product/ProductInfo';
-
-import { useToast } from '@/hooks/useToast';
 
 const ProductDetailPage = () => {
   const { success, showError } = useToast();
@@ -22,7 +24,7 @@ const ProductDetailPage = () => {
   const [qtySelect, setQtySelect] = useState(1);
 
   const [isScreenLoading, setIsScreenLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isCartLoading, setCartIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState('');
   const [cartMessage, setCartMessage] = useState('');
@@ -31,11 +33,12 @@ const ProductDetailPage = () => {
   // 畫面渲染後初步載入產品細項
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    const fetchProduct = async () => {
+    const initDetail = async () => {
       setIsScreenLoading(true);
       try {
-        const product = await getProductDetail(product_id);
-        setProduct(product);
+        const res = await getProductDetail(product_id);
+
+        setProduct(res.data);
         setQtySelect(1);
       } catch (error) {
         const errorMessage = extractErrorMessage(error, setErrorMessage, '取得產品細項失敗');
@@ -45,14 +48,14 @@ const ProductDetailPage = () => {
       }
     };
 
-    fetchProduct();
+    initDetail();
   }, [product_id]);
 
   //加入購物車
   const handleAddCartItem = async (productId, qty = 1) => {
-    if (isLoading) return; // 防止重複點擊
+    if (isCartLoading) return; // 防止重複點擊
     if (!productId || qty < 1) return;
-    setIsLoading(true);
+    setCartIsLoading(true);
 
     try {
       await addsCartItem(productId, qty);
@@ -69,7 +72,7 @@ const ProductDetailPage = () => {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
       showError(errorMessage);
     } finally {
-      setIsLoading(false);
+      setCartIsLoading(false);
     }
   };
 
@@ -94,7 +97,7 @@ const ProductDetailPage = () => {
               qtySelect={qtySelect}
               setQtySelect={setQtySelect}
               addCartItem={handleAddCartItem}
-              isLoading={isLoading}
+              isLoading={isCartLoading}
               cartMessage={cartMessage}
               isAdded={isAdded}
             />

@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FaStar } from 'react-icons/fa';
 
+// constants
+import { DEFAULT_PRODUCT } from '@/constants/productConstants';
+
 const ProductModal = ({
   isOpen,
   onClose,
@@ -19,43 +22,33 @@ const ProductModal = ({
   // 當 isOpen 變成 false 時，我們不立刻卸載元件
   // 而是讓 closing = true，保留 300ms 給 fade-out 動畫
   // 動畫結束後才把 closing 設回 false，讓元件真正卸載
-  const [closing, setClosing] = useState(false);
+  // const [closing, setClosing] = useState(false);
   // 只要正在開啟（isOpen）或正在關閉動畫（closing），就保留 DOM
-  const shouldRender = isOpen || closing;
+  // const shouldRender = isOpen || closing;
 
   const [hoverRating, setHoverRating] = useState(0);
 
+  // 等之後 ProductsPage去處理好 normalizeProduct，避免modal裡面還要再做一次imagesUrl的雙重確認，所以這裡就直接確保imagesUrl一定是陣列，至少有一個空字串，讓後續操作更簡單
+  const images = tempProduct.imagesUrl ?? [''];
+
   useEffect(() => {
     if (isOpen) {
-      // 開啟 modal：加上 body class 並確保不是 closing 狀態
       document.body.classList.add('modal-open');
-      return;
-    }
-
-    // 當 isOpen(開始關閉Modal) 變成 false 時，啟動 closing 動畫
-    if (!isOpen && shouldRender) {
+    } else {
       document.body.classList.remove('modal-open');
-
-      setTimeout(() => {
-        setClosing(true);
-      }, 300);
-
-      // 給 Bootstrap fade-out 300ms 時間
-      const timer = setTimeout(() => {
-        setClosing(false);
-      }, 300);
-
-      return () => clearTimeout(timer);
     }
-  }, [isOpen, shouldRender]);
 
-  // 如果既沒有開啟，也沒有在 closing 動畫中 → 不渲染
-  if (!shouldRender) return null;
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div
       id="productModal"
-      className={`modal fade ${isOpen ? 'show d-block' : ''}`}
+      className={`modal show d-block`}
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
     >
       <div className="modal-dialog modal-dialog-centered modal-xl">
@@ -96,8 +89,8 @@ const ProductModal = ({
                 </div>
                 {/* 副圖 */}
                 <div className="border border-2 border-dashed rounded-3 p-3">
-                  {tempProduct.imagesUrl?.length > 0 &&
-                    tempProduct.imagesUrl.map((image, index) => (
+                  {images?.length > 0 &&
+                    images.map((image, index) => (
                       <div key={index} className="mb-2">
                         <label htmlFor={`imagesUrl-${index + 1}`} className="form-label">
                           副圖 {index + 1}
@@ -119,13 +112,12 @@ const ProductModal = ({
                     ))}
                 </div>
                 <div className="btn-group w-100">
-                  {tempProduct.imagesUrl.length < 5 &&
-                    tempProduct.imagesUrl[tempProduct.imagesUrl.length - 1] !== '' && (
-                      <button onClick={addImage} className="btn btn-outline-primary btn-sm w-100">
-                        新增圖片
-                      </button>
-                    )}
-                  {tempProduct.imagesUrl.length > 1 && (
+                  {images.length < 5 && images[images.length - 1] !== '' && (
+                    <button onClick={addImage} className="btn btn-outline-primary btn-sm w-100">
+                      新增圖片
+                    </button>
+                  )}
+                  {images.length > 1 && (
                     <button onClick={deleteImage} className="btn btn-outline-danger btn-sm w-100">
                       刪除圖片
                     </button>
@@ -354,6 +346,7 @@ ProductModal.propTypes = {
 
 ProductModal.defaultProps = {
   tempProduct: {
+    ...DEFAULT_PRODUCT,
     is_enabled: 0, // 確保未設定時預設為 0（未啟用）
   },
 };
