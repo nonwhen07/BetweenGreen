@@ -1,9 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
-import { FaTrash, FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
+// import { FaTrash, FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 
 // services
 import {
@@ -18,18 +18,18 @@ import {
 import { useToast } from '@/hooks/useToast';
 
 // utils
-import { calculateCartTotal } from '@/utils/cartUtils';
+// import { calculateCartTotal } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
 import CartTable from '@/components/front/Cart/CartTable';
 import CheckoutForm from '@/components/front/Cart/CheckoutForm';
-import OrderSuccess from '@/components/front/Cart/OrderSuccess ';
-
+import CartSummary from '@/components/front/Cart/CartSummary';
+import OrderSuccess from '@/components/front/Cart/OrderSuccess';
 import PageLoader from '@/components/PageLoader';
-import BtnLoader from '@/components/BtnLoader';
-import ProductImage from '@/components/ProductImage';
+// import BtnLoader from '@/components/BtnLoader';
+// import ProductImage from '@/components/ProductImage';
 
 const CartPage = () => {
   /*
@@ -42,6 +42,8 @@ const CartPage = () => {
   const { success, showError, warning } = useToast();
 
   const [carts, setCarts] = useState([]);
+  const [lastOrderCart, setLastOrderCart] = useState([]);
+  const [orderID, setOrderID] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [isScreenLoading, setIsScreenLoading] = useState(false);
 
@@ -58,7 +60,7 @@ const CartPage = () => {
   const isDeleteLoading = (id) => loadingItems[id] === 'delete';
   // const cartTotal = calculateCartTotal(carts);
   // useMemo 可用可不用，主要是給大型專案用來優化效能，避免不必要的重複計算，這裡示範用法，實際上對這個小專案幫助不大
-  const cartTotal = useMemo(() => calculateCartTotal(carts), [carts]);
+  // const cartTotal = useMemo(() => calculateCartTotal(carts), [carts]);
 
   // 取得 cart.js 並將try catch交給呼叫的函式處理包含loading，
   // 讓 fetchCart  專注在抓資料，並且能在需要時重複使用
@@ -146,16 +148,21 @@ const CartPage = () => {
     }
   };
 
-  // 送出訂單 + Submit事件驅動
-  const handleCreateOrder = async (orderData) => {
+  // 送出購物車轉化成訂單 + Submit事件驅動
+  const handleCreateOrder = async (orderPayload) => {
     setIsScreenLoading(true);
     try {
-      await createOrder(orderData);
-      // 由於前台沒有會員機制，所以是所有人共用cart，訂單送出成功後刷新購物車等待下一位客人
+      const orderData = await createOrder(orderPayload);
+      // 由於前台沒有會員機制，所以是所有人共用cart， 訂單送出成功後刷新購物車等待下一位客人，
+      // 並先記錄紀錄這一次訂單資料(轉換成訂單後購物車會被清空)
+      setLastOrderCart([...carts]); // OrderSuccess 顯示訂單資料
       await fetchCart();
       setErrorMessage('');
       reset(); // 提交成功後重設表單
-      success('已送出訂單。');
+      const { orderId } = orderData;
+      setOrderID(orderId); // OrderSuccess 顯示訂單ID
+      success(`已送出訂單，您的訂單編號為：${orderId}`);
+      setStep(3); //成功後才跳轉到 Step_3
     } catch (error) {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單送出失敗。');
       showError(errorMessage);
@@ -163,27 +170,27 @@ const CartPage = () => {
       setIsScreenLoading(false);
     }
   };
-  const onSubmit = handleSubmit((data) => {
+  const handleSubmitOrder = handleSubmit(async (formData) => {
     if (carts.length < 1) {
       // 如果 購物車為空，直接返回不做任何處理
-      setErrorMessage('您的購物車是空的');
-      warning('您的購物車是空的');
+      setErrorMessage('您的購物車是空的!!');
+      warning('您的購物車是空的!!');
       return;
     }
 
     // data資料"解構"成message，剩下的打包一起變成user
-    const { message, ...user } = data;
-    const orderData = {
+    const { message, ...user } = formData;
+    const orderPayload = {
       data: {
         user: user,
         message: message,
       },
     };
-    handleCreateOrder(orderData);
+    await handleCreateOrder(orderPayload);
   });
 
   // 畫面渲染後初步載入購物車
-  /* eslint-disable react-hooks/exhaustive-deps */
+
   useEffect(() => {
     const loadCart = async () => {
       setIsScreenLoading(true);
@@ -199,16 +206,16 @@ const CartPage = () => {
     };
 
     loadCart();
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
   return (
     <>
       <div className="container ui-container">
-        {/* Hero */}
+        {/* Hero-Section */}
         <div className="cart-hero">
           <h1>購物車</h1>
         </div>
-
         {/* Step Indicator */}
         <CartSteps currentStep={step} />
 
@@ -221,7 +228,29 @@ const CartPage = () => {
             </div>
           )}
           {/* cartTable */}
-          {carts.length > 0 ? (
+          {step === 1 && (
+            <CartTable
+              carts={carts}
+              actions={{
+                onClear: handleClearCart,
+                onUpdate: handleUpdateCartItem,
+                onDelete: handleDeleteCartItem,
+              }}
+              isQtyLoading={isQtyLoading}
+              isDeleteLoading={isDeleteLoading}
+              onNext={() => {
+                setErrorMessage(''); // 先重置
+                if (carts.length === 0) {
+                  setErrorMessage('您的購物車是空的!!');
+                  warning('您的購物車是空的!!');
+                  return;
+                }
+                setStep(2);
+              }}
+            />
+          )}
+
+          {/* {carts.length > 0 ? (
             <>
               <div className="text-end py-3">
                 <button
@@ -342,12 +371,27 @@ const CartPage = () => {
                 去逛商品
               </Link>
             </div>
-          )}
-        </div>
+          )} */}
 
-        {/* orderFormTable */}
-        <div className="my-5 row justify-content-center">
-          <form onSubmit={onSubmit} className="col-md-6">
+          {/* orderFormTable */}
+          {step === 2 && (
+            <div className="row">
+              <div className="col-lg-7">
+                <CheckoutForm
+                  register={register}
+                  errors={errors}
+                  onSubmit={handleSubmitOrder}
+                  onBack={() => setStep(1)}
+                />
+              </div>
+              <div className="col-lg-5">
+                <CartSummary carts={carts} />
+              </div>
+            </div>
+          )}
+
+          {/* <div className="cart-table my-5 row justify-content-center">
+          <form onSubmit={handleSubmitOrder } className="col-md-6">
             <div className="mb-3">
               <label htmlFor="email" className="form-label">
                 Email
@@ -434,6 +478,11 @@ const CartPage = () => {
               </button>
             </div>
           </form>
+        </div> */}
+
+          {step === 3 && orderID && (
+            <OrderSuccess orderID={orderID} lastOrderCart={lastOrderCart} />
+          )}
         </div>
       </div>
 
