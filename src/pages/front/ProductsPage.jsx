@@ -96,7 +96,7 @@ const ProductsPage = () => {
 
   return (
     <>
-      <div className="container">
+      <div className="container ui-container">
         <div className="mt-4">
           {errorMessage && (
             <div className="mx-auto alert alert-danger w-50 text-center">{errorMessage}</div>

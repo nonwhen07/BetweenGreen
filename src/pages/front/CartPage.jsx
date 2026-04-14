@@ -2,10 +2,10 @@ import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Link } from 'react-router-dom';
-import { extractErrorMessage } from '@/utils/errorHandler';
-// hooks
-import { useToast } from '@/hooks/useToast';
 
+import { FaTrash, FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
+
+// services
 import {
   getCartItems,
   updateCartItem,
@@ -14,15 +14,31 @@ import {
   createOrder,
 } from '@/services/cartService';
 
+// hooks
+import { useToast } from '@/hooks/useToast';
+
+// utils
 import { calculateCartTotal } from '@/utils/cartUtils';
+import { extractErrorMessage } from '@/utils/errorHandler';
+
+// components
+import CartSteps from '@/components/front/Cart/CartSteps';
+import CartTable from '@/components/front/Cart/CartTable';
+import CheckoutForm from '@/components/front/Cart/CheckoutForm';
+import OrderSuccess from '@/components/front/Cart/OrderSuccess ';
 
 import PageLoader from '@/components/PageLoader';
 import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
 
-import { FaTrash, FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
-
 const CartPage = () => {
+  /*
+1 = Cart
+2 = Checkout Form
+3 = Success
+*/
+  const [step, setStep] = useState(1);
+
   const { success, showError, warning } = useToast();
 
   const [carts, setCarts] = useState([]);
@@ -187,13 +203,23 @@ const CartPage = () => {
 
   return (
     <>
-      <div className="container">
-        {errorMessage && (
-          <div className="col-12">
-            <div className="alert alert-danger py-2">{errorMessage}</div>
-          </div>
-        )}
-        <div className="mt-4">
+      <div className="container ui-container">
+        {/* Hero */}
+        <div className="cart-hero">
+          <h1>購物車</h1>
+        </div>
+
+        {/* Step Indicator */}
+        <CartSteps currentStep={step} />
+
+        {/* Main Content */}
+        <div className="cart-main mt-4">
+          {/* errorMessage */}
+          {errorMessage && (
+            <div className="col-12 mt-4">
+              <div className="alert alert-danger py-2">{errorMessage}</div>
+            </div>
+          )}
           {/* cartTable */}
           {carts.length > 0 ? (
             <>

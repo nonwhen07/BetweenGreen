@@ -7,7 +7,7 @@ import PageLoader from '@/components/PageLoader';
 import { useToast } from '@/hooks/useToast';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
-function OrdersPage() {
+const OrdersPage = () => {
   const { success, showError } = useToast();
 
   const [orders, setOrders] = useState([]);
@@ -107,6 +107,6 @@ function OrdersPage() {
       />
     </>
   );
-}
+};
 
 export default OrdersPage;
