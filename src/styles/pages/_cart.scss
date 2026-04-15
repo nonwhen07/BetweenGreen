@@ -1,3 +1,10 @@
+$primary-color: #001540; // 啟動色 (深藍)
+$secondary-color: #a4b2d1; // 未啟動色 (淡藍)
+$text-color: #333;
+$bg-color: #f8f7f2; // 網頁背景底色
+$transition-speed: 0.3s;
+
+// .cart-steps區塊
 .cart-steps {
   display: flex;
   justify-content: space-between;
@@ -27,6 +34,91 @@
   }
 }
 
+.cart-steps-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: $bg-color;
+  width: 100%;
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: $secondary-color;
+    transition: color $transition-speed ease;
+
+    &.active {
+      color: $primary-color;
+      .icon-wrapper {
+        background-color: $primary-color;
+        color: #fff;
+        border-color: $primary-color;
+      }
+      .step-label {
+        font-weight: 600;
+      }
+    }
+
+    .icon-wrapper {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid $secondary-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      transition: all $transition-speed ease;
+    }
+
+    .step-label {
+      font-size: 16px;
+      white-space: nowrap;
+      letter-spacing: 1px;
+    }
+  }
+
+  .step-line {
+    flex: 1;
+    max-width: 150px; // 線條長度
+    height: 1px;
+    background-color: $secondary-color;
+    margin: 0 20px;
+    position: relative;
+
+    // 啟動後的進度條效果
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background-color: $primary-color;
+      transition: width $transition-speed ease;
+    }
+
+    &.active::after {
+      width: 100%;
+    }
+  }
+}
+
+// 手機版自動調整
+@media (max-width: 768px) {
+  .cart-steps-container {
+    .step-label {
+      display: none; // 手機版隱藏文字，只留 icon
+    }
+    .step-line {
+      margin: 0 10px;
+    }
+  }
+}
+
+// .cart-table
 .cart-table {
   padding: 0 16px;
 }

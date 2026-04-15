@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { FaTrash, FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
-
-import { FaTrash, FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 
 // components
 import BtnLoader from '@/components/BtnLoader';
@@ -13,9 +12,10 @@ import ProductImage from '@/components/ProductImage';
 const CartTable = ({
   carts,
 
-  onClear,
-  onUpdate,
-  onDelete,
+  // onClear,
+  // onUpdate,
+  // onDelete,
+  actions,
   isQtyLoading,
   isDeleteLoading,
   onNext,
@@ -27,7 +27,7 @@ const CartTable = ({
       {carts.length > 0 ? (
         <>
           <div className="text-end py-3">
-            <button onClick={onClear} className="btn btn-outline-danger" type="button">
+            <button onClick={actions.onClear} className="btn btn-outline-danger" type="button">
               清空購物車
             </button>
           </div>
@@ -49,7 +49,7 @@ const CartTable = ({
                 <tr key={cart.id}>
                   <td>
                     <button
-                      onClick={() => onDelete(cart.id)}
+                      onClick={() => actions.onDelete(cart.id)}
                       disabled={isDeleteLoading(cart.id)}
                       type="button"
                       className="btn btn-outline-danger btn-sm"
@@ -70,7 +70,7 @@ const CartTable = ({
                     <div className="d-flex align-items-center">
                       <div className="btn-group me-2" role="group">
                         <button
-                          onClick={() => onUpdate(cart.id, cart.product.id, cart.qty - 1)}
+                          onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)}
                           disabled={isQtyLoading(cart.id)}
                           type="button"
                           className="btn btn-outline-dark btn-sm"
@@ -89,7 +89,7 @@ const CartTable = ({
                         </span>
 
                         <button
-                          onClick={() => onUpdate(cart.id, cart.product.id, cart.qty + 1)}
+                          onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)}
                           disabled={isQtyLoading(cart.id)}
                           type="button"
                           className="btn btn-outline-dark btn-sm"

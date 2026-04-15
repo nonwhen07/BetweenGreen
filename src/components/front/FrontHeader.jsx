@@ -10,7 +10,7 @@ const routes = [
   { path: '/', name: '首頁' },
   { path: '/about', name: '關於我們' },
   { path: '/products', name: '產品列表' },
-  { path: '/cart', name: '購物車' },
+  { path: '/cart/step1', name: '購物車' },
   //   { path: '/about', name: 'About' },
   //   { path: '/favorite', name: 'Favorite' },
   //   { path: '/orders', name: 'Orders' },
@@ -49,7 +49,7 @@ const FrontHeader = () => {
             {routes.map((route) => (
               <li key={route.path} className="nav-item">
                 <NavLink className="nav-link text-light" aria-current="page" to={route.path}>
-                  {route.path === 'cart' ? (
+                  {route.path.includes('cart') ? (
                     <div className="position-relative">
                       <FaShoppingCart size={20} />
                       {carts?.length > 0 && (

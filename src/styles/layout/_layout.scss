@@ -17,6 +17,8 @@
 
 // 共用 section 版型 "暫定" 1840px
 .ui-section {
+  scroll-margin-top: 100px;
+
   max-width: 1840px;
   margin: 0 auto;
   padding: 60px 0;
@@ -28,6 +30,14 @@
 
   @include respond($breakpoints, desktop) {
     padding: 96px 0;
+  }
+}
+
+.ui-section--cart {
+  padding: 0;
+
+  &:active {
+    padding: 60px 0;
   }
 }
 

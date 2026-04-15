@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // import { Link } from 'react-router-dom';
 
@@ -28,8 +29,9 @@ import CheckoutForm from '@/components/front/Cart/CheckoutForm';
 import CartSummary from '@/components/front/Cart/CartSummary';
 import OrderSuccess from '@/components/front/Cart/OrderSuccess';
 import PageLoader from '@/components/PageLoader';
-// import BtnLoader from '@/components/BtnLoader';
-// import ProductImage from '@/components/ProductImage';
+
+// constants
+import { CART_STEPS } from '@/constants/cartConstants';
 
 const CartPage = () => {
   /*
@@ -38,7 +40,13 @@ const CartPage = () => {
 3 = Success
 */
   const [step, setStep] = useState(1);
+  const { hash } = useLocation();
 
+  // 根據 Hash 找出目前的步驟物件 (預設為第一步)
+  const currentStepData = useMemo(() => {
+    return CART_STEPS.find((s) => s.hash === hash) || CART_STEPS[0];
+  }, [hash]);
+  const navigate = useNavigate();
   const { success, showError, warning } = useToast();
 
   const [carts, setCarts] = useState([]);
@@ -163,6 +171,7 @@ const CartPage = () => {
       setOrderID(orderId); // OrderSuccess 顯示訂單ID
       success(`已送出訂單，您的訂單編號為：${orderId}`);
       setStep(3); //成功後才跳轉到 Step_3
+      navigate('/cart#step3');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單送出失敗。');
       showError(errorMessage);
@@ -209,280 +218,98 @@ const CartPage = () => {
     /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
+  // 自動捲動到指定 ID 的位置
+  useEffect(() => {
+    if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      // 如果沒有 hash，預設捲到最上方
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [hash]);
+
   return (
     <>
       <div className="container ui-container">
         {/* Hero-Section */}
         <div className="cart-hero">
-          <h1>購物車</h1>
+          <h1
+            className="page-title"
+            key={currentStepData.id}
+            data-aos="flip-left"
+            data-aos-delay="1500"
+          >
+            {currentStepData.label}
+          </h1>
         </div>
         {/* Step Indicator */}
-        <CartSteps currentStep={step} />
+        <CartSteps currentStep={currentStepData.id} />
 
         {/* Main Content */}
         <div className="cart-main mt-4">
           {/* errorMessage */}
           {errorMessage && (
-            <div className="col-12 mt-4">
+            <section className="ui-section mt-4">
               <div className="alert alert-danger py-2">{errorMessage}</div>
-            </div>
+            </section>
           )}
-          {/* cartTable */}
-          {step === 1 && (
-            <CartTable
-              carts={carts}
-              actions={{
-                onClear: handleClearCart,
-                onUpdate: handleUpdateCartItem,
-                onDelete: handleDeleteCartItem,
-              }}
-              isQtyLoading={isQtyLoading}
-              isDeleteLoading={isDeleteLoading}
-              onNext={() => {
-                setErrorMessage(''); // 先重置
-                if (carts.length === 0) {
-                  setErrorMessage('您的購物車是空的!!');
-                  warning('您的購物車是空的!!');
-                  return;
-                }
-                setStep(2);
-              }}
-            />
-          )}
+          {/* step1 */}
+          <section id="step1" className="ui-section">
+            {step === 1 && (
+              <CartTable
+                carts={carts}
+                actions={{
+                  onClear: handleClearCart,
+                  onUpdate: handleUpdateCartItem,
+                  onDelete: handleDeleteCartItem,
+                }}
+                isQtyLoading={isQtyLoading}
+                isDeleteLoading={isDeleteLoading}
+                onNext={() => {
+                  setErrorMessage(''); // 先重置
+                  if (carts.length === 0) {
+                    setErrorMessage('您的購物車是空的!!');
+                    warning('您的購物車是空的!!');
+                    return;
+                  }
+                  setStep(2);
+                  navigate('/cart#step2');
+                }}
+              />
+            )}
+          </section>
 
-          {/* {carts.length > 0 ? (
-            <>
-              <div className="text-end py-3">
-                <button
-                  onClick={() => handleClearCart()}
-                  className="btn btn-outline-danger"
-                  type="button"
-                >
-                  清空購物車
-                </button>
+          {/* step2 */}
+          <section id="step2" className="ui-section">
+            {step === 2 && (
+              <div className="row checkout">
+                <div className="col-lg-7">
+                  <CheckoutForm
+                    register={register}
+                    errors={errors}
+                    onSubmit={handleSubmitOrder}
+                    onBack={() => {
+                      setStep(1);
+                      navigate('/cart#step1');
+                    }}
+                  />
+                </div>
+                <div className="col-lg-5">
+                  <CartSummary carts={carts} />
+                </div>
               </div>
-              <table className="table align-middle">
-                <thead>
-                  <tr>
-                    <th style={{ width: '200px' }}>操作</th>
-                    <th style={{ width: '250px' }}>品名</th>
-                    <th style={{ width: '250px' }}>圖片</th>
-                    <th style={{ width: '200px' }}>單價</th>
-                    <th style={{ width: '200px' }}>數量/單位</th>
-                    <th style={{ width: '200px' }} className="text-end">
-                      合計
-                    </th>
-                  </tr>
-                </thead>
+            )}
+          </section>
 
-                <tbody>
-                  {carts.map((cart) => (
-                    <tr key={cart.id}>
-                      <td>
-                        <button
-                          onClick={() => handleDeleteCartItem(cart.id)}
-                          disabled={isDeleteLoading(cart.id)}
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                        >
-                          {isDeleteLoading(cart.id) ? (
-                            <BtnLoader size="sm" />
-                          ) : (
-                            <FaTrash size={18} />
-                          )}
-                        </button>
-                      </td>
-                      <td>{cart.product.title}</td>
-                      <td>
-                        <ProductImage
-                          src={cart.product.imageUrl}
-                          alt={cart.product.title}
-                          size="small"
-                        />
-                      </td>
-                      <td>{cart.product.price.toLocaleString()}</td>
-                      <td style={{ width: '150px' }}>
-                        <div className="d-flex align-items-center">
-                          <div className="btn-group me-2" role="group">
-                            <button
-                              onClick={() =>
-                                handleUpdateCartItem(cart.id, cart.product.id, cart.qty - 1)
-                              }
-                              disabled={isQtyLoading(cart.id)}
-                              type="button"
-                              className="btn btn-outline-dark btn-sm"
-                            >
-                              {isQtyLoading(cart.id) ? (
-                                <BtnLoader aria-hidden="true" size="sm" />
-                              ) : (
-                                <FaMinus size={20} />
-                              )}
-                            </button>
-                            <span
-                              className="btn border border-dark"
-                              style={{ width: '50px', cursor: 'auto' }}
-                            >
-                              {cart.qty}
-                            </span>
-
-                            <button
-                              onClick={() =>
-                                handleUpdateCartItem(cart.id, cart.product.id, cart.qty + 1)
-                              }
-                              disabled={isQtyLoading(cart.id)}
-                              type="button"
-                              className="btn btn-outline-dark btn-sm"
-                            >
-                              {isQtyLoading(cart.id) ? (
-                                <BtnLoader aria-hidden="true" size="sm" />
-                              ) : (
-                                <FaPlus size={20} />
-                              )}
-                            </button>
-                          </div>
-                          <span className="input-group-text bg-transparent border-0">
-                            {cart.product.unit}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="text-end">{cart.total.toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colSpan="5" className="text-end">
-                      總計：
-                    </td>
-                    <td className="text-end" style={{ width: '130px' }}>
-                      {cartTotal.toLocaleString()}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </>
-          ) : (
-            <div className="text-center text-muted">
-              <p className="">
-                <FaShoppingCart size={20} /> 購物車是空的
-              </p>
-              <Link to="/products" className="btn btn-outline-primary mt-2">
-                <FaCartPlus size={20} />
-                去逛商品
-              </Link>
-            </div>
-          )} */}
-
-          {/* orderFormTable */}
-          {step === 2 && (
-            <div className="row">
-              <div className="col-lg-7">
-                <CheckoutForm
-                  register={register}
-                  errors={errors}
-                  onSubmit={handleSubmitOrder}
-                  onBack={() => setStep(1)}
-                />
-              </div>
-              <div className="col-lg-5">
-                <CartSummary carts={carts} />
-              </div>
-            </div>
-          )}
-
-          {/* <div className="cart-table my-5 row justify-content-center">
-          <form onSubmit={handleSubmitOrder } className="col-md-6">
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
-              <input
-                {...register('email', {
-                  required: 'Email 欄位必填',
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: 'Email 格式錯誤',
-                  },
-                })}
-                id="email"
-                type="email"
-                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                placeholder="請輸入 Email"
-              />
-              {errors.email && <p className="text-danger my-2">{errors.email.message}</p>}
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                收件人姓名
-              </label>
-              <input
-                {...register('name', { required: '姓名 欄位必填' })}
-                id="name"
-                className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                placeholder="請輸入姓名"
-              />
-              {errors.name && <p className="text-danger my-2">{errors.name.message}</p>}
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="tel" className="form-label">
-                收件人電話
-              </label>
-              <input
-                {...register('tel', {
-                  required: '電話 欄位必填',
-                  pattern: {
-                    value: /^(0[2-8]\d{7}|09\d{8})$/,
-                    message: '電話 格式錯誤',
-                  },
-                })}
-                id="tel"
-                type="text"
-                className={`form-control ${errors.tel ? 'is-invalid' : ''}`}
-                placeholder="請輸入電話"
-              />
-              {errors.tel && <p className="text-danger my-2">{errors.tel.message}</p>}
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="address" className="form-label">
-                收件人地址
-              </label>
-              <input
-                {...register('address', { required: '地址 欄位必填' })}
-                id="address"
-                type="text"
-                className={`form-control ${errors.address ? 'is-invalid' : ''}`}
-                placeholder="請輸入地址"
-              />
-
-              {errors.address && <p className="text-danger my-2">{errors.address.message}</p>}
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="message" className="form-label">
-                留言
-              </label>
-              <textarea
-                {...register('message')}
-                id="message"
-                className="form-control"
-                cols="30"
-                rows="10"
-              ></textarea>
-            </div>
-            <div className="text-end">
-              <button type="submit" className="btn btn-danger">
-                送出訂單
-              </button>
-            </div>
-          </form>
-        </div> */}
-
-          {step === 3 && orderID && (
-            <OrderSuccess orderID={orderID} lastOrderCart={lastOrderCart} />
-          )}
+          {/* step3 */}
+          <section id="step3" className="ui-section">
+            {step === 3 && orderID && (
+              <OrderSuccess orderID={orderID} lastOrderCart={lastOrderCart} />
+            )}
+          </section>
         </div>
       </div>
 
