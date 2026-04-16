@@ -19,7 +19,7 @@
 
   &--accent {
     background: $color-accent;
-    color: $neutral-100;
+    color: $text-on-primary;
   }
 
   &--outline {
@@ -29,13 +29,13 @@
 
     &:hover {
       background: $color-primary;
-      color: $neutral-100;
+      color: $text-on-primary;
     }
   }
 
   &--season {
     background: var(--season-primary, $color-primary);
-    color: $neutral-100;
+    color: $text-on-primary;
   }
 }
 
@@ -61,7 +61,7 @@
 
   // 主體（可以吃 seasontheme）
   background: var(--season-primary, $color-primary);
-  color: $neutral-100;
+  color: $text-on-primary;
   border: none;
 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);

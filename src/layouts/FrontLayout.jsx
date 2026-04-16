@@ -18,7 +18,7 @@ const FrontLayout = () => {
 
   const mode = 'theme-light'; // or theme-dark=>還沒設定
   // const season = 'theme-christmas';
-  const season = 'theme-christmas';
+  const season = '';
 
   // 避免React 路由切換的問題，AOS沒有刷新
   useEffect(() => {
@@ -29,7 +29,7 @@ const FrontLayout = () => {
     <>
       <div className={`${mode} ${season}`}>
         <FrontHeader />
-        <main className="ui-layout">
+        <main className="ui-wrapper">
           <Outlet />
         </main>
         <GoTop />

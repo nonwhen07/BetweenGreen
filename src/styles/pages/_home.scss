@@ -23,13 +23,13 @@
 .section-title {
   font-size: 1.8rem;
   font-weight: 600;
-  color: $neutral-500;
+  color: $color-bg-main;
   margin-bottom: 8px;
 }
 
 .section-subtitle {
   font-size: 0.95rem;
-  color: $neutral-500;
+  color: $text-muted;
   letter-spacing: 0.5px;
 }
 
@@ -38,7 +38,7 @@
 ========================= */
 .category-section {
   position: relative;
-  background: $neutral-100;
+  background: $color-bg-surface;
   padding: 64px 0;
 
   &::before {
@@ -315,7 +315,7 @@
 .seasonal-section {
   opacity: 1;
   transition: 0.5s;
-  background: var(--season-bg, $color-bg);
+  background: var(--season-bg, $color-bg-main);
   &.inactive {
     opacity: 0.3;
   }

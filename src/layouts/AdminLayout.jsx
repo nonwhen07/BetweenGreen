@@ -29,7 +29,7 @@ const AdminLayout = () => {
         <AdminSidebar />
         <div className="flex-grow-1">
           <AdminHeader />
-          <main className="ui-layout container p-4 bg-light min-vh-100">
+          <main className="ui-wrapper container p-4 bg-light min-vh-100">
             <Outlet />
           </main>
         </div>

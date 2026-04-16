@@ -2,7 +2,7 @@
 @use 'sass:color';
 
 .ui-card {
-  background: $neutral-100;
+  background: $text-on-primary;
   border-radius: $radius-md;
   box-shadow: $shadow-sm;
   transition: $transition-base;

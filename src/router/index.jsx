@@ -81,6 +81,8 @@ const routes = [
   },
 ];
 
+// createBrowserRouter（真實路由） 是另外一種Router，BrowserRouter：真實 URL，需要後端支援
+// createHashRouter 不需要 server rewrite、不會 404，不需要後端支援
 const router = createHashRouter(routes, {
   // basename: import.meta.env.PROD ? '/react_week7_2026/' : '/', // GH Pages 必填，與 vite base 一致（不加結尾 /） => 這段有點問題，先暫時註解
   basename: import.meta.env.PROD === 'production' ? '/BetweenGreen/' : '/',

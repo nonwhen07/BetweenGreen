@@ -1,10 +1,74 @@
-$primary-color: #001540; // 啟動色 (深藍)
-$secondary-color: #a4b2d1; // 未啟動色 (淡藍)
-$text-color: #333;
-$bg-color: #f8f7f2; // 網頁背景底色
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+
 $transition-speed: 0.3s;
 
-// .cart-steps區塊
+/**
+ * Cart Page Specific Sections
+ */
+.ui-container--cart {
+  background: $color-bg-main;
+}
+
+.ui-section--cart {
+  // 繼承 .ui-section 的所有屬性後，增加動畫初始狀態
+
+  background: $color-bg-main;
+  padding: 24px;
+
+  opacity: 0;
+  transform: translateY(20px); // 預設稍微往下偏
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+
+  &.active {
+    opacity: 1;
+    transform: translateY(0); // 啟動後回到原位
+  }
+
+  &-slide-up.active {
+    animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    // 既然用了 animation，可以把 transition 關掉避免衝突
+    transition: none;
+  }
+
+  // 如果你有特定的變體需求
+  &-shake.active {
+    animation: shake 0.5s ease-in-out;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================
+  cart-hero
+======================== */
+.cart-hero {
+  padding: 24px;
+}
+
+/* ========================
+  cart-table-wrapper
+======================== */
+
+.cart-table-wrapper {
+  // 整體容器樣式
+  background-color: transparent; // 或是給予微弱的背景色
+}
+
+/* ========================
+  cart-steps
+======================== */
 .cart-steps {
   display: flex;
   justify-content: space-between;
@@ -16,15 +80,15 @@ $transition-speed: 0.3s;
 
     &.active {
       .step-circle {
-        background: #2f6d4f;
-        color: #fff;
+        background: $color-primary-light;
+        color: $text-on-primary;
       }
     }
 
     .step-circle {
       width: 40px;
       height: 40px;
-      border: 2px solid #ccc;
+      border: 2px solid $color-bg-muted;
       border-radius: 50%;
       margin: 0 auto 8px;
       display: flex;
@@ -38,23 +102,23 @@ $transition-speed: 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
-  background-color: $bg-color;
+  padding: 24px;
+  background-color: $color-bg-main;
   width: 100%;
 
   .step-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    color: $secondary-color;
+    color: $color-secondary;
     transition: color $transition-speed ease;
 
     &.active {
-      color: $primary-color;
+      color: $color-primary;
       .icon-wrapper {
-        background-color: $primary-color;
-        color: #fff;
-        border-color: $primary-color;
+        background-color: $color-primary;
+        color: $text-on-primary;
+        border-color: $color-primary-light;
       }
       .step-label {
         font-weight: 600;
@@ -65,7 +129,7 @@ $transition-speed: 0.3s;
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 2px solid $secondary-color;
+      border: 2px solid $color-secondary;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -84,7 +148,7 @@ $transition-speed: 0.3s;
     flex: 1;
     max-width: 150px; // 線條長度
     height: 1px;
-    background-color: $secondary-color;
+    background-color: $color-secondary;
     margin: 0 20px;
     position: relative;
 
@@ -96,7 +160,7 @@ $transition-speed: 0.3s;
       top: 0;
       height: 100%;
       width: 0;
-      background-color: $primary-color;
+      background-color: $color-primary;
       transition: width $transition-speed ease;
     }
 
@@ -118,7 +182,181 @@ $transition-speed: 0.3s;
   }
 }
 
-// .cart-table
+/* ========================
+  cart-table
+======================== */
 .cart-table {
-  padding: 0 16px;
+  // 品牌電商通常不使用 table 標籤的預設框線
+  &__header {
+    tr {
+      height: 72px !important;
+    }
+    th {
+      text-align: left; // 先設定預設對齊
+      vertical-align: middle;
+      &.cart-table__col--action,
+      &.cart-table__col--image,
+      &.cart-table__col--price,
+      &.cart-table__col--qty {
+        text-align: center;
+      }
+      &.cart-table__col--subtotal {
+        text-align: end; // 金額類建議靠右
+      }
+
+      &.cart-table__col--action,
+      &.cart-table__col--subtotal {
+        width: 150px;
+      }
+      &.cart-table__col--info,
+      &.cart-table__col--image,
+      &.cart-table__col--qty {
+        width: 250px;
+      }
+
+      &.cart-table__col--category,
+      &.cart-table__col--price {
+        width: 200px;
+      }
+
+      color: $text-on-primary !important; // 用 !important 暫時確保壓過 Bootstrap，或提高權重
+      font-weight: 600;
+      letter-spacing: 1px;
+      // 邊框一定要寫在 th 上
+      border-bottom: 2px solid $color-accent;
+      background-color: $color-primary-light; // 避免 Bootstrap 預設的背景色遮擋
+    }
+  }
+
+  &__body {
+    tr {
+      height: 108px !important;
+    }
+
+    td {
+      text-align: left; // 先設定預設對齊
+      vertical-align: middle;
+      &.cart-table__col--action,
+      &.cart-table__col--image,
+      &.cart-table__col--price,
+      &.cart-table__col--qty {
+        text-align: center;
+      }
+      &.cart-table__col--subtotal {
+        text-align: end; // 金額類建議靠右
+      }
+
+      .btn-trash {
+        width: 42px;
+        height: 42px;
+      }
+
+      .btn-trash,
+      .product-img,
+      .qty-group {
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  &__item {
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+
+    // Hover 時產生微微的背景色，提升互動感
+    &:hover {
+      background-color: $color-bg-muted;
+    }
+
+    // 當前步驟啟動時的樣式 (對應你修正後的邏輯)
+    &.active {
+      border-left: 4px solid $color-primary-light;
+    }
+  }
+
+  // 商品資訊區
+  &__title {
+    color: $color-primary;
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover {
+      color: lighten($color-primary-light, 15%);
+    }
+  }
+
+  // 數量控制組 (針對你原本的 FaMinus/FaPlus 邏輯優化)
+  &__qty-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid $color-accent;
+    border-radius: 4px;
+    background: #fff;
+
+    input,
+    span {
+      border: none;
+      text-align: center;
+    }
+  }
+
+  // 自定義移除按鈕 (捨棄 Bootstrap 邊框)
+  &__btn--delete {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #dc3545; // 變為紅色
+      transform: scale(1.1);
+    }
+  }
+
+  // 總計區塊
+  &__footer {
+    border-top: 1px solid $color-primary;
+
+    tr {
+      height: 72px !important;
+    }
+
+    // &-extra {
+    //   // 未來擴充：備註、折價券輸入框容器
+    // }
+  }
+
+  // 品牌按鈕變體
+  &__actions {
+    .btn-brand-primary {
+      background-color: $color-primary;
+      color: #fff;
+      border-radius: 0; // 電商常見的方正俐落感
+      padding: 0.75rem 2.5rem;
+      &:hover {
+        background-color: darken($color-primary-light, 10%);
+      }
+    }
+  }
+}
+
+// 響應式微調：在手機版隱藏不必要的欄位
+@media (max-width: 768px) {
+  .cart-table__header {
+    display: none; // 手機版通常不顯示表頭
+  }
+  .cart-table__item {
+    padding: 1rem;
+    // 手機版可以改為更像「卡片」的設計
+  }
+}
+
+/* ========================
+  cart-checkout
+======================== */
+.cart-checkout {
+  margin-right: 0px;
+  margin-left: 0px;
 }

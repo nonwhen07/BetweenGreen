@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // import { Link } from 'react-router-dom';
 
@@ -34,19 +34,16 @@ import PageLoader from '@/components/PageLoader';
 import { CART_STEPS } from '@/constants/cartConstants';
 
 const CartPage = () => {
-  /*
-1 = Cart
-2 = Checkout Form
-3 = Success
-*/
-  const [step, setStep] = useState(1);
-  const { hash } = useLocation();
-
+  // const { hash } = useLocation();
+  const navigate = useNavigate();
+  const { step: stepParam } = useParams(); // 取得網址中 :step 的值
   // 根據 Hash 找出目前的步驟物件 (預設為第一步)
   const currentStepData = useMemo(() => {
-    return CART_STEPS.find((s) => s.hash === hash) || CART_STEPS[0];
-  }, [hash]);
-  const navigate = useNavigate();
+    return CART_STEPS.find((s) => s.path === stepParam) || CART_STEPS[0];
+  }, [stepParam]);
+  // 取得 ID 用於判斷條件
+  const activeStep = currentStepData.id;
+
   const { success, showError, warning } = useToast();
 
   const [carts, setCarts] = useState([]);
@@ -74,6 +71,7 @@ const CartPage = () => {
   // 讓 fetchCart  專注在抓資料，並且能在需要時重複使用
   const fetchCart = async () => {
     const carts = await getCartItems();
+
     setCarts(carts);
   };
 
@@ -170,8 +168,8 @@ const CartPage = () => {
       const { orderId } = orderData;
       setOrderID(orderId); // OrderSuccess 顯示訂單ID
       success(`已送出訂單，您的訂單編號為：${orderId}`);
-      setStep(3); //成功後才跳轉到 Step_3
-      navigate('/cart#step3');
+
+      navigate('/cart/step3'); //成功後才跳轉到 Step_3
     } catch (error) {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單送出失敗。');
       showError(errorMessage);
@@ -218,47 +216,50 @@ const CartPage = () => {
     /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
-  // 自動捲動到指定 ID 的位置
+  // // 自動捲動到指定 ID 的位置
+  // useEffect(() => {
+  //   if (hash) {
+  //     const element = document.querySelector(hash);
+  //     if (element) {
+  //       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  //     }
+  //   } else {
+  //     // 如果沒有 hash，預設捲到最上方
+  //     window.scrollTo({ top: 0, behavior: 'smooth' });
+  //   }
+  // }, [hash]);
+
+  // 改為簡單的：切換步驟就回到頂部
   useEffect(() => {
-    if (hash) {
-      const element = document.querySelector(hash);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    } else {
-      // 如果沒有 hash，預設捲到最上方
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [hash]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeStep]);
 
   return (
     <>
-      <div className="container ui-container">
+      <div className="container ui-container ui-container--cart">
         {/* Hero-Section */}
         <div className="cart-hero">
-          <h1
-            className="page-title"
-            key={currentStepData.id}
-            data-aos="flip-left"
-            data-aos-delay="1500"
-          >
+          <h1 className="page-title" key={activeStep} data-aos="flip-left" data-aos-delay="300">
             {currentStepData.label}
           </h1>
         </div>
         {/* Step Indicator */}
-        <CartSteps currentStep={currentStepData.id} />
+        <CartSteps currentStep={activeStep} />
 
         {/* Main Content */}
-        <div className="cart-main mt-4">
+        <div className="cart-main">
           {/* errorMessage */}
           {errorMessage && (
-            <section className="ui-section mt-4">
+            <section className="ui-section">
               <div className="alert alert-danger py-2">{errorMessage}</div>
             </section>
           )}
           {/* step1 */}
-          <section id="step1" className="ui-section">
-            {step === 1 && (
+          {activeStep === 1 && (
+            <section
+              id="step1"
+              className="ui-section ui-section--cart ui-section--cart-slide-up active mt-4"
+            >
               <CartTable
                 carts={carts}
                 actions={{
@@ -275,41 +276,49 @@ const CartPage = () => {
                     warning('您的購物車是空的!!');
                     return;
                   }
-                  setStep(2);
-                  navigate('/cart#step2');
+                  navigate('/cart/step2');
                 }}
               />
-            )}
-          </section>
+            </section>
+          )}
 
           {/* step2 */}
-          <section id="step2" className="ui-section">
-            {step === 2 && (
-              <div className="row checkout">
+          {activeStep === 2 && (
+            <section id="step2" className="ui-section ui-section--cart active">
+              <CheckoutForm
+                carts={carts}
+                register={register}
+                errors={errors}
+                onSubmit={handleSubmitOrder}
+                onBack={() => {
+                  navigate('/cart/step1');
+                }}
+              />
+              {/* <div className="row checkout">
                 <div className="col-lg-7">
                   <CheckoutForm
+                    carts={carts}
                     register={register}
                     errors={errors}
                     onSubmit={handleSubmitOrder}
                     onBack={() => {
-                      setStep(1);
-                      navigate('/cart#step1');
+                      navigate('/cart/step1');
                     }}
                   />
                 </div>
                 <div className="col-lg-5">
                   <CartSummary carts={carts} />
                 </div>
-              </div>
-            )}
-          </section>
+              </div> */}
+            </section>
+          )}
 
           {/* step3 */}
-          <section id="step3" className="ui-section">
-            {step === 3 && orderID && (
+          {activeStep === 3 && orderID && (
+            <section id="step3" className="ui-section ui-section--cart">
               <OrderSuccess orderID={orderID} lastOrderCart={lastOrderCart} />
-            )}
-          </section>
+            </section>
+          )}
         </div>
       </div>
 

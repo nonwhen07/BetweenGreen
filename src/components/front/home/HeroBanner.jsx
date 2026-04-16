@@ -9,7 +9,7 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="hero-banner section-full">
+    <section className="hero-banner ui-section ui-section--full">
       <div className="hero-banner__bg">
         <img src={heroImg} alt={'heroImg'} />
       </div>
