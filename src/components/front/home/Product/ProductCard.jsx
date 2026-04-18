@@ -22,7 +22,7 @@ const ProductCard = ({ productItem }) => {
           <p className="card-product__price">${productItem.price}</p>
         </div>
       </div> */}
-      <div className="card">
+      <div className="product-slider-card">
         {/* <img src={productItem.imageUrl} alt={productItem.title} loading="lazy" /> */}
         <img
           src={!isEmptySrc ? productItem.imageUrl : noImage}

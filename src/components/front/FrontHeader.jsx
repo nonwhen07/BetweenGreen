@@ -1,26 +1,42 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaShoppingCart } from 'react-icons/fa';
-import { logout } from '@/services/authService';
-import { useToast } from '@/hooks/useToast';
+
+// features
 import { logoutAction } from '@/features/auth/authSlice';
+// services
+import { logout } from '@/services/authService';
+// hooks
+import { useToast } from '@/hooks/useToast';
+// utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
+// Header-routes
 const routes = [
-  { path: '/', name: '首頁' },
-  { path: '/about', name: '關於我們' },
-  { path: '/products', name: '產品列表' },
-  { path: '/cart/step1', name: '購物車' },
+  { path: '/', name: 'Home' },
+  { path: '/about-us', name: 'AboutUs' },
+  { path: '/products', name: 'Products' },
+  { path: '/cart/step1', name: 'cart' },
   //   { path: '/about', name: 'About' },
   //   { path: '/favorite', name: 'Favorite' },
   //   { path: '/orders', name: 'Orders' },
 ];
 
+// 設定 heroPage
+const heroPagePaths = ['/', '/home', '/about-us'];
+
 const FrontHeader = () => {
   // 初始化
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isHeroPage = heroPagePaths.includes(location.pathname);
   const { success, showError } = useToast();
+
+  const [isVisible, setIsVisible] = useState(false); // 控制背景是否顯色
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   // useCartInit(); // UI就專心處理UI，讓父層 FrontLayout 處理商業邏輯
 
@@ -41,14 +57,35 @@ const FrontHeader = () => {
     navigate('/');
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // 往上滑：顯示背景色、往下滑：隱藏背景色 (透明)
+      // 判斷條件：scroll > 50 避免在頂部過於靈敏
+      if (currentScrollY > 50 && currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   return (
     <>
-      <nav className="navbar header border-bottom border-body">
-        <div className="container">
+      <nav
+        className={`navbar header ${isVisible ? 'active' : ''} ${isHeroPage ? '' : 'header-solid'}`}
+      >
+        <div className="container ui-container header-container">
           <ul className="navbar-nav flex-row gap-5 fs-5">
             {routes.map((route) => (
               <li key={route.path} className="nav-item">
-                <NavLink className="nav-link text-light" aria-current="page" to={route.path}>
+                <NavLink className="nav-link" aria-current="page" to={route.path}>
                   {route.path.includes('cart') ? (
                     <div className="position-relative">
                       <FaShoppingCart size={20} />

@@ -1,4 +1,4 @@
-@use '../helpers/variables' as *;
+@use '@/styles/helpers/variables' as *;
 @use 'sass:color';
 
 .ui-btn {
@@ -60,7 +60,9 @@
   transition: all 0.3s ease;
 
   // 主體（可以吃 seasontheme）
-  background: var(--season-primary, $color-primary);
+
+  // background: var(--season-primary, $color-primary);
+  background: $color-primary;
   color: $text-on-primary;
   border: none;
 
@@ -74,15 +76,15 @@
 
   // hover（重點：不是亂變色，是「同色系變化」）
   &:hover {
-    transform: translateY(-3px) scale(1.05);
+    // transform: translateY(-3px) scale(1.05);
 
-    color: darken($color-primary, 10%);
+    color: darken($color-primary-light, 10%);
 
-    background: darken($color-primary, 10%);
     // 如果有 theme，就用 theme 色
     // background: var(--season-primary, darken($color-primary, 40%));
-    background: var(--season-bg, darken($color-primary, 40%));
-
+    // background: var(--season-bg, darken($color-primary, 40%));
+    background: $color-accent;
+    border: 1px solid darken($color-primary-light, 10%);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
   }
 

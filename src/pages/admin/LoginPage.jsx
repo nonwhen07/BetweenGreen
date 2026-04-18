@@ -81,7 +81,7 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+      <div className="d-flex flex-column justify-content-center align-items-center mt-5">
         <h1 className="mb-5">請先登入</h1>
         {/* <PoinsettiaIcon /> */}
         {errorMessage && <div className="alert alert-danger w-100">{errorMessage}</div>}

@@ -337,6 +337,10 @@
   }
 }
 
+/* =========================
+  Product Section
+========================= */
+
 .product-slider {
   display: flex;
   gap: 16px;
@@ -357,6 +361,9 @@
   scroll-snap-align: start;
 }
 
+/* =========================
+  brand Section
+========================= */
 .brand-section {
   background: #faf7f2;
 
@@ -385,6 +392,10 @@
     }
   }
 }
+
+/* =========================
+  garden-tips
+========================= */
 
 .garden-tips {
   background: #f8f9f7;

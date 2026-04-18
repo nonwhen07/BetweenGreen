@@ -49,7 +49,7 @@ const routes = [
     element: <FrontLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'about', element: <AboutPage /> },
+      { path: 'about-us', element: <AboutPage /> },
       // { path: 'products', element: <ProductsPage /> },
       { path: 'products', element: <ProductsPage /> },
       { path: 'product/:product_id', element: <ProductDetailPage /> },
