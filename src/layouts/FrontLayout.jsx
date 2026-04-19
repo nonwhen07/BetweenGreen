@@ -4,7 +4,6 @@ import AOS from 'aos';
 
 // hooks
 import { useAuthInit } from '@/hooks/useAuthInit';
-import { useCartInit } from '@/hooks/useCartInit';
 
 // components
 import FrontHeader from '@/components/front/FrontHeader';
@@ -14,7 +13,7 @@ import GoTop from '@/components/GoTop';
 const FrontLayout = () => {
   // 初始化 Auth、Cart
   useAuthInit();
-  useCartInit();
+
   const location = useLocation();
 
   const mode = 'theme-light'; // or theme-dark=>還沒設定

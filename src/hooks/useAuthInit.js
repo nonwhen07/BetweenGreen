@@ -2,18 +2,20 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getToken } from '@/utils/auth';
+// services
 import { checkAuth } from '@/services/authService';
+// features
 import { loginSuccess, logoutAction } from '@/features/auth/authSlice';
-
-import { extractErrorMessage } from '@/utils/errorHandler';
+// hooks
 import { useToast } from '@/hooks/useToast';
+// utils
+import { getToken } from '@/utils/auth';
+import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useAuthInit = () => {
-  const { showError } = useToast();
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showError } = useToast();
 
   // 由於沒有回傳會員名稱和權限狀態的API，userSlice先製作後暫時不使用
 

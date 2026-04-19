@@ -1,72 +1,82 @@
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
+// constants
+import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 
-const CartSummary = ({ carts }) => {
+const CartSummary = ({ carts, actions, onNext }) => {
   const total = calculateCartTotal(carts);
-  const shippingFee = 60;
-  const minfreeShippingFee = 599;
+
+  if (carts.length === 0) {
+    return null; // 如果購物車是空的，就不顯示摘要
+  }
 
   return (
-    <div className="cart-summary card p-3">
-      <h4 className="mb-4">訂單摘要</h4>
-      <h5 className="mb-4">商品明細</h5>
-      {carts.map((item) => (
-        <div key={item.id} className="row mb-3">
-          <div className="col-4">
-            <span>{item.product.title}</span>
-          </div>
-          <div className="col-4">
-            <span>{item.product.category}</span>
-          </div>
-          <div className="col-2">
-            <span>
-              {item.qty}
-              {item.product.unit}
-            </span>
-          </div>
-          <div className="col-2">
-            <span>NT$ {item.total}</span>
-          </div>
-        </div>
-      ))}
+    <>
+      <div className="cart-summary card p-3">
+        <h2 className="">訂單摘要</h2>
 
-      <hr className="mb-4" />
-
-      <div className="d-flex justify-content-between mb-3">
-        <strong>小計</strong>
-        <strong>NT$ {total}</strong>
-      </div>
-      <div className="d-flex justify-content-between mb-3">
-        <strong>運費(本館滿599免運)</strong>
-        {total >= minfreeShippingFee ? (
-          <>
-            <strong className="text-success">已享免運</strong>
-          </>
-        ) : (
-          <>
-            <strong>NT$ {shippingFee}</strong>
-          </>
-        )}
-      </div>
-      <hr className="mb-3" />
-      <div className="d-flex justify-content-between  mb-3">
-        <strong>合計</strong>
-        {total >= minfreeShippingFee ? (
-          <>
+        <ul className="cart-summary-list">
+          <li className="d-flex justify-content-between mb-2">
+            <strong>小計</strong>
             <strong>NT$ {total}</strong>
-          </>
-        ) : (
-          <>
-            <strong>NT$ {total + shippingFee}</strong>
-          </>
-        )}
-      </div>
+          </li>
+          <li className="d-flex justify-content-between mb-1">
+            <strong>運費</strong>
 
-      <div class="summary-box mb-1">
-        <button class="btn btn-outline-primary w-100 mb-2">返回購物車</button>
-        <button class="btn btn-primary w-100">送出訂單</button>
+            {total >= minfreeShippingFee ? (
+              <>
+                <strong className="text-success">免運費</strong>
+              </>
+            ) : (
+              <>
+                <strong>NT$ {shippingFee}</strong>
+              </>
+            )}
+          </li>
+          <li className="d-flex justify-content-between mb-2">
+            <p>全館滿五百免運</p>
+            {total >= minfreeShippingFee ? (
+              <>
+                <strong className="text-success">已享免運</strong>
+              </>
+            ) : (
+              <>
+                <p className="text-muted">距離免運還差額NT$ {minfreeShippingFee - total}</p>
+              </>
+            )}
+          </li>
+        </ul>
+
+        <hr className="mb-3" />
+        <div className="d-flex justify-content-between  mb-3">
+          <strong>合計</strong>
+          {total >= minfreeShippingFee ? (
+            <>
+              <strong>NT$ {total}</strong>
+            </>
+          ) : (
+            <>
+              <strong>NT$ {total + shippingFee}</strong>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+      {/* 底部動作列 */}
+      <div className="cart-table-actions text-end py-3">
+        {/* */}
+        <button
+          type="button"
+          onClick={actions.onClear}
+          className="btn ui-btn ui-btn--outline-danger me-2"
+        >
+          清空購物車
+        </button>
+        {/* <Link to="/products" className="cart-table-actions__btn--back">繼續購物</Link> */}
+        <button onClick={onNext} className="btn ui-btn ui-btn--primary">
+          前往結帳
+        </button>
+      </div>
+    </>
   );
 };
 

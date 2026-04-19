@@ -183,6 +183,10 @@ $transition-speed: 0.3s;
 }
 
 /* ========================
+  step-1
+======================== */
+
+/* ========================
   cart-table
 ======================== */
 .cart-table {
@@ -342,6 +346,13 @@ $transition-speed: 0.3s;
   }
 }
 
+/* ========================
+  cart-summary
+======================== */
+.cart-summary-list {
+  padding: 0;
+}
+
 // 響應式微調：在手機版隱藏不必要的欄位
 @media (max-width: 768px) {
   .cart-table__header {
@@ -354,9 +365,29 @@ $transition-speed: 0.3s;
 }
 
 /* ========================
+  step-2
+======================== */
+
+/* ========================
+  cart-ui-wrapper
+======================== */
+.cart-empty-state {
+  padding: 24px;
+  margin-bottom: 24px;
+  margin: 0 auto;
+  width: 68%;
+  height: 250px;
+}
+
+/* ========================
   cart-checkout
 ======================== */
-.cart-checkout {
+.cart-checkout,
+.cart-checkout-again {
   margin-right: 0px;
   margin-left: 0px;
 }
+
+/* ========================
+  step-3
+======================== */

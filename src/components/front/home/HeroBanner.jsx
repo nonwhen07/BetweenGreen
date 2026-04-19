@@ -23,10 +23,13 @@ const HeroBanner = () => {
           <p className="hero-banner__desc">從桌上盆栽到居家植栽搭配，找到適合你的植物日常。</p>
 
           <div className="hero-banner__actions">
-            <button className="ui-btn ui-btn--primary" onClick={() => handleScroll('product')}>
+            <button className="btn ui-btn ui-btn--primary" onClick={() => handleScroll('product')}>
               立即選購
             </button>
-            <button className="ui-btn ui-btn--outline" onClick={() => handleScroll('category')}>
+            <button
+              className="btn ui-btn ui-btn--outline-primary"
+              onClick={() => handleScroll('category')}
+            >
               探索分類
             </button>
           </div>

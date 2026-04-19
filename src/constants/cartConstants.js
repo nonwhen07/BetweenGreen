@@ -23,3 +23,7 @@ export const CART_STEPS = [
     icon: CheckCircle,
   },
 ];
+
+// 運費、免運規則統一這邊處理，以後有後端直接從sql-table撈就好
+export const shippingFee = 60;
+export const minfreeShippingFee = 799;

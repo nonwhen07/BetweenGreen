@@ -18,157 +18,120 @@ const CartTable = ({
   actions,
   isQtyLoading,
   isDeleteLoading,
-  onNext,
 }) => {
   const cartTotal = useMemo(() => calculateCartTotal(carts), [carts]);
 
   return (
     <>
       <div className="cart-ui-wrapper">
-        {carts.length > 0 ? (
-          <>
-            {/* 工具列：未來可擴充「批次操作」或「優惠提醒」 */}
-            {/* <div className="cart-table-tools d-flex justify-content-between align-items-center text-end">
+        {/* 工具列：未來可擴充「批次操作」或「優惠提醒」 */}
+        {/* <div className="cart-table-tools d-flex justify-content-between align-items-center text-end">
               <div className="cart-table-tools__extra">
                 <div className="cart-table-tag">滿千免運中</div>
               </div>
             </div> */}
 
-            <div className="table-responsive cart-table-container">
-              <table className="table cart-table align-middle">
-                <thead className="cart-table__header">
-                  <tr>
-                    <th className="cart-table__col--action">操作</th>
-                    <th className="cart-table__col--info">商品詳情</th>
-                    <th className="cart-table__col--category">品項種類</th>
-                    <th className="cart-table__col--image">圖片</th>
-                    <th className="cart-table__col--price">單價</th>
-                    <th className="cart-table__col--qty">數量</th>
-                    <th className="cart-table__col--subtotal">小計</th>
-                  </tr>
-                </thead>
-                <tbody className="cart-table__body">
-                  {carts.map((cart) => (
-                    <tr key={cart.id}>
-                      <td className="cart-table__col--action">
+        <div className="table-responsive cart-table-container">
+          <table className="table cart-table align-middle">
+            <thead className="cart-table__header">
+              <tr>
+                <th className="cart-table__col--action">操作</th>
+                <th className="cart-table__col--info">商品詳情</th>
+                <th className="cart-table__col--category">品項種類</th>
+                <th className="cart-table__col--image">圖片</th>
+                <th className="cart-table__col--price">單價</th>
+                <th className="cart-table__col--qty">數量</th>
+                <th className="cart-table__col--subtotal">小計</th>
+              </tr>
+            </thead>
+            <tbody className="cart-table__body">
+              {carts.map((cart) => (
+                <tr key={cart.id}>
+                  <td className="cart-table__col--action">
+                    <button
+                      onClick={() => actions.onDelete(cart.id)}
+                      disabled={isDeleteLoading(cart.id)}
+                      type="button"
+                      className="btn btn-outline-danger btn-sm btn-trash"
+                    >
+                      {isDeleteLoading(cart.id) ? (
+                        <BtnLoader size="sm" />
+                      ) : (
+                        // <FaTrash size={20} />
+                        <Trash2 size={20} />
+                      )}
+                    </button>
+                  </td>
+                  <td className="cart-table__col--info">{cart.product.title}</td>
+                  <td className="cart-table__col--category">{cart.product.category}</td>
+                  <td className="cart-table__col--image">
+                    <ProductImage
+                      src={cart.product.imageUrl}
+                      alt={cart.product.title}
+                      size="small"
+                    />
+                  </td>
+                  <td className="cart-table__col--price">
+                    NT$ {cart.product.price.toLocaleString()}
+                  </td>
+                  <td className="cart-table__col--qty" style={{ width: '150px' }}>
+                    <div className="qty-group d-flex align-items-center">
+                      <div className="btn-group me-2" role="group">
                         <button
-                          onClick={() => actions.onDelete(cart.id)}
-                          disabled={isDeleteLoading(cart.id)}
+                          onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)}
+                          disabled={isQtyLoading(cart.id)}
                           type="button"
-                          className="btn btn-outline-danger btn-sm btn-trash"
+                          className="btn btn-outline-dark btn-sm"
                         >
-                          {isDeleteLoading(cart.id) ? (
-                            <BtnLoader size="sm" />
+                          {isQtyLoading(cart.id) ? (
+                            <BtnLoader aria-hidden="true" size="sm" />
                           ) : (
-                            // <FaTrash size={20} />
-                            <Trash2 size={20} />
+                            <FaMinus size={20} />
                           )}
                         </button>
-                      </td>
-                      <td className="cart-table__col--info">{cart.product.title}</td>
-                      <td className="cart-table__col--category">{cart.product.category}</td>
-                      <td className="cart-table__col--image">
-                        <ProductImage
-                          src={cart.product.imageUrl}
-                          alt={cart.product.title}
-                          size="small"
-                        />
-                      </td>
-                      <td className="cart-table__col--price">
-                        NT$ {cart.product.price.toLocaleString()}
-                      </td>
-                      <td className="cart-table__col--qty" style={{ width: '150px' }}>
-                        <div className="qty-group d-flex align-items-center">
-                          <div className="btn-group me-2" role="group">
-                            <button
-                              onClick={() =>
-                                actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)
-                              }
-                              disabled={isQtyLoading(cart.id)}
-                              type="button"
-                              className="btn btn-outline-dark btn-sm"
-                            >
-                              {isQtyLoading(cart.id) ? (
-                                <BtnLoader aria-hidden="true" size="sm" />
-                              ) : (
-                                <FaMinus size={20} />
-                              )}
-                            </button>
-                            <span
-                              className="btn border border-dark"
-                              style={{ width: '50px', cursor: 'auto' }}
-                            >
-                              {cart.qty}
-                            </span>
+                        <span
+                          className="btn border border-dark"
+                          style={{ width: '50px', cursor: 'auto' }}
+                        >
+                          {cart.qty}
+                        </span>
 
-                            <button
-                              onClick={() =>
-                                actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)
-                              }
-                              disabled={isQtyLoading(cart.id)}
-                              type="button"
-                              className="btn btn-outline-dark btn-sm"
-                            >
-                              {isQtyLoading(cart.id) ? (
-                                <BtnLoader aria-hidden="true" size="sm" />
-                              ) : (
-                                <FaPlus size={20} />
-                              )}
-                            </button>
-                          </div>
-                          <span className="input-group-text bg-transparent border-0">
-                            {cart.product.unit}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="cart-table__col--subtotal">
-                        NT$ {cart.total.toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot className="cart-table__footer">
-                  {/* */}
-                  {/* <tr className="cart-table__row--gift">...</tr> */}
-                  <tr>
-                    <td colSpan="6" className="text-end">
-                      總計：
-                    </td>
-                    <td className="cart-table__total-amount text-end" style={{ width: '130px' }}>
-                      NT$ {cartTotal.toLocaleString()}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-
-            {/* 底部動作列 */}
-            <div className="cart-table-actions text-end py-3">
+                        <button
+                          onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)}
+                          disabled={isQtyLoading(cart.id)}
+                          type="button"
+                          className="btn btn-outline-dark btn-sm"
+                        >
+                          {isQtyLoading(cart.id) ? (
+                            <BtnLoader aria-hidden="true" size="sm" />
+                          ) : (
+                            <FaPlus size={20} />
+                          )}
+                        </button>
+                      </div>
+                      <span className="input-group-text bg-transparent border-0">
+                        {cart.product.unit}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="cart-table__col--subtotal">NT$ {cart.total.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot className="cart-table__footer">
               {/* */}
-              <button
-                type="button"
-                onClick={actions.onClear}
-                className="btn btn-outline-danger cart-table-tools__btn--clear me-2"
-              >
-                清空購物車
-              </button>
-              {/* <Link to="/products" className="cart-table-actions__btn--back">繼續購物</Link> */}
-              <button onClick={onNext} className="btn btn-primary cart-table-actions__btn--next">
-                前往結帳
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="text-center text-muted">
-            <p className="">
-              <FaShoppingCart size={20} /> 購物車是空的
-            </p>
-            <Link to="/products" className="btn btn-outline-primary mt-2">
-              <FaCartPlus size={20} />
-              去逛商品
-            </Link>
-          </div>
-        )}
+              {/* <tr className="cart-table__row--gift">...</tr> */}
+              <tr>
+                <td colSpan="6" className="text-end">
+                  總計：
+                </td>
+                <td className="cart-table__total-amount text-end" style={{ width: '130px' }}>
+                  NT$ {cartTotal.toLocaleString()}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </>
   );

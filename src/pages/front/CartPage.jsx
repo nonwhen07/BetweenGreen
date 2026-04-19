@@ -24,6 +24,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
+import CartEmpty from '@/components/front/Cart/CartEmpty';
 import CartTable from '@/components/front/Cart/CartTable';
 import CheckoutForm from '@/components/front/Cart/CheckoutForm';
 import CartSummary from '@/components/front/Cart/CartSummary';
@@ -199,7 +200,7 @@ const CartPage = () => {
   // 畫面渲染後初步載入購物車
 
   useEffect(() => {
-    const loadCart = async () => {
+    const initCart = async () => {
       setIsScreenLoading(true);
       try {
         await fetchCart();
@@ -212,22 +213,10 @@ const CartPage = () => {
       }
     };
 
-    loadCart();
+    initCart();
+
     /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
-
-  // // 自動捲動到指定 ID 的位置
-  // useEffect(() => {
-  //   if (hash) {
-  //     const element = document.querySelector(hash);
-  //     if (element) {
-  //       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  //     }
-  //   } else {
-  //     // 如果沒有 hash，預設捲到最上方
-  //     window.scrollTo({ top: 0, behavior: 'smooth' });
-  //   }
-  // }, [hash]);
 
   // 改為簡單的：切換步驟就回到頂部
   useEffect(() => {
@@ -260,25 +249,39 @@ const CartPage = () => {
               id="step1"
               className="ui-section ui-section--cart ui-section--cart-slide-up active mt-4"
             >
-              <CartTable
-                carts={carts}
-                actions={{
-                  onClear: handleClearCart,
-                  onUpdate: handleUpdateCartItem,
-                  onDelete: handleDeleteCartItem,
-                }}
-                isQtyLoading={isQtyLoading}
-                isDeleteLoading={isDeleteLoading}
-                onNext={() => {
-                  setErrorMessage(''); // 先重置
-                  if (carts.length === 0) {
-                    setErrorMessage('您的購物車是空的!!');
-                    warning('您的購物車是空的!!');
-                    return;
-                  }
-                  navigate('/cart/step2');
-                }}
-              />
+              {carts.length === 0 ? (
+                <>
+                  <CartEmpty />
+                </>
+              ) : (
+                <>
+                  <CartTable
+                    carts={carts}
+                    actions={{
+                      onClear: handleClearCart,
+                      onUpdate: handleUpdateCartItem,
+                      onDelete: handleDeleteCartItem,
+                    }}
+                    isQtyLoading={isQtyLoading}
+                    isDeleteLoading={isDeleteLoading}
+                  />{' '}
+                  <CartSummary
+                    carts={carts}
+                    actions={{
+                      onClear: handleClearCart,
+                    }}
+                    onNext={() => {
+                      setErrorMessage(''); // 先重置
+                      if (carts.length === 0) {
+                        setErrorMessage('您的購物車是空的!!');
+                        warning('您的購物車是空的!!');
+                        return;
+                      }
+                      navigate('/cart/step2');
+                    }}
+                  />
+                </>
+              )}
             </section>
           )}
 
@@ -294,22 +297,6 @@ const CartPage = () => {
                   navigate('/cart/step1');
                 }}
               />
-              {/* <div className="row checkout">
-                <div className="col-lg-7">
-                  <CheckoutForm
-                    carts={carts}
-                    register={register}
-                    errors={errors}
-                    onSubmit={handleSubmitOrder}
-                    onBack={() => {
-                      navigate('/cart/step1');
-                    }}
-                  />
-                </div>
-                <div className="col-lg-5">
-                  <CartSummary carts={carts} />
-                </div>
-              </div> */}
             </section>
           )}
 

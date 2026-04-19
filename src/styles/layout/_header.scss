@@ -1,11 +1,6 @@
 @use '@/styles/helpers/variables' as *;
 @use 'sass:color';
 
-:root {
-  --color-primary: #{$color-primary};
-  --text-on-primary: #{$text-on-primary};
-}
-
 .header {
   position: fixed;
   top: 0;
@@ -40,13 +35,20 @@
   padding: 0 24px;
 }
 
+.nav-item {
+  height: 36px;
+}
+
 .nav-link {
   color: $text-muted !important;
-  font-weight: $font-weight-regular;
+  font-weight: $font-weight-bold;
 }
 
 .nav-link.active,
 .nav-link:hover {
   color: $text-on-primary !important;
-  font-weight: $font-weight-bold;
+  border-bottom: 2px solid $text-on-primary;
+
+  // border-bottom: 2px solid $text-on-primary;
+  // transition: all 0.3s ease-in-out;
 }

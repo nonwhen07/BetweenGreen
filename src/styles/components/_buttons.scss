@@ -10,25 +10,49 @@
 
   &--primary {
     background: $color-primary;
-    color: white;
+    color: $text-on-primary;
 
     &:hover {
-      background: darken($color-primary, 8%);
+      background: $color-secondary;
+      color: $text-on-primary;
+    }
+  }
+  &--outline-primary {
+    border: 1px solid $color-primary;
+    color: $color-primary;
+    background: transparent;
+
+    &:hover {
+      background: $color-secondary;
+      color: $text-on-primary;
     }
   }
 
   &--accent {
     background: $color-accent;
     color: $text-on-primary;
+
+    &:hover {
+      background: $color-secondary;
+      color: $text-on-primary;
+    }
   }
 
-  &--outline {
-    border: 1px solid $color-primary;
-    color: $color-primary;
+  &--danger {
+    background: $color-danger;
+    color: $text-on-primary;
+
+    &:hover {
+      background: darken($color-danger, 8%);
+    }
+  }
+  &--outline-danger {
+    border: 1px solid $color-danger;
+    color: $color-danger;
     background: transparent;
 
     &:hover {
-      background: $color-primary;
+      background: $color-danger;
       color: $text-on-primary;
     }
   }

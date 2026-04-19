@@ -8,7 +8,10 @@ import { logoutAction } from '@/features/auth/authSlice';
 // services
 import { logout } from '@/services/authService';
 // hooks
+import { useCartInit } from '@/hooks/useCartInit';
 import { useToast } from '@/hooks/useToast';
+// components
+// import Logo from '@/components/shared/Logo';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
@@ -17,9 +20,8 @@ const routes = [
   { path: '/', name: 'Home' },
   { path: '/about-us', name: 'AboutUs' },
   { path: '/products', name: 'Products' },
-  { path: '/cart/step1', name: 'cart' },
-  //   { path: '/about', name: 'About' },
-  //   { path: '/favorite', name: 'Favorite' },
+  { path: '/cart/step1', name: 'Cart' },
+  // { path: '/favorite', name: 'Favorite' },
   //   { path: '/orders', name: 'Orders' },
 ];
 
@@ -35,10 +37,10 @@ const FrontHeader = () => {
   const isHeroPage = heroPagePaths.includes(location.pathname);
   const { success, showError } = useToast();
 
-  const [isVisible, setIsVisible] = useState(false); // 控制背景是否顯色
+  const [isVisible, setIsVisible] = useState(false); // 控制背景是否顯色，有herobanner就透明化
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // useCartInit(); // UI就專心處理UI，讓父層 FrontLayout 處理商業邏輯
+  useCartInit(); // UI就專心處理UI，讓父層 FrontLayout 處理商業邏輯
 
   const isLogin = useSelector((state) => state.auth.isLogin);
   const carts = useSelector((state) => state.cart.carts);
@@ -87,14 +89,14 @@ const FrontHeader = () => {
               <li key={route.path} className="nav-item">
                 <NavLink className="nav-link" aria-current="page" to={route.path}>
                   {route.path.includes('cart') ? (
-                    <div className="position-relative">
-                      <FaShoppingCart size={20} />
+                    <div className="position-relative d-flex align-items-center">
+                      <FaShoppingCart size={25} />
                       {carts?.length > 0 && (
                         <span
-                          className="position-absolute badge rounded-circle text-bg-danger"
-                          style={{ bottom: '12px', left: '12px' }}
+                          className={`position-absolute badge rounded-circle ${carts?.length ? 'text-bg-danger' : ''}`}
+                          style={{ bottom: '17px', left: '15px', fontSize: '10px' }}
                         >
-                          {carts.length}
+                          {carts?.length}
                         </span>
                       )}
                     </div>
