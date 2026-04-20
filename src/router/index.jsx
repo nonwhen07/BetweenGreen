@@ -53,6 +53,7 @@ const routes = [
       { path: 'products', element: <ProductsPage /> },
       { path: 'product/:product_id', element: <ProductDetailPage /> },
       { path: 'cart/:step', element: <CartPage /> },
+      // { path: 'customer-orders', element: <CustomerOrders /> },
       { path: 'login', element: <LoginPage /> },
       {
         // 404頁面

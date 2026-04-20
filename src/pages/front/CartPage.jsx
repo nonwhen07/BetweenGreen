@@ -1,10 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
-
-// import { Link } from 'react-router-dom';
-
-// import { FaTrash, FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 // services
 import {
@@ -14,14 +10,11 @@ import {
   clearCart,
   createOrder,
 } from '@/services/cartService';
-
 // hooks
 import { useToast } from '@/hooks/useToast';
-
+import { useCartActions } from '@/hooks/useCartActions';
 // utils
-// import { calculateCartTotal } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
-
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
 import CartEmpty from '@/components/front/Cart/CartEmpty';
@@ -30,13 +23,10 @@ import CheckoutForm from '@/components/front/Cart/CheckoutForm';
 import CartSummary from '@/components/front/Cart/CartSummary';
 import OrderSuccess from '@/components/front/Cart/OrderSuccess';
 import PageLoader from '@/components/PageLoader';
-
 // constants
 import { CART_STEPS } from '@/constants/cartConstants';
 
 const CartPage = () => {
-  // const { hash } = useLocation();
-  const navigate = useNavigate();
   const { step: stepParam } = useParams(); // 取得網址中 :step 的值
   // 根據 Hash 找出目前的步驟物件 (預設為第一步)
   const currentStepData = useMemo(() => {
@@ -45,6 +35,11 @@ const CartPage = () => {
   // 取得 ID 用於判斷條件
   const activeStep = currentStepData.id;
 
+  const location = useLocation();
+  const routeState = location.state || {};
+
+  const navigate = useNavigate();
+  const { refreshCart } = useCartActions();
   const { success, showError, warning } = useToast();
 
   const [carts, setCarts] = useState([]);
@@ -53,35 +48,33 @@ const CartPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isScreenLoading, setIsScreenLoading] = useState(false);
 
+  const finalOrderID = routeState.orderId || orderID;
+  const finalCart = routeState.carts || lastOrderCart;
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    getValues,
+    watch,
   } = useForm();
 
   // 修改/刪除 cart item 時的 loading 狀態，由於是區域性的狀態，且會同時存在多個，所以改用物件來儲存，以 cart_id 作為 key 來標定 loading 的位置
   const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
   const isQtyLoading = (id) => loadingItems[id] === 'qty';
   const isDeleteLoading = (id) => loadingItems[id] === 'delete';
-  // const cartTotal = calculateCartTotal(carts);
-  // useMemo 可用可不用，主要是給大型專案用來優化效能，避免不必要的重複計算，這裡示範用法，實際上對這個小專案幫助不大
-  // const cartTotal = useMemo(() => calculateCartTotal(carts), [carts]);
 
-  // 取得 cart.js 並將try catch交給呼叫的函式處理包含loading，
   // 讓 fetchCart  專注在抓資料，並且能在需要時重複使用
   const fetchCart = async () => {
     const carts = await getCartItems();
-
     setCarts(carts);
+    await refreshCart();
   };
 
   // 調整購物車品項
   const handleUpdateCartItem = async (cart_id, product_id, qty = 1) => {
-    // 改為在局部按鈕上顯示 loading， 避免整個畫面都被遮罩，提升使用體驗
-    // setIsScreenLoading(true); 所以這段刪掉，
-    // 改為下面的 loadingItems 狀態來控制按鈕的 loading 狀態
-
     // 如果 qty 小於 1，直接返回不做任何處理 作法A
     // 如果 qty 小於 1，直接刪掉cart item 作法B
     if (qty < 1) {
@@ -90,6 +83,8 @@ const CartPage = () => {
       if (!confirmDelete) return;
 
       await handleDeleteCartItem(cart_id);
+      // 成功後刷新購物車 + 更新全局購物車狀態
+      await fetchCart();
       return;
     }
 
@@ -100,6 +95,7 @@ const CartPage = () => {
 
     try {
       await updateCartItem(cart_id, product_id, qty);
+      // 成功後刷新購物車 + 更新全局購物車狀態
       await fetchCart();
       setErrorMessage('');
     } catch (error) {
@@ -123,7 +119,7 @@ const CartPage = () => {
     }));
     try {
       await deleteCartItem(cart_id);
-      //成功後刷新購物車
+      // 成功後刷新購物車 + 更新全局購物車狀態
       await fetchCart();
       setErrorMessage('');
     } catch (error) {
@@ -144,6 +140,7 @@ const CartPage = () => {
     try {
       await clearCart();
       await fetchCart();
+
       setErrorMessage('');
 
       success('清空全部購物車成功。');
@@ -163,14 +160,22 @@ const CartPage = () => {
       // 由於前台沒有會員機制，所以是所有人共用cart， 訂單送出成功後刷新購物車等待下一位客人，
       // 並先記錄紀錄這一次訂單資料(轉換成訂單後購物車會被清空)
       setLastOrderCart([...carts]); // OrderSuccess 顯示訂單資料
+      const currentCartSnapshot = [...carts];
       await fetchCart();
-      setErrorMessage('');
-      reset(); // 提交成功後重設表單
+
       const { orderId } = orderData;
       setOrderID(orderId); // OrderSuccess 顯示訂單ID
-      success(`已送出訂單，您的訂單編號為：${orderId}`);
 
-      navigate('/cart/step3'); //成功後才跳轉到 Step_3
+      //成功後才跳轉到 Step_3
+      navigate('/cart/step3', {
+        state: {
+          orderId,
+          carts: currentCartSnapshot,
+        },
+      });
+      setErrorMessage('');
+      success(`已送出訂單，您的訂單編號為：${orderId}`);
+      reset(); // 提交成功後重設表單
     } catch (error) {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單送出失敗。');
       showError(errorMessage);
@@ -179,7 +184,7 @@ const CartPage = () => {
     }
   };
   const handleSubmitOrder = handleSubmit(async (formData) => {
-    if (carts.length < 1) {
+    if (carts?.length < 1) {
       // 如果 購物車為空，直接返回不做任何處理
       setErrorMessage('您的購物車是空的!!');
       warning('您的購物車是空的!!');
@@ -187,13 +192,24 @@ const CartPage = () => {
     }
 
     // data資料"解構"成message，剩下的打包一起變成user
-    const { message, ...user } = formData;
+    // const { message, ...user } = formData;
+    // const orderPayload = {
+    //   data: {
+    //     user: user,
+    //     message: message,
+    //   },
+    // };
+    const { name, tel, email, city, district, addressDetail, message } = formData;
+
+    const fullAddress = `${city}${district}${addressDetail}`;
+
     const orderPayload = {
       data: {
-        user: user,
-        message: message,
+        user: { name, tel, email, address: fullAddress },
+        message,
       },
     };
+
     await handleCreateOrder(orderPayload);
   });
 
@@ -204,6 +220,7 @@ const CartPage = () => {
       setIsScreenLoading(true);
       try {
         await fetchCart();
+
         setErrorMessage('');
       } catch (error) {
         const errorMessage = extractErrorMessage(error, setErrorMessage);
@@ -239,8 +256,13 @@ const CartPage = () => {
         <div className="cart-main">
           {/* errorMessage */}
           {errorMessage && (
-            <section className="ui-section">
-              <div className="alert alert-danger py-2">{errorMessage}</div>
+            <section className="ui-section ui-section--cartError">
+              <div className="container ui-container d-flex flex-column align-items-center text-center py-3">
+                <div className="cartError-mian alert alert-danger">
+                  <h2 className="mb-3">Oops! 您的訂單資訊有點問題</h2>
+                  {errorMessage}
+                </div>
+              </div>
             </section>
           )}
           {/* step1 */}
@@ -249,7 +271,7 @@ const CartPage = () => {
               id="step1"
               className="ui-section ui-section--cart ui-section--cart-slide-up active mt-4"
             >
-              {carts.length === 0 ? (
+              {carts?.length === 0 ? (
                 <>
                   <CartEmpty />
                 </>
@@ -264,7 +286,7 @@ const CartPage = () => {
                     }}
                     isQtyLoading={isQtyLoading}
                     isDeleteLoading={isDeleteLoading}
-                  />{' '}
+                  />
                   <CartSummary
                     carts={carts}
                     actions={{
@@ -272,7 +294,7 @@ const CartPage = () => {
                     }}
                     onNext={() => {
                       setErrorMessage(''); // 先重置
-                      if (carts.length === 0) {
+                      if (carts?.length === 0) {
                         setErrorMessage('您的購物車是空的!!');
                         warning('您的購物車是空的!!');
                         return;
@@ -292,6 +314,9 @@ const CartPage = () => {
                 carts={carts}
                 register={register}
                 errors={errors}
+                setValue={setValue}
+                getValues={getValues}
+                watch={watch}
                 onSubmit={handleSubmitOrder}
                 onBack={() => {
                   navigate('/cart/step1');
@@ -301,9 +326,15 @@ const CartPage = () => {
           )}
 
           {/* step3 */}
-          {activeStep === 3 && orderID && (
-            <section id="step3" className="ui-section ui-section--cart">
-              <OrderSuccess orderID={orderID} lastOrderCart={lastOrderCart} />
+          {activeStep === 3 && (
+            <section id="step3" className="ui-section ui-section--cart active">
+              {!finalOrderID ? (
+                <p>訂單資料不存在</p>
+              ) : finalCart.length === 0 ? (
+                <p>訂單內容為空</p>
+              ) : (
+                <OrderSuccess orderID={finalOrderID} lastOrderCart={finalCart} />
+              )}
             </section>
           )}
         </div>

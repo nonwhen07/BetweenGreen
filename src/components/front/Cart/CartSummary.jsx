@@ -6,7 +6,7 @@ import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 const CartSummary = ({ carts, actions, onNext }) => {
   const total = calculateCartTotal(carts);
 
-  if (carts.length === 0) {
+  if (carts?.length === 0) {
     return null; // 如果購物車是空的，就不顯示摘要
   }
 
@@ -18,7 +18,7 @@ const CartSummary = ({ carts, actions, onNext }) => {
         <ul className="cart-summary-list">
           <li className="d-flex justify-content-between mb-2">
             <strong>小計</strong>
-            <strong>NT$ {total}</strong>
+            <strong>NT$ {total.toLocaleString()}</strong>
           </li>
           <li className="d-flex justify-content-between mb-1">
             <strong>運費</strong>
@@ -29,7 +29,7 @@ const CartSummary = ({ carts, actions, onNext }) => {
               </>
             ) : (
               <>
-                <strong>NT$ {shippingFee}</strong>
+                <strong>NT$ {shippingFee.toLocaleString()}</strong>
               </>
             )}
           </li>
@@ -41,7 +41,9 @@ const CartSummary = ({ carts, actions, onNext }) => {
               </>
             ) : (
               <>
-                <p className="text-muted">距離免運還差額NT$ {minfreeShippingFee - total}</p>
+                <p className="text-muted">
+                  距離免運還差額NT$ {(minfreeShippingFee - total).toLocaleString()}
+                </p>
               </>
             )}
           </li>
@@ -52,11 +54,11 @@ const CartSummary = ({ carts, actions, onNext }) => {
           <strong>合計</strong>
           {total >= minfreeShippingFee ? (
             <>
-              <strong>NT$ {total}</strong>
+              <strong>NT$ {total.toLocaleString()}</strong>
             </>
           ) : (
             <>
-              <strong>NT$ {total + shippingFee}</strong>
+              <strong>NT$ {(total + shippingFee).toLocaleString()}</strong>
             </>
           )}
         </div>

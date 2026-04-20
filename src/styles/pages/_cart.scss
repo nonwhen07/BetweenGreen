@@ -7,8 +7,14 @@ $transition-speed: 0.3s;
 /**
  * Cart Page Specific Sections
  */
-.ui-container--cart {
+.ui-section--cartError {
   background: $color-bg-main;
+  padding: 0;
+
+  .cartError-mian {
+    padding: 24px 16px;
+    min-height: 130px;
+  }
 }
 
 .ui-section--cart {

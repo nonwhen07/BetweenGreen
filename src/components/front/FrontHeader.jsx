@@ -8,7 +8,6 @@ import { logoutAction } from '@/features/auth/authSlice';
 // services
 import { logout } from '@/services/authService';
 // hooks
-import { useCartInit } from '@/hooks/useCartInit';
 import { useToast } from '@/hooks/useToast';
 // components
 // import Logo from '@/components/shared/Logo';
@@ -39,8 +38,6 @@ const FrontHeader = () => {
 
   const [isVisible, setIsVisible] = useState(false); // 控制背景是否顯色，有herobanner就透明化
   const [lastScrollY, setLastScrollY] = useState(0);
-
-  useCartInit(); // UI就專心處理UI，讓父層 FrontLayout 處理商業邏輯
 
   const isLogin = useSelector((state) => state.auth.isLogin);
   const carts = useSelector((state) => state.cart.carts);

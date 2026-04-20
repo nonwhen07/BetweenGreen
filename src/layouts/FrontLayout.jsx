@@ -4,6 +4,7 @@ import AOS from 'aos';
 
 // hooks
 import { useAuthInit } from '@/hooks/useAuthInit';
+import { useCartInit } from '@/hooks/useCartInit';
 
 // components
 import FrontHeader from '@/components/front/FrontHeader';
@@ -11,8 +12,9 @@ import FrontFooter from '@/components/front/FrontFooter';
 import GoTop from '@/components/GoTop';
 
 const FrontLayout = () => {
-  // 初始化 Auth、Cart
+  // 初始化 Auth、Cart 狀態
   useAuthInit();
+  useCartInit();
 
   const location = useLocation();
 

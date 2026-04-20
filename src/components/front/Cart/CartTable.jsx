@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
+
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
 
@@ -21,6 +22,10 @@ const CartTable = ({
 }) => {
   const cartTotal = useMemo(() => calculateCartTotal(carts), [carts]);
 
+  if (carts?.length === 0) {
+    return null; // 如果購物車是空的，就不顯示摘要
+  }
+
   return (
     <>
       <div className="cart-ui-wrapper">
@@ -36,7 +41,7 @@ const CartTable = ({
             <thead className="cart-table__header">
               <tr>
                 <th className="cart-table__col--action">操作</th>
-                <th className="cart-table__col--info">商品詳情</th>
+                <th className="cart-table__col--info">商品名稱</th>
                 <th className="cart-table__col--category">品項種類</th>
                 <th className="cart-table__col--image">圖片</th>
                 <th className="cart-table__col--price">單價</th>
@@ -54,12 +59,7 @@ const CartTable = ({
                       type="button"
                       className="btn btn-outline-danger btn-sm btn-trash"
                     >
-                      {isDeleteLoading(cart.id) ? (
-                        <BtnLoader size="sm" />
-                      ) : (
-                        // <FaTrash size={20} />
-                        <Trash2 size={20} />
-                      )}
+                      {isDeleteLoading(cart.id) ? <BtnLoader size="sm" /> : <Trash2 size={20} />}
                     </button>
                   </td>
                   <td className="cart-table__col--info">{cart.product.title}</td>
@@ -119,8 +119,6 @@ const CartTable = ({
               ))}
             </tbody>
             <tfoot className="cart-table__footer">
-              {/* */}
-              {/* <tr className="cart-table__row--gift">...</tr> */}
               <tr>
                 <td colSpan="6" className="text-end">
                   總計：

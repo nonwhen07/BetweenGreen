@@ -6,6 +6,7 @@ import { getProductDetail } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
+import { useCartActions } from '@/hooks/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
@@ -14,11 +15,11 @@ import ProductImage from '@/components/front/product/ProductImage';
 import ProductInfo from '@/components/front/product/ProductInfo';
 
 const ProductDetailPage = () => {
-  const { success, showError } = useToast();
-
   // 根據路由的參數命名來取得該命名參數，ex path: 'product/:product_id'
   // 如果是多個參數ex path: 'product/:product_id/:typemode'，則取得方式為 const { product_id, typemode } = useParams();
   const { product_id } = useParams(); // 根據路由參數名稱取得對應值，ex path: 'product/:product_id',
+  const { success, showError } = useToast();
+  const { refreshCart } = useCartActions();
 
   const [product, setProduct] = useState({});
   const [qtySelect, setQtySelect] = useState(1);
@@ -59,6 +60,7 @@ const ProductDetailPage = () => {
 
     try {
       await addsCartItem(productId, qty);
+      await refreshCart();
 
       setCartMessage('✓ 已加入購物車');
       success('✓ 已加入購物車');

@@ -11,45 +11,34 @@ const OrderSuccess = ({ orderID, lastOrderCart }) => {
 
   return (
     <div className="order-success text-center">
-      <h2>🎉 訂單已完成，您的訂單編號為：{orderID}</h2>
-      <p>感謝您的購買！</p>
+      <h2 className="mb-2">🎉 訂單已完成，您的訂單編號為：{orderID}</h2>
+      <p className="mb-2">感謝您的購買！</p>
 
-      <table className="table align-middle">
-        <thead>
+      <table className="table cart-table align-middle">
+        <thead className="cart-table__header">
           <tr>
-            <th style={{ width: '250px' }}>品名</th>
-            <th style={{ width: '250px' }}>圖片</th>
-            <th style={{ width: '200px' }}>單價</th>
-            <th style={{ width: '200px' }}>數量/單位</th>
-            <th style={{ width: '200px' }} className="text-end">
-              合計
-            </th>
+            <th className="cart-table__col--info">商品名稱</th>
+            <th className="cart-table__col--image">圖片</th>
+            <th className="cart-table__col--price">單價</th>
+            <th className="cart-table__col--qty">數量</th>
+            <th className="cart-table__col--subtotal">小計</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="cart-table__body">
           {lastOrderCart.map((cart) => (
             <tr key={cart.id}>
-              <td>{cart.product.title}</td>
-              <td>
+              <td className="cart-table__col--info">{cart.product.title}</td>
+              <td className="cart-table__col--image">
                 <ProductImage src={cart.product.imageUrl} alt={cart.product.title} size="small" />
               </td>
-              <td>{cart.product.price.toLocaleString()}</td>
-              <td style={{ width: '150px' }}>
-                <div className="d-flex align-items-center">
-                  <div className="btn-group me-2" role="group">
-                    <span
-                      className="btn border border-dark"
-                      style={{ width: '50px', cursor: 'auto' }}
-                    >
-                      {cart.qty}
-                    </span>
-                  </div>
-                  <span className="input-group-text bg-transparent border-0">
-                    {cart.product.unit}
-                  </span>
+              <td className="cart-table__col--price">NT$ {cart.product.price.toLocaleString()}</td>
+              <td className="cart-table__col--qty" style={{ width: '150px' }}>
+                <div className="d-flex justify-content-center align-items-center">
+                  <span className="me-2">{cart.qty}</span>
+                  <span className="bg-transparent border-0">{cart.product.unit}</span>
                 </div>
               </td>
-              <td className="text-end">{cart.total.toLocaleString()}</td>
+              <td className="cart-table__col--subtotal">NT$ {cart.total.toLocaleString()}</td>
             </tr>
           ))}
         </tbody>
@@ -58,15 +47,15 @@ const OrderSuccess = ({ orderID, lastOrderCart }) => {
             <td colSpan="4" className="text-end">
               總計：
             </td>
-            <td className="text-end" style={{ width: '130px' }}>
-              {cartTotal.toLocaleString()}
+            <td className="cart-table__total-amount text-end" style={{ width: '130px' }}>
+              NT$ {cartTotal.toLocaleString()}
             </td>
           </tr>
         </tfoot>
       </table>
 
-      <Link to="/customer-orders" className="btn btn-outline-primary">
-        查看訂單
+      <Link to="/customer-orders" className="btn ui-btn ui-btn--outline-primary">
+        查看歷史訂單
       </Link>
     </div>
   );

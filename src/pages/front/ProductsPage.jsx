@@ -8,6 +8,7 @@ import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useProducts } from '@/hooks/useProducts';
+import { useCartActions } from '@/hooks/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
@@ -16,15 +17,14 @@ import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
 
 const ProductsPage = () => {
+  const [searchParams] = useSearchParams();
   const { showError } = useToast();
   const { products, isLoading, fetchProducts } = useProducts({ isAdmin: false });
-  const [searchParams] = useSearchParams();
+  const { refreshCart } = useCartActions();
   const category = searchParams.get('category');
-  // const [products, setProducts] = useState([]);
+
   // show 錯誤訊息狀態
   const [errorMessage, setErrorMessage] = useState('');
-  // const [isScreenLoading, setIsScreenLoading] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false); //改用下面的loadingItems，先儲存商品ID來標定loading位置
   const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
 
   // 目前分類準備：flowers
@@ -67,6 +67,7 @@ const ProductsPage = () => {
 
   useEffect(() => {
     initProducts();
+
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [category]);
 
@@ -83,6 +84,7 @@ const ProductsPage = () => {
 
     try {
       await addsCartItem(product_id, qty);
+      await refreshCart();
     } catch (error) {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
       showError(errorMessage);

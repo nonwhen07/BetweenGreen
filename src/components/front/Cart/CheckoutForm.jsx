@@ -1,10 +1,51 @@
+import React from 'react';
+import { useState, useEffect } from 'react';
+
+import taiwanDistricts from '@/data/taiwanDistricts.json';
+
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 
-const CheckoutForm = ({ carts, register, onSubmit, errors, onBack }) => {
+const CheckoutForm = ({
+  carts,
+  register,
+  onSubmit,
+  setValue,
+  getValues,
+  watch,
+  errors,
+  onBack,
+}) => {
   const total = calculateCartTotal(carts);
+  const [isSame, setIsSame] = useState(false);
+
+  const city = watch('city');
+  const name = watch('name');
+  const tel = watch('tel');
+  const email = watch('email');
+
+  //等等抽出去做hook
+  const getCities = () => Object.keys(taiwanDistricts);
+  const getDistricts = (city) => taiwanDistricts[city] || [];
+
+  const cityList = getCities();
+  const districtList = getDistricts(city);
+
+  useEffect(() => {
+    setValue('district', '');
+
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [city]);
+
+  useEffect(() => {
+    if (isSame) {
+      setValue('shippingName', name);
+      setValue('shippingTel', tel);
+      setValue('shippingEmail', email);
+    }
+  }, [isSame, name, tel, email]);
 
   return (
     <>
@@ -74,72 +115,151 @@ const CheckoutForm = ({ carts, register, onSubmit, errors, onBack }) => {
 
             <div className="cart-checkout-again card row justify-content-center p-3">
               <h2 className="mb-3">寄送資訊</h2>
+              {/* <button
+                type="button"
+                onClick={() => {
+                  setValue('shippingName', getValues('name'));
+                  setValue('shippingTel', getValues('tel'));
+                  setValue('shippingEmail', getValues('email'));
+                }}
+              >
+                同訂購人資訊
+              </button> */}
+              <div className="col-12 mb-3">
+                {/* <input
+                  type="checkbox"
+                  checked={isSame}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setIsSame(checked);
+
+                    if (checked) {
+                      setValue('shippingName', getValues('name'));
+                      setValue('shippingTel', getValues('tel'));
+                      setValue('shippingEmail', getValues('email'));
+                    }
+                  }}
+                />
+                同訂購人資訊 */}
+                <label className={`ui-toggle-btn ${isSame ? 'active' : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={isSame}
+                    onChange={(e) => setIsSame(e.target.checked)}
+                  />
+                  同訂購人資訊
+                </label>
+              </div>
 
               <div className="row mb-3">
                 <div className="col-lg-6">
-                  <label htmlFor="nameCheck" className="form-label">
-                    訂購人姓名
+                  <label htmlFor="shippingName" className="form-label">
+                    收件人姓名
                   </label>
                   <input
-                    {...register('nameCheck', { required: '姓名 欄位必填' })}
-                    id="nameCheck"
+                    {...register('shippingName', { required: '姓名 欄位必填' })}
+                    id="shippingName"
                     type="text"
-                    className={`form-control ${errors.nameCheck ? 'is-invalid' : ''}`}
-                    placeholder="請輸入姓名"
+                    className={`form-control ${errors.shippingName ? 'is-invalid' : ''}`}
+                    placeholder="請輸入收件人姓名"
+                    disabled={isSame}
                   />
-                  {errors.nameCheck && (
-                    <p className="text-danger my-2">{errors.nameCheck.message}</p>
+                  {errors.shippingName && (
+                    <p className="text-danger my-2">{errors.shippingName.message}</p>
                   )}
                 </div>
 
                 <div className="col-lg-6">
-                  <label htmlFor="telCheck" className="form-label">
-                    訂購人電話
+                  <label htmlFor="shippingTel" className="form-label">
+                    收件人電話
                   </label>
                   <input
-                    {...register('telCheck', {
-                      required: '電話 欄位必填',
+                    {...register('shippingTel', {
+                      required: '收件人電話 欄位必填',
                       pattern: {
                         value: /^(0[2-8]\d{7}|09\d{8})$/,
-                        message: '電話 格式錯誤',
+                        message: '收件人電話 格式錯誤',
                       },
                     })}
-                    id="telCheck"
+                    id="shippingTel"
                     type="text"
-                    className={`form-control ${errors.telCheck ? 'is-invalid' : ''}`}
+                    className={`form-control ${errors.shippingTel ? 'is-invalid' : ''}`}
                     placeholder="請輸入電話"
+                    disabled={isSame}
                   />
-                  {errors.telCheck && <p className="text-danger my-2">{errors.telCheck.message}</p>}
-                </div>
-              </div>
-
-              <div className="row mb-3">
-                <div className="col-12">
-                  <label htmlFor="emailCheck" className="form-label">
-                    訂購人Email
-                  </label>
-                  <input
-                    {...register('emailCheck', {
-                      required: 'Email 欄位必填',
-                      pattern: {
-                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                        message: 'Email 格式錯誤',
-                      },
-                    })}
-                    id="emailCheck"
-                    type="email"
-                    className={`form-control ${errors.emailCheck ? 'is-invalid' : ''}`}
-                    placeholder="請輸入 Email"
-                  />
-                  {errors.emailCheck && (
-                    <p className="text-danger my-2">{errors.emailCheck.message}</p>
+                  {errors.shippingTel && (
+                    <p className="text-danger my-2">{errors.shippingTel.message}</p>
                   )}
                 </div>
               </div>
-
               <div className="row mb-3">
                 <div className="col-12">
-                  <label htmlFor="address" className="form-label">
+                  <label htmlFor="shippingEmail" className="form-label">
+                    收件人Email
+                  </label>
+                  <input
+                    {...register('shippingEmail', {
+                      required: '收件人Email 欄位必填',
+                      pattern: {
+                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '收件人Email 格式錯誤',
+                      },
+                    })}
+                    id="shippingEmail"
+                    type="email"
+                    className={`form-control ${errors.shippingEmail ? 'is-invalid' : ''}`}
+                    placeholder="請輸入收件人 Email"
+                    disabled={isSame}
+                  />
+                  {errors.shippingEmail && (
+                    <p className="text-danger my-2">{errors.shippingEmail.message}</p>
+                  )}
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-12">
+                  <h3>訂購人地址</h3>
+                </div>
+                <div className="col-lg-6">
+                  {/* 縣市 */}
+                  <label htmlFor="city" className="form-label">
+                    縣市
+                  </label>
+                  <select
+                    id="city"
+                    {...register('city', { required: '請選擇縣市' })}
+                    className={`form-select ${errors.city ? 'is-invalid' : ''}`}
+                  >
+                    <option value="">請選擇縣市</option>
+                    {cityList.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-lg-6">
+                  {/* 鄉鎮 */}
+                  <label htmlFor="district" className="form-label">
+                    鄉鎮
+                  </label>
+                  <select
+                    id="district"
+                    {...register('district', { required: '請選擇區域' })}
+                    className={`form-select ${errors.district ? 'is-invalid' : ''}`}
+                  >
+                    <option value="">請選擇區域</option>
+                    {districtList?.map((district) => (
+                      <option key={district} value={district}>
+                        {district}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-12">
+                  {/* <label htmlFor="address" className="form-label">
                     訂購人地址
                   </label>
                   <input
@@ -148,12 +268,22 @@ const CheckoutForm = ({ carts, register, onSubmit, errors, onBack }) => {
                     type="text"
                     className={`form-control ${errors.address ? 'is-invalid' : ''}`}
                     placeholder="請輸入地址"
+                  /> */}
+                  {/* 詳細地址 */}
+                  <label htmlFor="addressDetail" className="form-label">
+                    訂購人地址
+                  </label>
+                  <input
+                    id="addressDetail"
+                    type="text"
+                    {...register('addressDetail', { required: '請輸入詳細地址' })}
+                    className={`form-control ${errors.addressDetail ? 'is-invalid' : ''}`}
+                    placeholder="例如：忠孝東路一段 100 號"
                   />
                 </div>
 
                 {errors.address && <p className="text-danger my-2">{errors.address.message}</p>}
               </div>
-
               <div className="row mb-3">
                 <div className="col-12">
                   <label htmlFor="message" className="form-label">
