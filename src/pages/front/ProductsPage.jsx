@@ -7,8 +7,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
-import { useProducts } from '@/hooks/useProducts';
-import { useCartActions } from '@/hooks/useCartActions';
+import { useProducts } from '@/hooks/product/useProducts';
+import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components

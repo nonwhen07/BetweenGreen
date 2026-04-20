@@ -6,7 +6,7 @@ import { getProductDetail } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
-import { useCartActions } from '@/hooks/useCartActions';
+import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components

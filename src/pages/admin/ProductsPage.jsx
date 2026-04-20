@@ -9,7 +9,7 @@ import {
 } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
-import { useProducts } from '@/hooks/useProducts';
+import { useProducts } from '@/hooks/product/useProducts';
 import { useProductModal } from '@/hooks/useProductModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils

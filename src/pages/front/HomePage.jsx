@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 // hooks
 import { useToast } from '@/hooks/useToast';
-import { useProducts } from '@/hooks/useProducts';
+import { useProducts } from '@/hooks/product/useProducts';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 

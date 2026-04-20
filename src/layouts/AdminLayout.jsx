@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import AOS from 'aos';
 
 // hooks
-import { useAuthInit } from '@/hooks/useAuthInit';
+import { useAuthInit } from '@/hooks/auth/useAuthInit';
 
 // components
 // import PageLoader from '@/components/PageLoader';

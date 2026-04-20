@@ -3,8 +3,8 @@ import { useLocation, Outlet } from 'react-router-dom';
 import AOS from 'aos';
 
 // hooks
-import { useAuthInit } from '@/hooks/useAuthInit';
-import { useCartInit } from '@/hooks/useCartInit';
+import { useAuthInit } from '@/hooks/auth/useAuthInit';
+import { useCartInit } from '@/hooks/cart/useCartInit';
 
 // components
 import FrontHeader from '@/components/front/FrontHeader';
