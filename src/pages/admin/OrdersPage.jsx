@@ -3,7 +3,7 @@ import { getAdminOrders, deleteOrder } from '@/services/orderService';
 
 import Pagination from '@/components/Pagination';
 import DeleteModal from '@/components/admin/DeleteModal';
-import PageLoader from '@/components/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 import { useToast } from '@/hooks/useToast';
 import { extractErrorMessage } from '@/utils/errorHandler';
 

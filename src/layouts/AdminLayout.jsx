@@ -6,7 +6,7 @@ import AOS from 'aos';
 import { useAuthInit } from '@/hooks/auth/useAuthInit';
 
 // components
-// import PageLoader from '@/components/PageLoader';
+// import PageLoader from '@/components/shared/PageLoader';
 import AdminAside from '@/components/admin/AdminAside';
 import AdminHeader from '@/components/admin/AdminHeader';
 import GoTop from '@/components/GoTop';

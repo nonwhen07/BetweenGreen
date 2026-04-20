@@ -10,7 +10,7 @@ import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
-import PageLoader from '@/components/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 import ProductImage from '@/components/front/product/ProductImage';
 import ProductInfo from '@/components/front/product/ProductInfo';
 

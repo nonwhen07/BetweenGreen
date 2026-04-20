@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
-// services
 // import {
 //   getCartItems,
 //   updateCartItem,
@@ -10,10 +9,11 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 //   clearCart,
 //   createOrder,
 // } from '@/services/cartService';
-
+// services
 import { createOrder } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
 import { useCart } from '@/hooks/cart/useCart';
 // import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
@@ -25,7 +25,7 @@ import CartTable from '@/components/front/Cart/CartTable';
 import CheckoutForm from '@/components/front/Cart/CheckoutForm';
 import CartSummary from '@/components/front/Cart/CartSummary';
 import OrderSuccess from '@/components/front/Cart/OrderSuccess';
-import PageLoader from '@/components/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 // constants
 import { CART_STEPS } from '@/constants/cartConstants';
 
@@ -44,10 +44,11 @@ const CartPage = () => {
   const navigate = useNavigate();
   // const { refreshCart } = useCartActions();
   const { success, showError, warning } = useToast();
+  const { start, stop } = useLoading();
 
   const {
     carts,
-    isLoading,
+    // isLoading,
     loadingItems,
     error,
     fetchCart,
@@ -59,7 +60,7 @@ const CartPage = () => {
   // const [carts, setCarts] = useState([]);
   const [lastOrderCart, setLastOrderCart] = useState([]);
   const [orderID, setOrderID] = useState(null);
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  // const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const finalError = error || errorMessage;
@@ -169,7 +170,8 @@ const CartPage = () => {
 
   // 送出購物車轉化成訂單 + Submit事件驅動
   const handleCreateOrder = async (orderPayload) => {
-    setIsScreenLoading(true);
+    // setIsScreenLoading(true);
+    start();
     try {
       const orderData = await createOrder(orderPayload);
       // 由於前台沒有會員機制，所以是所有人共用cart， 訂單送出成功後刷新購物車等待下一位客人，
@@ -195,7 +197,8 @@ const CartPage = () => {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單送出失敗。');
       showError(errorMessage);
     } finally {
-      setIsScreenLoading(false);
+      // setIsScreenLoading(false);
+      stop();
     }
   };
   const handleSubmitOrder = handleSubmit(async (formData) => {
@@ -222,10 +225,10 @@ const CartPage = () => {
   });
 
   // 畫面渲染後初步載入購物車
-
   useEffect(() => {
     const initCart = async () => {
-      setIsScreenLoading(true);
+      // setIsScreenLoading(true);
+      start();
       try {
         await fetchCart();
 
@@ -234,7 +237,8 @@ const CartPage = () => {
         const errorMessage = extractErrorMessage(error, setErrorMessage);
         showError(errorMessage);
       } finally {
-        setIsScreenLoading(false);
+        // setIsScreenLoading(false);
+        stop();
       }
     };
 
@@ -348,7 +352,7 @@ const CartPage = () => {
         </div>
       </div>
 
-      <PageLoader show={isScreenLoading || isLoading} zIndex={2000} />
+      {/* <PageLoader show={isScreenLoading || isLoading} zIndex={2000} /> */}
     </>
   );
 };

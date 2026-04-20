@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Toast as BSToast } from 'bootstrap'; //由於bootstrap的Toast與套件名稱衝突，所以把bootstrap的Toast取個別名為 'BSToast'
-import { removeMessage } from '@/features/toast/toastSlice';
+import { removeMessage } from '@/features/ui/toastSlice';
 
 // Toast 原始流程
 // 1. Component 呼叫 useToast()任何(success, showError, warning, info)

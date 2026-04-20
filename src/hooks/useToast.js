@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { pushMessage } from '@/features/toast/toastSlice';
+import { pushMessage } from '@/features/ui/toastSlice';
 
 // 從toastSlice狀態中抽出
 export const useToast = () => {

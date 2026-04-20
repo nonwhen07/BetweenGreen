@@ -22,7 +22,7 @@ import Pagination from '@/components/Pagination';
 import ProductModal from '@/components/admin/ProductModal';
 import DeleteModal from '@/components/admin/DeleteModal';
 import StarRating from '@/components/admin/StarRating';
-import PageLoader from '@/components/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 
 /**
  * =========================================

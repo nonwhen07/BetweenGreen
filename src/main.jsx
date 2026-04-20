@@ -11,11 +11,13 @@ import App from '@/App.jsx';
 
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
-import Toast from '@/components/ToastList.jsx';
+import Toast from '@/components/ToastList';
+import GlobalLoader from '@/components/GlobalLoader';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <Toast /> {/* 確保 Toast 能全局監聽 Redux 狀態 */}
     <App />
+    <GlobalLoader />
   </Provider>,
 );

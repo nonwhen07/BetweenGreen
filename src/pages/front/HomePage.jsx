@@ -16,7 +16,7 @@ import ProductSection from '@/components/front/home/Product/ProductSection';
 import GardenTipsSection from '@/components/front/home/GardenTips/GardenTipsSection';
 import ReviewSection from '@/components/front/home/ReviewSection';
 import NewsletterSection from '@/components/front/home/NewsletterSection';
-import PageLoader from '@/components/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 import BrandStory from '@/components/front/home/BrandStory';
 
 const HomePage = () => {

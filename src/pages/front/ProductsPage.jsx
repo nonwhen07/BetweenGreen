@@ -12,7 +12,7 @@ import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
-import PageLoader from '@/components/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
 

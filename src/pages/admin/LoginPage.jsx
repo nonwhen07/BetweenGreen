@@ -9,7 +9,7 @@ import { loginSuccess } from '@/features/auth/authSlice';
 // hooks
 import { useToast } from '@/hooks/useToast';
 // components
-import PageLoader from '@/components/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 // import PoinsettiaIcon from '@/components/PoinsettiaIcon';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 // hooks
 import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
 // import { useCart } from '@/hooks/useCart';
 import { useCartActions } from '@/hooks/cart/useCartActions';
 // services
@@ -12,10 +13,11 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 export const useCart = () => {
   const [carts, setCarts] = useState([]);
   const [loadingItems, setLoadingItems] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const { success, showError } = useToast();
+  const { start, stop } = useLoading();
 
   const { refreshCart } = useCartActions();
 
@@ -64,7 +66,7 @@ export const useCart = () => {
   // 刪除購物車品項
   const handleDeleteCartItem = async (cart_id) => {
     // 改為在局部按鈕上顯示 loading， 避免整個畫面都被遮罩，提升使用體驗
-    // setIsScreenLoading(true); 所以這段刪掉，改為下面的 loadingItems 狀態來控制按鈕的 loading 狀態
+
     setLoadingItems((prev) => ({
       ...prev,
       [cart_id]: 'delete',
@@ -88,7 +90,7 @@ export const useCart = () => {
   // 移除全部購物車品項
   const handleClearCart = async () => {
     if (!window.confirm('確定要清空購物車嗎？')) return;
-    setIsLoading(true);
+    start();
     try {
       await clearCart();
       await fetchCart();
@@ -100,13 +102,13 @@ export const useCart = () => {
       const errorMessage = extractErrorMessage(error, null, '清空全部購物車失敗');
       showError(errorMessage);
     } finally {
-      setIsLoading(false);
+      stop();
     }
   };
 
   return {
     carts,
-    isLoading,
+
     loadingItems,
     error,
     fetchCart,
