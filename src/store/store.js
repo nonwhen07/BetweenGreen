@@ -5,7 +5,7 @@ import authReducer from '@/features/auth/authSlice';
 // import userReducer from '@/features/user/userSlice';
 import cartReducer from '@/features/cart/cartSlice';
 import toastReducer from '@/features/ui/toastSlice';
-import lodaingReducer from '@/features/ui/loadingSlice';
+import loadingReducer from '@/features/ui/loadingSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +13,6 @@ export const store = configureStore({
     // user: userReducer,
     cart: cartReducer,
     toast: toastReducer,
-    lodaing: lodaingReducer,
+    loading: loadingReducer,
   },
 });

@@ -12,7 +12,7 @@ import App from '@/App.jsx';
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import Toast from '@/components/ToastList';
-import GlobalLoader from '@/components/GlobalLoader';
+import GlobalLoader from '@/components/shared/GlobalLoader';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
