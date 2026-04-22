@@ -2,53 +2,91 @@
 @use 'sass:color';
 
 .header {
-  position: fixed;
+  position: fixed !important;
   top: 0;
   left: 0;
   width: 100%;
   height: 80px;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 50px;
-  z-index: 1000;
 
   /* 初始狀態：透明 */
   background-color: transparent;
   color: $text-main;
   transition: all 0.4s ease-in-out;
+
+  &__container {
+    padding: 0 24px;
+  }
+
+  &__item {
+    height: 36px;
+  }
+
+  &__link {
+    color: $text-muted !important;
+    font-weight: $font-weight-bold;
+  }
+
+  &__link.active,
+  &__link:hover {
+    color: $text-on-primary !important;
+    border-bottom: 2px solid $text-on-primary;
+  }
+
+  &--top {
+    background-color: transparent;
+    color: $text-main;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  &--hidden {
+    background-color: transparent;
+    color: transparent;
+
+    .nav-link {
+      color: transparent !important;
+    }
+    .nav-link.active {
+      color: transparent !important;
+      border-bottom: none;
+    }
+  }
+  &--hidden:hover {
+    background-color: $color-primary;
+    color: $text-on-primary;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    .nav-link {
+      color: $text-muted !important;
+      font-weight: $font-weight-bold;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+      color: $text-on-primary !important;
+      border-bottom: 2px solid $text-on-primary;
+    }
+  }
+
+  &--active {
+    background-color: $color-primary;
+    color: $text-on-primary;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  // 沒有Hero-Banner的page先固定樣式即可
+  &--solid {
+    background-color: $color-primary;
+  }
 }
 
-/* 當往上滑 (active) 或 Hover 時的樣式 */
-.header.active,
+/* Hover 時的樣式 */
 .header:hover {
   background-color: $color-primary;
   color: $text-on-primary;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.header-solid {
-  background-color: $color-primary;
-}
-
-.header-container {
-  padding: 0 24px;
-}
-
-.nav-item {
-  height: 36px;
-}
-
-.nav-link {
-  color: $text-muted !important;
-  font-weight: $font-weight-bold;
-}
-
-.nav-link.active,
-.nav-link:hover {
-  color: $text-on-primary !important;
-  border-bottom: 2px solid $text-on-primary;
-
-  // border-bottom: 2px solid $text-on-primary;
-  // transition: all 0.3s ease-in-out;
 }

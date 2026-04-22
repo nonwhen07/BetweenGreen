@@ -36,7 +36,8 @@ const FrontHeader = () => {
   const isHeroPage = heroPagePaths.includes(location.pathname);
   const { success, showError } = useToast();
 
-  const [isVisible, setIsVisible] = useState(false); // 控制背景是否顯色，有herobanner就透明化
+  // const [isVisible, setIsVisible] = useState(false); // 控制背景是否顯色，有herobanner就透明化
+  const [scrollState, setScrollState] = useState('scroll-top');
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const isLogin = useSelector((state) => state.auth.isLogin);
@@ -57,15 +58,22 @@ const FrontHeader = () => {
   };
 
   useEffect(() => {
+    if (!isHeroPage) return; // 直接關掉
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // 往上滑：顯示背景色、往下滑：隱藏背景色 (透明)
-      // 判斷條件：scroll > 50 避免在頂部過於靈敏
-      if (currentScrollY > 50 && currentScrollY < lastScrollY) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
+      // 1. Top 狀態（最高優先）
+      if (currentScrollY <= 150) {
+        setScrollState('top');
+      }
+      // 2️. 往上滑
+      else if (currentScrollY < lastScrollY) {
+        setScrollState('active');
+      }
+      // 3️. 往下滑
+      else {
+        setScrollState('hidden');
       }
 
       setLastScrollY(currentScrollY);
@@ -73,18 +81,16 @@ const FrontHeader = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [isHeroPage, lastScrollY]);
 
   return (
     <>
-      <nav
-        className={`navbar header ${isVisible ? 'active' : ''} ${isHeroPage ? '' : 'header-solid'}`}
-      >
-        <div className="container ui-container header-container">
-          <ul className="navbar-nav flex-row gap-5 fs-5">
+      <nav className={`navbar header ${isHeroPage ? `header--${scrollState}` : 'header--solid'}`}>
+        <div className="container ui-container header__container">
+          <ul className="navbar-nav header__nav flex-row gap-5 fs-5">
             {routes.map((route) => (
-              <li key={route.path} className="nav-item">
-                <NavLink className="nav-link" aria-current="page" to={route.path}>
+              <li key={route.path} className="nav-item header__item">
+                <NavLink className="nav-link header__link" aria-current="page" to={route.path}>
                   {route.path.includes('cart') ? (
                     <div className="position-relative d-flex align-items-center">
                       <FaShoppingCart size={25} />
@@ -107,18 +113,20 @@ const FrontHeader = () => {
           {/* 登入 / 登出區塊 */}
           {isLogin ? (
             <>
-              <NavLink to="/dashboard" className="nav-item nav-link me-4">
-                後台
-              </NavLink>
-              <button onClick={handleLogout} className="btn btn-link nav-item nav-link text-danger">
-                登出
-              </button>
+              <div className="nav-item header__item">
+                <NavLink to="/dashboard" className="nav-link header__link header__link me-4">
+                  後台
+                </NavLink>
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-link nav-link header__link text-danger"
+                >
+                  登出
+                </button>
+              </div>
             </>
           ) : (
-            // <NavLink to="/login" className="nav-item nav-link text-light me-4">
-            //   登入
-            // </NavLink>
-            <></>
+            ''
           )}
         </div>
       </nav>
