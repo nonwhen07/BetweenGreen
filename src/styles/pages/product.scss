@@ -1,0 +1,84 @@
+@import 'bootstrap/scss/bootstrap'; // 記得在 main.scss 引入 bootstrap
+
+.product-detail {
+  max-width: 1296px;
+  margin: 0 auto;
+
+  // ==================== 主圖 Swiper ====================
+  .main-swiper-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 700px; // ← 你可以改成 650px 或 700px
+    aspect-ratio: 13 / 10; // 約 650×500 的比例（可依需求調整）
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    .main-swiper {
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; // 等比例、不裁切（最推薦）
+        object-position: center;
+        background: #fff;
+      }
+    }
+  }
+
+  // Swiper 導航鈕美化
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: #333;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    &::after {
+      font-size: 18px;
+    }
+  }
+
+  // ==================== 縮圖列 ====================
+  .thumb-swiper {
+    .swiper-slide {
+      opacity: 0.6;
+      cursor: pointer;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s;
+
+      img {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+      }
+
+      &.swiper-slide-thumb-active {
+        opacity: 1;
+        border: 2px solid #0d6efd;
+      }
+    }
+  }
+
+  // ==================== 響應式調整 ====================
+  @media (max-width: 1295px) {
+    .main-swiper-wrapper {
+      max-width: 100%;
+      aspect-ratio: 16 / 10; // 手機/平板時更寬鬆
+    }
+  }
+
+  @media (max-width: 992px) {
+    .row {
+      flex-direction: column;
+    }
+    .main-swiper-wrapper {
+      max-width: 100%;
+    }
+  }
+}

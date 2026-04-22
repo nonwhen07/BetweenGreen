@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Thumbs } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
+
 // services
 import { getProductDetail } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
@@ -30,6 +36,8 @@ const ProductDetailPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [cartMessage, setCartMessage] = useState('');
   const [isAdded, setIsAdded] = useState(false);
+
+  // const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   // 畫面渲染後初步載入產品細項
   /* eslint-disable react-hooks/exhaustive-deps */
@@ -91,6 +99,38 @@ const ProductDetailPage = () => {
           <div className="col-md-6">
             <ProductImage product={product} />
           </div>
+
+          {/* swiper商品圖片 */}
+          {/* <div className="col-md-6">
+            <div className="main-swiper-wrapper">
+              <Swiper
+                modules={[Navigation, Thumbs]}
+                spaceBetween={10}
+                navigation
+                thumbs={{ swiper: thumbsSwiper }}
+                className="main-swiper"
+              >
+                {images.map((img, i) => (
+                  <SwiperSlide key={i}>
+                    <img src={img} alt={`產品圖 ${i + 1}`} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              slidesPerView={5}
+              spaceBetween={8}
+              watchSlidesProgress
+              className="thumb-swiper mt-4"
+            >
+              {images.map((img, i) => (
+                <SwiperSlide key={i}>
+                  <img src={img} alt={`縮圖 ${i + 1}`} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div> */}
 
           {/* 商品資訊 */}
           <div className="col-md-6">

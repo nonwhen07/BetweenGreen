@@ -1,10 +1,15 @@
-@use '../helpers/variables' as *;
-@use '../helpers/mixins' as *;
+@use '@/styles/helpers/variables' as *;
+@use '@/styles/helpers/mixins' as *;
 @use 'sass:color';
 
 .hero-banner {
   --hero-text-primary: #2f3e2f;
   --hero-text-secondary: #5c6b5c;
+
+  padding: 0 0;
+
+  min-height: 600px;
+  height: 70vh;
 
   position: relative;
   min-height: clamp(520px, 72vh, 760px);
@@ -13,25 +18,37 @@
   overflow: hidden;
   background: var(--section-bg);
 
-  /* ===== 前景（柔化景深）===== */
-  // &::before {
-  //   content: '';
-  //   position: absolute;
-  //   inset: 0;
+  // 為了讓Hero-Banner能夠滿版所以swiper組件必須先撐滿
+  .swiper {
+    width: 100%;
+    height: 100%;
+  }
 
-  //   background: url('./images/leaf-overlay.png') no-repeat left center;
-  //   background-size: 420px;
+  .swiper-wrapper {
+    height: 100%;
+  }
 
-  //   opacity: 0.18;
-  //   filter: blur(6px);
+  .swiper-slide {
+    height: 100%;
+  }
+}
 
-  //   z-index: 1;
-  //   pointer-events: none;
-  // }
+.hero-banner .swiper {
+  height: 100%;
+}
+
+.hero-banner .swiper-slide {
+  height: 100%;
 }
 
 /* ========================================
-  Background（動態呼吸）
+  hero-banner Swiper（動態呼吸）
+======================================== */
+// .hero-banner__swiper {
+// }
+
+/* ========================================
+  Hero-Banner Background（動態呼吸）
 ======================================== */
 .hero-banner__bg {
   position: absolute;
