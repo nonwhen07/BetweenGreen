@@ -8,7 +8,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 
 // components
 import HeroBanner from '@/components/front/home/HeroBanner';
-import CategorySection from '@/components/front/home/Category/CategorySection';
+// import CategorySection from '@/components/front/home/Category/CategorySection';
 import LifestyleSection from '@/components/front/home/Lifestyle/LifestyleSection';
 import SceneShowcase from '@/components/front/home/SceneShowcase';
 import SeasonalCollection from '@/components/front/home/Seasonal/SeasonalSection';
@@ -81,7 +81,7 @@ const HomePage = () => {
       {/* 保留bootstarp-container，原因是我要用bootstarp他的排版 */}
       <HeroBanner />
 
-      <CategorySection />
+      {/* <CategorySection /> */}
       <LifestyleSection />
 
       <SceneShowcase />

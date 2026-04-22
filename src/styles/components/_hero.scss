@@ -1,6 +1,15 @@
-@use '@/styles/helpers/variables' as *;
 @use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
 @use 'sass:color';
+
+:root {
+  --header-height: 80px; // 預設高度
+
+  @include respond($breakpoints, desktop) {
+    --header-height: 96px; // RWD 較大時的高度
+  }
+}
 
 .hero-banner {
   --hero-text-primary: #2f3e2f;
@@ -116,6 +125,9 @@
 
 /* ===== Glass Card ===== */
 .hero-banner__text {
+  position: absolute;
+  top: calc(var(--header-height) + 3rem);
+
   max-width: 640px;
   padding: 18px;
 

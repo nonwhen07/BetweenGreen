@@ -21,12 +21,12 @@
   background-color: $color-bg-main;
 }
 
-.content-hero {
+.ui-wrapper-hero {
   padding-top: 0;
   /* 這裡的內容（Hero）會從螢幕最頂端開始，被 Header 蓋住 */
 }
 
-.content-spacing {
+.ui-wrapper-spacing {
   padding-top: var(--header-height);
   min-height: calc(
     100vh - var(--footer-height)
@@ -62,7 +62,8 @@
   }
 }
 
-// .ui-section 內部的實際內容區域為.ui-container 1296px，之後改 .ui-content更語意畫
+// .ui-section 內部的實際內容區域為.ui-container 1296px，
+// 之後改 .ui-content更語意畫
 .ui-container {
   max-width: 1296px;
   margin: 0 auto;

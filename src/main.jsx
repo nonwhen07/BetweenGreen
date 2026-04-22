@@ -3,6 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
+// import * as bootstrap from 'bootstrap';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@/styles/main.scss'; // 入口 Sass
 import '@/styles/admin.scss'; // 後台入口 Sass

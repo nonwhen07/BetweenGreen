@@ -1,3 +1,5 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
 @use 'sass:color';
 
@@ -6,24 +8,94 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px;
+
+  // height: 80px;
   z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 50px;
 
   /* 初始狀態：透明 */
   background-color: transparent;
   color: $text-main;
   transition: all 0.4s ease-in-out;
 
-  &__container {
-    padding: 0 24px;
+  &__content {
+    padding: 0 24px !important;
+    max-width: 1296px !important;
+    display: flex;
+    align-items: center;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__action-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+  &__toggle {
+    display: block !important;
+
+    @include respond($breakpoints, desktop) {
+      display: block !important;
+      display: none !important;
+    }
   }
 
   &__item {
     height: 36px;
+    list-style: none;
+  }
+
+  &__icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    padding: 0.5rem;
+    transition: opacity 0.3s ease;
+
+    min-width: 32px;
+    min-height: 32px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: -1px;
+    right: -3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 10px;
+    line-height: 1;
+    background-color: #dc3545;
+    color: #fff;
+  }
+
+  &__auth {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   &__link {
@@ -47,12 +119,16 @@
     background-color: transparent;
     color: transparent;
 
-    .nav-link {
+    .header__link {
       color: transparent !important;
     }
-    .nav-link.active {
+    .header__link.active {
       color: transparent !important;
       border-bottom: none;
+    }
+
+    .header__badge {
+      display: none;
     }
   }
   &--hidden:hover {
@@ -60,13 +136,13 @@
     color: $text-on-primary;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
-    .nav-link {
+    .header__link {
       color: $text-muted !important;
       font-weight: $font-weight-bold;
     }
 
-    .nav-link.active,
-    .nav-link:hover {
+    .header__link.active,
+    .header__link:hover {
       color: $text-on-primary !important;
       border-bottom: 2px solid $text-on-primary;
     }
@@ -89,4 +165,30 @@
   background-color: $color-primary;
   color: $text-on-primary;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+
+  &__img {
+    height: 60px; // header 高度控制在這
+    width: auto;
+    display: block;
+  }
+
+  &--light {
+    // Hero 用（白字）
+    filter: brightness(1);
+  }
+
+  &--dark {
+    // 白底 header 用
+    filter: brightness(0); // 直接轉黑
+  }
+
+  &--muted {
+    // 白底 header 用
+    filter: grayscale(100%) brightness(60%); // 直接轉灰
+  }
 }

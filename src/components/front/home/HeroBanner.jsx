@@ -88,7 +88,7 @@ const HeroBanner = () => {
         modules={[Navigation, Autoplay, Pagination]}
         slidesPerView={1} // 先用1，最穩
         loop={true}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        autoplay={{ delay: 6500, disableOnInteraction: false }}
         className="swiper hero-banner__swiper"
         // 你的參數設定
         centeredSlides={true}
@@ -134,13 +134,13 @@ const HeroBanner = () => {
                   <p className="hero-banner__desc">{item.desc}</p>
                   <div className="hero-banner__actions">
                     <button
-                      className="btn ui-btn ui-btn--primary"
+                      className="ui-btn ui-btn--primary"
                       onClick={() => handleScroll('product')}
                     >
                       立即選購
                     </button>
                     <button
-                      className="btn ui-btn ui-btn--outline-primary"
+                      className="ui-btn ui-btn--outline-primary"
                       onClick={() => handleScroll('category')}
                     >
                       探索分類
