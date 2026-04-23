@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { FaShoppingCart, FaTachometerAlt, FaUsers, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaShoppingCart, FaTachometerAlt, FaUsers, FaSignOutAlt } from 'react-icons/fa';
+import Collapse from 'bootstrap/js/dist/collapse';
 
 // features
 import { logoutAction } from '@/features/auth/authSlice';
@@ -83,118 +84,164 @@ const FrontHeader = () => {
     navigate('/');
   };
 
+  // 關閉 menu（點擊遮罩或選單連結後）
+  const closeMenu = () => {
+    const collapseEl = document.getElementById('headerMenu');
+    if (!collapseEl) return;
+
+    let bsCollapse = Collapse.getInstance(collapseEl);
+
+    if (!bsCollapse) {
+      bsCollapse = new Collapse(collapseEl, {
+        toggle: false,
+      });
+    }
+
+    bsCollapse.hide();
+  };
+
   useEffect(() => {
-    if (!isHeroPage) return; // 直接關掉
+    const collapseEl = document.getElementById('headerMenu');
+    const overlayEl = document.querySelector('.header__overlay');
 
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+    if (!collapseEl) return;
 
-      // 1. Top 狀態（最高優先）
-      if (currentScrollY <= 150) {
-        setScrollState('top');
-      }
-      // 2️. 往上滑
-      else if (currentScrollY < lastScrollY) {
-        setScrollState('active');
-      }
-      // 3️. 往下滑
-      else {
-        setScrollState('hidden');
-      }
+    // 處理手機選單開啟時的 scroll 鎖定與解鎖
+    const lockScroll = () => {
+      const scrollY = window.scrollY;
 
-      setLastScrollY(currentScrollY);
+      document.body.classList.add('is-locked'); // 用 class 控
+      document.body.style.top = `-${scrollY}px`;
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHeroPage, lastScrollY]);
+    const unlockScroll = () => {
+      const scrollY = document.body.style.top;
+
+      document.body.classList.remove('is-locked');
+      document.body.style.top = '';
+
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    };
+
+    // 展開
+    const handleShow = () => {
+      overlayEl?.classList.add('show');
+      lockScroll();
+    };
+
+    // 收合
+    const handleHide = () => {
+      overlayEl?.classList.remove('show');
+      unlockScroll();
+    };
+
+    collapseEl.addEventListener('shown.bs.collapse', handleShow);
+    collapseEl.addEventListener('hidden.bs.collapse', handleHide);
+
+    return () => {
+      collapseEl.removeEventListener('shown.bs.collapse', handleShow);
+      collapseEl.removeEventListener('hidden.bs.collapse', handleHide);
+    };
+  }, []);
+
+  useEffect(() => {
+    const collapseEl = document.getElementById('headerMenu');
+    if (!collapseEl) return;
+
+    let bsCollapse = Collapse.getInstance(collapseEl);
+
+    if (!bsCollapse) {
+      bsCollapse = new Collapse(collapseEl, {
+        toggle: false,
+      });
+    }
+
+    bsCollapse.hide();
+  }, [location.pathname]);
 
   return (
     <>
-      <nav className={` navbar header ${isHeroPage ? `header--${scrollState}` : 'header--solid'}`}>
+      <nav className={`navbar header ${isHeroPage ? `header--${scrollState}` : 'header--solid'}`}>
         <div className="container ui-container header__content">
           {/* brand */}
           <div className="header__brand">
-            <Logo variant={isHeroPage ? 'light' : 'muted'} />
-          </div>
-          {/* nav */}
-          <ul className="navbar-nav header__nav flex-row gap-5 fs-5">
-            {routes.map((route) => (
-              <li key={route.path} className="nav-item header__item">
-                <NavLink
-                  className="nav-link header__link"
-                  aria-current="page"
-                  to={route.path}
-                  title={route.title}
-                >
-                  {route.name}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-          {/* actions */}
-          <div className="header__actions">
-            {/* <div className="position-relative">
-              <ul className="navbar-nav header__nav flex-row gap-5 fs-5">
-                {routeActions.map((item) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <li key={item.path} className="nav-item header__item">
-                      <NavLink
-                        className="nav-link header__link header__icon"
-                        aria-current="page"
-                        to={item.path}
-                        title={item.title}
-                      >
-                        {item.path.includes('cart') ? (
-                          <div className="position-relative d-flex align-items-center">
-                            <Icon size={25} />
-                            {carts?.length > 0 && (
-                              <span
-                                className={`position-absolute badge header__badge rounded-circle ${carts?.length ? 'text-bg-danger' : ''}`}
-                                style={{ bottom: '17px', left: '15px', fontSize: '10px' }}
-                              >
-                                {carts?.length}
-                              </span>
-                            )}
-                          </div>
-                        ) : (
-                          <Icon className="me-2" size={25} />
-                        )}
-                      </NavLink>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div> */}
-
-            <ul className="header__action-list">
-              <li className="header__item">
-                <NavLink to="/cart/step1" className="header__link header__icon" title="購物車">
-                  <FaShoppingCart size={22} />
-                  {carts?.length > 0 && <span className="header__badge">{carts.length}</span>}
-                </NavLink>
-              </li>
-            </ul>
-
-            {/* auth  */}
-            {isLogin && (
-              <div className="header__auth">
-                <NavLink to="/dashboard" className="header__icon" title="後台">
-                  <FaTachometerAlt size={22} />
-                </NavLink>
-
-                <button type="button" onClick={handleLogout} className="header__icon" title="登出">
-                  <FaSignOutAlt size={22} />
-                </button>
-              </div>
-            )}
+            {/* variant={isHeroPage ? 'light' : 'muted'} */}
+            <Logo />
           </div>
           {/* toggle */}
-          <button className="header__toggle">☰</button>
+          <button
+            className="btn header__toggle"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#headerMenu"
+            aria-controls="headerMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <FaBars size={22} />
+          </button>
+          {/* collapse */}
+          <div className="collapse header__collapse" id="headerMenu">
+            {/* nav */}
+            <ul className="navbar-nav header__nav">
+              {routes.map((route) => (
+                <li key={route.path} className="nav-item header__item">
+                  <NavLink
+                    className="nav-link header__link"
+                    aria-current="page"
+                    to={route.path}
+                    title={route.title}
+                  >
+                    {route.name}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+            {/* actions */}
+            <div className="header__actions">
+              <ul className="header__action-list">
+                <li className="header__item">
+                  <NavLink
+                    to="/cart/step1"
+                    className="header__link header__icon"
+                    title="購物車"
+                    onClick={closeMenu}
+                  >
+                    <FaShoppingCart size={22} />
+                    {carts?.length > 0 && <span className="header__badge">{carts.length}</span>}
+                  </NavLink>
+                </li>
+              </ul>
+
+              {/* auth  */}
+              {isLogin && (
+                <div className="header__auth">
+                  <NavLink
+                    to="/dashboard"
+                    className="header__icon"
+                    title="後台"
+                    onClick={closeMenu}
+                  >
+                    <FaTachometerAlt size={22} />
+                  </NavLink>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout, closeMenu}
+                    className="header__icon"
+                    title="登出"
+                  >
+                    <FaSignOutAlt size={22} />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </nav>
+      {/* overlay */}
+      <div className="header__overlay" onClick={closeMenu}></div>
+      {/* <div className="header__overlay" /> */}
     </>
   );
 };

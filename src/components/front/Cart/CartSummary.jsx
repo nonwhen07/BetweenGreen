@@ -69,12 +69,12 @@ const CartSummary = ({ carts, actions, onNext }) => {
         <button
           type="button"
           onClick={actions.onClear}
-          className="btn ui-btn ui-btn--outline-danger me-2"
+          className="ui-btn ui-btn--outline-danger me-2"
         >
           清空購物車
         </button>
         {/* <Link to="/products" className="cart-table-actions__btn--back">繼續購物</Link> */}
-        <button onClick={onNext} className="btn ui-btn ui-btn--primary">
+        <button onClick={onNext} className="ui-btn ui-btn--primary">
           前往結帳
         </button>
       </div>

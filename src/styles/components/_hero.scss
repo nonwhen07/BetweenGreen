@@ -127,9 +127,12 @@
 .hero-banner__text {
   position: absolute;
   top: calc(var(--header-height) + 3rem);
+  left: 50%;
+  transform: translateX(-50%) !important;
 
+  width: 90%;
   max-width: 640px;
-  padding: 18px;
+  padding: 16px;
 
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.08);
@@ -144,6 +147,13 @@
   transform: translateY(12px);
   animation: heroTextIn 1s ease-out forwards;
   animation-delay: 0.3s;
+
+  @include respond($breakpoints, desktop) {
+    left: 27%;
+    transform: none;
+    width: 100%;
+    padding: 18px;
+  }
 }
 
 /* 按鈕區 */

@@ -351,12 +351,12 @@ const CheckoutForm = ({
               <div className="summary-box mb-1">
                 <button
                   type="button"
-                  className="btn ui-btn ui-btn--outline-primary w-100 mb-2"
+                  className="ui-btn ui-btn--outline-primary w-100 mb-2"
                   onClick={onBack}
                 >
                   回到購物車
                 </button>
-                <button type="submit" className="btn ui-btn ui-btn--primary w-100">
+                <button type="submit" className="ui-btn ui-btn--primary w-100">
                   送出訂單
                 </button>
               </div>

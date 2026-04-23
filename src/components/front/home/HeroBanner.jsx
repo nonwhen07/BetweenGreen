@@ -88,7 +88,8 @@ const HeroBanner = () => {
         modules={[Navigation, Autoplay, Pagination]}
         slidesPerView={1} // 先用1，最穩
         loop={true}
-        autoplay={{ delay: 6500, disableOnInteraction: false }}
+        // autoplay={{ delay: 7000, disableOnInteraction: false }}
+        autoplay={{ delay: 70000, disableOnInteraction: false }}
         className="swiper hero-banner__swiper"
         // 你的參數設定
         centeredSlides={true}
@@ -129,9 +130,9 @@ const HeroBanner = () => {
               <div className="hero-banner__overlay" />
               <div className="container ui-container hero-banner__content">
                 <div className="hero-banner__text">
-                  <p className="hero-banner__eyebrow">{item.eyebrow}</p>
-                  <h1 className="hero-banner__title">{item.title}</h1>
-                  <p className="hero-banner__desc">{item.desc}</p>
+                  <p className="hero-banner__eyebrow mb-1">{item.eyebrow}</p>
+                  <h1 className="hero-banner__title mb-1">{item.title}</h1>
+                  <p className="hero-banner__desc mb-1">{item.desc}</p>
                   <div className="hero-banner__actions">
                     <button
                       className="ui-btn ui-btn--primary"
@@ -141,7 +142,7 @@ const HeroBanner = () => {
                     </button>
                     <button
                       className="ui-btn ui-btn--outline-primary"
-                      onClick={() => handleScroll('category')}
+                      onClick={() => handleScroll('lifestyle')}
                     >
                       探索分類
                     </button>

@@ -78,10 +78,8 @@ const HomePage = () => {
 
   return (
     <>
-      {/* 保留bootstarp-container，原因是我要用bootstarp他的排版 */}
       <HeroBanner />
 
-      {/* <CategorySection /> */}
       <LifestyleSection />
 
       <SceneShowcase />
@@ -90,13 +88,14 @@ const HomePage = () => {
 
       <ProductSection topProducts={topProducts} />
 
+      {/* 
       <BrandStory />
 
       <GardenTipsSection />
 
       <ReviewSection />
 
-      <NewsletterSection />
+      <NewsletterSection /> */}
 
       {/* ScreenLoading */}
       <PageLoader show={isLoading} zIndex={2000} />

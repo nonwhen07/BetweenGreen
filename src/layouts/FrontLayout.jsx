@@ -35,7 +35,7 @@ const FrontLayout = () => {
 
   return (
     <>
-      <div className={`${mode} ${season}`}>
+      <div className={`${mode}${season}`}>
         <FrontHeader />
         <main className={`ui-wrapper ${isHeroPage ? 'ui-wrapper-hero' : 'ui-wrapper-spacing'}`}>
           <Outlet />

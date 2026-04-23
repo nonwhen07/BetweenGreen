@@ -3,28 +3,98 @@
 @use '@/styles/helpers/variables' as *;
 @use 'sass:color';
 
+// Mobile-First，但是目前部分樣式先混用，除非有2種區別需要處理，ex:header__collapse
+:root {
+  --brand-height: 60px; // 預設brand高度、寬度auto，header根據brand高度在調整高度+樣式
+
+  @include respond($breakpoints, desktop) {
+    --brand-height: 80px; // desktop 較大時的高度
+  }
+}
+
+// body-.is-locked
+.is-locked {
+  position: fixed;
+  width: 100%;
+  overflow: hidden; // 防滾動
+  touch-action: none; // 防手機滑動
+}
+
 .header {
   position: fixed !important;
   top: 0;
   left: 0;
   width: 100%;
-
-  // height: 80px;
   z-index: 1000;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   /* 初始狀態：透明 */
   background-color: transparent;
-  color: $text-main;
+  // color: $text-on-primary !important;
   transition: all 0.4s ease-in-out;
+
+  transform: translateY(0);
+  will-change: transform;
+  backface-visibility: hidden;
 
   &__content {
     padding: 0 24px !important;
-    max-width: 1296px !important;
-    display: flex;
-    align-items: center;
+
+    width: 100%;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin: 0 auto;
+
+    @include respond($breakpoints, desktop) {
+      max-width: 1296px !important;
+
+      display: flex !important;
+      justify-content: space-between !important;
+      // align-items: center !important;
+      gap: 48px;
+    }
+  }
+
+  &__brand {
+    z-index: 950;
+
+    .logo {
+      flex-shrink: 0;
+      // display: inline-flex;
+      // align-items: center;
+
+      &__img {
+        height: var(--brand-height); // header 高度控制在這
+        width: auto;
+        display: block;
+
+        border: 1px solid transparent;
+      }
+
+      &__img:hover {
+        border: 1px solid $text-on-primary;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      &--light {
+        // Hero 用（白字）
+        filter: brightness(1);
+      }
+
+      &--dark {
+        // 白底 header 用
+        filter: brightness(0); // 直接轉黑
+      }
+
+      &--muted {
+        // 白底 header 用
+        filter: grayscale(100%) brightness(60%); // 直接轉灰
+      }
+    }
   }
 
   &__actions {
@@ -41,12 +111,123 @@
     margin: 0;
     padding: 0;
   }
+
   &__toggle {
     display: block !important;
+    border-radius: 10% !important;
+    border: 1px solid $text-on-primary !important;
+    color: $color-default !important;
+
+    z-index: 950; //  比 overlay 高
 
     @include respond($breakpoints, desktop) {
-      display: block !important;
       display: none !important;
+    }
+
+    // 關閉（collapsed）
+    &.collapsed {
+      border: 1px solid transparent !important;
+      background: transparent;
+    }
+    // 打開（沒有 collapsed）
+    &:not(.collapsed) {
+      border: 1px solid $text-on-primary !important; // 或你的變數
+      // background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &__collapse {
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+    width: 100%;
+
+    z-index: 950; //  比 overlay 高
+
+    background: $color-primary-light;
+
+    padding: 16px;
+    display: none !important; // Bootstrap 控制 show
+
+    @include respond($breakpoints, desktop) {
+      position: static;
+
+      flex-grow: 1; // 讓導覽選單佔據剩餘空間
+      width: 75%;
+      background-color: transparent;
+
+      padding: 0;
+      display: flex !important;
+      justify-content: space-between;
+      align-items: center !important;
+    }
+  }
+  &__collapse.show {
+    display: block !important; //tablet
+  }
+
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 900; // 比 header 低
+
+    opacity: 0;
+    pointer-events: none;
+
+    // 玻璃霧面
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+
+    transition: opacity 0.3s ease;
+  }
+
+  &__overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &__nav {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+
+    gap: 16px;
+    font-size: $font-size-xl;
+
+    // margin: 0;
+    // padding: 0;
+
+    @include respond($breakpoints, desktop) {
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 24px;
+    }
+  }
+
+  &__actions {
+    margin-top: 16px;
+    gap: 12px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @include respond($breakpoints, desktop) {
+      flex-direction: row;
+      margin-top: 0;
+    }
+  }
+
+  &__action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    @include respond($breakpoints, desktop) {
+      flex-direction: row;
     }
   }
 
@@ -88,8 +269,8 @@
     border-radius: 999px;
     font-size: 10px;
     line-height: 1;
-    background-color: #dc3545;
-    color: #fff;
+    background-color: $color-danger;
+    color: $color-default;
   }
 
   &__auth {
@@ -99,96 +280,93 @@
   }
 
   &__link {
-    color: $text-muted !important;
-    font-weight: $font-weight-bold;
+    color: $color-default !important;
+    font-weight: $font-weight-bold !important;
+    padding: 0 !important;
+
+    @include respond($breakpoints, desktop) {
+      color: $text-muted !important;
+    }
   }
 
   &__link.active,
   &__link:hover {
-    color: $text-on-primary !important;
+    color: $color-default !important;
     border-bottom: 2px solid $text-on-primary;
+
+    // @include respond($breakpoints, desktop) {
+    //   color: $text-on-primary !important;
+    // }
   }
 
   &--top {
     background-color: transparent;
-    color: $text-main;
+    // color: $text-main;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    @include respond($breakpoints, desktop) {
+      background-color: transparent;
+      // color: $text-main;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
   }
 
   &--hidden {
-    background-color: transparent;
-    color: transparent;
+    @include respond($breakpoints, desktop) {
+      background-color: transparent;
+      color: transparent;
 
-    .header__link {
-      color: transparent !important;
-    }
-    .header__link.active {
-      color: transparent !important;
-      border-bottom: none;
-    }
+      .header__link {
+        color: transparent !important;
+      }
+      .header__link.active {
+        color: transparent !important;
+        border-bottom: none;
+      }
 
-    .header__badge {
-      display: none;
+      .header__badge {
+        display: none;
+      }
     }
   }
   &--hidden:hover {
-    background-color: $color-primary;
-    color: $text-on-primary;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    @include respond($breakpoints, desktop) {
+      background-color: $color-primary;
+      color: $color-default;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
-    .header__link {
-      color: $text-muted !important;
-      font-weight: $font-weight-bold;
-    }
+      .header__link {
+        color: $text-muted !important;
+        font-weight: $font-weight-bold;
+      }
 
-    .header__link.active,
-    .header__link:hover {
-      color: $text-on-primary !important;
-      border-bottom: 2px solid $text-on-primary;
+      .header__link.active,
+      .header__link:hover {
+        color: $color-default !important;
+        border-bottom: 2px solid $text-on-primary;
+      }
     }
   }
 
   &--active {
     background-color: $color-primary;
-    color: $text-on-primary;
+    color: $color-default;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
 
   // 沒有Hero-Banner的page先固定樣式即可
   &--solid {
     background-color: $color-primary;
+
+    // .header__toggle:not(.collapsed) {
+    //   border-color: #333;
+    // }
   }
 }
 
 /* Hover 時的樣式 */
 .header:hover {
   background-color: $color-primary;
-  color: $text-on-primary;
+  color: $color-default;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  display: inline-flex;
-  align-items: center;
-
-  &__img {
-    height: 60px; // header 高度控制在這
-    width: auto;
-    display: block;
-  }
-
-  &--light {
-    // Hero 用（白字）
-    filter: brightness(1);
-  }
-
-  &--dark {
-    // 白底 header 用
-    filter: brightness(0); // 直接轉黑
-  }
-
-  &--muted {
-    // 白底 header 用
-    filter: grayscale(100%) brightness(60%); // 直接轉灰
-  }
 }
