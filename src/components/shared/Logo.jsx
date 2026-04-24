@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import logo from '@/assets/logoBG.png';
+import logo from '@/assets/images/brand/logo/logoBG.png';
 
 //{ variant = 'logo--light、logo--muted' }
 const Logo = () => {

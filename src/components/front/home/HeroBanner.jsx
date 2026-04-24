@@ -5,10 +5,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 // assets
-import heroImg1 from '@/assets/images/heroImg.png';
-import heroImg2 from '@/assets/images/heroImg.png';
-import heroImg3 from '@/assets/images/heroImg.png';
-import heroImg4 from '@/assets/images/heroImg.png';
+import heroMain from '@/assets/images/brand/hero/hero-main.png';
+import heroDesk from '@/assets/images/brand/hero/hero-desk.png';
+import heroSpace from '@/assets/images/brand/hero/hero-space.png';
+import heroBalcony from '@/assets/images/brand/hero/hero-balcony.png';
 
 const bannerData = [
   {
@@ -17,7 +17,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常。',
-    img: heroImg1,
+    img: heroMain,
     alt: '生活意境.png',
   },
   {
@@ -26,7 +26,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸2',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常2。',
-    img: heroImg2,
+    img: heroDesk,
     alt: '書桌陪伴.png',
   },
   {
@@ -35,7 +35,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸3',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常3。',
-    img: heroImg3,
+    img: heroSpace,
     alt: '空間造景.png',
   },
   {
@@ -44,7 +44,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸4',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常4。',
-    img: heroImg4,
+    img: heroBalcony,
     alt: '陽台生活.png',
   },
 ];

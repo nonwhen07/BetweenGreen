@@ -1,10 +1,10 @@
 import GardenTipCard from '@/components/front/home/GardenTips/GardenTipCard';
 // /tips/succulent-water.jpg
-import succulentWater from '@/assets/images/heroImg.png';
+import succulentWater from '@/assets/images/source/heroImg.png';
 // /tips/repotting.jpg
-import repotting from '@/assets/images/heroImg.png';
+import repotting from '@/assets/images/source/heroImg.png';
 // /tips/light-guide.jpg
-import lightGuide from '@/assets/images/heroImg.png';
+import lightGuide from '@/assets/images/source/heroImg.png';
 
 const tips = [
   {

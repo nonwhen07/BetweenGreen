@@ -10,7 +10,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 import HeroBanner from '@/components/front/home/HeroBanner';
 // import CategorySection from '@/components/front/home/Category/CategorySection';
 import LifestyleSection from '@/components/front/home/Lifestyle/LifestyleSection';
-import SceneShowcase from '@/components/front/home/SceneShowcase';
+
 import SeasonalCollection from '@/components/front/home/Seasonal/SeasonalSection';
 import ProductSection from '@/components/front/home/Product/ProductSection';
 import GardenTipsSection from '@/components/front/home/GardenTips/GardenTipsSection';
@@ -78,23 +78,20 @@ const HomePage = () => {
 
   return (
     <>
+      {/* --- 品牌敘事 --- */}
       <HeroBanner />
-
       <LifestyleSection />
-
-      <SceneShowcase />
-
-      {isSeasonActive && <SeasonalCollection />}
-
-      <ProductSection topProducts={topProducts} />
-
-      {/* 
       <BrandStory />
 
+      {/* --- 商品 --- */}
+
+      <ProductSection topProducts={topProducts} />
+      {isSeasonActive && <SeasonalCollection />}
+
+      {/* --- 互動信任 --- */}
+      {/* 
       <GardenTipsSection />
-
       <ReviewSection />
-
       <NewsletterSection /> */}
 
       {/* ScreenLoading */}

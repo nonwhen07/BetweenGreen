@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { FaBars, FaShoppingCart, FaTachometerAlt, FaUsers, FaSignOutAlt } from 'react-icons/fa';
-import Collapse from 'bootstrap/js/dist/collapse';
+import {
+  FaBars,
+  FaBox,
+  FaShoppingCart,
+  FaTachometerAlt,
+  FaUsers,
+  FaSignOutAlt,
+  FaCreditCard,
+} from 'react-icons/fa';
 
 // features
 import { logoutAction } from '@/features/auth/authSlice';
@@ -17,43 +24,52 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 
 // Header-routes
 const routes = [
-  // { path: '/', name: 'Home', title: '回到首頁' },
-  { path: '/about-us', name: 'AboutUs', title: '關於我們', type: 'link' },
-  { path: '/products', name: 'Products', title: '產品目錄', type: 'link' },
-  // { path: '/cart/step1', name: 'Cart, title: '回到首頁'' },
+  {
+    path: '/about-us',
+    name: 'AboutUs',
+    title: '關於我們',
+    label: '關於我們',
+    type: 'link',
+    showInNav: true,
+  },
+  {
+    path: '/products',
+    name: 'Products',
+    title: '產品目錄',
+    label: '產品目錄',
+    type: 'link',
+    showInNav: true,
+  },
   // { path: '/favorite', name: 'Favorite', title: '回到首頁' },
   // { path: '/orders', name: 'Orders', title: '歷史' },
 ];
-// const routeActions = [
-//   { path: '/cart/step1', name: 'Cart', title: '購物車', icon: FaShoppingCart, type: 'link' },
-//   // {
-//   //   path: '/member-center',
-//   //   name: 'MemberCenter',
-//   //   title: '會員中心',
-//   //   icon: FaUsers,
-//   //   type: 'link',
-//   //   auth: true,
-//   // },
-//   // {
-//   //   path: '/dashboard',
-//   //   name: 'Dashboard',
-//   //   title: '回到後台',
-//   //   icon: FaTachometerAlt,
-//   //   type: 'link',
-//   //   auth: true,
-//   // },
-//   // {
-//   //   path: '/logout',
-//   //   name: 'Logout',
-//   //   title: '登出',
-//   //   icon: FaSignOutAlt,
-//   //   type: 'btn',
-//   //   auth: true,
-//   // },
-// ];
-
-// 設定 heroPage
-const heroPagePaths = ['/', '/home', '/about-us'];
+const menuItems = [
+  {
+    type: 'link',
+    path: '/about-us',
+    label: '關於我們',
+    icon: FaUsers,
+  },
+  {
+    type: 'link',
+    path: '/products',
+    label: '產品目錄',
+    icon: FaBox,
+  },
+  {
+    type: 'action',
+    path: '/cart/step1',
+    label: '購物車',
+    icon: FaShoppingCart,
+  },
+  {
+    type: 'action',
+    path: '/dashboard',
+    label: '後台',
+    icon: FaTachometerAlt,
+    auth: true,
+  },
+];
 
 const FrontHeader = () => {
   // 初始化
@@ -61,14 +77,18 @@ const FrontHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isHeroPage = heroPagePaths.includes(location.pathname);
+  // const isHeroPage = heroPagePaths.includes(location.pathname);
+  const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about');
+
   const { success, showError } = useToast();
 
-  const [scrollState, setScrollState] = useState('scroll-top');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrollState, setScrollState] = useState('top');
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const isLogin = useSelector((state) => state.auth.isLogin);
   const carts = useSelector((state) => state.cart.carts);
+  const cartCount = carts?.length || 0;
 
   //加入登出
   const handleLogout = async () => {
@@ -85,83 +105,75 @@ const FrontHeader = () => {
   };
 
   // 關閉 menu（點擊遮罩或選單連結後）
-  const closeMenu = () => {
-    const collapseEl = document.getElementById('headerMenu');
-    if (!collapseEl) return;
-
-    let bsCollapse = Collapse.getInstance(collapseEl);
-
-    if (!bsCollapse) {
-      bsCollapse = new Collapse(collapseEl, {
-        toggle: false,
-      });
-    }
-
-    bsCollapse.hide();
-  };
+  const closeMenu = () => setIsMenuOpen(false);
 
   useEffect(() => {
-    const collapseEl = document.getElementById('headerMenu');
-    const overlayEl = document.querySelector('.header__overlay');
+    if (!isHeroPage) return; // 直接關掉
 
-    if (!collapseEl) return;
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      let nextState = 'down';
 
-    // 處理手機選單開啟時的 scroll 鎖定與解鎖
-    const lockScroll = () => {
-      const scrollY = window.scrollY;
+      if (currentY <= 150) {
+        nextState = 'top';
+      } else if (currentY < lastScrollY) {
+        nextState = 'active';
+      }
 
-      document.body.classList.add('is-locked'); // 用 class 控
-      document.body.style.top = `-${scrollY}px`;
+      setScrollState((prev) => (prev !== nextState ? nextState : prev));
+      setLastScrollY(currentY);
     };
 
-    const unlockScroll = () => {
-      const scrollY = document.body.style.top;
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isHeroPage, lastScrollY]);
 
+  useEffect(() => {
+    // const lockScroll = () => {
+    //   const scrollY = window.scrollY;
+    //   const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    //   document.body.style.top = `-${scrollY}px`;
+    //   document.body.style.position = 'fixed';
+    //   document.body.style.width = '100%';
+    //   document.body.style.paddingRight = `${scrollbarWidth}px`; // ⭐
+
+    //   document.body.classList.add('is-locked');
+    // };
+
+    // const unlockScroll = () => {
+    //   const scrollY = document.body.style.top;
+
+    //   document.body.style.position = '';
+    //   document.body.style.top = '';
+    //   document.body.style.width = '';
+    //   document.body.style.paddingRight = '';
+
+    //   document.body.classList.remove('is-locked');
+
+    //   window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    // };
+
+    if (isMenuOpen) {
+      // lockScroll();
+      document.body.classList.add('is-locked');
+    } else {
+      // unlockScroll();
       document.body.classList.remove('is-locked');
-      document.body.style.top = '';
-
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    };
-
-    // 展開
-    const handleShow = () => {
-      overlayEl?.classList.add('show');
-      lockScroll();
-    };
-
-    // 收合
-    const handleHide = () => {
-      overlayEl?.classList.remove('show');
-      unlockScroll();
-    };
-
-    collapseEl.addEventListener('shown.bs.collapse', handleShow);
-    collapseEl.addEventListener('hidden.bs.collapse', handleHide);
-
-    return () => {
-      collapseEl.removeEventListener('shown.bs.collapse', handleShow);
-      collapseEl.removeEventListener('hidden.bs.collapse', handleHide);
-    };
-  }, []);
+    }
+  }, [isMenuOpen]);
 
   useEffect(() => {
-    const collapseEl = document.getElementById('headerMenu');
-    if (!collapseEl) return;
-
-    let bsCollapse = Collapse.getInstance(collapseEl);
-
-    if (!bsCollapse) {
-      bsCollapse = new Collapse(collapseEl, {
-        toggle: false,
-      });
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
     }
-
-    bsCollapse.hide();
   }, [location.pathname]);
 
   return (
     <>
-      <nav className={`navbar header ${isHeroPage ? `header--${scrollState}` : 'header--solid'}`}>
+      <nav
+        className={`navbar header ${isHeroPage ? `header--scroll-${scrollState}` : 'header--solid'}`}
+      >
         <div className="container ui-container header__content">
           {/* brand */}
           <div className="header__brand">
@@ -170,18 +182,19 @@ const FrontHeader = () => {
           </div>
           {/* toggle */}
           <button
-            className="btn header__toggle"
+            className={`btn header__toggle${!isMenuOpen ? ' collapsed' : ''}`}
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#headerMenu"
             aria-controls="headerMenu"
             aria-expanded="false"
             aria-label="Toggle navigation"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
           >
-            <FaBars size={22} />
+            <span className="header__bar"></span>
+            <span className="header__bar"></span>
+            <span className="header__bar"></span>
           </button>
-          {/* collapse */}
-          <div className="collapse header__collapse" id="headerMenu">
+          {/* header__menu */}
+          <div className={`header__menu${isMenuOpen ? ' is-open' : ''}`} id="headerMenu">
             {/* nav */}
             <ul className="navbar-nav header__nav">
               {routes.map((route) => (
@@ -208,7 +221,7 @@ const FrontHeader = () => {
                     onClick={closeMenu}
                   >
                     <FaShoppingCart size={22} />
-                    {carts?.length > 0 && <span className="header__badge">{carts.length}</span>}
+                    {cartCount > 0 && <span className="header__badge">{cartCount}</span>}
                   </NavLink>
                 </li>
               </ul>
@@ -227,8 +240,11 @@ const FrontHeader = () => {
 
                   <button
                     type="button"
-                    onClick={handleLogout, closeMenu}
-                    className="header__icon"
+                    onClick={() => {
+                      handleLogout();
+                      closeMenu();
+                    }}
+                    className="header__icon header__link--danger"
                     title="登出"
                   >
                     <FaSignOutAlt size={22} />
@@ -236,12 +252,55 @@ const FrontHeader = () => {
                 </div>
               )}
             </div>
+            {/* menu-list */}
+            <ul className="header__menu-list">
+              {menuItems.map((item, index) => {
+                if (item.auth && !isLogin) return null;
+
+                const Icon = item.icon;
+
+                return (
+                  <li key={item.path + index} className="header__item" style={{ '--i': index }}>
+                    <NavLink
+                      to={item.path}
+                      title={item.label}
+                      className="header__link"
+                      onClick={closeMenu}
+                    >
+                      <div className="header__icon me-3">
+                        {Icon && <Icon size={25} />}
+                        {item.path === '/cart/step1' && cartCount > 0 && (
+                          <span className="header__badge">{cartCount}</span>
+                        )}
+                      </div>
+
+                      {item.label}
+                    </NavLink>
+                  </li>
+                );
+              })}
+              {isLogin && (
+                <li className="header__item">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleLogout();
+                      closeMenu();
+                    }}
+                    className="header__link"
+                    title="登出"
+                  >
+                    <FaSignOutAlt size={22} />
+                    <span className="ms-2">登出</span>
+                  </button>
+                </li>
+              )}
+            </ul>
           </div>
         </div>
       </nav>
       {/* overlay */}
-      <div className="header__overlay" onClick={closeMenu}></div>
-      {/* <div className="header__overlay" /> */}
+      <div className={`header__overlay${isMenuOpen ? ' is-active' : ''}`} onClick={closeMenu}></div>
     </>
   );
 };
