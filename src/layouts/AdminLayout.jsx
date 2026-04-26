@@ -25,23 +25,10 @@ const AdminLayout = () => {
 
   return (
     <>
-      {/* <div className="d-flex">
-        <AdminSidebar />
-        <div className="flex-grow-1">
-          <AdminHeader />
-          <main className="ui-wrapper container p-4 bg-light min-vh-100">
-            <Outlet />
-          </main>
-        </div>
-      </div>
-      <GoTop /> */}
-
       <div className="admin">
         <div className="admin-layout">
-          {/* Top Navbar */}
           <AdminHeader />
           <div className="admin-wrapper">
-            {/* Sidebar */}
             <AdminAside />
             <main className="admin-main">
               <div className="admin-content">

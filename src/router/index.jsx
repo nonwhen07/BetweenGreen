@@ -40,6 +40,10 @@ import LoginPage from '@/pages/admin/LoginPage';
 
 import DashboardPage from '@/pages/admin/DashboardPage';
 import AdminProductsPage from '@/pages/admin/ProductsPage';
+
+// import OrdersPage from '@/pages/admin/OrdersPage';
+// import CouponsPage from '@/pages/admin/CouponsPage';
+
 import AdminNotFoundPage from '@/pages/admin/AdminNotFoundPage';
 
 // 優化寫法：先定義 routes 陣列，再傳給 createHashRouter，結構更清晰也方便上 GitHub Pages自動轉換網址時的維護。
@@ -72,6 +76,9 @@ const routes = [
         element: <DashboardPage />,
       },
       { path: 'products', element: <AdminProductsPage /> },
+
+      // { path: 'orders', element: <OrdersPage /> },
+      // { path: 'coupons', element: <CouponsPage /> },
       {
         // Admin 404頁面
         path: '*',

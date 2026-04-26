@@ -1,34 +1,47 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+// import {
+//   FaTachometerAlt,
+//   FaBoxOpen,
+//   // FaShoppingCart,
+//   // FaTicketAlt,
+//   // FaNewspaper,
+//   FaHome,
+//   FaAlignJustify,
+// } from 'react-icons/fa';
+
 import {
-  FaTachometerAlt,
-  FaBoxOpen,
-  // FaShoppingCart,
-  // FaTicketAlt,
-  // FaNewspaper,
-  FaHome,
-  FaAlignJustify,
-} from 'react-icons/fa';
+  Activity,
+  Box,
+  Users,
+  ShoppingBag,
+  BookOpen,
+  AlertCircle,
+  ThumbsUp,
+  Menu,
+  Home,
+  Calendar,
+} from 'react-feather';
 
 const menu = [
   {
-    path: '/admin',
     name: 'Dashboard',
-    icon: FaTachometerAlt,
     title: '後台首頁',
+    path: '/admin',
+    icon: <Activity size={18} />,
     end: true,
   },
   {
-    path: '/admin/products',
     name: 'products',
-    icon: FaBoxOpen,
-    title: '產品列表',
+    title: '產品管理',
+    path: '/admin/products',
+    icon: <Box size={18} />,
   },
   // {
   //   path: '/admin/orders',
   //   name: 'Orders',
   //   icon: FaShoppingCart,
-  //   title: '優惠卷列表',
+  //   title: '訂單列表',
   // },
   // {
   //   path: '/admin/coupons',
@@ -39,28 +52,34 @@ const menu = [
   // {
   //   path: '/admin/news',
   //   name: 'News',
-  //   icon: FaNewspaper,
+  //   icon: <AlertCircle size={18} />,
   //   title: '最新消息',
   // },
-  { path: '/', name: 'BackHome', icon: FaHome, title: '回到前台首頁' },
+
+  {
+    name: 'BackHome',
+    title: '回到前台首頁',
+    path: '/',
+    icon: <Home size={18} />,
+  },
 ];
 
-const AdminSidebar = () => {
+const AdminAside = () => {
   const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
-      {/* Header */}
-      <div className="admin-sidebar__brand">
-        <span>My Admin</span>
-        <button onClick={() => setCollapsed(!collapsed)}>
-          <FaAlignJustify size={18} />
-        </button>
-      </div>
-      {/* Menu */}
-      <nav className="admin-sidebar__menu">
-        {/* end={route.path === '/admin'} ， React Router： end = exact match 
-          意思變成： /admin ✔ /admin/productlist ✖ ，所以： 後台首頁 active 產品列表 inactive */}
-        {menu.map((menuItem) => {
+    <>
+      <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
+        {/* Header */}
+        <div className="admin-sidebar__brand">
+          <span>植間生活後台</span>
+          <button onClick={() => setCollapsed(!collapsed)}>
+            <Menu size={18} />
+          </button>
+        </div>
+        {/* Menu */}
+        <nav className="admin-sidebar__menu">
+          {/* {menu.map((menuItem) => {
           const Icon = menuItem.icon;
           return (
             <NavLink
@@ -75,10 +94,22 @@ const AdminSidebar = () => {
               {menuItem.name}
             </NavLink>
           );
-        })}
-      </nav>
-    </aside>
+        })} */}
+          {menu.map((item) => (
+            <NavLink
+              key={item.name}
+              to={item.path}
+              end={item.end}
+              className={({ isActive }) => `admin-sidebar__item ${isActive ? 'active' : ''}`}
+            >
+              <span className="icon">{item.icon}</span>
+              <span className="text">{item.name}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+    </>
   );
 };
 
-export default AdminSidebar;
+export default AdminAside;
