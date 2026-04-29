@@ -7,6 +7,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 
+// assets
+import NO_IMAGE from '@/assets/images/no-image.png';
+
 // services
 import { getProductDetail } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
@@ -19,6 +22,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 import PageLoader from '@/components/shared/PageLoader';
 import ProductImage from '@/components/front/product/ProductImage';
 import ProductInfo from '@/components/front/product/ProductInfo';
+import ProductSwiper from '@/components/front/product/ProductSwiper';
 
 const ProductDetailPage = () => {
   // 根據路由的參數命名來取得該命名參數，ex path: 'product/:product_id'
@@ -88,61 +92,34 @@ const ProductDetailPage = () => {
 
   return (
     <>
-      <div className="container py-5">
-        <div className="row g-5 align-items-start">
+      <div className="container ui-container">
+        <div className="row align-items-start mt-4">
           {errorMessage && (
             <div className="col-12">
               <div className="alert alert-danger py-2">{errorMessage}</div>
             </div>
           )}
-          {/* 商品圖片 */}
-          <div className="col-md-6">
-            <ProductImage product={product} />
-          </div>
 
-          {/* swiper商品圖片 */}
-          {/* <div className="col-md-6">
-            <div className="main-swiper-wrapper">
-              <Swiper
-                modules={[Navigation, Thumbs]}
-                spaceBetween={10}
-                navigation
-                thumbs={{ swiper: thumbsSwiper }}
-                className="main-swiper"
-              >
-                {images.map((img, i) => (
-                  <SwiperSlide key={i}>
-                    <img src={img} alt={`產品圖 ${i + 1}`} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+          <div className="product-detail col-12">
+            <div className="row g-5">
+              <div className="col-lg-7 col-xl-6">
+                <ProductSwiper product={product} />
+              </div>
+              <div className="col-lg-5 col-xl-6">
+                <Productinfo product={product} />
+                {/* 商品資訊 */}
+
+                {/* <ProductInfo
+                  product={product}
+                  qtySelect={qtySelect}
+                  setQtySelect={setQtySelect}
+                  addCartItem={handleAddCartItem}
+                  isLoading={isCartLoading}
+                  cartMessage={cartMessage}
+                  isAdded={isAdded}
+                /> */}
+              </div>
             </div>
-            <Swiper
-              onSwiper={setThumbsSwiper}
-              slidesPerView={5}
-              spaceBetween={8}
-              watchSlidesProgress
-              className="thumb-swiper mt-4"
-            >
-              {images.map((img, i) => (
-                <SwiperSlide key={i}>
-                  <img src={img} alt={`縮圖 ${i + 1}`} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div> */}
-
-          {/* 商品資訊 */}
-          <div className="col-md-6">
-            <ProductInfo
-              product={product}
-              qtySelect={qtySelect}
-              setQtySelect={setQtySelect}
-              addCartItem={handleAddCartItem}
-              isLoading={isCartLoading}
-              cartMessage={cartMessage}
-              isAdded={isAdded}
-            />
           </div>
         </div>
       </div>

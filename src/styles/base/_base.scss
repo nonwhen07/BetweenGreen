@@ -1,6 +1,6 @@
 // base/_base.scss 與 reset.scss 合併而成，
 // 小專案可以不用特意reset.scss，只用這個_base.scss 就好
-@use '../helpers/variables' as *;
+@use '@/styles/helpers/variables' as *;
 
 /* === 最小 reset 區 === */
 

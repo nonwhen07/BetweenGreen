@@ -78,7 +78,7 @@ const FrontHeader = () => {
   const location = useLocation();
 
   // const isHeroPage = heroPagePaths.includes(location.pathname);
-  const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about');
+  const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about-us');
 
   const { success, showError } = useToast();
 

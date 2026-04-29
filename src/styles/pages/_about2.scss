@@ -1,0 +1,318 @@
+@use '@/styles/helpers/custom-text' as *;
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+
+.ui-about {
+  background: $color-bg-main;
+}
+
+/* =========================
+  1. About Hero
+========================= */
+.ui-about-hero {
+  padding: 0 !important;
+  scroll-margin-top: 0;
+  max-width: 100%;
+
+  position: relative;
+  min-height: 86vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: $text-on-primary;
+
+  &__bg,
+  &__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  &__bg {
+    background: $neutral-400;
+    z-index: $z-base;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__overlay {
+    background: linear-gradient(to right, $overlay-dark-strong, $overlay-dark-soft);
+    z-index: 2;
+  }
+
+  .ui-container {
+    position: relative;
+    z-index: 3;
+  }
+
+  &__inner {
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: $space-12;
+
+    @include respond($breakpoints, desktop) {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 80px;
+    }
+  }
+
+  &__content {
+    max-width: 680px;
+  }
+
+  &__eyebrow {
+    font-size: $font-size-sm;
+    letter-spacing: 0.2em;
+    margin-bottom: $space-4;
+    opacity: 0.9;
+  }
+
+  &__title {
+    font-size: 42px;
+    font-weight: $font-weight-semibold;
+    line-height: 1.3;
+    margin-bottom: $space-5;
+
+    span {
+      display: block;
+      font-size: $font-size-md;
+      font-weight: $font-weight-regular;
+      letter-spacing: 0.18em;
+      margin-top: $space-3;
+    }
+
+    @include respond($breakpoints, desktop) {
+      font-size: 64px;
+    }
+  }
+
+  &__subtitle {
+    max-width: 420px;
+    line-height: 1.9;
+    font-size: $font-size-base;
+  }
+
+  &__aside {
+    font-size: $font-size-xs;
+    letter-spacing: 0.18em;
+    opacity: 0.8;
+  }
+}
+
+/* =========================
+  2. About Story
+========================= */
+.ui-about-story {
+  padding: 100px 0;
+
+  @include respond($breakpoints, desktop) {
+    padding: 140px 0;
+  }
+
+  &__statement {
+    max-width: 760px;
+    margin: 0 auto 80px;
+    text-align: center;
+
+    p {
+      font-size: $font-size-xl;
+      line-height: 1.9;
+      color: $text-primary;
+      margin-bottom: $space-6;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  &__scene {
+    display: grid;
+    gap: $space-10;
+    margin-bottom: 100px;
+    align-items: center;
+
+    @include respond($breakpoints, desktop) {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 72px;
+      margin-bottom: 140px;
+    }
+
+    &--reverse {
+      @include respond($breakpoints, desktop) {
+        grid-template-columns: 0.95fr 1.05fr;
+
+        .ui-about-story__image {
+          order: 2;
+        }
+
+        .ui-about-story__text {
+          order: 1;
+        }
+      }
+    }
+  }
+
+  &__image {
+    .placeholder-image {
+      width: 100%;
+      height: 420px;
+      background: $neutral-300;
+      border-radius: $radius-md;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $text-muted;
+    }
+
+    @include respond($breakpoints, desktop) {
+      .placeholder-image {
+        height: 520px;
+      }
+    }
+  }
+
+  &__text {
+    p {
+      font-size: $font-size-md;
+      line-height: 2;
+      color: $text-body;
+      margin-bottom: $space-6;
+    }
+  }
+}
+
+/* =========================
+  3. Lifestyle Showcase
+========================= */
+.ui-about-lifestyle {
+  padding: 100px 0 120px;
+  background: $neutral-100;
+
+  @include respond($breakpoints, desktop) {
+    padding: 140px 0 160px;
+  }
+
+  &__heading {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  &__eyebrow {
+    font-size: $font-size-sm;
+    letter-spacing: 0.18em;
+    color: $color-secondary;
+    margin-bottom: $space-3;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    line-height: 1.6;
+    color: $text-primary;
+  }
+
+  &__grid {
+    display: grid;
+    gap: $space-8;
+
+    @include respond($breakpoints, desktop) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+  }
+
+  &__card {
+    background: $color-bg-surface;
+    border-radius: $radius-md;
+    overflow: hidden;
+    box-shadow: $shadow-xs;
+    transition: transform $transition-base;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  &__body {
+    padding: 28px 24px 32px;
+
+    h3 {
+      font-size: $font-size-xl;
+      margin-bottom: $space-3;
+      color: $text-primary;
+    }
+
+    p {
+      color: $text-body;
+      line-height: 1.8;
+    }
+  }
+
+  .placeholder-image {
+    width: 100%;
+    height: 320px;
+    background: $neutral-300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+  }
+}
+
+/* =========================
+  4. Ending CTA
+========================= */
+.ui-about-ending {
+  position: relative;
+  min-height: 62vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: $text-on-primary;
+
+  &__bg,
+  &__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  &__bg {
+    background: $neutral-500;
+    z-index: 1;
+  }
+
+  &__overlay {
+    background: $overlay-dark-base;
+    z-index: 2;
+  }
+
+  .ui-container {
+    position: relative;
+    z-index: 3;
+  }
+
+  &__content {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  &__quote {
+    font-size: $font-size-xl;
+    line-height: 1.9;
+    margin-bottom: $space-6;
+
+    @include respond($breakpoints, desktop) {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  .ui-btn-primary {
+    margin-top: $space-6;
+  }
+}

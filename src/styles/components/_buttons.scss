@@ -13,7 +13,8 @@
     color: $text-on-primary;
 
     &:hover {
-      background: darken($color-primary, 5%);
+      // background: darken($color-primary, 5%);
+      background: darken($color-secondary, 5%);
       color: $text-on-primary;
     }
   }

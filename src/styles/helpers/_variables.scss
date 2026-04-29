@@ -1,58 +1,73 @@
 // ==========================================================================
-//  網站底層色調 (Base Palette)
+//   網站底層色調 (Base Palette)
 // ==========================================================================
-// 空間與大背景 (UI-Wrapper & Body)
-$color-bg-main: #f5f3ef; // 極淺米灰，營造簡約呼吸感，避開死白
-$color-bg-soft: #faf8f4;
-$color-bg-surface: #ffffff; // 卡片或純白區塊
-$color-bg-muted: #eaeae2; // 稍深的都市建築灰色調
+// Base Palette｜網站底層背景色(UI-Wrapper & Body)
+$color-bg-main: #f5f3ef; // 主背景：極淺米灰
+$color-bg-soft: #faf8f4; // 淺區塊底
+$color-bg-surface: #ffffff; // 卡片、浮層、內容面
+$color-bg-muted: #eaeae2; // 次背景、分層底
 
-// 品牌核心色 (Brand Colors)
-$color-primary: #4f6f52; // 森林深綠 (專業、沉穩、植栽核心)
-$color-primary-dark: #2d4f39; // 保留原本
-$color-primary-light: #7fae86; // 嫩葉綠 (呼吸感、裝飾用)
-$color-secondary: #b5835a; // 陶土棕 (花盆、工具、土地感)
-$color-accent: #d4e09b; // 亮草綠 (導引點擊、特價標籤)
+// Brand Colors｜品牌核心色
+$color-primary: #4f6f52; // 品牌主綠
+$color-primary-dark: #2d4f39; // 深綠
+$color-primary-light: #7fae86; // 淺綠點綴
+$color-secondary: #b5835a; // 陶土棕
+$color-accent: #d4e09b; // 草綠亮點
 
-// $color-primary: #2f6d4f; // 主色（植物綠）
-// $color-accent: #f4a261; // 點綴（暖橘）
-// $color-bg: #f8f9fa;
-// $color-text: #2b2b2b;
+//  Neutral Scale｜暖灰中性色階（全站結構層）
+$neutral-100: #faf8f4;
+$neutral-200: #f1eee8;
+$neutral-300: #e4e0d8;
+$neutral-400: #d3cec4;
+$neutral-500: #b8b2a7;
+$neutral-600: #8d877d;
+$neutral-700: #5f5a52;
 
 // ==========================================================================
-// 2. 文字用色 (Typography)
+//   Typography Colors｜文字色系
 // ==========================================================================
-$text-on-primary: #ffffff; // 深色背景上的反白字
-$text-main: #333333; // 接近黑的深灰 (h1-h5)
-$text-body: #555555; // 標準內文灰 (易讀性高)
-$text-muted: #888888; // 輔助說明、小字
-$text-primary: #2f3e2f; // 深綠灰
+$text-on-primary: #ffffff;
+$text-main: #333333;
+$text-body: #555555;
+$text-muted: #888888;
+$text-primary: #2f3e2f;
 $text-secondary: #6b7a6b;
 
 // ==========================================================================
-//  UI 反饋色 (Feedback & Toast)
+//   UI Feedback Colors｜系統提示色
 // ==========================================================================
-$color-success: #606c38; // 沉穩綠 (操作成功)
-$color-error: #bc6c25; // 帶點橘的棕紅 (警告，符合自然色系)
-$color-info: #4a7c96; // 都市藍 (通知)
-$color-warning: #d4a373; // 鵝黃棕
+$color-success: #606c38;
+$color-error: #bc6c25;
+$color-info: #4a7c96;
+$color-warning: #d4a373;
 $color-danger: #e53935;
 $color-muted: #888888;
 $color-default: #ffffff;
 
-// ========================
-// 🌿 Typography
-// ========================
+// ==========================================================================
+//   Overlay / Mask System｜遮罩層系統
+// ==========================================================================
+$overlay-light: rgba(255, 255, 255, 0.45);
+
+$overlay-dark-soft: rgba(20, 20, 20, 0.18);
+$overlay-dark-base: rgba(20, 20, 20, 0.35);
+$overlay-dark-strong: rgba(20, 20, 20, 0.5);
+$overlay-dark-heavy: rgba(20, 20, 20, 0.7);
+
+// ==========================================================================
+//   Typography System｜字體規範
+// ==========================================================================
 $font-family-base: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
 
-$font-size-xs: 0.75rem; // 12px
-$font-size-sm: 0.875rem; // 14px
-$font-size-base: 1rem; // 16px
-$font-size-md: 1.125rem; // 18px
-$font-size-lg: 1.25rem; // 20px
-$font-size-xl: 1.5rem; // 24px
-$font-size-2xl: 2rem; // 32px
-$font-size-3xl: 2.5rem; // 40px
+$font-size-xs: 0.75rem; // 12
+$font-size-sm: 0.875rem; // 14
+$font-size-base: 1rem; // 16
+$font-size-md: 1.125rem; // 18
+$font-size-lg: 1.25rem; // 20
+$font-size-xl: 1.5rem; // 24
+$font-size-2xl: 2rem; // 32
+$font-size-3xl: 2.5rem; // 40
+$font-size-4xl: 3.5rem; // 56 hero用
 
 $font-weight-regular: 400;
 $font-weight-medium: 500;
@@ -61,35 +76,39 @@ $font-weight-bold: 700;
 
 $line-height-base: 1.5;
 $line-height-heading: 1.2;
+$line-height-loose: 1.8;
+$line-height-relaxed: 2;
 
-// ========================
-// 🌿 Radius
-// ========================
+// ==========================================================================
+//   Radius System｜圓角規範
+// ==========================================================================
 $radius-xs: 4px;
 $radius-sm: 8px;
 $radius-md: 12px;
 $radius-lg: 16px;
 $radius-xl: 24px;
+$radius-2xl: 32px;
 $radius-pill: 999px;
 
-// ========================
-// 🌿 Shadow
-// ========================
+// ==========================================================================
+//   Shadow System｜陰影規範
+// ==========================================================================
 $shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.06);
 $shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
 $shadow-md: 0 6px 18px rgba(0, 0, 0, 0.12);
 $shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.16);
+$shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.2);
 
-// ========================
-// 🌿 Transition
-// ========================
+// ==========================================================================
+//  Transition System｜動畫速度
+// ==========================================================================
 $transition-fast: 0.2s ease;
 $transition-base: 0.3s ease;
 $transition-slow: 0.45s ease;
 
-// ========================
-// 🌿 Spacing
-// ========================
+// ==========================================================================
+//   Spacing System｜內外距
+// ==========================================================================
 $space-1: 0.25rem; // 4px
 $space-2: 0.5rem; // 8px
 $space-3: 0.75rem; // 12px
@@ -100,30 +119,61 @@ $space-8: 2rem; // 32px
 $space-10: 2.5rem; // 40px
 $space-12: 3rem; // 48px
 $space-16: 4rem; // 64px
+$space-20: 5rem; // 80px
+$space-24: 6rem; // 96px
 
-// ========================
-// 🌿 Border
-// ========================
+/* ==========================================================================
+  Section Spacing｜區塊專用留白
+========================================================================== */
+$section-space-sm: 80px;
+$section-space-md: 120px;
+$section-space-lg: 160px;
+$section-space-xl: 220px;
+
+// ==========================================================================
+//   Border System｜邊框
+// ==========================================================================
 $border-width-sm: 1px;
 $border-width-md: 2px;
-$border-color-base: #ffffff;
 
-// ========================
-// 🌿 Layout
-// ========================
-$container-width: 1296px;
-$section-width: 1840px;
-$layout-width: 1920px;
+$border-color-base: $neutral-300;
+$border-color-soft: $neutral-200;
+$border-color-dark: $neutral-500;
 
-// ========================
-// 🌿 Z-index
-// ========================
+// ==========================================================================
+//   Layout Width｜版型寬度
+// ==========================================================================
+$content-width: 1296px;
+$strip-width: 1840px;
+$wrapper-width: 1920px;
+
+// ==========================================================================
+//   Z-index System｜層級
+// ==========================================================================
 $z-base: 1;
 $z-dropdown: 1000;
 $z-sticky: 1020;
 $z-fixed: 1030;
+$z-overlay: 1035;
 $z-modal-backdrop: 1040;
 $z-modal: 1050;
 $z-toast: 1060;
 $z-tooltip: 1080;
 $z-loader: 2000;
+
+// ==========================================================================
+//   Product Detail / Product Card 專用變數
+// ==========================================================================
+
+// 主圖比例（用在產品詳細頁、快速預覽等）
+$product-main-image-aspect: 13 / 10; // Desktop 主視覺比例 ≈ 650:500
+
+// 縮圖高度
+$product-thumb-height: 80px; // 桌面版縮圖
+$product-thumb-height-mobile: 68px; // 手機版縮圖（可選）
+
+// 主要按鈕高度（加入購物車、立即購買等重要 CTA）
+$product-button-height: 56px;
+
+// 商品卡片用圖片比例（如果之後要做商品列表頁）
+$product-card-aspect: 4 / 3;

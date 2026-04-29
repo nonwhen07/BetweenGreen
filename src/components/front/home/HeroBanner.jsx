@@ -49,6 +49,61 @@ const bannerData = [
   },
 ];
 
+// todo
+// ✅ Home Hero Banner 明日調整筆記（濃縮版）
+// 目前問題
+// 現在是傳統電商玻璃資訊盒，導購清楚但品牌感不足。
+// 大毛玻璃框把背景圖壓成陪襯，Hero 圖優勢被吃掉。
+// 四張 swiper 若都同位置同資訊盒，會像普通廣告輪播。
+// 調整核心方向
+// Home Hero ≠ About 海報
+
+// Home Hero 要做成：
+
+// 品牌導覽式生活電影感 Swiper
+
+// 不是靜態品牌海報。
+
+// 必改三點
+// ① 拿掉大玻璃資訊框
+
+// 改成：
+
+// 漂浮文字群
+// 無框 / 超淡局部玻璃底
+// 圖片重新成主角
+// ② 每張 Slide 文字位置略不同
+
+// 建立：
+
+// left
+// upper-left
+// right-lower
+// lower-left
+
+// 讓 swiper 有 lookbook 呼吸感。
+
+// ③ 底部增加導覽暗示
+
+// 加入：
+
+// 01 / 04
+// progress line
+// scroll to explore
+
+// 增加首頁探索感。
+
+// Home vs About 分工
+// Home = 動態導覽品牌入口
+// About = 靜態品牌定錨海報
+
+// 兩者互相呼應但不能同模板。
+
+// 明天要做的施工
+
+// 重做 HomeHero overlay JSX + SCSS 架構
+// （不是換圖，是換文字層與導覽層設計）
+
 const HeroBanner = () => {
   // 本地Scroll
   const handleScroll = (id) => {

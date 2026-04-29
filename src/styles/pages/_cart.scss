@@ -246,6 +246,7 @@ $transition-speed: 0.3s;
     td {
       text-align: left; // 先設定預設對齊
       vertical-align: middle;
+
       &.cart-table__col--action,
       &.cart-table__col--image,
       &.cart-table__col--price,
@@ -254,6 +255,27 @@ $transition-speed: 0.3s;
       }
       &.cart-table__col--subtotal {
         text-align: end; // 金額類建議靠右
+      }
+
+      &.cart-table__col--image {
+        vertical-align: middle;
+
+        // 針對 ProductImage 組件產生的容器
+        .product-img {
+          margin: 0 auto; // 如果它是 block 元素，這行能解決
+          display: flex; // 或者改用 flex
+          justify-content: center;
+          align-items: center;
+
+          border-radius: 15%;
+
+          transition: transform 0.5s ease-in-out;
+          cursor: zoom-in; // 提示使用者可以點擊
+
+          &:hover {
+            transform: scale(4); // 輕微放大即可，不遮擋其他文字
+          }
+        }
       }
 
       .btn-trash {

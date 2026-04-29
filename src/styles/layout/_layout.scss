@@ -5,8 +5,32 @@
 @use '@/styles/helpers/variables' as *;
 
 :root {
+  // 先手動設定header、footer的height當後面參考依據
   --header-height: 80px;
   --footer-height: 80px;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $text-main;
+  background: $color-bg-main;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color $transition-base;
+}
+
+button {
+  transition: all $transition-base;
 }
 
 // ui-container 系列 依照畫面切割看來，主要有三種寬度：1296px / 1840px / 1920px
@@ -15,7 +39,7 @@
 // ui-wrapper為 main/header/footer 共用版型  1920px，
 // 要注意 bootstarp row 的 padding 設定
 .ui-wrapper {
-  max-width: 1920px;
+  max-width: $wrapper-width;
   margin: 0 auto;
   padding-top: 80px; /* 全域設定：所有 main 預設空出 header 高度 */
   background-color: $color-bg-main;
@@ -34,22 +58,29 @@
 }
 
 // 共用 section 版型 "暫定" 1840px，
-//之後改 .ui-strip ，「Strip」在設計上就是指橫向的一條背景
+//之後改 .ui-strip、$strip-width，「Strip」在設計上就是指橫向的一條背景
 .ui-section {
   scroll-margin-top: 100px;
 
-  max-width: 1840px;
+  max-width: $strip-width;
   margin: 0 auto;
-  padding: 60px 0;
-  background: $color-bg-muted;
+  // padding: 60px 0;
+  padding: $section-space-md 0;
 
-  &-alt {
+  background: transparent;
+  // background: $color-bg-muted;
+
+  &--soft {
+    background: $color-bg-soft;
+  }
+
+  &--alt {
     background: $color-bg-main;
   }
 
   // 小一點的版本：1296px 略大一圈
   &--sm {
-    max-width: 1440px;
+    max-width: $content-width;
   }
 
   // 破版全開版本
@@ -57,15 +88,84 @@
     max-width: 100%; // 對應你之前的 section-full
   }
 
+  &--muted {
+    background: $neutral-100;
+  }
+
+  &--tight {
+    padding: $section-space-sm 0;
+  }
+
+  &--loose {
+    padding: $section-space-lg 0;
+  }
+
   @include respond($breakpoints, desktop) {
     padding: 96px 0;
   }
 }
 
-// .ui-section 內部的實際內容區域為.ui-container 1296px，
-// 之後改 .ui-content更語意畫
+// .ui-section 內部的實際內容區域為.ui-container 1296px，配合Bootstarp-container格線系統，
+// 使用上 .container .ui-container，之後改 .container .ui-content更語意畫
 .ui-container {
-  max-width: 1296px;
+  width: 100%;
+  max-width: $content-width;
   margin: 0 auto;
-  padding: 0px;
+
+  // padding: 0;
+  padding: 0 $space-2;
+
+  @include respond($breakpoints, desktop) {
+    // padding: 0 ;
+    padding: 0 $space-6;
+  }
+}
+
+// 共用 Overlay Helper
+.ui-overlay {
+  position: absolute;
+  inset: 0;
+
+  &--soft {
+    background: $overlay-dark-soft;
+  }
+
+  &--base {
+    background: $overlay-dark-base;
+  }
+
+  &--strong {
+    background: $overlay-dark-strong;
+  }
+
+  &--heavy {
+    background: $overlay-dark-heavy;
+  }
+}
+
+// 共用 Section Title
+.ui-heading {
+  text-align: center;
+  margin-bottom: $space-12;
+
+  &__eyebrow {
+    font-size: $font-size-sm;
+    color: $color-secondary;
+    letter-spacing: 0.18em;
+    margin-bottom: $space-3;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    color: $text-primary;
+    line-height: 1.5;
+    margin-bottom: $space-4;
+  }
+
+  &__intro {
+    max-width: 720px;
+    margin: 0 auto;
+    color: $text-body;
+    line-height: $line-height-loose;
+  }
 }

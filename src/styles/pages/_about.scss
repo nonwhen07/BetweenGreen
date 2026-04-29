@@ -72,18 +72,43 @@
     linear-gradient(rgba(20, 20, 20, 0.28), rgba(20, 20, 20, 0.28)),
     url('/images/about/about-hero.jpg') center / cover no-repeat;
 
-  /* 之後要做微動可開 */
-  // animation: aboutHeroZoom 16s ease-in-out infinite;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1);
+    animation: aboutHeroBreath 24s ease-in-out infinite;
+  }
+
+  @keyframes aboutHeroBreath {
+    0% {
+      transform: scale(1) translate3d(0, 0, 0);
+    }
+    50% {
+      transform: scale(1.018) translate3d(-6px, -2px, 0);
+    }
+    100% {
+      transform: scale(1) translate3d(0, 0, 0);
+    }
+  }
 }
 
 .ui-about-hero__overlay {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(to bottom, rgba(15, 15, 15, 0.18), rgba(15, 15, 15, 0.3));
+
+  background: linear-gradient(to right, rgba(20, 20, 20, 0.42), rgba(20, 20, 20, 0.16));
+}
+
+.ui-about-hero__inner {
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 56px;
 }
 
 .ui-about-hero__content {
+  padding-left: 12px;
   position: relative;
   z-index: 3;
   max-width: 760px;
