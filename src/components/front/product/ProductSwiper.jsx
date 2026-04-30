@@ -50,8 +50,8 @@ const ProductSwiper = ({ product }) => {
 
   return (
     <>
-      <div className="row g-5">
-        {/* 左欄：圖片區 */}
+      {/* <div className="row g-5">
+        左欄：圖片區
         <div className="col-12 col-lg-7 col-xl-6">
           <div className="main-swiper-wrapper">
             <Swiper
@@ -101,7 +101,7 @@ const ProductSwiper = ({ product }) => {
             </Swiper>
           )}
         </div>
-        {/* 右欄：商品資訊 */}
+        右欄：商品資訊
         <div className="col-12 col-lg-5 col-xl-6">
           <div className="product-info">
             <h1 className="h2 fw-bold mb-2">{product.title}</h1>
@@ -131,7 +131,55 @@ const ProductSwiper = ({ product }) => {
             <p className="text-muted mb-4">{product.description}</p>
           </div>
         </div>
+      </div> */}
+
+      <div className="main-swiper-wrapper">
+        <Swiper
+          modules={[Navigation, Thumbs, Autoplay]}
+          spaceBetween={10}
+          navigation
+          thumbs={{ swiper: thumbsSwiper }}
+          autoplay={{
+            delay: 4500,
+            pauseOnMouseEnter: true,
+            disableOnInteraction: false,
+          }}
+          className="main-swiper"
+        >
+          {allImages.map((imgUrl, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={imgUrl}
+                alt={`${product.title} - 圖片 ${index + 1}`}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = NO_IMAGE;
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
+
+      {allImages.length > 1 && (
+        <Swiper
+          onSwiper={setThumbsSwiper}
+          slidesPerView={5}
+          spaceBetween={8}
+          watchSlidesProgress
+          className="thumb-swiper mt-4"
+        >
+          {allImages.map((imgUrl, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={imgUrl}
+                alt={`縮圖 ${index + 1}`}
+                onError={(e) => (e.target.src = NO_IMAGE)}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </>
   );
 };

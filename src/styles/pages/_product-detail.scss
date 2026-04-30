@@ -7,24 +7,25 @@
 // ==========================================================================
 
 // .product-detail {
-//   // 移除 max-width，讓 Bootstrap 的 col 來控制寬度
-//   // max-width: $content-width;   ← 先註解掉或刪除
+//   width: 100%;
 
-//   // 保護 Bootstrap 的 row
-//   .row {
+//   // 強力保護 Bootstrap 的 row 和 col，避免被 .ui-container 影響
+//   .row.g-4 {
+//     --bs-gutter-y: 2rem !important;
 //     margin-left: 0 !important;
 //     margin-right: 0 !important;
 //   }
 
-//   /* 增加這段，讓樣式能吃到 ProductSwiper 裡面的 row */
-//   .row.g-5 {
-//     margin-left: 0 !important;
-//     margin-right: 0 !important;
+//   // 確保 col 在桌面能正常展開
+//   .col-lg-7,
+//   .col-lg-5,
+//   .col-xl-6 {
+//     padding-left: var(--bs-gutter-x, 1.5rem) !important;
+//     padding-right: var(--bs-gutter-x, 1.5rem) !important;
 //   }
 
-//   // ==================== 左欄：主圖 Swiper ====================
+//   // ==================== 主圖區域 ====================
 //   .main-swiper-wrapper {
-//     position: relative;
 //     width: 100%;
 //     max-width: 700px;
 //     aspect-ratio: $product-main-image-aspect;
@@ -33,36 +34,15 @@
 //     overflow: hidden;
 //     box-shadow: $shadow-lg;
 //     border: 1px solid $border-color-soft;
-//     margin: 0 auto; // 讓主圖在欄位內置中
-
-//     .main-swiper {
-//       width: 100%;
-//       height: 100%;
-
-//       img {
-//         width: 100%;
-//         height: 100%;
-//         object-fit: contain;
-//         object-position: center;
-//         background: $color-bg-surface;
-//       }
-//     }
+//     margin: 0 auto;
 //   }
 
-//   // Swiper 導航按鈕
-//   .swiper-button-next,
-//   .swiper-button-prev {
-//     width: 48px;
-//     height: 48px;
+//   .main-swiper img {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: contain;
+//     object-position: center;
 //     background: $color-bg-surface;
-//     border-radius: $radius-pill;
-//     box-shadow: $shadow-md;
-//     color: $color-primary;
-
-//     &:hover {
-//       background: $color-primary;
-//       color: $text-on-primary;
-//     }
 //   }
 
 //   // ==================== 縮圖列 ====================
@@ -73,6 +53,7 @@
 //       border-radius: $radius-md;
 //       overflow: hidden;
 //       border: 2px solid transparent;
+//       transition: all $transition-base;
 
 //       img {
 //         width: 100%;
@@ -87,8 +68,9 @@
 //     }
 //   }
 
-//   // ==================== 右欄：商品資訊 ====================
+//   // ==================== 商品資訊 ====================
 //   .product-info {
+//     h2,
 //     h1 {
 //       font-size: $font-size-xl;
 //       line-height: $line-height-heading;
@@ -97,8 +79,14 @@
 //     }
 //   }
 
-//   // ==================== RWD 響應式調整 ====================
-//   // 只在 Mobile 時強制垂直，其他時候讓 Bootstrap 控制
+//   // ==================== RWD ====================
+//   @include respond($breakpoints, pad) {
+//     .main-swiper-wrapper {
+//       max-width: 100%;
+//       aspect-ratio: 16 / 11;
+//     }
+//   }
+
 //   @include respond($breakpoints, mobile) {
 //     .row.g-5 {
 //       flex-direction: column !important;
@@ -113,52 +101,78 @@
 //     .thumb-swiper .swiper-slide img {
 //       height: 68px;
 //     }
-
-//     .product-info h1 {
-//       font-size: $font-size-2xl;
-//     }
-//   }
-
-//   // Pad 尺寸調整（可選）
-//   @include respond($breakpoints, pad) {
-//     .main-swiper-wrapper {
-//       max-width: 100%;
-//       aspect-ratio: 16 / 11;
-//     }
 //   }
 // }
 
 .product-detail {
   width: 100%;
 
-  /* 保護 Bootstrap row */
   .row.g-5 {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    --bs-gutter-x: 2.5rem !important;
+    --bs-gutter-y: 2.5rem !important;
   }
 
+  // ==================== 主圖風格（增加生活氛圍） ====================
   .main-swiper-wrapper {
     width: 100%;
-    max-width: 700px;
+    max-width: 720px;
     aspect-ratio: $product-main-image-aspect;
     background: $color-bg-surface;
-    border-radius: $radius-xl;
+    border-radius: $radius-2xl;
     overflow: hidden;
-    box-shadow: $shadow-lg;
-    border: 1px solid $border-color-soft;
-    margin: 0 auto;
+    box-shadow: $shadow-xl;
+    border: 1px solid $neutral-200;
   }
 
-  .product-info h1 {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
+  .main-swiper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 20px; // 給植物圖一些呼吸空間
+    background: $color-bg-surface;
+  }
+
+  // 縮圖列優雅化
+  .thumb-swiper {
+    .swiper-slide {
+      border-radius: $radius-lg;
+      overflow: hidden;
+      box-shadow: $shadow-sm;
+      transition: all $transition-base;
+
+      &.swiper-slide-thumb-active {
+        border: 2.5px solid $color-primary;
+        box-shadow: 0 0 0 4px rgba($color-primary, 0.15);
+      }
+    }
+  }
+
+  // ==================== 商品資訊 - 品牌生活感 ====================
+  .product-info {
+    h2 {
+      font-size: $font-size-2xl;
+      color: $text-primary;
+      line-height: 1.3;
+    }
+
+    .text-muted {
+      color: $text-body;
+      line-height: $line-height-relaxed;
+    }
+
+    .badge {
+      background: $color-primary-light;
+      color: $text-on-primary;
+      font-size: $font-size-xs;
+      padding: 4px 10px;
+    }
   }
 
   // RWD
   @include respond($breakpoints, mobile) {
     .row.g-5 {
       flex-direction: column !important;
-      gap: $space-8;
+      gap: $space-10;
     }
 
     .main-swiper-wrapper {

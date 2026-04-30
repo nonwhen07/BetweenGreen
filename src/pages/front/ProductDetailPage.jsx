@@ -15,16 +15,20 @@ import { getProductDetail } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
 import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
 import PageLoader from '@/components/shared/PageLoader';
 import ProductImage from '@/components/front/product/ProductImage';
-import ProductInfo from '@/components/front/product/ProductInfo';
 import ProductSwiper from '@/components/front/product/ProductSwiper';
+// import ProductInfo from '@/components/front/product/ProductInfo';
+import ProductInfo_2 from '@/components/front/product/ProductInfo_2';
 
 const ProductDetailPage = () => {
+  const { start, stop } = useLoading();
+
   // 根據路由的參數命名來取得該命名參數，ex path: 'product/:product_id'
   // 如果是多個參數ex path: 'product/:product_id/:typemode'，則取得方式為 const { product_id, typemode } = useParams();
   const { product_id } = useParams(); // 根據路由參數名稱取得對應值，ex path: 'product/:product_id',
@@ -34,7 +38,7 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
   const [qtySelect, setQtySelect] = useState(1);
 
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  // const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [isCartLoading, setCartIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -47,7 +51,8 @@ const ProductDetailPage = () => {
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const initDetail = async () => {
-      setIsScreenLoading(true);
+      // setIsScreenLoading(true);
+      start();
       try {
         const res = await getProductDetail(product_id);
 
@@ -57,7 +62,8 @@ const ProductDetailPage = () => {
         const errorMessage = extractErrorMessage(error, setErrorMessage, '取得產品細項失敗');
         showError(errorMessage);
       } finally {
-        setIsScreenLoading(false);
+        // setIsScreenLoading(false);
+        stop();
       }
     };
 
@@ -101,15 +107,13 @@ const ProductDetailPage = () => {
           )}
 
           <div className="product-detail col-12">
-            <div className="row g-5">
+            <div className="row g-4">
               <div className="col-lg-7 col-xl-6">
                 <ProductSwiper product={product} />
               </div>
               <div className="col-lg-5 col-xl-6">
-                <Productinfo product={product} />
                 {/* 商品資訊 */}
-
-                {/* <ProductInfo
+                <ProductInfo_2
                   product={product}
                   qtySelect={qtySelect}
                   setQtySelect={setQtySelect}
@@ -117,15 +121,19 @@ const ProductDetailPage = () => {
                   isLoading={isCartLoading}
                   cartMessage={cartMessage}
                   isAdded={isAdded}
-                /> */}
+                />
               </div>
+            </div>
+            {/* ==================== 相關推薦商品 ==================== */}
+            <div className="mt-5 pt-5 border-top">
+              <h5 className="fw-semibold mb-4 text-center text-primary">為您推薦 · 搭配建議</h5>
+              {/* <RelatedProducts productId={product.id} limit={4} /> */}
             </div>
           </div>
         </div>
       </div>
 
-      {/* 全畫面 loading */}
-      <PageLoader show={isScreenLoading} zIndex={2000} />
+      {/* <PageLoader show={isScreenLoading} zIndex={2000} /> */}
     </>
   );
 };
