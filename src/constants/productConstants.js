@@ -5,11 +5,11 @@ export const DEFAULT_PRODUCT = {
   imageUrl: '',
   title: '',
   category: '',
+  content: '',
   unit: '',
   origin_price: '',
   price: '',
   description: '',
-  content: '',
   is_enabled: 0,
   imagesUrl: [''],
   // 新增欄位
@@ -140,6 +140,67 @@ export const CATEGORY_SPECIES_MAP = {
 };
 
 // ======================================================
+// THEME_TYPE_RELATION_MAP
+//
+// ======================================================
+export const THEME_TYPE_RELATION_MAP = {
+  DeskLiving: ['Plant', 'Pottery', 'Lifestyle'],
+
+  BalconyMood: ['Plant', 'Pottery'],
+
+  SpaceStyling: ['Plant', 'Pottery', 'Lifestyle'],
+
+  PlantCare: ['Tool', 'Compost', 'Pottery'],
+
+  SeasonGift: ['FlowerGift'],
+
+  CelebrationGift: ['FlowerGift'],
+};
+
+// ======================================================
+// TYPE_SPECIES_RELATION_MAP
+//
+// ======================================================
+export const TYPE_SPECIES_RELATION_MAP = {
+  Plant: ['Succulent', 'Cactus', 'Foliage', 'Fern', 'Orchid', 'Monstera', 'Hoya', 'ZZPlant'],
+
+  Tool: ['WateringCan', 'Pruner', 'PlantLamp'],
+
+  Pottery: ['CeramicPot', 'GlassVase'],
+
+  Compost: ['OrganicSoil', 'SlowReleaseFeed'],
+
+  Lifestyle: ['PlantMug', 'AquariumCoupon'],
+
+  FlowerGift: [
+    'TulipGiftBox',
+    'GraduationBouquet',
+    'TeacherBouquet',
+    'MotherDayBouquet',
+    'HolidayGiftBox',
+  ],
+};
+
+// ======================================================
+// PRODUCT CONTENT TAGS：badge / filter / product highlights
+// content 格式：Minimal|BeginnerFriendly|DeskCompanion
+// ======================================================
+export const PRIMARY_CONTENT_TAGS = [
+  'Minimal',
+  'BeginnerFriendly',
+  'DeskCompanion',
+  'WarmLight',
+  'GiftChoice',
+  'Nordic',
+  'IndoorPlant',
+  'Modern',
+  'EasyCare',
+  'Elegant',
+  'Blooming',
+  'Luxury',
+];
+
+// ======================================================
 // PRODUCT CONTENT TAGS：badge / filter / product highlights
 // content 格式：Minimal|BeginnerFriendly|DeskCompanion
 // ======================================================
@@ -185,6 +246,108 @@ export const PRODUCT_CONTENT_MAP = {
   HolidaySpecial: { label: '節慶限定', badge: 'Holiday' },
   PreOrder: { label: '預購商品', badge: 'Pre Order' },
 };
+
+// ======================================================
+// PRODUCT UNIT TAGS：
+// ======================================================
+export const PRODUCT_UNIT_MAP = {
+  PotSet: {
+    label: '單盆植栽',
+    value: '1 pot set',
+  },
+
+  DoublePot: {
+    label: '雙盆組合',
+    value: '2 pot set',
+  },
+
+  GlassTerrarium: {
+    label: '玻璃植景',
+    value: '1 glass terrarium',
+  },
+
+  HangingSet: {
+    label: '吊掛植組',
+    value: '1 hanging set',
+  },
+
+  BloomPot: {
+    label: '開花盆栽',
+    value: '1 bloom pot',
+  },
+
+  LargePot: {
+    label: '大型盆栽',
+    value: '1 large pot',
+  },
+
+  Piece: {
+    label: '單件商品',
+    value: '1 piece',
+  },
+
+  ToolSet: {
+    label: '工具組',
+    value: '1 set',
+  },
+
+  CeramicPot: {
+    label: '陶瓷花器',
+    value: '1 ceramic pot',
+  },
+
+  GlassVase: {
+    label: '玻璃花器',
+    value: '1 glass vase',
+  },
+
+  Bag: {
+    label: '袋裝',
+    value: '1 bag',
+  },
+
+  Pack: {
+    label: '包裝',
+    value: '1 pack',
+  },
+
+  Mug: {
+    label: '杯器',
+    value: '1 mug',
+  },
+
+  Voucher: {
+    label: '優惠券',
+    value: '1 voucher',
+  },
+
+  Bouquet: {
+    label: '花束',
+    value: '1 bouquet',
+  },
+
+  FlowerBox: {
+    label: '花盒',
+    value: '1 flower box',
+  },
+
+  GiftBox: {
+    label: '禮盒',
+    value: '1 gift box',
+  },
+
+  GiftSet: {
+    label: '禮品組',
+    value: '1 gift set',
+  },
+};
+
+// ======================================================
+// SECONDARY_CONTENT_TAGS
+// ======================================================
+export const SECONDARY_CONTENT_TAGS = Object.keys(PRODUCT_CONTENT_MAP).filter(
+  (key) => !PRIMARY_CONTENT_TAGS.includes(key),
+);
 
 // ======================================================
 // HELPERS

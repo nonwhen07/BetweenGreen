@@ -34,7 +34,7 @@ const CartSummary = ({ carts, actions, onNext }) => {
             )}
           </li>
           <li className="d-flex justify-content-between mb-2">
-            <p>全館滿五百免運</p>
+            <p>全館滿千免運</p>
             {total >= minfreeShippingFee ? (
               <>
                 <strong className="text-success">已享免運</strong>

@@ -37,17 +37,17 @@ const menu = [
     path: '/admin/products',
     icon: <Box size={18} />,
   },
+  {
+    name: 'Orders',
+    title: '訂單列表',
+    path: '/admin/orders',
+    icon: <ShoppingBag size={18} />,
+  },
   // {
-  //   path: '/admin/orders',
-  //   name: 'Orders',
-  //   icon: FaShoppingCart,
-  //   title: '訂單列表',
-  // },
-  // {
-  //   path: '/admin/coupons',
   //   name: 'Coupons',
-  //   icon: FaTicketAlt,
+  //   path: '/admin/coupons',
   //   title: '優惠卷列表',
+  //   icon: <BookOpen size={18} />,
   // },
   // {
   //   path: '/admin/news',

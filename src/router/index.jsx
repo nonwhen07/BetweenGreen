@@ -40,8 +40,7 @@ import LoginPage from '@/pages/admin/LoginPage';
 
 import DashboardPage from '@/pages/admin/DashboardPage';
 import AdminProductsPage from '@/pages/admin/ProductsPage';
-
-// import OrdersPage from '@/pages/admin/OrdersPage';
+import OrdersPage from '@/pages/admin/OrdersPage';
 // import CouponsPage from '@/pages/admin/CouponsPage';
 
 import AdminNotFoundPage from '@/pages/admin/AdminNotFoundPage';
@@ -77,7 +76,7 @@ const routes = [
       },
       { path: 'products', element: <AdminProductsPage /> },
 
-      // { path: 'orders', element: <OrdersPage /> },
+      { path: 'orders', element: <OrdersPage /> },
       // { path: 'coupons', element: <CouponsPage /> },
       {
         // Admin 404頁面

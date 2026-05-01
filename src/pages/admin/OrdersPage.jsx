@@ -17,6 +17,8 @@ const OrdersPage = () => {
   const [tempOrder, setTempOrder] = useState({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const orderCount = orders?.length || 0;
+
   // 取得訂單
   const getOrders = async (page = 1) => {
     setIsLoading(true);
@@ -52,43 +54,48 @@ const OrdersPage = () => {
     <>
       <div className="container py-5">
         <h2>訂單列表</h2>
+        {orderCount === 0 && <p className="text-muted">目前沒有訂單資料。</p>}
+        {orderCount > 0 && (
+          <>
+            <table className="table mt-4">
+              <thead>
+                <tr>
+                  <th>訂單編號</th>
+                  <th>用戶</th>
+                  <th>金額</th>
+                  <th>付款狀態</th>
+                  <th></th>
+                </tr>
+              </thead>
 
-        <table className="table mt-4">
-          <thead>
-            <tr>
-              <th>訂單編號</th>
-              <th>用戶</th>
-              <th>金額</th>
-              <th>付款狀態</th>
-              <th></th>
-            </tr>
-          </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.id}</td>
+                    <td>{order.user?.email}</td>
+                    <td>{order.total}</td>
+                    <td>
+                      {order.is_paid ? <span className="text-success">已付款</span> : '未付款'}
+                    </td>
 
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.user?.email}</td>
-                <td>{order.total}</td>
-                <td>{order.is_paid ? <span className="text-success">已付款</span> : '未付款'}</td>
-
-                <td>
-                  <button
-                    className="btn btn-outline-danger btn-sm"
-                    onClick={() => {
-                      setTempOrder(order);
-                      setIsDeleteModalOpen(true);
-                    }}
-                  >
-                    刪除
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <Pagination pageInfo={pageInfo} handlePageChange={getOrders} />
+                    <td>
+                      <button
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => {
+                          setTempOrder(order);
+                          setIsDeleteModalOpen(true);
+                        }}
+                      >
+                        刪除
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <Pagination pageInfo={pageInfo} handlePageChange={getOrders} />
+          </>
+        )}
       </div>
 
       <PageLoader show={isLoading} />
