@@ -14,8 +14,6 @@ import { useProductModal } from '@/hooks/useProductModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
-// constants
-// import { DEFAULT_PRODUCT } from '@/constants/productConstants';
 
 // components
 import Pagination from '@/components/Pagination';
@@ -96,8 +94,7 @@ import PageLoader from '@/components/shared/PageLoader';
 function ProductsPage() {
   // hooks
   const { success, showError } = useToast();
-  // products, pageInfo, getProducts 拆分出去了hooks/useProducts.js
-  // const { products, pageInfo, getProducts } = useProducts();
+
   const { products, pageInfo, isLoading, fetchProducts } = useProducts({ isAdmin: true });
   const {
     modalMode,
@@ -125,6 +122,8 @@ function ProductsPage() {
 
   // 狀態管理 (State)
   const [isScreenLoading, setIsScreenLoading] = useState(false);
+
+  const productCount = products?.length || 0;
   // // Modal 錯誤訊息狀態
   // const [modalError, setModalError] = useState('');
   // // 資料狀態
@@ -136,43 +135,7 @@ function ProductsPage() {
     fetchProducts({ page });
   };
 
-  // // Modal表單
-  // const handleModalInputChange = (e) => {
-  //   const { name, value, checked, type } = e.target;
-  //   setTempProduct((prev) => ({
-  //     ...prev,
-  //     [name]: type === 'checkbox' ? checked : name === 'rating' ? Number(value) : value,
-  //   }));
-  // };
-  // const handleImageChange = (e, index) => {
-  //   const { value } = e.target;
-
-  //   setTempProduct((prev) => {
-  //     const images = [...prev.imagesUrl];
-  //     images[index] = value;
-
-  //     return {
-  //       ...prev,
-  //       imagesUrl: images,
-  //     };
-  //   });
-  // };
-  // // Modal表單 - 新增、刪除副圖
-  // const handleAddImage = () => {
-  //   setTempProduct((prev) => ({
-  //     ...prev,
-  //     imagesUrl: [...prev.imagesUrl, ''],
-  //   }));
-  // };
-  // const handleDeleteImage = () => {
-  //   setTempProduct((prev) => ({
-  //     ...prev,
-  //     imagesUrl: prev.imagesUrl.slice(0, -1),
-  //   }));
-  // };
-
-  // 傳值data時，需包裝成物件{data: {}}，
-  // 並將tempProduct的origin_price、price轉換為數字，is_enabled轉換為數字0或1
+  // 傳值data時，需包裝成物件{data: {}}，並將tempProduct的origin_price、price轉換為數字，is_enabled轉換為數字0或1
   const formatProductData = (product) => ({
     ...product,
     origin_price: Number(product.origin_price),
@@ -241,36 +204,6 @@ function ProductsPage() {
     }
   };
 
-  // // Modal 控制
-  // // imagesUrl雙重確認函式 - 確保即使api回傳的product物件中imagesUrl為空陣列或非陣列，
-  // // 也能正確設定tempProduct的imagesUrl為至少包含一個空字串的陣列，避免後續操作出錯
-  // const normalizeProduct = (p = {}) => ({
-  //   ...DEFAULT_PRODUCT,
-  //   ...p,
-  //   imagesUrl: Array.isArray(p.imagesUrl) && p.imagesUrl.length > 0 ? [...p.imagesUrl] : [''],
-  // });
-  // // ProductModal
-  // const handleOpenProductModal = (mode, product = DEFAULT_PRODUCT) => {
-  //   setModalMode(mode);
-
-  //   if (mode === 'create') {
-  //     setTempProduct({ ...DEFAULT_PRODUCT });
-  //   } else {
-  //     setTempProduct(normalizeProduct(product));
-  //   }
-  //   isModalOpen(true);
-  // };
-
-  // DeleteModal
-  // const handleOpenDeleteModal = (product) => {
-  //   setTempProduct(product || DEFAULT_PRODUCT);
-  //   setIsDeleteModalOpen(true);
-  // };
-
-  // useEffect(() => {
-  //   console.log('products changed:', products);
-  // }, [products]);
-
   // useEffect getProducts 初始載入產品資料，先page=1，category先不指定
   useEffect(() => {
     const initProducts = async () => {
@@ -288,77 +221,195 @@ function ProductsPage() {
 
   return (
     <>
-      <div className="container py-5">
+      <div className="container py-1">
         <div className="d-flex justify-content-between">
           <h2>產品列表</h2>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              openProductModal('create');
-            }}
-          >
-            新增產品
-          </button>
         </div>
-        <table className="table mt-4">
-          <thead>
-            <tr>
-              <th width="120">分類</th>
-              <th width="300">產品名稱</th>
-              <th width="120">原價</th>
-              <th width="120">售價</th>
-              <th width="120">商品評價</th>
-              <th width="100">是否啟用</th>
-              <th width="120"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <th scope="row">{product.category}</th>
-                <td>{product.title}</td>
-                <td>{product.origin_price}</td>
-                <td>{product.price}</td>
-                {/* <td>{renderStars(product.rating)}</td> */}
-                <td>
-                  <StarRating rating={product.rating ?? 0} />
-                </td>
+        {productCount === 0 && <p className="text-muted">目前沒有訂單資料。</p>}
+        {productCount > 0 && (
+          // <>
+          //   <table className="table mt-4">
+          //     <thead>
+          //       <tr>
+          //         <th width="120">分類</th>
+          //         <th width="300">產品名稱</th>
+          //         <th width="120">原價</th>
+          //         <th width="120">售價</th>
+          //         <th width="120">商品評價</th>
+          //         <th width="100">是否啟用</th>
+          //         <th width="120"></th>
+          //       </tr>
+          //     </thead>
+          //     <tbody>
+          //       {products.map((product) => (
+          //         <tr key={product.id}>
+          //           <th scope="row">{product.category}</th>
+          //           <td>{product.title}</td>
+          //           <td>{product.origin_price}</td>
+          //           <td>{product.price}</td>
+          //           {/* <td>{renderStars(product.rating)}</td> */}
+          //           <td>
+          //             <StarRating rating={product.rating ?? 0} />
+          //           </td>
 
-                <td>
-                  {product.is_enabled ? (
-                    <span className="text-success">啟用</span>
-                  ) : (
-                    <span>未啟用</span>
-                  )}
-                </td>
-                <td>
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        openProductModal('edit', product);
-                      }}
-                      className="btn btn-outline-primary btn-sm"
-                    >
-                      編輯
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger btn-sm"
-                      // onClick={() => {
-                      //   handleOpenDeleteModal(product);
-                      // }}
-                      onClick={() => openDeleteModal(product)}
-                    >
-                      刪除
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
+          //           <td>
+          //             {product.is_enabled ? (
+          //               <span className="text-success">啟用</span>
+          //             ) : (
+          //               <span>未啟用</span>
+          //             )}
+          //           </td>
+          //           <td>
+          //             <div className="btn-group">
+          //               <button
+          //                 type="button"
+          //                 onClick={() => {
+          //                   openProductModal('edit', product);
+          //                 }}
+          //                 className="btn btn-outline-primary btn-sm"
+          //               >
+          //                 編輯
+          //               </button>
+          //               <button
+          //                 type="button"
+          //                 className="btn btn-outline-danger btn-sm"
+          //                 // onClick={() => {
+          //                 //   handleOpenDeleteModal(product);
+          //                 // }}
+          //                 onClick={() => openDeleteModal(product)}
+          //               >
+          //                 刪除
+          //               </button>
+          //             </div>
+          //           </td>
+          //         </tr>
+          //       ))}
+          //     </tbody>
+          //   </table>
+          //   <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
+          // </>
+          <>
+            <div className="admin-panel mt-4">
+              <div className="admin-panel__header">
+                <div>
+                  <h4 className="mb-1">商品快速總覽</h4>
+                  <p className="text-muted small mb-0">目前共 {productCount} 筆商品資料</p>
+                </div>
+
+                <button
+                  className="btn btn-primary px-4"
+                  onClick={() => {
+                    openProductModal('create');
+                  }}
+                >
+                  ＋ 新增商品
+                </button>
+              </div>
+
+              <div className="admin-panel__body">
+                <table className="table admin-table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th width="34%">商品資訊</th>
+                      <th width="14%">價格資訊</th>
+                      <th width="22%">商品標籤</th>
+                      <th width="10%">狀態</th>
+                      <th width="20%">操作</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {products.map((product) => {
+                      const contentTags = product.content
+                        ? product.content.split('|').slice(0, 3)
+                        : [];
+
+                      return (
+                        <tr key={product.id}>
+                          {/* 商品資訊 */}
+                          <td>
+                            <div className="admin-product-info">
+                              <div className="admin-product-info__thumb">
+                                <img src={product.imageUrl} alt={product.title} />
+                              </div>
+
+                              <div className="admin-product-info__content">
+                                <h6>{product.title}</h6>
+                                <p>{product.category || '未設定分類'}</p>
+                                <small>{product.unit || '未設定單位'}</small>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* 價格 */}
+                          <td>
+                            <div className="admin-price">
+                              <span className="old-price">NT$ {product.origin_price}</span>
+                              <span className="new-price">NT$ {product.price}</span>
+                            </div>
+                          </td>
+
+                          {/* 標籤 */}
+                          <td>
+                            <div className="admin-tags">
+                              <div className="admin-tags__list">
+                                {contentTags.length > 0 ? (
+                                  contentTags.map((tag, i) => (
+                                    <span key={i} className="badge text-bg-light border">
+                                      {tag}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-muted small">尚未設定標籤</span>
+                                )}
+                              </div>
+
+                              <StarRating rating={product.rating ?? 0} />
+                            </div>
+                          </td>
+
+                          {/* 狀態 */}
+                          <td>
+                            {product.is_enabled ? (
+                              <span className="badge text-bg-success">啟用中</span>
+                            ) : (
+                              <span className="badge text-bg-secondary">未啟用</span>
+                            )}
+                          </td>
+
+                          {/* 操作 */}
+                          <td>
+                            <div className="btn-group admin-table__actions">
+                              <button
+                                type="button"
+                                onClick={() => openProductModal('edit', product)}
+                                className="btn btn-outline-primary btn-sm"
+                              >
+                                編輯
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => openDeleteModal(product)}
+                                className="btn btn-outline-danger btn-sm"
+                              >
+                                刪除
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="admin-panel__footer d-flex justify-content-center">
+                <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
       {/* ScreenLoading */}
       <PageLoader show={isLoading || isScreenLoading} zIndex={2000} />
@@ -366,7 +417,6 @@ function ProductsPage() {
       {/* Modals */}
       <ProductModal
         isOpen={isProductModalOpen}
-        // onClose={() => setIsModalOpen(false)}
         onClose={closeProductModal}
         modalMode={modalMode}
         tempProduct={tempProduct}
@@ -377,18 +427,7 @@ function ProductsPage() {
         deleteImage={handleDeleteImage}
         onConfirm={handleUpdateProduct}
       />
-      {/* <DeleteModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleDeleteProduct}
-        title={`刪除產品 - ${tempProduct.title}`}
-        message={
-          <>
-            你是否要刪除
-            <span className="text-danger fw-bold">{tempProduct.title}</span>
-          </>
-        }
-      /> */}
+
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}

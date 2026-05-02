@@ -3,8 +3,23 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FaStar } from 'react-icons/fa';
 
+// hooks
+import { useToast } from '@/hooks/useToast';
+
 // constants
-import { DEFAULT_PRODUCT } from '@/constants/productConstants';
+// import { DEFAULT_PRODUCT } from '@/constants/productConstants';
+import {
+  DEFAULT_PRODUCT,
+  CATEGORY_THEME_MAP,
+  CATEGORY_TYPE_MAP,
+  CATEGORY_SPECIES_MAP,
+  PRIMARY_CONTENT_TAGS,
+  SECONDARY_CONTENT_TAGS,
+  PRODUCT_CONTENT_MAP,
+  PRODUCT_UNIT_MAP,
+  TYPE_SPECIES_RELATION_MAP,
+  THEME_TYPE_RELATION_MAP,
+} from '@/constants/productConstants';
 
 const ProductModal = ({
   isOpen,
@@ -18,49 +33,144 @@ const ProductModal = ({
   modalError,
   onConfirm,
 }) => {
-  // closing：用來控制「關閉動畫期間」是否保留 DOM
-  // 當 isOpen 變成 false 時，我們不立刻卸載元件
-  // 而是讓 closing = true，保留 300ms 給 fade-out 動畫
-  // 動畫結束後才把 closing 設回 false，讓元件真正卸載
-  // const [closing, setClosing] = useState(false);
-  // 只要正在開啟（isOpen）或正在關閉動畫（closing），就保留 DOM
-  // const shouldRender = isOpen || closing;
+  // hooks
+  const { warning } = useToast();
 
   const [hoverRating, setHoverRating] = useState(0);
+  const [showMoreTags, setShowMoreTags] = useState(false);
 
   // 等之後 ProductsPage去處理好 normalizeProduct，避免modal裡面還要再做一次imagesUrl的雙重確認，所以這裡就直接確保imagesUrl一定是陣列，至少有一個空字串，讓後續操作更簡單
   const images = tempProduct.imagesUrl ?? [''];
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('modal-open');
-    } else {
-      document.body.classList.remove('modal-open');
+  const [categoryBuilder, setCategoryBuilder] = useState({
+    theme: '',
+    type: '',
+    species: '',
+  });
+
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  // 商品分類組合
+  const typeOptions =
+    THEME_TYPE_RELATION_MAP[categoryBuilder.theme]?.map((key) => CATEGORY_TYPE_MAP[key]) || [];
+
+  const speciesOptions =
+    TYPE_SPECIES_RELATION_MAP[categoryBuilder.type]?.map((key) => CATEGORY_SPECIES_MAP[key]) || [];
+
+  const categoryPreviewText = [
+    CATEGORY_THEME_MAP[categoryBuilder.theme]?.label,
+    CATEGORY_TYPE_MAP[categoryBuilder.type]?.label,
+    CATEGORY_SPECIES_MAP[categoryBuilder.species]?.label,
+  ]
+    .filter(Boolean)
+    .join(' - ');
+
+  // 商品屬性標籤摘要
+
+  const selectedSecondaryTags = selectedTags.filter((tag) => SECONDARY_CONTENT_TAGS.includes(tag));
+  const secondaryTagPreviewText = selectedSecondaryTags
+    .map((key) => PRODUCT_CONTENT_MAP[key]?.label)
+    .filter(Boolean)
+    .join('、');
+
+  // 單位摘要
+  const unitPreviewText =
+    Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === tempProduct.unit)?.label || '';
+
+  const handleCategoryBuilderChange = (field, value) => {
+    const updated = {
+      ...categoryBuilder,
+      [field]: value,
+    };
+
+    if (field === 'theme') {
+      updated.type = '';
+      updated.species = '';
     }
 
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
-  }, [isOpen]);
+    if (field === 'type') {
+      updated.species = '';
+    }
+
+    setCategoryBuilder(updated);
+
+    const categoryCode = [updated.theme, updated.type, updated.species].filter(Boolean).join('-');
+
+    onModalChange({
+      target: {
+        name: 'category',
+        value: categoryCode,
+        type: 'text',
+      },
+    });
+  };
+
+  const handleTagToggle = (tagKey) => {
+    let updatedTags = [];
+
+    // 如果已存在 => 先允許取消
+    if (selectedTags.includes(tagKey)) {
+      updatedTags = selectedTags.filter((tag) => tag !== tagKey);
+    } else {
+      // 只有新增時才判斷是否超過4個
+      if (selectedTags.length >= 4) {
+        warning('商品屬性標籤最多選擇 4 個');
+        return;
+      }
+
+      updatedTags = [...selectedTags, tagKey];
+    }
+
+    // if (selectedTags.includes(tagKey)) {
+    //   updatedTags = selectedTags.filter((tag) => tag !== tagKey);
+    // } else {
+    //   if (selectedTags.length >= 4) return;
+    //   updatedTags = [...selectedTags, tagKey];
+    // }
+
+    setSelectedTags(updatedTags);
+
+    onModalChange({
+      target: {
+        name: 'content',
+        value: updatedTags.join('|'),
+        type: 'text',
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (!isOpen || !tempProduct) return;
+
+    const [theme = '', type = '', species = ''] = tempProduct.category?.split('-') || [];
+
+    setCategoryBuilder({
+      theme,
+      type,
+      species,
+    });
+
+    setSelectedTags(tempProduct.content ? tempProduct.content.split('|') : []);
+  }, [isOpen, tempProduct.category, tempProduct.content]);
 
   if (!isOpen) return null;
 
   return (
     <div
       id="productModal"
-      className={`modal show d-block`}
+      className="modal show d-block"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
     >
       <div className="modal-dialog modal-dialog-centered modal-xl">
         <div className="modal-content border-0 shadow">
-          <div className="modal-header border-bottom">
-            <h5 className="modal-title fs-4">
+          <div className="modal-header bg-primary border-bottom">
+            <h5 className="modal-title text-light fs-4">
               {modalMode === 'create' ? '新增產品' : '編輯 - ' + tempProduct.title}
             </h5>
             <button
               type="button"
               onClick={onClose}
-              className="btn-close"
+              className="btn-close btn-close-white"
               aria-label="Close"
             ></button>
           </div>
@@ -68,7 +178,7 @@ const ProductModal = ({
             {modalError && <div className="alert alert-danger">{modalError}</div>}
             <div className="row g-4">
               <div className="col-md-4">
-                <div className="mb-4">
+                <div className="mb-3">
                   <label htmlFor="primary-image" className="form-label">
                     主圖
                   </label>
@@ -126,73 +236,60 @@ const ProductModal = ({
               </div>
 
               <div className="col-md-8">
-                <div className="mb-3">
-                  <label htmlFor="title" className="form-label">
-                    標題
-                  </label>
-                  <input
-                    value={tempProduct.title}
-                    onChange={onModalChange}
-                    name="title"
-                    id="title"
-                    type="text"
-                    className="form-control"
-                    placeholder="請輸入標題"
-                  />
-                </div>
-                {/* <div className="mb-3">
-                  <label className="form-label">商品評價</label>
-                  <select
-                    className="form-select"
-                    value={tempProduct.rating}
-                    onChange={onModalChange}
-                    name="rating"
-                  >
-                    <option value="1">⭐</option>
-                    <option value="2">⭐⭐</option>
-                    <option value="3">⭐⭐⭐</option>
-                    <option value="4">⭐⭐⭐⭐</option>
-                    <option value="5">⭐⭐⭐⭐⭐</option>
-                  </select>
-                </div> */}
-                <div className="mb-3">
-                  <label className="form-label">商品評價</label>
-                  <div className="d-flex " style={{ fontSize: '24px', cursor: 'pointer' }}>
-                    {Array.from({ length: 5 }, (_, i) => {
-                      const ratingValue = i + 1;
-
-                      return (
-                        <FaStar
-                          className="me-1"
-                          key={i}
-                          size={24}
-                          style={{
-                            color:
-                              ratingValue <= (hoverRating || tempProduct.rating)
-                                ? '#ffc107'
-                                : '#e4e5e9',
-                            transition: 'color 0.2s',
-                          }}
-                          onMouseEnter={() => setHoverRating(ratingValue)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          onClick={() =>
-                            onModalChange({
-                              target: {
-                                name: 'rating',
-                                value: ratingValue,
-                                type: 'number',
-                              },
-                            })
-                          }
-                        />
-                      );
-                    })}
+                <div className="row g-3 mb-3">
+                  <div className="col-6">
+                    <label htmlFor="title" className="form-label">
+                      標題
+                    </label>
+                    <input
+                      value={tempProduct.title}
+                      onChange={onModalChange}
+                      name="title"
+                      id="title"
+                      type="text"
+                      className="form-control"
+                      placeholder="請輸入標題"
+                    />
                   </div>
+                  <div className="col-6">
+                    <label className="form-label">商品評價</label>
+                    <div className="d-flex " style={{ fontSize: '24px', cursor: 'pointer' }}>
+                      {Array.from({ length: 5 }, (_, i) => {
+                        const ratingValue = i + 1;
 
-                  <small className="text-muted">已選擇 {tempProduct.rating || 0} 顆星</small>
+                        return (
+                          <FaStar
+                            className="me-1"
+                            key={i}
+                            size={24}
+                            style={{
+                              color:
+                                ratingValue <= (hoverRating || tempProduct.rating)
+                                  ? '#ffc107'
+                                  : '#e4e5e9',
+                              transition: 'color 0.2s',
+                            }}
+                            onMouseEnter={() => setHoverRating(ratingValue)}
+                            onMouseLeave={() => setHoverRating(0)}
+                            onClick={() =>
+                              onModalChange({
+                                target: {
+                                  name: 'rating',
+                                  value: ratingValue,
+                                  type: 'number',
+                                },
+                              })
+                            }
+                          />
+                        );
+                      })}
+                    </div>
+
+                    <small className="text-muted">已選擇 {tempProduct.rating || 0} 顆星</small>
+                  </div>
                 </div>
 
-                <div className="mb-3">
+                {/* <div className="mb-3">
                   <label htmlFor="category" className="form-label">
                     分類
                   </label>
@@ -206,24 +303,188 @@ const ProductModal = ({
                     placeholder="請輸入分類"
                   />
                 </div>
+                <div className="mb-3">
+                  <label htmlFor="content" className="form-label">
+                    說明內容
+                  </label>
+                  <textarea
+                    value={tempProduct.content}
+                    onChange={onModalChange}
+                    name="content"
+                    id="content"
+                    className="form-control"
+                    rows={4}
+                    placeholder="請輸入說明內容"
+                  ></textarea>
+                </div> */}
 
                 <div className="mb-3">
-                  <label htmlFor="unit" className="form-label">
-                    單位
-                  </label>
-                  <input
-                    value={tempProduct.unit}
-                    onChange={onModalChange}
-                    name="unit"
-                    id="unit"
-                    type="text"
-                    className="form-control"
-                    placeholder="請輸入單位"
-                  />
+                  <label className="form-label fw-semibold">商品分類組合</label>
+
+                  <div className="row g-3 mb-1">
+                    <div className="col-md-4">
+                      <select
+                        className="form-select"
+                        value={categoryBuilder.theme}
+                        onChange={(e) => handleCategoryBuilderChange('theme', e.target.value)}
+                      >
+                        <option value="">選擇主題分類</option>
+                        {Object.values(CATEGORY_THEME_MAP).map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="col-md-4">
+                      <select
+                        className="form-select"
+                        value={categoryBuilder.type}
+                        onChange={(e) => handleCategoryBuilderChange('type', e.target.value)}
+                      >
+                        <option value="">選擇商品大類</option>
+                        {typeOptions.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="col-md-4">
+                      <select
+                        className="form-select"
+                        value={categoryBuilder.species}
+                        onChange={(e) => handleCategoryBuilderChange('species', e.target.value)}
+                      >
+                        <option value="">選擇商品細項</option>
+                        {speciesOptions.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="row g-3">
+                    <div className="col-md-7">
+                      <div className="form-control bg-light small text-muted">
+                        {tempProduct.category || '尚未生成 category code'}
+                      </div>
+                    </div>
+                    <div className="col-md-5 d-flex justify-content-start align-items-center">
+                      <div className="small text-secondary">
+                        {categoryPreviewText || '尚未生成分類摘要'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label fw-semibold">商品屬性標籤</label>
+
+                  {/* 常用標籤 */}
+                  <div className="d-flex flex-wrap gap-2 mb-2">
+                    {PRIMARY_CONTENT_TAGS.map((key) => {
+                      const isActive = selectedTags.includes(key);
+                      const item = PRODUCT_CONTENT_MAP[key];
+
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => handleTagToggle(key)}
+                          className={`btn btn-sm ${
+                            isActive ? 'btn-primary' : 'btn-outline-secondary'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* 展開更多 */}
+                  <div className="row g-3 d-flex align-items-center mb-2">
+                    <div className="col-md-3">
+                      <button
+                        type="button"
+                        className="btn btn-outline-primary  text-decoration-none"
+                        onClick={() => setShowMoreTags(!showMoreTags)}
+                      >
+                        {showMoreTags ? '收起更多標籤 ▲' : '展開更多標籤 ▼'}
+                      </button>
+                    </div>
+                    <div className="col-md-9">
+                      {!showMoreTags && selectedSecondaryTags.length > 0 && (
+                        <div className="px-3 py-2 rounded-3 bg-light border small text-secondary">
+                          <span className="fw-semibold text-primary">⚑ 已選進階標籤：</span>
+                          {secondaryTagPreviewText}
+                          <span className="ms-2 text-muted">（展開更多標籤可修改）</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {showMoreTags && (
+                    <div className="d-flex flex-wrap gap-2 mb-2 border rounded-3 p-2 bg-light">
+                      {SECONDARY_CONTENT_TAGS.map((key) => {
+                        const isActive = selectedTags.includes(key);
+                        const item = PRODUCT_CONTENT_MAP[key];
+
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => handleTagToggle(key)}
+                            className={`btn btn-sm ${
+                              isActive ? 'btn-primary' : 'btn-outline-secondary'
+                            }`}
+                          >
+                            {item.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  <div className="row g-3">
+                    <div className="form-control bg-light small text-muted">
+                      {tempProduct.content
+                        ? tempProduct.content.split('|').join(' | ')
+                        : '尚未生成 content tags'}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="row g-3 mb-3">
-                  <div className="col-6">
+                  <div className="col-4">
+                    <label htmlFor="unit" className="form-label">
+                      單位
+                    </label>
+                    <select
+                      value={tempProduct.unit}
+                      onChange={onModalChange}
+                      name="unit"
+                      id="unit"
+                      className="form-select"
+                    >
+                      <option value="">選擇單位</option>
+                      {Object.entries(PRODUCT_UNIT_MAP).map(([key, item]) => (
+                        <option key={key} value={item.value}>
+                          {item.value}（{item.label}）
+                        </option>
+                      ))}
+                    </select>
+                    <div className="d-flex justify-content-start align-items-center mt-1">
+                      <div className="small text-secondary">
+                        {unitPreviewText || '尚未選擇單位摘要'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-4">
                     <label htmlFor="origin_price" className="form-label">
                       原價
                     </label>
@@ -238,7 +499,7 @@ const ProductModal = ({
                       placeholder="請輸入原價"
                     />
                   </div>
-                  <div className="col-6">
+                  <div className="col-4">
                     <label htmlFor="price" className="form-label">
                       售價
                     </label>
@@ -257,7 +518,7 @@ const ProductModal = ({
 
                 <div className="mb-3">
                   <label htmlFor="description" className="form-label">
-                    產品描述
+                    商品敘事文案
                   </label>
                   <textarea
                     value={tempProduct.description}
@@ -266,22 +527,7 @@ const ProductModal = ({
                     id="description"
                     className="form-control"
                     rows={4}
-                    placeholder="請輸入產品描述"
-                  ></textarea>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="content" className="form-label">
-                    說明內容
-                  </label>
-                  <textarea
-                    value={tempProduct.content}
-                    onChange={onModalChange}
-                    name="content"
-                    id="content"
-                    className="form-control"
-                    rows={4}
-                    placeholder="請輸入說明內容"
+                    placeholder="請輸入商品簡短介紹文案"
                   ></textarea>
                 </div>
 

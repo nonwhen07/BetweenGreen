@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Modal } from 'bootstrap';
+// import { useEffect, useRef } from 'react';
+// import { Modal } from 'bootstrap';
 // import PropTypes from 'prop-types';
 
 const DeleteModal = ({
@@ -10,41 +10,43 @@ const DeleteModal = ({
   message,
   confirmText = '刪除',
 }) => {
-  // Modal Ref 定義
-  const deleteModalRef = useRef(null);
+  // // Modal Ref 定義
+  // const deleteModalRef = useRef(null);
 
-  //初始化 Modal
-  useEffect(() => {
-    if (deleteModalRef.current) {
-      new Modal(deleteModalRef.current, { backdrop: false });
-    }
-  }, []);
+  // //初始化 Modal
+  // useEffect(() => {
+  //   if (deleteModalRef.current) {
+  //     new Modal(deleteModalRef.current, { backdrop: false });
+  //   }
+  // }, []);
 
-  // 根據 isOpen 控制 Modal 的顯示與隱藏
-  useEffect(() => {
-    if (!deleteModalRef.current) return;
+  // // 根據 isOpen 控制 Modal 的顯示與隱藏
+  // useEffect(() => {
+  //   if (!deleteModalRef.current) return;
 
-    const modal = Modal.getOrCreateInstance(deleteModalRef.current);
+  //   const modal = Modal.getOrCreateInstance(deleteModalRef.current);
 
-    if (isOpen) {
-      modal.show();
-    } else {
-      modal.hide();
-    }
-  }, [isOpen]);
+  //   if (isOpen) {
+  //     modal.show();
+  //   } else {
+  //     modal.hide();
+  //   }
+  // }, [isOpen]);
 
-  // 專門處理「取消按鈕」
-  const handleClose = () => {
-    const modal = Modal.getOrCreateInstance(deleteModalRef.current);
-    modal.hide();
-    onClose(); // 通知父層
-  };
+  // // 專門處理「取消按鈕」
+  // const handleClose = () => {
+  //   const modal = Modal.getOrCreateInstance(deleteModalRef.current);
+  //   modal.hide();
+  //   onClose(); // 通知父層
+  // };
+
+  if (!isOpen) return null;
 
   return (
     <div
       id="delProductModal"
-      ref={deleteModalRef}
-      className="modal fade"
+      // ref={deleteModalRef}
+      className="modal show d-block"
       tabIndex="-1"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
     >
@@ -55,9 +57,8 @@ const DeleteModal = ({
             <button
               type="button"
               className="btn-close"
-              data-bs-dismiss="modal"
               aria-label="Close"
-              onClick={handleClose}
+              onClick={onClose}
             ></button>
           </div>
           <div className="modal-body">
