@@ -1,59 +1,23 @@
-// import { useEffect, useRef } from 'react';
-// import { Modal } from 'bootstrap';
-// import PropTypes from 'prop-types';
-
 const DeleteModal = ({
   isOpen,
   onClose,
   onConfirm,
-  title = '刪除項目',
-  message,
-  confirmText = '刪除',
+  itemName = '',
+  itemType = '資料',
+  confirmText = '確認刪除',
 }) => {
-  // // Modal Ref 定義
-  // const deleteModalRef = useRef(null);
-
-  // //初始化 Modal
-  // useEffect(() => {
-  //   if (deleteModalRef.current) {
-  //     new Modal(deleteModalRef.current, { backdrop: false });
-  //   }
-  // }, []);
-
-  // // 根據 isOpen 控制 Modal 的顯示與隱藏
-  // useEffect(() => {
-  //   if (!deleteModalRef.current) return;
-
-  //   const modal = Modal.getOrCreateInstance(deleteModalRef.current);
-
-  //   if (isOpen) {
-  //     modal.show();
-  //   } else {
-  //     modal.hide();
-  //   }
-  // }, [isOpen]);
-
-  // // 專門處理「取消按鈕」
-  // const handleClose = () => {
-  //   const modal = Modal.getOrCreateInstance(deleteModalRef.current);
-  //   modal.hide();
-  //   onClose(); // 通知父層
-  // };
-
   if (!isOpen) return null;
 
   return (
     <div
-      id="delProductModal"
-      // ref={deleteModalRef}
       className="modal show d-block"
       tabIndex="-1"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
     >
-      <div className="modal-dialog">
-        <div className="modal-content">
+      <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-content border-0 shadow">
           <div className="modal-header">
-            <h1 className="modal-title fs-5">刪除產品</h1>
+            <h5 className="modal-title text-danger fw-semibold">刪除確認</h5>
             <button
               type="button"
               className="btn-close"
@@ -61,14 +25,17 @@ const DeleteModal = ({
               onClick={onClose}
             ></button>
           </div>
+
           <div className="modal-body">
-            {message || (
-              <>
-                你是否確定要刪除
-                <span className="text-danger fw-bold">{title}</span>
-              </>
-            )}
+            <p className="mb-2">你是否確定要刪除此{itemType}？</p>
+
+            <div className="p-3 rounded bg-light border text-danger fw-bold">
+              {itemName || '未指定項目'}
+            </div>
+
+            <small className="text-muted d-block mt-2">刪除後將無法復原，請再次確認。</small>
           </div>
+
           <div className="modal-footer">
             <button type="button" onClick={onConfirm} className="btn btn-danger">
               {confirmText}
@@ -82,5 +49,4 @@ const DeleteModal = ({
     </div>
   );
 };
-
 export default DeleteModal;

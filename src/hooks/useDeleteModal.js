@@ -10,7 +10,7 @@ export const useDeleteModal = () => {
     setIsOpen(true);
   };
 
-  // 關閉 modal
+  // 關閉 modal， close 時清空 target
   const closeDeleteModal = () => {
     setIsOpen(false);
     setTargetItem(null);

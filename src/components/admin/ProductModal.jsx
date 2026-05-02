@@ -1,13 +1,8 @@
-import { useEffect, useState } from 'react';
-// import { Modal } from 'bootstrap';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FaStar } from 'react-icons/fa';
 
-// hooks
-import { useToast } from '@/hooks/useToast';
-
 // constants
-// import { DEFAULT_PRODUCT } from '@/constants/productConstants';
 import {
   DEFAULT_PRODUCT,
   CATEGORY_THEME_MAP,
@@ -32,23 +27,17 @@ const ProductModal = ({
   deleteImage,
   modalError,
   onConfirm,
-}) => {
-  // hooks
-  const { warning } = useToast();
 
+  categoryBuilder,
+  selectedTags,
+  handleCategoryBuilderChange,
+  handleTagToggle,
+}) => {
   const [hoverRating, setHoverRating] = useState(0);
   const [showMoreTags, setShowMoreTags] = useState(false);
 
   // 等之後 ProductsPage去處理好 normalizeProduct，避免modal裡面還要再做一次imagesUrl的雙重確認，所以這裡就直接確保imagesUrl一定是陣列，至少有一個空字串，讓後續操作更簡單
   const images = tempProduct.imagesUrl ?? [''];
-
-  const [categoryBuilder, setCategoryBuilder] = useState({
-    theme: '',
-    type: '',
-    species: '',
-  });
-
-  const [selectedTags, setSelectedTags] = useState([]);
 
   // 商品分類組合
   const typeOptions =
@@ -76,82 +65,6 @@ const ProductModal = ({
   // 單位摘要
   const unitPreviewText =
     Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === tempProduct.unit)?.label || '';
-
-  const handleCategoryBuilderChange = (field, value) => {
-    const updated = {
-      ...categoryBuilder,
-      [field]: value,
-    };
-
-    if (field === 'theme') {
-      updated.type = '';
-      updated.species = '';
-    }
-
-    if (field === 'type') {
-      updated.species = '';
-    }
-
-    setCategoryBuilder(updated);
-
-    const categoryCode = [updated.theme, updated.type, updated.species].filter(Boolean).join('-');
-
-    onModalChange({
-      target: {
-        name: 'category',
-        value: categoryCode,
-        type: 'text',
-      },
-    });
-  };
-
-  const handleTagToggle = (tagKey) => {
-    let updatedTags = [];
-
-    // 如果已存在 => 先允許取消
-    if (selectedTags.includes(tagKey)) {
-      updatedTags = selectedTags.filter((tag) => tag !== tagKey);
-    } else {
-      // 只有新增時才判斷是否超過4個
-      if (selectedTags.length >= 4) {
-        warning('商品屬性標籤最多選擇 4 個');
-        return;
-      }
-
-      updatedTags = [...selectedTags, tagKey];
-    }
-
-    // if (selectedTags.includes(tagKey)) {
-    //   updatedTags = selectedTags.filter((tag) => tag !== tagKey);
-    // } else {
-    //   if (selectedTags.length >= 4) return;
-    //   updatedTags = [...selectedTags, tagKey];
-    // }
-
-    setSelectedTags(updatedTags);
-
-    onModalChange({
-      target: {
-        name: 'content',
-        value: updatedTags.join('|'),
-        type: 'text',
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (!isOpen || !tempProduct) return;
-
-    const [theme = '', type = '', species = ''] = tempProduct.category?.split('-') || [];
-
-    setCategoryBuilder({
-      theme,
-      type,
-      species,
-    });
-
-    setSelectedTags(tempProduct.content ? tempProduct.content.split('|') : []);
-  }, [isOpen, tempProduct.category, tempProduct.content]);
 
   if (!isOpen) return null;
 
@@ -288,35 +201,6 @@ const ProductModal = ({
                     <small className="text-muted">已選擇 {tempProduct.rating || 0} 顆星</small>
                   </div>
                 </div>
-
-                {/* <div className="mb-3">
-                  <label htmlFor="category" className="form-label">
-                    分類
-                  </label>
-                  <input
-                    value={tempProduct.category}
-                    onChange={onModalChange}
-                    name="category"
-                    id="category"
-                    type="text"
-                    className="form-control"
-                    placeholder="請輸入分類"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="content" className="form-label">
-                    說明內容
-                  </label>
-                  <textarea
-                    value={tempProduct.content}
-                    onChange={onModalChange}
-                    name="content"
-                    id="content"
-                    className="form-control"
-                    rows={4}
-                    placeholder="請輸入說明內容"
-                  ></textarea>
-                </div> */}
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">商品分類組合</label>
@@ -588,6 +472,15 @@ ProductModal.propTypes = {
   deleteImage: PropTypes.func.isRequired,
   modalError: PropTypes.string,
   onConfirm: PropTypes.func.isRequired,
+
+  categoryBuilder: PropTypes.shape({
+    theme: PropTypes.string,
+    type: PropTypes.string,
+    species: PropTypes.string,
+  }).isRequired,
+  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleCategoryBuilderChange: PropTypes.func.isRequired,
+  handleTagToggle: PropTypes.func.isRequired,
 };
 
 ProductModal.defaultProps = {
