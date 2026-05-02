@@ -10,7 +10,8 @@ import loadingReducer from '@/features/ui/loadingSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    // user: userReducer,
+    // user: userReducer, // 之後會從auth 拆分出 user資訊
+    // customAuth: customAuthReducer, //日後給前台客戶的專屬登入系統，json-server去處理
     cart: cartReducer,
     toast: toastReducer,
     loading: loadingReducer,

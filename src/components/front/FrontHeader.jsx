@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  FaBars,
-  FaBox,
-  FaShoppingCart,
-  FaTachometerAlt,
-  FaUsers,
-  FaSignOutAlt,
-  FaCreditCard,
-} from 'react-icons/fa';
+import { Package, ShoppingCart, LayoutDashboard, Users, LogOut } from 'lucide-react';
+// import {
+//   FaBars,
+//   FaBox,
+//   FaShoppingCart,
+//   FaTachometerAlt,
+//   FaUsers,
+//   FaSignOutAlt,
+//   FaCreditCard,
+// } from 'react-icons/fa';
 
 // features
 import { logoutAction } from '@/features/auth/authSlice';
@@ -48,25 +49,25 @@ const menuItems = [
     type: 'link',
     path: '/about-us',
     label: '關於我們',
-    icon: FaUsers,
+    icon: Users,
   },
   {
     type: 'link',
     path: '/products',
     label: '產品目錄',
-    icon: FaBox,
+    icon: Package,
   },
   {
     type: 'action',
     path: '/cart/step1',
     label: '購物車',
-    icon: FaShoppingCart,
+    icon: ShoppingCart,
   },
   {
     type: 'action',
-    path: '/dashboard',
-    label: '後台',
-    icon: FaTachometerAlt,
+    path: '/admin',
+    label: '回到後台首頁',
+    icon: LayoutDashboard,
     auth: true,
   },
 ];
@@ -86,7 +87,7 @@ const FrontHeader = () => {
   const [scrollState, setScrollState] = useState('top');
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  const isLogin = useSelector((state) => state.auth.isLogin);
+  const isAuth = useSelector((state) => state.auth.isAuth);
   const carts = useSelector((state) => state.cart.carts);
   const cartCount = carts?.length || 0;
 
@@ -94,14 +95,17 @@ const FrontHeader = () => {
   const handleLogout = async () => {
     try {
       await logout(); // 呼叫 API
+
+      // 清 cookie
+      document.cookie = 'bg-user-data=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
+      dispatch(logoutAction()); // 清 Redux
+      success('已成功登出，將跳轉到前台首頁。');
+      navigate('/');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '登出失敗，請稍後再試。');
       showError(errorMessage);
     }
-
-    dispatch(logoutAction()); // 清 Redux
-    success('已成功登出，將跳轉到前台首頁。');
-    navigate('/');
   };
 
   // 關閉 menu（點擊遮罩或選單連結後）
@@ -205,7 +209,7 @@ const FrontHeader = () => {
                     to={route.path}
                     title={route.title}
                   >
-                    {route.name}
+                    {route.label}
                   </NavLink>
                 </li>
               ))}
@@ -220,22 +224,17 @@ const FrontHeader = () => {
                     title="購物車"
                     onClick={closeMenu}
                   >
-                    <FaShoppingCart size={22} />
+                    <ShoppingCart size={20} strokeWidth={1.9} />
                     {cartCount > 0 && <span className="header__badge">{cartCount}</span>}
                   </NavLink>
                 </li>
               </ul>
 
               {/* auth  */}
-              {isLogin && (
+              {/* {isAuth && (
                 <div className="header__auth">
-                  <NavLink
-                    to="/dashboard"
-                    className="header__icon"
-                    title="後台"
-                    onClick={closeMenu}
-                  >
-                    <FaTachometerAlt size={22} />
+                  <NavLink to="/about-us" className="header__icon" title="後台" onClick={closeMenu}>
+                    <LayoutDashboard size={20} strokeWidth={1.9} />
                   </NavLink>
 
                   <button
@@ -247,15 +246,15 @@ const FrontHeader = () => {
                     className="header__icon header__link--danger"
                     title="登出"
                   >
-                    <FaSignOutAlt size={22} />
+                    <LogOut size={20} strokeWidth={1.9} />
                   </button>
                 </div>
-              )}
+              )} */}
             </div>
             {/* menu-list */}
             <ul className="header__menu-list">
               {menuItems.map((item, index) => {
-                if (item.auth && !isLogin) return null;
+                if (item.auth && !isAuth) return null;
 
                 const Icon = item.icon;
 
@@ -268,7 +267,7 @@ const FrontHeader = () => {
                       onClick={closeMenu}
                     >
                       <div className="header__icon me-3">
-                        {Icon && <Icon size={25} />}
+                        {Icon && <Icon size={22} strokeWidth={1.9} />}
                         {item.path === '/cart/step1' && cartCount > 0 && (
                           <span className="header__badge">{cartCount}</span>
                         )}
@@ -279,7 +278,7 @@ const FrontHeader = () => {
                   </li>
                 );
               })}
-              {isLogin && (
+              {isAuth && (
                 <li className="header__item">
                   <button
                     type="button"
@@ -290,7 +289,7 @@ const FrontHeader = () => {
                     className="header__link"
                     title="登出"
                   >
-                    <FaSignOutAlt size={22} />
+                    <LogOut size={20} />
                     <span className="ms-2">登出</span>
                   </button>
                 </li>
