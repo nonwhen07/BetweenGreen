@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 // constants
 import { DEFAULT_PRODUCT } from '@/constants/productConstants';
@@ -10,23 +11,33 @@ import { useToast } from '@/hooks/useToast';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useProductModal = () => {
-  const { warning } = useToast();
+  // hook 初始化 useForm
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: DEFAULT_PRODUCT,
+  });
 
+  // hook
+  const { warning } = useToast();
+  // state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create');
   const [tempProduct, setTempProduct] = useState(DEFAULT_PRODUCT);
   const [modalError, setModalError] = useState('');
-
   const [categoryBuilder, setCategoryBuilder] = useState({
     theme: '',
     type: '',
     species: '',
   });
-
   const [selectedTags, setSelectedTags] = useState([]);
 
-  // imagesUrl雙重確認函式 - 確保即使api回傳的product物件中imagesUrl為空陣列或非陣列，
-  // 也能正確設定tempProduct的imagesUrl為至少包含一個空字串的陣列，避免後續操作出錯
+  // imagesUrl雙重確認函式 - 避免api回傳imagesUrl為空陣列或非陣列，避免後續操作出錯
   const normalizeProduct = (p = {}) => ({
     ...DEFAULT_PRODUCT,
     ...p,
@@ -37,13 +48,10 @@ export const useProductModal = () => {
   const openProductModal = (mode, product = null) => {
     setModalMode(mode);
 
-    // if (mode === 'create') {
-    //   setTempProduct({ ...DEFAULT_PRODUCT });
-    // } else {
-    //   setTempProduct(normalizeProduct(product));
-    // }
+    // 更換成 Category、Tags(content)
     if (mode === 'create') {
       setTempProduct({ ...DEFAULT_PRODUCT });
+      reset({ ...DEFAULT_PRODUCT }); // modal 開啟時讓 RHF 一起知道現在表單值。
       setCategoryBuilder({
         theme: '',
         type: '',
@@ -53,6 +61,7 @@ export const useProductModal = () => {
     } else {
       const normalized = normalizeProduct(product);
       setTempProduct(normalized);
+      reset(normalized); // modal 開啟時讓 RHF 一起知道現在表單值。
 
       const [theme = '', type = '', species = ''] = normalized.category?.split('-') || [];
 
@@ -74,6 +83,7 @@ export const useProductModal = () => {
     setIsModalOpen(false);
     setModalError('');
     setTempProduct({ ...DEFAULT_PRODUCT });
+    reset({ ...DEFAULT_PRODUCT }); // modal 開啟時讓 RHF 一起知道現在表單值。
 
     // 清除 category、 tag 的資料
     setCategoryBuilder({
@@ -170,14 +180,14 @@ export const useProductModal = () => {
     }));
   };
 
-  //
+  // form 相關
   const formatProductData = (product) => ({
     ...product,
     origin_price: Number(product.origin_price),
     price: Number(product.price),
     is_enabled: product.is_enabled ? 1 : 0,
   });
-
+  // form validate 相關
   const validateProduct = (product) => {
     if (!product.title?.trim()) return '請輸入產品標題';
     if (!product.category?.trim()) return '請輸入產品分類';
@@ -220,7 +230,7 @@ export const useProductModal = () => {
     tempProduct,
     setTempProduct,
     modalError,
-    setModalError,
+    // setModalError,
 
     isModalOpen,
     openProductModal,
@@ -237,5 +247,12 @@ export const useProductModal = () => {
     handleTagToggle,
 
     handleSubmitProduct,
+
+    // RHF 工具
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    errors,
   };
 };

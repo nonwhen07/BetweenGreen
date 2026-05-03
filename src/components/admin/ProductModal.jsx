@@ -32,6 +32,12 @@ const ProductModal = ({
   selectedTags,
   handleCategoryBuilderChange,
   handleTagToggle,
+
+  register,
+  handleSubmit,
+  setValue,
+  watch,
+  errors,
 }) => {
   const [hoverRating, setHoverRating] = useState(0);
   const [showMoreTags, setShowMoreTags] = useState(false);
@@ -155,9 +161,11 @@ const ProductModal = ({
                       標題
                     </label>
                     <input
-                      value={tempProduct.title}
-                      onChange={onModalChange}
-                      name="title"
+                      {...register('title')}
+                      defaultValue={tempProduct.title}
+                      // value={tempProduct.title}
+                      // onChange={onModalChange}
+                      // name="title"
                       id="title"
                       type="text"
                       className="form-control"
@@ -373,9 +381,11 @@ const ProductModal = ({
                       原價
                     </label>
                     <input
-                      value={tempProduct.origin_price}
-                      onChange={onModalChange}
-                      name="origin_price"
+                      {...register('origin_price')}
+                      defaultValue={tempProduct.origin_price}
+                      // value={tempProduct.origin_price}
+                      // onChange={onModalChange}
+                      // name="origin_price"
                       id="origin_price"
                       type="number"
                       min={0}
@@ -388,9 +398,11 @@ const ProductModal = ({
                       售價
                     </label>
                     <input
-                      value={tempProduct.price}
-                      onChange={onModalChange}
-                      name="price"
+                      {...register('price')}
+                      defaultValue={tempProduct.price}
+                      // value={tempProduct.price}
+                      // onChange={onModalChange}
+                      // name="price"
                       id="price"
                       type="number"
                       min={0}

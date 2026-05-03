@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 // constants
 import {
@@ -9,14 +10,10 @@ import {
   PRODUCT_UNIT_MAP,
 } from '@/constants/productConstants';
 // services
-import {
-  // getAdminProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} from '@/services/productService';
+import { deleteProduct } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
 import { useProducts } from '@/hooks/product/useProducts';
 import { useProductModal } from '@/hooks/useProductModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
@@ -27,7 +24,7 @@ import Pagination from '@/components/Pagination';
 import ProductModal from '@/components/admin/ProductModal';
 import DeleteModal from '@/components/admin/DeleteModal';
 import StarRating from '@/components/admin/StarRating';
-import PageLoader from '@/components/shared/PageLoader';
+// import PageLoader from '@/components/shared/PageLoader';
 
 /**
  * =========================================
@@ -101,14 +98,16 @@ import PageLoader from '@/components/shared/PageLoader';
 function ProductsPage() {
   // hooks
   const { success, showError } = useToast();
+  const { start, stop } = useLoading();
 
-  const { products, pageInfo, isLoading, fetchProducts } = useProducts({ isAdmin: true });
+  // const { products, pageInfo, isLoading, fetchProducts } = useProducts({ isAdmin: true });
+  const { products, pageInfo, fetchProducts } = useProducts({ isAdmin: true });
   const {
     modalMode,
     tempProduct,
     // setTempProduct,
     modalError,
-    setModalError,
+    // setModalError,
 
     isModalOpen: isProductModalOpen,
     openProductModal,
@@ -125,6 +124,12 @@ function ProductsPage() {
     handleTagToggle,
 
     handleSubmitProduct,
+
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    errors,
   } = useProductModal();
 
   const {
@@ -135,7 +140,7 @@ function ProductsPage() {
   } = useDeleteModal();
 
   // 狀態管理 (State)
-  const [isScreenLoading, setIsScreenLoading] = useState(false);
+  // const [isScreenLoading, setIsScreenLoading] = useState(false);
 
   const productCount = products?.length || 0;
 
@@ -215,7 +220,8 @@ function ProductsPage() {
   // };
 
   const handleUpdateProduct = async () => {
-    setIsScreenLoading(true);
+    // setIsScreenLoading(true);
+    start();
 
     await handleSubmitProduct(
       async () => {
@@ -227,13 +233,15 @@ function ProductsPage() {
       },
     );
 
-    setIsScreenLoading(false);
+    // setIsScreenLoading(false);
+    stop();
   };
 
   // 刪除產品
   const handleDeleteProduct = async () => {
     if (!deleteTarget?.id) return;
-    setIsScreenLoading(true);
+    // setIsScreenLoading(true);
+    start();
 
     try {
       await deleteProduct(deleteTarget.id);
@@ -244,7 +252,8 @@ function ProductsPage() {
       const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
-      setIsScreenLoading(false);
+      // setIsScreenLoading(false);
+      stop();
     }
   };
 
@@ -417,7 +426,7 @@ function ProductsPage() {
         )}
       </div>
       {/* ScreenLoading */}
-      <PageLoader show={isLoading || isScreenLoading} zIndex={2000} />
+      {/* <PageLoader show={isLoading || isScreenLoading} zIndex={2000} /> */}
 
       {/* Modals */}
       <ProductModal
@@ -435,6 +444,11 @@ function ProductsPage() {
         handleCategoryBuilderChange={handleCategoryBuilderChange}
         selectedTags={selectedTags}
         handleTagToggle={handleTagToggle}
+        register={register}
+        setValue={setValue}
+        watch={watch}
+        errors={errors}
+        handleSubmit={handleSubmit}
       />
 
       <DeleteModal

@@ -4,20 +4,23 @@ import { useState, useCallback } from 'react';
 import { getProducts, getAdminProducts } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useProducts = ({ isAdmin = false } = {}) => {
   const { showError } = useToast();
+  const { start, stop } = useLoading();
 
   const [products, setProducts] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   // 統一入口
   const fetchProducts = useCallback(
     async (params = {}) => {
-      setIsLoading(true);
+      // setIsLoading(true);
+      start();
 
       try {
         const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
@@ -27,7 +30,8 @@ export const useProducts = ({ isAdmin = false } = {}) => {
       } catch (error) {
         showError(extractErrorMessage(error));
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
+        stop();
       }
     },
     [isAdmin, showError],
@@ -36,7 +40,7 @@ export const useProducts = ({ isAdmin = false } = {}) => {
   return {
     products,
     pageInfo,
-    isLoading,
     fetchProducts,
+    // isLoading,
   };
 };

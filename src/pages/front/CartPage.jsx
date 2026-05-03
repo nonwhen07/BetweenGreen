@@ -2,22 +2,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
-// import {
-//   getCartItems,
-//   updateCartItem,
-//   deleteCartItem,
-//   clearCart,
-//   createOrder,
-// } from '@/services/cartService';
-// services
-import { createOrder } from '@/services/cartService';
-// hooks
-import { useToast } from '@/hooks/useToast';
-import { useLoading } from '@/hooks/useLoading';
-import { useCart } from '@/hooks/cart/useCart';
-// import { useCartActions } from '@/hooks/cart/useCartActions';
-// utils
-import { extractErrorMessage } from '@/utils/errorHandler';
+// constants
+import { CART_STEPS } from '@/constants/cartConstants';
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
 import CartEmpty from '@/components/front/Cart/CartEmpty';
@@ -25,9 +11,16 @@ import CartTable from '@/components/front/Cart/CartTable';
 import CheckoutForm from '@/components/front/Cart/CheckoutForm';
 import CartSummary from '@/components/front/Cart/CartSummary';
 import OrderSuccess from '@/components/front/Cart/OrderSuccess';
-import PageLoader from '@/components/shared/PageLoader';
-// constants
-import { CART_STEPS } from '@/constants/cartConstants';
+// import PageLoader from '@/components/shared/PageLoader';
+
+// services
+import { createOrder } from '@/services/cartService';
+// hooks
+import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
+import { useCart } from '@/hooks/cart/useCart';
+// utils
+import { extractErrorMessage } from '@/utils/errorHandler';
 
 const CartPage = () => {
   const { step: stepParam } = useParams(); // 取得網址中 :step 的值
