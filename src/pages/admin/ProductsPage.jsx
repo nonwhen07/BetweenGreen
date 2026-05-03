@@ -447,7 +447,7 @@ function ProductsPage() {
         isOpen={isProductModalOpen}
         onClose={closeProductModal}
         modalMode={modalMode}
-        tempProduct={tempProduct}
+        // tempProduct={tempProduct}
         modalError={modalError}
         onModalChange={handleModalInputChange}
         onImageChange={handleImageChange}
@@ -459,10 +459,10 @@ function ProductsPage() {
         selectedTags={selectedTags}
         handleTagToggle={handleTagToggle}
         register={register}
-        setValue={setValue}
+        // setValue={setValue}
         watch={watch}
         errors={errors}
-        handleSubmit={handleSubmit}
+        // handleSubmit={handleSubmit}
       />
 
       <DeleteModal

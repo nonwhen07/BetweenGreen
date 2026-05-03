@@ -18,9 +18,12 @@ export const useProductModal = () => {
     reset,
     setValue,
     watch,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm({
     defaultValues: DEFAULT_PRODUCT,
+    mode: 'onBlur', // 使用者離開欄位就能先看到錯誤，不會等按確認才全部炸。
   });
 
   // hook
@@ -126,6 +129,18 @@ export const useProductModal = () => {
 
       setValue('category', categoryCode);
 
+      // if (updated.theme && updated.type && updated.species) {
+      //   clearErrors('category');
+      // } else {
+      //   setError('category', {
+      //     type: 'manual',
+      //     message: '請完整選擇商品分類',
+      //   });
+      // }
+      if (updated.theme && updated.type && updated.species) {
+        clearErrors('category');
+      }
+
       return updated;
     });
   };
@@ -214,7 +229,7 @@ export const useProductModal = () => {
   // form validate
   const validateProduct = (product) => {
     if (!product.title?.trim()) return '請輸入產品標題';
-    if (!product.category?.trim()) return '請輸入產品分類';
+    // if (!product.category?.trim()) return '請輸入產品分類';
     if (!product.unit?.trim()) return '請輸入產品單位';
     if (product.origin_price === '' || Number(product.origin_price) <= 0) return '請輸入原價';
     if (product.price === '' || Number(product.price) <= 0) return '請輸入售價';

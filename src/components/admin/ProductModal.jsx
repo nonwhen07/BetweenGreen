@@ -20,7 +20,7 @@ const ProductModal = ({
   isOpen,
   onClose,
   modalMode,
-  tempProduct,
+  // tempProduct,
   onModalChange,
   onImageChange,
   addImage,
@@ -34,8 +34,8 @@ const ProductModal = ({
   handleTagToggle,
 
   register,
-  handleSubmit,
-  setValue,
+  // handleSubmit,
+  // setValue,
   watch,
   errors,
 }) => {
@@ -177,7 +177,9 @@ const ProductModal = ({
                       標題
                     </label>
                     <input
-                      {...register('title')}
+                      {...register('title', {
+                        required: '請輸入產品標題',
+                      })}
                       // defaultValue={tempProduct.title}
                       // value={tempProduct.title}
                       // onChange={onModalChange}
@@ -187,6 +189,7 @@ const ProductModal = ({
                       className="form-control"
                       placeholder="請輸入標題"
                     />
+                    {errors.title && <small className="text-danger">{errors.title.message}</small>}
                   </div>
                   <div className="col-6">
                     <label className="form-label">商品評價</label>
@@ -228,8 +231,14 @@ const ProductModal = ({
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">商品分類組合</label>
+                  <input
+                    type="hidden"
+                    {...register('category', {
+                      validate: (value) => value?.trim() !== '' || '請選擇商品分類',
+                    })}
+                  />
 
-                  <div className="row g-3 mb-1">
+                  <div className="row g-3 mb-2">
                     <div className="col-md-4">
                       <select
                         className="form-select"
@@ -280,13 +289,17 @@ const ProductModal = ({
                     <div className="col-md-7">
                       <div className="form-control bg-light small text-muted">
                         {/* {tempProduct.category || '尚未生成 category code'} */}
-                        {watchCategory || '尚未生成 category code'}
+                        {watchCategory || '尚未生成商品分類'}
                       </div>
                     </div>
-                    <div className="col-md-5 d-flex justify-content-start align-items-center">
-                      <div className="small text-secondary">
-                        {categoryPreviewText || '尚未生成分類摘要'}
-                      </div>
+                    <div className="col-md-5 d-flex">
+                      <small className="text-secondary d-block me-2">
+                        {categoryPreviewText || '尚未生成商品分類'}
+                      </small>
+
+                      {errors.category && (
+                        <small className="text-danger d-block">{errors.category.message}</small>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -375,7 +388,9 @@ const ProductModal = ({
                       單位
                     </label>
                     <select
-                      {...register('unit')}
+                      {...register('unit', {
+                        required: '請選擇產品單位',
+                      })}
                       // defaultValue={tempProduct.unit}
                       // value={tempProduct.unit}
                       // onChange={onModalChange}
@@ -391,9 +406,13 @@ const ProductModal = ({
                       ))}
                     </select>
                     <div className="d-flex justify-content-start align-items-center mt-1">
-                      <div className="small text-secondary">
+                      {/* <div className="small text-secondary">
                         {unitPreviewText || '尚未選擇單位摘要'}
-                      </div>
+                      </div> */}
+                      <small className="text-secondary me-2">
+                        {unitPreviewText || '尚未選擇產品單位'}
+                      </small>
+                      {errors.unit && <small className="text-danger">{errors.unit.message}</small>}
                     </div>
                   </div>
                   <div className="col-4">
@@ -401,7 +420,13 @@ const ProductModal = ({
                       原價
                     </label>
                     <input
-                      {...register('origin_price')}
+                      {...register('origin_price', {
+                        required: '請輸入原價',
+                        min: {
+                          value: 1,
+                          message: '原價需大於 0',
+                        },
+                      })}
                       // defaultValue={tempProduct.origin_price}
                       // value={tempProduct.origin_price}
                       // onChange={onModalChange}
@@ -412,13 +437,22 @@ const ProductModal = ({
                       className="form-control"
                       placeholder="請輸入原價"
                     />
+                    {errors.origin_price && (
+                      <small className="text-danger">{errors.origin_price.message}</small>
+                    )}
                   </div>
                   <div className="col-4">
                     <label htmlFor="price" className="form-label">
                       售價
                     </label>
                     <input
-                      {...register('price')}
+                      {...register('price', {
+                        required: '請輸入售價',
+                        min: {
+                          value: 1,
+                          message: '售價需大於 0',
+                        },
+                      })}
                       // defaultValue={tempProduct.price}
                       // value={tempProduct.price}
                       // onChange={onModalChange}
@@ -429,6 +463,7 @@ const ProductModal = ({
                       className="form-control"
                       placeholder="請輸入售價"
                     />
+                    {errors.price && <small className="text-danger">{errors.price.message}</small>}
                   </div>
                 </div>
 
@@ -487,20 +522,20 @@ ProductModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   modalMode: PropTypes.oneOf(['create', 'edit']).isRequired,
 
-  tempProduct: PropTypes.shape({
-    // 確保 `tempProduct` 是物件，且內部特定屬性為必填
-    imageUrl: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    rating: PropTypes.number.isRequired,
-    category: PropTypes.string.isRequired,
-    unit: PropTypes.string.isRequired,
-    origin_price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    is_enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-    description: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-    imagesUrl: PropTypes.arrayOf(PropTypes.string),
-  }).isRequired,
+  // tempProduct: PropTypes.shape({
+  //   // 確保 `tempProduct` 是物件，且內部特定屬性為必填
+  //   imageUrl: PropTypes.string.isRequired,
+  //   title: PropTypes.string.isRequired,
+  //   rating: PropTypes.number.isRequired,
+  //   category: PropTypes.string.isRequired,
+  //   unit: PropTypes.string.isRequired,
+  //   origin_price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  //   price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  //   is_enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  //   description: PropTypes.string.isRequired,
+  //   content: PropTypes.string.isRequired,
+  //   imagesUrl: PropTypes.arrayOf(PropTypes.string),
+  // }).isRequired,
 
   onModalChange: PropTypes.func.isRequired,
   onImageChange: PropTypes.func.isRequired,
@@ -519,11 +554,11 @@ ProductModal.propTypes = {
   handleTagToggle: PropTypes.func.isRequired,
 };
 
-ProductModal.defaultProps = {
-  tempProduct: {
-    ...DEFAULT_PRODUCT,
-    is_enabled: 0, // 確保未設定時預設為 0（未啟用）
-  },
-};
+// ProductModal.defaultProps = {
+//   tempProduct: {
+//     ...DEFAULT_PRODUCT,
+//     is_enabled: 0, // 確保未設定時預設為 0（未啟用）
+//   },
+// };
 
 export default ProductModal;
