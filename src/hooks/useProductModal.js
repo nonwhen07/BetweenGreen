@@ -223,9 +223,13 @@ export const useProductModal = () => {
   };
   // form Submit
   const handleSubmitProduct = async (formData, onSuccess, onError) => {
+    // const submitData = {
+    //   ...tempProduct,
+    //   ...formData,
+    // };
     const submitData = {
-      ...tempProduct,
       ...formData,
+      id: tempProduct.id, //RHF 沒有 register id 欄位，但 update API 需要產品 id。
     };
     setModalError('');
 

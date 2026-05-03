@@ -42,8 +42,7 @@ const ProductModal = ({
   const [hoverRating, setHoverRating] = useState(0);
   const [showMoreTags, setShowMoreTags] = useState(false);
 
-  // 等之後 ProductsPage去處理好 normalizeProduct，避免modal裡面還要再做一次imagesUrl的雙重確認，所以這裡就直接確保imagesUrl一定是陣列，至少有一個空字串，讓後續操作更簡單
-  const images = tempProduct.imagesUrl ?? [''];
+  // const images = tempProduct.imagesUrl ?? [''];
 
   // 商品分類組合
   const typeOptions =
@@ -68,8 +67,16 @@ const ProductModal = ({
     .filter(Boolean)
     .join('、');
 
+  // watch
   const watchImageUrl = watch('imageUrl');
+  const watchImages = watch('imagesUrl') || [''];
+  const watchTitle = watch('title');
+  const watchRating = watch('rating');
+  const watchCategory = watch('category');
+  const watchContent = watch('content');
   const watchUnit = watch('unit');
+
+  const images = watchImages;
 
   // 單位摘要
   // const unitPreviewText =
@@ -89,7 +96,8 @@ const ProductModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <h5 className="modal-title text-light fs-4">
-              {modalMode === 'create' ? '新增產品' : '編輯 - ' + tempProduct.title}
+              {/* {modalMode === 'create' ? '新增產品' : '編輯 - ' + tempProduct.title} */}
+              {modalMode === 'create' ? '新增產品' : '編輯 - ' + (watchTitle || '')}
             </h5>
             <button
               type="button"
@@ -109,7 +117,7 @@ const ProductModal = ({
                   <div className="input-group">
                     <input
                       {...register('imageUrl')}
-                      defaultValue={tempProduct.imageUrl}
+                      // defaultValue={tempProduct.imageUrl}
                       // value={tempProduct.imageUrl || ''}
                       // onChange={onModalChange}
                       // name="imageUrl"
@@ -170,7 +178,7 @@ const ProductModal = ({
                     </label>
                     <input
                       {...register('title')}
-                      defaultValue={tempProduct.title}
+                      // defaultValue={tempProduct.title}
                       // value={tempProduct.title}
                       // onChange={onModalChange}
                       // name="title"
@@ -193,9 +201,8 @@ const ProductModal = ({
                             size={24}
                             style={{
                               color:
-                                ratingValue <= (hoverRating || tempProduct.rating)
-                                  ? '#ffc107'
-                                  : '#e4e5e9',
+                                // ratingValue <= (hoverRating || tempProduct.rating)
+                                ratingValue <= (hoverRating || watchRating) ? '#ffc107' : '#e4e5e9',
                               transition: 'color 0.2s',
                             }}
                             onMouseEnter={() => setHoverRating(ratingValue)}
@@ -214,7 +221,8 @@ const ProductModal = ({
                       })}
                     </div>
 
-                    <small className="text-muted">已選擇 {tempProduct.rating || 0} 顆星</small>
+                    {/* <small className="text-muted">已選擇 {tempProduct.rating || 0} 顆星</small> */}
+                    <small className="text-muted">已選擇 {watchRating || 0} 顆星</small>
                   </div>
                 </div>
 
@@ -271,7 +279,8 @@ const ProductModal = ({
                   <div className="row g-3">
                     <div className="col-md-7">
                       <div className="form-control bg-light small text-muted">
-                        {tempProduct.category || '尚未生成 category code'}
+                        {/* {tempProduct.category || '尚未生成 category code'} */}
+                        {watchCategory || '尚未生成 category code'}
                       </div>
                     </div>
                     <div className="col-md-5 d-flex justify-content-start align-items-center">
@@ -352,9 +361,10 @@ const ProductModal = ({
 
                   <div className="row g-3">
                     <div className="form-control bg-light small text-muted">
-                      {tempProduct.content
+                      {/* {tempProduct.content
                         ? tempProduct.content.split('|').join(' | ')
-                        : '尚未生成 content tags'}
+                        : '尚未生成 content tags'} */}
+                      {watchContent ? watchContent.split('|').join(' | ') : '尚未生成 content tags'}
                     </div>
                   </div>
                 </div>
@@ -366,7 +376,7 @@ const ProductModal = ({
                     </label>
                     <select
                       {...register('unit')}
-                      defaultValue={tempProduct.unit}
+                      // defaultValue={tempProduct.unit}
                       // value={tempProduct.unit}
                       // onChange={onModalChange}
                       name="unit"
@@ -392,7 +402,7 @@ const ProductModal = ({
                     </label>
                     <input
                       {...register('origin_price')}
-                      defaultValue={tempProduct.origin_price}
+                      // defaultValue={tempProduct.origin_price}
                       // value={tempProduct.origin_price}
                       // onChange={onModalChange}
                       // name="origin_price"
@@ -409,7 +419,7 @@ const ProductModal = ({
                     </label>
                     <input
                       {...register('price')}
-                      defaultValue={tempProduct.price}
+                      // defaultValue={tempProduct.price}
                       // value={tempProduct.price}
                       // onChange={onModalChange}
                       // name="price"
@@ -428,7 +438,7 @@ const ProductModal = ({
                   </label>
                   <textarea
                     {...register('description')}
-                    defaultValue={tempProduct.description}
+                    // defaultValue={tempProduct.description}
                     // value={tempProduct.description}
                     // onChange={onModalChange}
                     name="description"
@@ -442,7 +452,7 @@ const ProductModal = ({
                 <div className="form-check">
                   <input
                     {...register('is_enabled')}
-                    defaultChecked={Boolean(tempProduct.is_enabled)}
+                    // defaultChecked={Boolean(tempProduct.is_enabled)}
                     // checked={Boolean(tempProduct.is_enabled)}
                     // onChange={onModalChange}
                     // name="is_enabled"
