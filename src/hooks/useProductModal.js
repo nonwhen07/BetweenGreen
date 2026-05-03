@@ -63,6 +63,11 @@ export const useProductModal = () => {
       setTempProduct(normalized);
       reset(normalized); // modal 開啟時讓 RHF 一起知道現在表單值。
 
+      setValue('category', normalized.category || '');
+      setValue('content', normalized.content || '');
+      setValue('imagesUrl', normalized.imagesUrl || ['']);
+      setValue('rating', normalized.rating || 0);
+
       const [theme = '', type = '', species = ''] = normalized.category?.split('-') || [];
 
       setCategoryBuilder({
@@ -119,6 +124,8 @@ export const useProductModal = () => {
         category: categoryCode,
       }));
 
+      setValue('category', categoryCode);
+
       return updated;
     });
   };
@@ -139,10 +146,14 @@ export const useProductModal = () => {
 
     setSelectedTags(updatedTags);
 
+    const contentCode = updatedTags.join('|');
     setTempProduct((prev) => ({
       ...prev,
-      content: updatedTags.join('|'),
+      // content: updatedTags.join('|'),
+      content: contentCode,
     }));
+
+    setValue('content', contentCode);
   };
 
   // Modal表單
@@ -152,13 +163,16 @@ export const useProductModal = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : name === 'rating' ? Number(value) : value,
     }));
+    setValue(name, type === 'checkbox' ? checked : name === 'rating' ? Number(value) : value);
   };
+
+  // Modal表單 - Image
   const handleImageChange = (e, index) => {
     const { value } = e.target;
-
     setTempProduct((prev) => {
       const images = [...prev.imagesUrl];
       images[index] = value;
+      setValue('imagesUrl', images);
 
       return {
         ...prev,
@@ -168,26 +182,36 @@ export const useProductModal = () => {
   };
   // Modal表單 - 新增、刪除副圖
   const handleAddImage = () => {
-    setTempProduct((prev) => ({
-      ...prev,
-      imagesUrl: [...prev.imagesUrl, ''],
-    }));
+    setTempProduct((prev) => {
+      const images = [...prev.imagesUrl, ''];
+      setValue('imagesUrl', images);
+
+      return {
+        ...prev,
+        imagesUrl: images,
+      };
+    });
   };
   const handleDeleteImage = () => {
-    setTempProduct((prev) => ({
-      ...prev,
-      imagesUrl: prev.imagesUrl.slice(0, -1),
-    }));
+    setTempProduct((prev) => {
+      const images = prev.imagesUrl.slice(0, -1);
+      setValue('imagesUrl', images);
+
+      return {
+        ...prev,
+        imagesUrl: images,
+      };
+    });
   };
 
-  // form 相關
+  // form Data
   const formatProductData = (product) => ({
     ...product,
     origin_price: Number(product.origin_price),
     price: Number(product.price),
     is_enabled: product.is_enabled ? 1 : 0,
   });
-  // form validate 相關
+  // form validate
   const validateProduct = (product) => {
     if (!product.title?.trim()) return '請輸入產品標題';
     if (!product.category?.trim()) return '請輸入產品分類';
@@ -197,11 +221,16 @@ export const useProductModal = () => {
 
     return null;
   };
-
-  const handleSubmitProduct = async (onSuccess, onError) => {
+  // form Submit
+  const handleSubmitProduct = async (formData, onSuccess, onError) => {
+    const submitData = {
+      ...tempProduct,
+      ...formData,
+    };
     setModalError('');
 
-    const validationError = validateProduct(tempProduct);
+    // const validationError = validateProduct(tempProduct);
+    const validationError = validateProduct(submitData);
 
     if (validationError) {
       setModalError(validationError);
@@ -210,9 +239,11 @@ export const useProductModal = () => {
 
     try {
       if (modalMode === 'create') {
-        await createProduct(formatProductData(tempProduct));
+        // await createProduct(formatProductData(tempProduct));
+        await createProduct(formatProductData(submitData));
       } else {
-        await updateProduct(tempProduct.id, formatProductData(tempProduct));
+        // await updateProduct(tempProduct.id, formatProductData(tempProduct));
+        await updateProduct(submitData.id, formatProductData(submitData));
       }
 
       closeProductModal();

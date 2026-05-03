@@ -219,23 +219,37 @@ function ProductsPage() {
   //   }
   // };
 
-  const handleUpdateProduct = async () => {
-    // setIsScreenLoading(true);
-    start();
+  // const handleUpdateProduct = async () => {
+  //   start();
+  //   await handleSubmitProduct(
+  //     async () => {
+  //       await fetchProducts({ page: pageInfo.current_page || 1 });
+  //       success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！');
+  //     },
+  //     (errorMessage) => {
+  //       showError(errorMessage);
+  //     },
+  //   );
+  //   stop();
+  // };
 
-    await handleSubmitProduct(
+  // 更新產品 - RHF接管
+  const handleUpdateProduct = handleSubmit((formData) => {
+    start(); // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
+
+    return handleSubmitProduct(
+      formData,
       async () => {
         await fetchProducts({ page: pageInfo.current_page || 1 });
         success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！');
+        stop();
       },
       (errorMessage) => {
         showError(errorMessage);
+        stop();
       },
     );
-
-    // setIsScreenLoading(false);
-    stop();
-  };
+  });
 
   // 刪除產品
   const handleDeleteProduct = async () => {

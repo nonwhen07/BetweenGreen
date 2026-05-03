@@ -68,9 +68,14 @@ const ProductModal = ({
     .filter(Boolean)
     .join('、');
 
+  const watchImageUrl = watch('imageUrl');
+  const watchUnit = watch('unit');
+
   // 單位摘要
+  // const unitPreviewText =
+  //   Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === tempProduct.unit)?.label || '';
   const unitPreviewText =
-    Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === tempProduct.unit)?.label || '';
+    Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === watchUnit)?.label || '';
 
   if (!isOpen) return null;
 
@@ -103,18 +108,21 @@ const ProductModal = ({
                   </label>
                   <div className="input-group">
                     <input
-                      value={tempProduct.imageUrl || ''}
-                      onChange={onModalChange}
-                      name="imageUrl"
+                      {...register('imageUrl')}
+                      defaultValue={tempProduct.imageUrl}
+                      // value={tempProduct.imageUrl || ''}
+                      // onChange={onModalChange}
+                      // name="imageUrl"
                       type="text"
                       id="primary-image"
                       className="form-control"
                       placeholder="請輸入圖片連結"
                     />
                   </div>
-                  {tempProduct.imageUrl && (
+                  {/* {tempProduct.imageUrl && (
                     <img src={tempProduct.imageUrl} alt="" className="img-fluid" />
-                  )}
+                  )} */}
+                  {watchImageUrl && <img src={watchImageUrl} alt="" className="img-fluid" />}
                 </div>
                 {/* 副圖 */}
                 <div className="border border-2 border-dashed rounded-3 p-3">
@@ -357,8 +365,10 @@ const ProductModal = ({
                       單位
                     </label>
                     <select
-                      value={tempProduct.unit}
-                      onChange={onModalChange}
+                      {...register('unit')}
+                      defaultValue={tempProduct.unit}
+                      // value={tempProduct.unit}
+                      // onChange={onModalChange}
                       name="unit"
                       id="unit"
                       className="form-select"
@@ -417,8 +427,10 @@ const ProductModal = ({
                     商品敘事文案
                   </label>
                   <textarea
-                    value={tempProduct.description}
-                    onChange={onModalChange}
+                    {...register('description')}
+                    defaultValue={tempProduct.description}
+                    // value={tempProduct.description}
+                    // onChange={onModalChange}
                     name="description"
                     id="description"
                     className="form-control"
@@ -429,9 +441,11 @@ const ProductModal = ({
 
                 <div className="form-check">
                   <input
-                    checked={Boolean(tempProduct.is_enabled)}
-                    onChange={onModalChange}
-                    name="is_enabled"
+                    {...register('is_enabled')}
+                    defaultChecked={Boolean(tempProduct.is_enabled)}
+                    // checked={Boolean(tempProduct.is_enabled)}
+                    // onChange={onModalChange}
+                    // name="is_enabled"
                     type="checkbox"
                     className="form-check-input"
                     id="isEnabled"
