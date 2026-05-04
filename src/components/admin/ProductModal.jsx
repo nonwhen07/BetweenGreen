@@ -4,7 +4,6 @@ import { FaStar } from 'react-icons/fa';
 
 // constants
 import {
-  DEFAULT_PRODUCT,
   CATEGORY_THEME_MAP,
   CATEGORY_TYPE_MAP,
   CATEGORY_SPECIES_MAP,
@@ -17,57 +16,34 @@ import {
 } from '@/constants/productConstants';
 
 const ProductModal = ({
+  // modal lifecycle
   isOpen,
   onClose,
   modalMode,
-  // tempProduct,
+  onConfirm,
+
+  // field handlers
   onModalChange,
   onImageChange,
   addImage,
   deleteImage,
-  modalError,
-  onConfirm,
 
+  // category / tags
   categoryBuilder,
   selectedTags,
   handleCategoryBuilderChange,
   handleTagToggle,
 
+  // RHF tools
   register,
-  // handleSubmit,
-  // setValue,
   watch,
   errors,
 }) => {
+  // local states
   const [hoverRating, setHoverRating] = useState(0);
   const [showMoreTags, setShowMoreTags] = useState(false);
 
-  // const images = tempProduct.imagesUrl ?? [''];
-
-  // 商品分類組合
-  const typeOptions =
-    THEME_TYPE_RELATION_MAP[categoryBuilder.theme]?.map((key) => CATEGORY_TYPE_MAP[key]) || [];
-
-  const speciesOptions =
-    TYPE_SPECIES_RELATION_MAP[categoryBuilder.type]?.map((key) => CATEGORY_SPECIES_MAP[key]) || [];
-
-  const categoryPreviewText = [
-    CATEGORY_THEME_MAP[categoryBuilder.theme]?.label,
-    CATEGORY_TYPE_MAP[categoryBuilder.type]?.label,
-    CATEGORY_SPECIES_MAP[categoryBuilder.species]?.label,
-  ]
-    .filter(Boolean)
-    .join(' - ');
-
-  // 商品屬性標籤摘要
-
-  const selectedSecondaryTags = selectedTags.filter((tag) => SECONDARY_CONTENT_TAGS.includes(tag));
-  const secondaryTagPreviewText = selectedSecondaryTags
-    .map((key) => PRODUCT_CONTENT_MAP[key]?.label)
-    .filter(Boolean)
-    .join('、');
-
-  // watch
+  // derived form values（RHF 表單衍生值）
   const watchImageUrl = watch('imageUrl');
   const watchImages = watch('imagesUrl') || [''];
   const watchTitle = watch('title');
@@ -75,12 +51,28 @@ const ProductModal = ({
   const watchCategory = watch('category');
   const watchContent = watch('content');
   const watchUnit = watch('unit');
+  // watchImages 的 alias，方便後續如果要對副圖做特殊處理（ex: 限制數量、格式化輸入等），或直接不用 alias 2者都行
+  const previewImages = watchImages;
 
-  const images = watchImages;
-
+  // 商品分類組合
+  const typeOptions =
+    THEME_TYPE_RELATION_MAP[categoryBuilder.theme]?.map((key) => CATEGORY_TYPE_MAP[key]) || [];
+  const speciesOptions =
+    TYPE_SPECIES_RELATION_MAP[categoryBuilder.type]?.map((key) => CATEGORY_SPECIES_MAP[key]) || [];
+  const categoryPreviewText = [
+    CATEGORY_THEME_MAP[categoryBuilder.theme]?.label,
+    CATEGORY_TYPE_MAP[categoryBuilder.type]?.label,
+    CATEGORY_SPECIES_MAP[categoryBuilder.species]?.label,
+  ]
+    .filter(Boolean)
+    .join(' - ');
+  // 商品屬性標籤摘要
+  const selectedSecondaryTags = selectedTags.filter((tag) => SECONDARY_CONTENT_TAGS.includes(tag));
+  const secondaryTagPreviewText = selectedSecondaryTags
+    .map((key) => PRODUCT_CONTENT_MAP[key]?.label)
+    .filter(Boolean)
+    .join('、');
   // 單位摘要
-  // const unitPreviewText =
-  //   Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === tempProduct.unit)?.label || '';
   const unitPreviewText =
     Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === watchUnit)?.label || '';
 
@@ -96,7 +88,6 @@ const ProductModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <h5 className="modal-title text-light fs-4">
-              {/* {modalMode === 'create' ? '新增產品' : '編輯 - ' + tempProduct.title} */}
               {modalMode === 'create' ? '新增產品' : '編輯 - ' + (watchTitle || '')}
             </h5>
             <button
@@ -107,7 +98,6 @@ const ProductModal = ({
             ></button>
           </div>
           <div className="modal-body p-4">
-            {modalError && <div className="alert alert-danger">{modalError}</div>}
             <div className="row g-4">
               <div className="col-md-4">
                 <div className="mb-3">
@@ -117,25 +107,18 @@ const ProductModal = ({
                   <div className="input-group">
                     <input
                       {...register('imageUrl')}
-                      // defaultValue={tempProduct.imageUrl}
-                      // value={tempProduct.imageUrl || ''}
-                      // onChange={onModalChange}
-                      // name="imageUrl"
                       type="text"
                       id="primary-image"
                       className="form-control"
                       placeholder="請輸入圖片連結"
                     />
                   </div>
-                  {/* {tempProduct.imageUrl && (
-                    <img src={tempProduct.imageUrl} alt="" className="img-fluid" />
-                  )} */}
                   {watchImageUrl && <img src={watchImageUrl} alt="" className="img-fluid" />}
                 </div>
                 {/* 副圖 */}
                 <div className="border border-2 border-dashed rounded-3 p-3">
-                  {images?.length > 0 &&
-                    images.map((image, index) => (
+                  {previewImages?.length > 0 &&
+                    previewImages.map((image, index) => (
                       <div key={index} className="mb-2">
                         <label htmlFor={`imagesUrl-${index + 1}`} className="form-label">
                           副圖 {index + 1}
@@ -157,12 +140,12 @@ const ProductModal = ({
                     ))}
                 </div>
                 <div className="btn-group w-100">
-                  {images.length < 5 && images[images.length - 1] !== '' && (
+                  {previewImages.length < 5 && previewImages[previewImages.length - 1] !== '' && (
                     <button onClick={addImage} className="btn btn-outline-primary btn-sm w-100">
                       新增圖片
                     </button>
                   )}
-                  {images.length > 1 && (
+                  {previewImages.length > 1 && (
                     <button onClick={deleteImage} className="btn btn-outline-danger btn-sm w-100">
                       刪除圖片
                     </button>
@@ -180,10 +163,6 @@ const ProductModal = ({
                       {...register('title', {
                         required: '請輸入產品標題',
                       })}
-                      // defaultValue={tempProduct.title}
-                      // value={tempProduct.title}
-                      // onChange={onModalChange}
-                      // name="title"
                       id="title"
                       type="text"
                       className="form-control"
@@ -204,7 +183,6 @@ const ProductModal = ({
                             size={24}
                             style={{
                               color:
-                                // ratingValue <= (hoverRating || tempProduct.rating)
                                 ratingValue <= (hoverRating || watchRating) ? '#ffc107' : '#e4e5e9',
                               transition: 'color 0.2s',
                             }}
@@ -223,8 +201,6 @@ const ProductModal = ({
                         );
                       })}
                     </div>
-
-                    {/* <small className="text-muted">已選擇 {tempProduct.rating || 0} 顆星</small> */}
                     <small className="text-muted">已選擇 {watchRating || 0} 顆星</small>
                   </div>
                 </div>
@@ -238,6 +214,7 @@ const ProductModal = ({
                     })}
                   />
 
+                  {/* 商品分類 */}
                   <div className="row g-3 mb-2">
                     <div className="col-md-4">
                       <select
@@ -288,24 +265,30 @@ const ProductModal = ({
                   <div className="row g-3">
                     <div className="col-md-7">
                       <div className="form-control bg-light small text-muted">
-                        {/* {tempProduct.category || '尚未生成 category code'} */}
-                        {watchCategory || '尚未生成商品分類'}
+                        {watchCategory || '尚未選擇商品分類'}
                       </div>
                     </div>
-                    <div className="col-md-5 d-flex">
+                    <div className="col-md-5">
                       <small className="text-secondary d-block me-2">
-                        {categoryPreviewText || '尚未生成商品分類'}
+                        {categoryPreviewText || '尚未選擇商品分類'}
                       </small>
-
-                      {errors.category && (
-                        <small className="text-danger d-block">{errors.category.message}</small>
-                      )}
+                      <div className="mt-1">
+                        {errors.category && (
+                          <small className="text-danger d-block">{errors.category.message}</small>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">商品屬性標籤</label>
+                  <input
+                    type="hidden"
+                    {...register('content', {
+                      validate: (value) => value?.trim() !== '' || '請至少選擇一個商品標籤',
+                    })}
+                  />
 
                   {/* 常用標籤 */}
                   <div className="d-flex flex-wrap gap-2 mb-2">
@@ -374,10 +357,12 @@ const ProductModal = ({
 
                   <div className="row g-3">
                     <div className="form-control bg-light small text-muted">
-                      {/* {tempProduct.content
-                        ? tempProduct.content.split('|').join(' | ')
-                        : '尚未生成 content tags'} */}
-                      {watchContent ? watchContent.split('|').join(' | ') : '尚未生成 content tags'}
+                      {watchContent ? watchContent.split('|').join(' | ') : '尚未選擇商品標籤'}
+                    </div>
+                    <div className="mt-1">
+                      {errors.content && (
+                        <small className="text-danger">{errors.content.message}</small>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -391,9 +376,6 @@ const ProductModal = ({
                       {...register('unit', {
                         required: '請選擇產品單位',
                       })}
-                      // defaultValue={tempProduct.unit}
-                      // value={tempProduct.unit}
-                      // onChange={onModalChange}
                       name="unit"
                       id="unit"
                       className="form-select"
@@ -406,9 +388,6 @@ const ProductModal = ({
                       ))}
                     </select>
                     <div className="d-flex justify-content-start align-items-center mt-1">
-                      {/* <div className="small text-secondary">
-                        {unitPreviewText || '尚未選擇單位摘要'}
-                      </div> */}
                       <small className="text-secondary me-2">
                         {unitPreviewText || '尚未選擇產品單位'}
                       </small>
@@ -427,10 +406,6 @@ const ProductModal = ({
                           message: '原價需大於 0',
                         },
                       })}
-                      // defaultValue={tempProduct.origin_price}
-                      // value={tempProduct.origin_price}
-                      // onChange={onModalChange}
-                      // name="origin_price"
                       id="origin_price"
                       type="number"
                       min={0}
@@ -453,10 +428,6 @@ const ProductModal = ({
                           message: '售價需大於 0',
                         },
                       })}
-                      // defaultValue={tempProduct.price}
-                      // value={tempProduct.price}
-                      // onChange={onModalChange}
-                      // name="price"
                       id="price"
                       type="number"
                       min={0}
@@ -473,9 +444,6 @@ const ProductModal = ({
                   </label>
                   <textarea
                     {...register('description')}
-                    // defaultValue={tempProduct.description}
-                    // value={tempProduct.description}
-                    // onChange={onModalChange}
                     name="description"
                     id="description"
                     className="form-control"
@@ -487,10 +455,6 @@ const ProductModal = ({
                 <div className="form-check">
                   <input
                     {...register('is_enabled')}
-                    // defaultChecked={Boolean(tempProduct.is_enabled)}
-                    // checked={Boolean(tempProduct.is_enabled)}
-                    // onChange={onModalChange}
-                    // name="is_enabled"
                     type="checkbox"
                     className="form-check-input"
                     id="isEnabled"
@@ -518,32 +482,19 @@ const ProductModal = ({
 
 // === 新增 `propTypes` 驗證 ===
 ProductModal.propTypes = {
+  // modal lifecycle
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   modalMode: PropTypes.oneOf(['create', 'edit']).isRequired,
+  onConfirm: PropTypes.func.isRequired,
 
-  // tempProduct: PropTypes.shape({
-  //   // 確保 `tempProduct` 是物件，且內部特定屬性為必填
-  //   imageUrl: PropTypes.string.isRequired,
-  //   title: PropTypes.string.isRequired,
-  //   rating: PropTypes.number.isRequired,
-  //   category: PropTypes.string.isRequired,
-  //   unit: PropTypes.string.isRequired,
-  //   origin_price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  //   price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  //   is_enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-  //   description: PropTypes.string.isRequired,
-  //   content: PropTypes.string.isRequired,
-  //   imagesUrl: PropTypes.arrayOf(PropTypes.string),
-  // }).isRequired,
-
+  // field handlers
   onModalChange: PropTypes.func.isRequired,
   onImageChange: PropTypes.func.isRequired,
   addImage: PropTypes.func.isRequired,
   deleteImage: PropTypes.func.isRequired,
-  modalError: PropTypes.string,
-  onConfirm: PropTypes.func.isRequired,
 
+  // category / tags
   categoryBuilder: PropTypes.shape({
     theme: PropTypes.string,
     type: PropTypes.string,
@@ -552,13 +503,11 @@ ProductModal.propTypes = {
   selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleCategoryBuilderChange: PropTypes.func.isRequired,
   handleTagToggle: PropTypes.func.isRequired,
-};
 
-// ProductModal.defaultProps = {
-//   tempProduct: {
-//     ...DEFAULT_PRODUCT,
-//     is_enabled: 0, // 確保未設定時預設為 0（未啟用）
-//   },
-// };
+  // RHF tools
+  register: PropTypes.func.isRequired,
+  watch: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
+};
 
 export default ProductModal;

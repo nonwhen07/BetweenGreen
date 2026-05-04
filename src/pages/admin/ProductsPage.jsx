@@ -1,4 +1,3 @@
-// import { useState, useEffect } from 'react';
 import { useEffect } from 'react';
 
 // constants
@@ -24,114 +23,35 @@ import Pagination from '@/components/Pagination';
 import ProductModal from '@/components/admin/ProductModal';
 import DeleteModal from '@/components/admin/DeleteModal';
 import StarRating from '@/components/admin/StarRating';
-// import PageLoader from '@/components/shared/PageLoader';
 
-/**
- * =========================================
- * TODO: ProductsPage Refactor Plan
- * =========================================
- *
- * Current status:
- * - Page logic slightly large but still manageable
- * - Service layer already separated (productService)
- * - Modal components already separated
- *
- * Future improvements (when time allows):
- *
- * 1️⃣ Extract Products Logic Hook
- * --------------------------------
- * Move product data logic into:
- *
- * hooks/useProducts.js
- *
- * Responsible for:
- * - getProducts
- * - pagination handling
- * - loading state
- *
- *
- * 2️⃣ Extract Modal Logic
- * --------------------------------
- * Move modal related state:
- *
- * hooks/useProductModal.js
- *
- * Responsible for:
- * - tempProduct
- * - modalMode
- * - open/close modal
- * - normalizeProduct
- *
- *
- * 3️⃣ Move Validation to Utils
- * --------------------------------
- * Move validateProduct() to:
- *
- * utils/productValidator.js
- *
- *
- * 4️⃣ Table Component Separation
- * --------------------------------
- * Extract UI table to:
- *
- * components/admin/ProductTable.jsx
- *
- * Props:
- * - products
- * - onEdit
- * - onDelete
- *
- *
- * 5️⃣ Optional Improvements
- * --------------------------------
- * - Add ProductPreviewModal
- * - Add optimistic update
- * - Add toast success message
- *
- *
- * Note:
- * --------------------------------
- * Do NOT refactor now to avoid interrupting
- * current UI and layout development.
- *
- */
-function ProductsPage() {
-  // hooks
+const ProductsPage = () => {
+  // hooks init
   const { success, showError } = useToast();
   const { start, stop } = useLoading();
-
-  // const { products, pageInfo, isLoading, fetchProducts } = useProducts({ isAdmin: true });
   const { products, pageInfo, fetchProducts } = useProducts({ isAdmin: true });
   const {
-    modalMode,
-    tempProduct,
-    // setTempProduct,
-    modalError,
-    // setModalError,
-
     isModalOpen: isProductModalOpen,
+    modalMode,
     openProductModal,
     closeProductModal,
-
-    handleModalInputChange,
-    handleImageChange,
-    handleAddImage,
-    handleDeleteImage,
 
     categoryBuilder,
     selectedTags,
     handleCategoryBuilderChange,
     handleTagToggle,
 
+    handleCustomFieldChange,
+    handleImageChange,
+    handleAddImage,
+    handleDeleteImage,
+
     handleSubmitProduct,
 
     register,
     handleSubmit,
-    setValue,
     watch,
     errors,
   } = useProductModal();
-
   const {
     isOpen: isDeleteModalOpen,
     targetItem: deleteTarget,
@@ -139,35 +59,10 @@ function ProductsPage() {
     closeDeleteModal,
   } = useDeleteModal();
 
-  // 狀態管理 (State)
-  // const [isScreenLoading, setIsScreenLoading] = useState(false);
-
+  // derived values
   const productCount = products?.length || 0;
 
-  // 產品列表分頁
-  const handlePageChange = (page = 1) => {
-    fetchProducts({ page });
-  };
-
-  // // 傳值data時，需包裝成物件{data: {}}，並將tempProduct的origin_price、price轉換為數字，is_enabled轉換為數字0或1
-  // const formatProductData = (product) => ({
-  //   ...product,
-  //   origin_price: Number(product.origin_price),
-  //   price: Number(product.price),
-  //   is_enabled: product.is_enabled ? 1 : 0,
-  // });
-
-  // //做前端驗證函式 - 確保必填欄位都有填寫，並回傳對應的錯誤訊息
-  // const validateProduct = (product) => {
-  //   if (!product.title?.trim()) return '請輸入產品標題';
-  //   if (!product.category?.trim()) return '請輸入產品分類';
-  //   if (!product.unit?.trim()) return '請輸入產品單位';
-  //   if (product.origin_price === '' || Number(product.origin_price) <= 0) return '請輸入原價';
-  //   if (product.price === '' || Number(product.price) <= 0) return '請輸入售價';
-
-  //   return null;
-  // };
-
+  // helper functions（純顯示工具）
   // 產品分類預覽 - 從 category code 轉換為可讀的分類名稱
   const getCategoryPreview = (categoryCode = '') => {
     const [theme, type, species] = categoryCode.split('-');
@@ -180,7 +75,6 @@ function ProductsPage() {
       .filter(Boolean)
       .join(' - ');
   };
-
   // 產品單位預覽 - 從 unit code 轉換為可讀的單位名稱
   const getUnitLabel = (unitValue = '') => {
     return (
@@ -188,54 +82,13 @@ function ProductsPage() {
     );
   };
 
-  // 更新產品 - 包含前端驗證、錯誤訊息顯示
-  // const handleUpdateProduct = async () => {
-  //   setIsScreenLoading(true);
-  //   setModalError('');
-
-  //   const validationError = validateProduct(tempProduct);
-
-  //   if (validationError) {
-  //     setModalError(validationError);
-  //     setIsScreenLoading(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     if (modalMode === 'create') {
-  //       await createProduct(formatProductData(tempProduct));
-  //     } else {
-  //       await updateProduct(tempProduct.id, formatProductData(tempProduct));
-  //     }
-  //     await fetchProducts({ page: pageInfo.current_page || 1 });
-
-  //     closeProductModal();
-  //     success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！'); // 成功訊息
-  //   } catch (error) {
-  //     const errorMessage = extractErrorMessage(error, null, '更新產品失敗，請稍後再試。');
-  //     showError(errorMessage);
-  //   } finally {
-  //     setIsScreenLoading(false);
-  //   }
-  // };
-
-  // const handleUpdateProduct = async () => {
-  //   start();
-  //   await handleSubmitProduct(
-  //     async () => {
-  //       await fetchProducts({ page: pageInfo.current_page || 1 });
-  //       success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！');
-  //     },
-  //     (errorMessage) => {
-  //       showError(errorMessage);
-  //     },
-  //   );
-  //   stop();
-  // };
-
-  // 更新產品 - RHF接管
+  // Page actions（CRUD / pagination）
+  const handlePageChange = (page = 1) => {
+    fetchProducts({ page });
+  };
   const handleUpdateProduct = handleSubmit((formData) => {
-    start(); // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
+    // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
+    start();
 
     return handleSubmitProduct(
       formData,
@@ -250,29 +103,27 @@ function ProductsPage() {
       },
     );
   });
-
-  // 刪除產品
   const handleDeleteProduct = async () => {
     if (!deleteTarget?.id) return;
-    // setIsScreenLoading(true);
     start();
 
     try {
       await deleteProduct(deleteTarget.id);
-      closeDeleteModal(); // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
+      // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
+      closeDeleteModal();
       await fetchProducts({ page: pageInfo.current_page || 1 });
-      success('產品刪除成功！'); // 成功訊息
+      success('產品刪除成功！');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
-      // setIsScreenLoading(false);
       stop();
     }
   };
 
-  // useEffect getProducts 初始載入產品資料，先page=1，category先不指定
+  // lifecycle
   useEffect(() => {
+    // useEffect getProducts 初始載入產品資料，先page=1，category先不指定
     const initProducts = async () => {
       try {
         await fetchProducts({ page: 1 });
@@ -326,9 +177,6 @@ function ProductsPage() {
 
                   <tbody>
                     {products.map((product) => {
-                      // const contentTags = product.content
-                      //   ? product.content.split('|').slice(0, 3)
-                      //   : [];
                       const rawTags = product.content ? product.content.split('|') : [];
                       const contentTags = rawTags.slice(0, 2);
                       const extraTagCount = rawTags.length - 2;
@@ -361,17 +209,6 @@ function ProductsPage() {
                           {/* 標籤 */}
                           <td>
                             <div className="admin-tags">
-                              {/* <div className="admin-tags__list">
-                                {contentTags.length > 0 ? (
-                                  contentTags.map((tag, i) => (
-                                    <span key={i} className="badge text-bg-light border">
-                                      {tag}
-                                    </span>
-                                  ))
-                                ) : (
-                                  <span className="text-muted small">尚未設定標籤</span>
-                                )}
-                              </div> */}
                               <div className="admin-tags__list">
                                 {contentTags.length > 0 ? (
                                   <>
@@ -439,17 +276,13 @@ function ProductsPage() {
           </>
         )}
       </div>
-      {/* ScreenLoading */}
-      {/* <PageLoader show={isLoading || isScreenLoading} zIndex={2000} /> */}
 
       {/* Modals */}
       <ProductModal
         isOpen={isProductModalOpen}
         onClose={closeProductModal}
         modalMode={modalMode}
-        // tempProduct={tempProduct}
-        modalError={modalError}
-        onModalChange={handleModalInputChange}
+        onModalChange={handleCustomFieldChange}
         onImageChange={handleImageChange}
         addImage={handleAddImage}
         deleteImage={handleDeleteImage}
@@ -459,10 +292,8 @@ function ProductsPage() {
         selectedTags={selectedTags}
         handleTagToggle={handleTagToggle}
         register={register}
-        // setValue={setValue}
         watch={watch}
         errors={errors}
-        // handleSubmit={handleSubmit}
       />
 
       <DeleteModal
@@ -474,6 +305,18 @@ function ProductsPage() {
       />
     </>
   );
-}
+};
+
+/**
+ * =========================================
+ * NEXT REFACTOR / UI PLAN
+ * =========================================
+ *
+ * 1. Extract Admin ProductsTable component
+ * 2. Optional ProductPreviewModal
+ * 3. Optional optimistic update after CRUD
+ * 4. Code clean: remove legacy tempProduct comments
+ *
+ */
 
 export default ProductsPage;

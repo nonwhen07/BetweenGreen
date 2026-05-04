@@ -11,28 +11,26 @@ import { useToast } from '@/hooks/useToast';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useProductModal = () => {
-  // hook 初始化 useForm
+  // hook 初始化 useForm、useToast
   const {
     register,
     handleSubmit,
     reset,
     setValue,
     watch,
-    setError,
+    // setError,
     clearErrors,
     formState: { errors },
   } = useForm({
     defaultValues: DEFAULT_PRODUCT,
     mode: 'onBlur', // 使用者離開欄位就能先看到錯誤，不會等按確認才全部炸。
   });
-
-  // hook
   const { warning } = useToast();
+
   // state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create');
-  const [tempProduct, setTempProduct] = useState(DEFAULT_PRODUCT);
-  const [modalError, setModalError] = useState('');
+  const [editProductId, setEditProductId] = useState(null);
   const [categoryBuilder, setCategoryBuilder] = useState({
     theme: '',
     type: '',
@@ -40,20 +38,32 @@ export const useProductModal = () => {
   });
   const [selectedTags, setSelectedTags] = useState([]);
 
+  // derived values (RHF衍生值）
+  const watchImages = watch('imagesUrl') || [''];
+
+  // helper functions（資料正規化 / API格式化）
   // imagesUrl雙重確認函式 - 避免api回傳imagesUrl為空陣列或非陣列，避免後續操作出錯
   const normalizeProduct = (p = {}) => ({
     ...DEFAULT_PRODUCT,
     ...p,
     imagesUrl: Array.isArray(p.imagesUrl) && p.imagesUrl.length > 0 ? [...p.imagesUrl] : [''],
   });
+  // form Data
+  const formatProductData = (product) => ({
+    ...product,
+    origin_price: Number(product.origin_price),
+    price: Number(product.price),
+    is_enabled: product.is_enabled ? 1 : 0,
+  });
 
-  // Modal 控制
+  // Modal lifecycle
   const openProductModal = (mode, product = null) => {
     setModalMode(mode);
 
     // 更換成 Category、Tags(content)
     if (mode === 'create') {
-      setTempProduct({ ...DEFAULT_PRODUCT });
+      // setTempProduct({ ...DEFAULT_PRODUCT });
+      setEditProductId(null);
       reset({ ...DEFAULT_PRODUCT }); // modal 開啟時讓 RHF 一起知道現在表單值。
       setCategoryBuilder({
         theme: '',
@@ -62,8 +72,8 @@ export const useProductModal = () => {
       });
       setSelectedTags([]);
     } else {
+      setEditProductId(product.id);
       const normalized = normalizeProduct(product);
-      setTempProduct(normalized);
       reset(normalized); // modal 開啟時讓 RHF 一起知道現在表單值。
 
       setValue('category', normalized.category || '');
@@ -82,16 +92,13 @@ export const useProductModal = () => {
       setSelectedTags(normalized.content ? normalized.content.split('|') : []);
     }
 
-    setModalError('');
     setIsModalOpen(true);
   };
-
-  // 關閉 modal
   const closeProductModal = () => {
     setIsModalOpen(false);
-    setModalError('');
-    setTempProduct({ ...DEFAULT_PRODUCT });
-    reset({ ...DEFAULT_PRODUCT }); // modal 開啟時讓 RHF 一起知道現在表單值。
+    setEditProductId(null);
+    // modal 開啟時讓 RHF 一起知道現在表單值。
+    reset({ ...DEFAULT_PRODUCT });
 
     // 清除 category、 tag 的資料
     setCategoryBuilder({
@@ -103,6 +110,7 @@ export const useProductModal = () => {
     setSelectedTags([]);
   };
 
+  // Field handlers
   // category 控制函式
   const handleCategoryBuilderChange = (field, value) => {
     setCategoryBuilder((prev) => {
@@ -122,21 +130,8 @@ export const useProductModal = () => {
 
       const categoryCode = [updated.theme, updated.type, updated.species].filter(Boolean).join('-');
 
-      setTempProduct((prevProduct) => ({
-        ...prevProduct,
-        category: categoryCode,
-      }));
-
       setValue('category', categoryCode);
 
-      // if (updated.theme && updated.type && updated.species) {
-      //   clearErrors('category');
-      // } else {
-      //   setError('category', {
-      //     type: 'manual',
-      //     message: '請完整選擇商品分類',
-      //   });
-      // }
       if (updated.theme && updated.type && updated.species) {
         clearErrors('category');
       }
@@ -144,7 +139,6 @@ export const useProductModal = () => {
       return updated;
     });
   };
-
   // tag 控制函式
   const handleTagToggle = (tagKey) => {
     let updatedTags = [];
@@ -162,106 +156,44 @@ export const useProductModal = () => {
     setSelectedTags(updatedTags);
 
     const contentCode = updatedTags.join('|');
-    setTempProduct((prev) => ({
-      ...prev,
-      // content: updatedTags.join('|'),
-      content: contentCode,
-    }));
 
     setValue('content', contentCode);
   };
-
-  // Modal表單
-  const handleModalInputChange = (e) => {
+  // Modal表單- 客製欄位(原handleModalInputChange)
+  const handleCustomFieldChange = (e) => {
     const { name, value, checked, type } = e.target;
-    setTempProduct((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : name === 'rating' ? Number(value) : value,
-    }));
     setValue(name, type === 'checkbox' ? checked : name === 'rating' ? Number(value) : value);
   };
-
-  // Modal表單 - Image
+  // Modal表單 - ImageChange
   const handleImageChange = (e, index) => {
     const { value } = e.target;
-    setTempProduct((prev) => {
-      const images = [...prev.imagesUrl];
-      images[index] = value;
-      setValue('imagesUrl', images);
 
-      return {
-        ...prev,
-        imagesUrl: images,
-      };
-    });
+    const newImages = [...watchImages];
+    newImages[index] = value;
+    setValue('imagesUrl', newImages);
   };
   // Modal表單 - 新增、刪除副圖
   const handleAddImage = () => {
-    setTempProduct((prev) => {
-      const images = [...prev.imagesUrl, ''];
-      setValue('imagesUrl', images);
-
-      return {
-        ...prev,
-        imagesUrl: images,
-      };
-    });
+    const newImages = [...watchImages, ''];
+    setValue('imagesUrl', newImages);
   };
   const handleDeleteImage = () => {
-    setTempProduct((prev) => {
-      const images = prev.imagesUrl.slice(0, -1);
-      setValue('imagesUrl', images);
-
-      return {
-        ...prev,
-        imagesUrl: images,
-      };
-    });
+    if (watchImages.length <= 1) return;
+    const newImages = watchImages.slice(0, -1);
+    setValue('imagesUrl', newImages);
   };
-
-  // form Data
-  const formatProductData = (product) => ({
-    ...product,
-    origin_price: Number(product.origin_price),
-    price: Number(product.price),
-    is_enabled: product.is_enabled ? 1 : 0,
-  });
-  // form validate
-  const validateProduct = (product) => {
-    if (!product.title?.trim()) return '請輸入產品標題';
-    // if (!product.category?.trim()) return '請輸入產品分類';
-    if (!product.unit?.trim()) return '請輸入產品單位';
-    if (product.origin_price === '' || Number(product.origin_price) <= 0) return '請輸入原價';
-    if (product.price === '' || Number(product.price) <= 0) return '請輸入售價';
-
-    return null;
-  };
-  // form Submit
+  // form Submit action
   const handleSubmitProduct = async (formData, onSuccess, onError) => {
-    // const submitData = {
-    //   ...tempProduct,
-    //   ...formData,
-    // };
+    // RHF 已接管全部表單資料，僅 edit 模式需額外補上從api資料讀取的產品 id
     const submitData = {
       ...formData,
-      id: tempProduct.id, //RHF 沒有 register id 欄位，但 update API 需要產品 id。
+      id: editProductId,
     };
-    setModalError('');
-
-    // const validationError = validateProduct(tempProduct);
-    const validationError = validateProduct(submitData);
-
-    if (validationError) {
-      setModalError(validationError);
-      return false;
-    }
 
     try {
       if (modalMode === 'create') {
-        // await createProduct(formatProductData(tempProduct));
         await createProduct(formatProductData(submitData));
       } else {
-        // await updateProduct(tempProduct.id, formatProductData(tempProduct));
         await updateProduct(submitData.id, formatProductData(submitData));
       }
 
@@ -276,32 +208,30 @@ export const useProductModal = () => {
   };
 
   return {
-    modalMode,
-    tempProduct,
-    setTempProduct,
-    modalError,
-    // setModalError,
-
+    // Modal lifecycle
     isModalOpen,
+    modalMode,
+    editProductId,
     openProductModal,
     closeProductModal,
 
-    handleModalInputChange,
-    handleImageChange,
-    handleAddImage,
-    handleDeleteImage,
-
+    // Field states + handlers
     categoryBuilder,
     selectedTags,
     handleCategoryBuilderChange,
     handleTagToggle,
 
+    handleCustomFieldChange,
+    handleImageChange,
+    handleAddImage,
+    handleDeleteImage,
+
+    // submit action
     handleSubmitProduct,
 
-    // RHF 工具
+    // RHF tools
     register,
     handleSubmit,
-    setValue,
     watch,
     errors,
   };
