@@ -14,12 +14,10 @@ export const useProducts = ({ isAdmin = false } = {}) => {
 
   const [products, setProducts] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
-  // const [isLoading, setIsLoading] = useState(false);
 
   // 統一入口
   const fetchProducts = useCallback(
     async (params = {}) => {
-      // setIsLoading(true);
       start();
 
       try {
@@ -41,6 +39,5 @@ export const useProducts = ({ isAdmin = false } = {}) => {
     products,
     pageInfo,
     fetchProducts,
-    // isLoading,
   };
 };
