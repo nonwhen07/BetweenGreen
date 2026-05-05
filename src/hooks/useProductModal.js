@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 // constants
 import { DEFAULT_PRODUCT } from '@/constants/productConstants';
@@ -18,7 +18,7 @@ export const useProductModal = () => {
     reset,
     setValue,
     watch,
-    // setError,
+    control,
     clearErrors,
     formState: { errors },
   } = useForm({
@@ -38,17 +38,21 @@ export const useProductModal = () => {
   });
   const [selectedTags, setSelectedTags] = useState([]);
 
-  // derived values (RHF衍生值）
-  const watchImages = watch('imagesUrl') || [''];
+  // derived values（RHF 表單衍生值）
+  // 這裡改用 useWatch 監聽副圖陣列，直接 watch 容易跳 IDE 黃提示
+  const watchImages = useWatch({
+    control,
+    name: 'imagesUrl',
+  }) || [''];
 
   // helper functions（資料正規化 / API格式化）
-  // imagesUrl雙重確認函式 - 避免api回傳imagesUrl為空陣列或非陣列，避免後續操作出錯
+  // 正規化產品資料，順便保底 imagesUrl 一定是可操作的陣列
   const normalizeProduct = (p = {}) => ({
     ...DEFAULT_PRODUCT,
     ...p,
     imagesUrl: Array.isArray(p.imagesUrl) && p.imagesUrl.length > 0 ? [...p.imagesUrl] : [''],
   });
-  // form Data
+  // API submit 前格式整理
   const formatProductData = (product) => ({
     ...product,
     origin_price: Number(product.origin_price),
@@ -62,7 +66,6 @@ export const useProductModal = () => {
 
     // 更換成 Category、Tags(content)
     if (mode === 'create') {
-      // setTempProduct({ ...DEFAULT_PRODUCT });
       setEditProductId(null);
       reset({ ...DEFAULT_PRODUCT }); // modal 開啟時讓 RHF 一起知道現在表單值。
       setCategoryBuilder({
@@ -97,7 +100,7 @@ export const useProductModal = () => {
   const closeProductModal = () => {
     setIsModalOpen(false);
     setEditProductId(null);
-    // modal 開啟時讓 RHF 一起知道現在表單值。
+    // modal 關閉時重置 RHF 表單
     reset({ ...DEFAULT_PRODUCT });
 
     // 清除 category、 tag 的資料
@@ -211,7 +214,6 @@ export const useProductModal = () => {
     // Modal lifecycle
     isModalOpen,
     modalMode,
-    editProductId,
     openProductModal,
     closeProductModal,
 

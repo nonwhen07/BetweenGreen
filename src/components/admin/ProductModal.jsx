@@ -51,7 +51,8 @@ const ProductModal = ({
   const watchCategory = watch('category');
   const watchContent = watch('content');
   const watchUnit = watch('unit');
-  // watchImages 的 alias，方便後續如果要對副圖做特殊處理（ex: 限制數量、格式化輸入等），或直接不用 alias 2者都行
+
+  // 副圖預覽陣列
   const previewImages = watchImages;
 
   // 商品分類組合
@@ -480,7 +481,6 @@ const ProductModal = ({
   );
 };
 
-// === 新增 `propTypes` 驗證 ===
 ProductModal.propTypes = {
   // modal lifecycle
   isOpen: PropTypes.bool.isRequired,
