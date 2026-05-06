@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 // services
-import { deleteArticle } from '@/services/admin/articleService';
+import { deleteArticle } from '@/services/articleService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';

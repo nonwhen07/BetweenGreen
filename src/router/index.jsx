@@ -42,6 +42,7 @@ import DashboardPage from '@/pages/admin/DashboardPage';
 import AdminProductsPage from '@/pages/admin/ProductsPage';
 import OrdersPage from '@/pages/admin/OrdersPage';
 // import CouponsPage from '@/pages/admin/CouponsPage';
+import ArticlesPage from '@/pages/admin/ArticlesPage';
 
 import AdminNotFoundPage from '@/pages/admin/AdminNotFoundPage';
 
@@ -75,9 +76,9 @@ const routes = [
         element: <DashboardPage />,
       },
       { path: 'products', element: <AdminProductsPage /> },
-
       { path: 'orders', element: <OrdersPage /> },
       // { path: 'coupons', element: <CouponsPage /> },
+      { path: 'articles', element: <ArticlesPage /> },
       {
         // Admin 404頁面
         path: '*',

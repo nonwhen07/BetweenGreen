@@ -19,7 +19,8 @@ const ArticleModal = ({
 }) => {
   const watchTitle = watch('title');
   const watchImage = watch('image');
-  const watchContent = watch('content');
+  // const watchContent = watch('content');
+  const tagPreviewText = selectedTags.join(' | ');
 
   if (!isOpen) return null;
 
@@ -144,7 +145,7 @@ const ArticleModal = ({
                   </div>
 
                   <div className="form-control bg-light small text-muted">
-                    {watchContent || '尚未選擇文章標籤'}
+                    {tagPreviewText || '尚未選擇文章標籤'}
                   </div>
                 </div>
 

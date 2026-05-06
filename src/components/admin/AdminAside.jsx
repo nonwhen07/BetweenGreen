@@ -49,12 +49,12 @@ const menu = [
   //   title: '優惠卷列表',
   //   icon: <BookOpen size={18} />,
   // },
-  // {
-  //   path: '/admin/news',
-  //   name: 'News',
-  //   icon: <AlertCircle size={18} />,
-  //   title: '最新消息',
-  // },
+  {
+    name: 'Articles',
+    path: '/admin/articles',
+    icon: <AlertCircle size={18} />,
+    title: '文章管理',
+  },
 
   {
     name: 'BackHome',

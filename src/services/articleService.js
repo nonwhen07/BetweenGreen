@@ -47,6 +47,15 @@ export const getAdminArticles = async (page = 1) => {
   };
 };
 
+// 後台單一文章
+export const getAdminArticle = async (articleId) => {
+  const { data } = await axiosAPI.get(`/admin/article/${articleId}`);
+
+  return {
+    data: data.article,
+  };
+};
+
 // 新增文章
 export const createArticle = async (articleData) => {
   const { data } = await axiosAPI.post('/admin/article', {

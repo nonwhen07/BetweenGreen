@@ -8,7 +8,9 @@ import {
   formatUnixToDateInput,
 } from '@/utils/adminBuilderUtils';
 // services
-import { createArticle, updateArticle } from '@/services/articleService';
+// import { createArticle, updateArticle } from '@/services/articleService';
+// services
+import { createArticle, updateArticle, getAdminArticle } from '@/services/articleService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 // utils
@@ -47,7 +49,7 @@ export const useArticleModal = () => {
   });
 
   // modal lifecycle
-  const openArticleModal = (mode, article = null) => {
+  const openArticleModal = async (mode, article = null) => {
     setModalMode(mode);
 
     if (mode === 'create') {
@@ -60,8 +62,14 @@ export const useArticleModal = () => {
     } else {
       setEditArticleId(article.id);
 
-      const normalized = normalizeArticle(article);
+      // 關鍵：重新打單篇完整資料
+      const res = await getAdminArticle(article.id);
+      const fullArticle = res.data;
+
+      // const normalized = normalizeArticle(article);
+      const normalized = normalizeArticle(fullArticle);
       reset(normalized);
+      console.log('比對一下editData：', normalized);
 
       setSelectedTags(Array.isArray(normalized.tag) ? normalized.tag : []);
       setValue('tag', Array.isArray(normalized.tag) ? normalized.tag : []);
@@ -98,11 +106,13 @@ export const useArticleModal = () => {
 
     setSelectedTags(updatedTags);
     setValue('tag', updatedTags);
-    setValue('content', updatedTags.join(' | ')); // 給 modal 預覽摘要用
+    // setValue('content', updatedTags.join(' | ')); // 給 modal 預覽摘要用
   };
 
   // submit action
   const handleSubmitArticle = async (formData, onSuccess, onError) => {
+    console.log('formData比對', formData);
+
     const submitData = {
       ...formData,
       id: editArticleId,
@@ -110,7 +120,9 @@ export const useArticleModal = () => {
       tag: selectedTags,
     };
 
-    delete submitData.content; // content textarea是文章正文，tag預覽不需要覆蓋的話等等我們會微調，先保留此觀念
+    console.log('送出比對一下submitData，看有沒有預設欄位和客製欄位：', submitData);
+
+    // delete submitData.content; // content textarea是文章正文，tag預覽不需要覆蓋的話等等我們會微調，先保留此觀念
 
     try {
       if (modalMode === 'create') {
