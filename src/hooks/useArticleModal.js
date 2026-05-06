@@ -3,10 +3,11 @@ import { useForm } from 'react-hook-form';
 
 // constants
 import {
-  DEFAULT_ARTICLE,
   formatDateInputToUnix,
   formatUnixToDateInput,
+  formatOptionalDateToUnix,
 } from '@/utils/adminBuilderUtils';
+import { DEFAULT_ARTICLE } from '@/utils/adminBuilderUtils';
 // services
 // import { createArticle, updateArticle } from '@/services/articleService';
 // services
@@ -46,6 +47,9 @@ export const useArticleModal = () => {
     ...DEFAULT_ARTICLE,
     ...article,
     create_at: formatUnixToDateInput(article.create_at),
+    // 客製欄位
+    publishStart: formatUnixToDateInput(article.publishStart),
+    publishEnd: formatUnixToDateInput(article.publishEnd),
   });
 
   // modal lifecycle
@@ -69,7 +73,6 @@ export const useArticleModal = () => {
       // const normalized = normalizeArticle(article);
       const normalized = normalizeArticle(fullArticle);
       reset(normalized);
-      console.log('比對一下editData：', normalized);
 
       setSelectedTags(Array.isArray(normalized.tag) ? normalized.tag : []);
       setValue('tag', Array.isArray(normalized.tag) ? normalized.tag : []);
@@ -111,18 +114,17 @@ export const useArticleModal = () => {
 
   // submit action
   const handleSubmitArticle = async (formData, onSuccess, onError) => {
-    console.log('formData比對', formData);
-
     const submitData = {
       ...formData,
       id: editArticleId,
       create_at: formatDateInputToUnix(formData.create_at),
       tag: selectedTags,
+      // RHF自動帶入客製欄位：
+      // articleCategory / viewerScope / priorityLevel
+      // 日期欄位需手動轉unix
+      publishStart: formatOptionalDateToUnix(formData.publishStart),
+      publishEnd: formatOptionalDateToUnix(formData.publishEnd),
     };
-
-    console.log('送出比對一下submitData，看有沒有預設欄位和客製欄位：', submitData);
-
-    // delete submitData.content; // content textarea是文章正文，tag預覽不需要覆蓋的話等等我們會微調，先保留此觀念
 
     try {
       if (modalMode === 'create') {

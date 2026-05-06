@@ -2,7 +2,12 @@
 // import PropTypes from 'prop-types';
 
 // constants
-import { ARTICLE_TAG_MAP } from '@/constants/adminBuilderMaps';
+import {
+  ARTICLE_CATEGORY_MAP,
+  ARTICLE_VIEWER_SCOPE_MAP,
+  ARTICLE_TAG_MAP,
+  ARTICLE_PRIORITY_MAP,
+} from '@/constants/adminBuilderMaps';
 
 const ArticleModal = ({
   isOpen,
@@ -30,7 +35,7 @@ const ArticleModal = ({
       className="modal show d-block"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
     >
-      <div className="modal-dialog modal-dialog-centered modal-lg">
+      <div className="modal-dialog modal-dialog-centered modal-xl">
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <h5 className="modal-title text-light fs-4">
@@ -99,30 +104,119 @@ const ArticleModal = ({
                   </div>
                 </div>
 
-                <div className="mb-3">
-                  <label htmlFor="description" className="form-label">
-                    文章摘要
-                  </label>
-                  <textarea
-                    {...register('description')}
-                    id="description"
-                    rows={3}
-                    className="form-control"
-                    placeholder="請輸入文章摘要"
-                  ></textarea>
+                {/* 文章分類 / 權限 / 排序 */}
+                <div className="row g-3 mb-3">
+                  <div className="col-md-4">
+                    <label htmlFor="articleCategory" className="form-label">
+                      文章分類
+                    </label>
+                    <select
+                      {...register('articleCategory')}
+                      id="articleCategory"
+                      className="form-select"
+                    >
+                      {Object.values(ARTICLE_CATEGORY_MAP).map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-4">
+                    <label htmlFor="viewerScope" className="form-label">
+                      顯示對象
+                    </label>
+                    <select {...register('viewerScope')} id="viewerScope" className="form-select">
+                      {/* <option value="public">前台訪客</option>
+                      <option value="member">會員可見</option>
+                      <option value="admin">內部管理</option> */}
+                      {Object.values(ARTICLE_VIEWER_SCOPE_MAP).map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* <div className="col-md-4">
+                    <label htmlFor="sortOrder" className="form-label">
+                      排序權重
+                    </label>
+                    <input
+                      {...register('sortOrder')}
+                      id="sortOrder"
+                      type="number"
+                      className="form-control"
+                      placeholder="0"
+                    />
+                  </div> */}
+                  <div className="col-md-4">
+                    <label htmlFor="priorityLevel" className="form-label">
+                      排序權重
+                    </label>
+                    <select
+                      {...register('priorityLevel')}
+                      id="priorityLevel"
+                      className="form-select"
+                    >
+                      {Object.values(ARTICLE_PRIORITY_MAP).map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
-                <div className="mb-3">
-                  <label htmlFor="content" className="form-label">
-                    文章內容
-                  </label>
-                  <textarea
-                    {...register('content')}
-                    id="content"
-                    rows={6}
-                    className="form-control"
-                    placeholder="請輸入文章內容"
-                  ></textarea>
+                {/* 上下架時間 */}
+                <div className="row g-3 mb-3">
+                  <div className="col-md-4">
+                    <label htmlFor="create_at" className="form-label">
+                      建立日期
+                    </label>
+                    <input
+                      {...register('create_at')}
+                      id="create_at"
+                      type="date"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <label htmlFor="publishStart" className="form-label">
+                      上架開始
+                    </label>
+                    <input
+                      {...register('publishStart')}
+                      id="publishStart"
+                      type="date"
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="col-md-4">
+                    <label htmlFor="publishEnd" className="form-label">
+                      上架結束
+                    </label>
+                    <input
+                      {...register('publishEnd', {
+                        validate: (value) => {
+                          const start = watch('publishStart');
+                          if (start && value && value < start) {
+                            return '下架日期不可早於上架日期';
+                          }
+                          return true;
+                        },
+                      })}
+                      id="publishEnd"
+                      type="date"
+                      className="form-control"
+                    />
+                    {errors.publishEnd && (
+                      <small className="text-danger">{errors.publishEnd.message}</small>
+                    )}
+                    <small className="text-muted d-block mt-1">若未設定將持續顯示不自動下架</small>
+                  </div>
                 </div>
 
                 <div className="mb-3">
@@ -149,8 +243,34 @@ const ArticleModal = ({
                   </div>
                 </div>
 
+                <div className="mb-3">
+                  <label htmlFor="description" className="form-label">
+                    文章摘要
+                  </label>
+                  <textarea
+                    {...register('description')}
+                    id="description"
+                    rows={3}
+                    className="form-control"
+                    placeholder="請輸入文章摘要"
+                  ></textarea>
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="content" className="form-label">
+                    文章內容
+                  </label>
+                  <textarea
+                    {...register('content')}
+                    id="content"
+                    rows={6}
+                    className="form-control"
+                    placeholder="請輸入文章內容"
+                  ></textarea>
+                </div>
+
                 <div className="row g-3 align-items-center">
-                  <div className="col-md-6">
+                  {/* <div className="col-md-6">
                     <label htmlFor="create_at" className="form-label">
                       建立日期
                     </label>
@@ -160,9 +280,9 @@ const ArticleModal = ({
                       type="date"
                       className="form-control"
                     />
-                  </div>
+                  </div> */}
 
-                  <div className="col-md-6 pt-4">
+                  <div className="col-md-12 pt-4">
                     <div className="form-check">
                       <input
                         {...register('isPublic')}

@@ -113,6 +113,15 @@ export const DEFAULT_ARTICLE = {
   tag: [],
   create_at: Math.floor(Date.now() / 1000),
   isPublic: false,
+
+  // 客製化欄位
+  articleCategory: 'notice',
+  publishStart: '',
+  publishEnd: '',
+  viewerScope: 'public',
+  priorityLevel: '1',
+  bannerText: '',
+  displayZone: 'garden-tips',
 };
 
 /* =========================================================
@@ -126,5 +135,11 @@ export const formatUnixToDateInput = (timestamp) => {
 
 export const formatDateInputToUnix = (dateString) => {
   if (!dateString) return Math.floor(Date.now() / 1000);
+  return Math.floor(new Date(dateString).getTime() / 1000);
+};
+
+// 給允許空值得日期格式，例如下架時間(有些東西或文章不會下架或短期內不會設定下架日期)
+export const formatOptionalDateToUnix = (dateString) => {
+  if (!dateString) return '';
   return Math.floor(new Date(dateString).getTime() / 1000);
 };

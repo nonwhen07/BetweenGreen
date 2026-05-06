@@ -201,6 +201,32 @@ export const ARTICLE_CATEGORY_MAP = {
   },
 };
 
+export const ARTICLE_VIEWER_SCOPE_MAP = {
+  public: {
+    label: '前台訪客',
+    shortLabel: '公開',
+    value: 'public',
+    encodeKey: 'AV_PUBLIC',
+    badge: 'green',
+  },
+
+  member: {
+    label: '會員可見',
+    shortLabel: '會員',
+    value: 'member',
+    encodeKey: 'AV_MEMBER',
+    badge: 'blue',
+  },
+
+  admin: {
+    label: '內部管理',
+    shortLabel: '內部',
+    value: 'admin',
+    encodeKey: 'AV_ADMIN',
+    badge: 'red',
+  },
+};
+
 export const ARTICLE_TAG_MAP = {
   shipping: {
     label: '配送說明',
@@ -313,7 +339,7 @@ export const ARTICLE_PRIORITY_MAP = {
   low: {
     label: '一般',
     shortLabel: 'P1',
-    value: 1,
+    value: '1',
     encodeKey: 'AP_1',
     badge: 'gray',
   },
@@ -321,7 +347,7 @@ export const ARTICLE_PRIORITY_MAP = {
   medium: {
     label: '重要',
     shortLabel: 'P2',
-    value: 2,
+    value: '2',
     encodeKey: 'AP_2',
     badge: 'blue',
   },
@@ -329,7 +355,7 @@ export const ARTICLE_PRIORITY_MAP = {
   high: {
     label: '高優先',
     shortLabel: 'P3',
-    value: 3,
+    value: '3',
     encodeKey: 'AP_3',
     badge: 'red',
   },
@@ -381,7 +407,61 @@ export const ARTICLE_FORM_FIELDS = [
     label: '是否公開',
     type: 'switch',
   },
+
+  // 客製化欄位
+  {
+    name: 'articleCategory',
+    label: '文章分類',
+    type: 'select',
+  },
+  {
+    name: 'viewerScope',
+    label: '顯示對象',
+    type: 'select',
+  },
+  {
+    name: 'priorityLevel',
+    label: '排序權重',
+    type: 'select',
+  },
+  {
+    name: 'publishStart',
+    label: '上架開始',
+    type: 'date',
+  },
+  {
+    name: 'publishEnd',
+    label: '上架結束',
+    type: 'date',
+  },
 ];
+
+export const ARTICLE_DISPLAY_ZONE_MAP = {
+  gardenTips: {
+    label: 'GardenTips 輪播',
+    value: 'garden-tips',
+  },
+
+  heroNotice: {
+    label: 'Hero 公告條',
+    value: 'hero-notice',
+  },
+
+  seasonalBanner: {
+    label: '季節活動區',
+    value: 'seasonal-banner',
+  },
+
+  memberCenter: {
+    label: '會員中心',
+    value: 'member-center',
+  },
+
+  dashboardAlert: {
+    label: '後台提醒區',
+    value: 'dashboard-alert',
+  },
+};
 
 /* =========================================================
   COUPON BUILDER MAPS
