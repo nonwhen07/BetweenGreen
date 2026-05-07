@@ -11,7 +11,6 @@ import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
-// import Pagination from '@/components/Pagination';
 import ProductsTable from '@/components/admin/ProductsTable';
 import ProductModal from '@/components/admin/ProductModal';
 import DeleteModal from '@/components/admin/DeleteModal';

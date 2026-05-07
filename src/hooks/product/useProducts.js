@@ -21,7 +21,8 @@ export const useProducts = ({ isAdmin = false } = {}) => {
       start();
 
       try {
-        const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
+        // const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
+        const res = isAdmin ? await getAdminProducts(params) : await getProducts(params.page || 1);
 
         setProducts(res.data || []);
         setPageInfo(res.pagination || {});
@@ -32,7 +33,7 @@ export const useProducts = ({ isAdmin = false } = {}) => {
         stop();
       }
     },
-    [isAdmin, showError],
+    [isAdmin],
   );
 
   return {

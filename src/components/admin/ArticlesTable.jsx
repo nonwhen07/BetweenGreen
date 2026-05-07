@@ -23,10 +23,6 @@ const ArticlesTable = ({
   openDeleteModal,
   articleCount,
 }) => {
-  // if (articleCount === 0) {
-  //   return <p className="text-muted mt-4">目前沒有文章資料。</p>;
-  // }
-
   return (
     <>
       <div className="admin-panel mt-4">

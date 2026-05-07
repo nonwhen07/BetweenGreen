@@ -124,6 +124,14 @@ export const DEFAULT_ARTICLE = {
   displayZone: 'garden-tips',
 };
 
+export const DEFAULT_COUPON = {
+  title: '',
+  code: '',
+  percent: 100,
+  due_date: '',
+  is_enabled: 1,
+};
+
 /* =========================================================
   通用型工具(晚點集中抽出去管理，這不一定後台專用)
 ========================================================= */
@@ -141,5 +149,9 @@ export const formatDateInputToUnix = (dateString) => {
 // 給允許空值得日期格式，例如下架時間(有些東西或文章不會下架或短期內不會設定下架日期)
 export const formatOptionalDateToUnix = (dateString) => {
   if (!dateString) return '';
+  return Math.floor(new Date(dateString).getTime() / 1000);
+};
+
+export const toUnixTimestamp = (dateString) => {
   return Math.floor(new Date(dateString).getTime() / 1000);
 };
