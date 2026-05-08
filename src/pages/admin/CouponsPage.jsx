@@ -5,7 +5,7 @@ import { deleteCoupon } from '@/services/couponService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
-import { useCoupons } from '@/hooks/product/useCoupons';
+import { useCoupons } from '@/hooks/coupon/useCoupons';
 import { useCouponModal } from '@/hooks/useCouponModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
@@ -135,5 +135,31 @@ const CouponsPage = () => {
     </>
   );
 };
+
+// TODO:
+// 1. Coupon 後面預計補：
+// - start_date（優惠開始日）
+// - couponType（seasonal / new-user / event...）
+// - campaignTag（前台活動標籤）
+// - viewerScope（路人 / 會員 / 員工）
+// - minimumAmount（最低消費門檻）
+//
+// 2. Coupon 之後需要和 cart / order 串接：
+// - cart 套用 applyCoupon()
+// - cart summary 顯示優惠後價格
+// - order 顯示 coupon 資訊
+// - order 顯示 discount amount
+//
+// 3. 運費邏輯目前先獨立，不和 coupon 綁死：
+// - shippingFee
+// - free shipping threshold
+//
+// 4. 後面可能補：
+// - expired 狀態 badge
+// - coupon 排序 / 篩選
+// - dashboard 統計
+//
+// 5. 等 CRUD 穩定後再整理 Admin UI System
+// （admin-panel / admin-form-section / toolbar / filters）
 
 export default CouponsPage;

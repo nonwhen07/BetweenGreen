@@ -111,15 +111,16 @@ const ProductsPage = () => {
   return (
     <>
       <div className="container py-1">
-        <h2 className="mb-0">產品列表</h2>
-        <ProductsTable
-          products={products}
-          pageInfo={pageInfo}
-          handlePageChange={handlePageChange}
-          openProductModal={openProductModal}
-          openDeleteModal={openDeleteModal}
-          productCount={productCount}
-        />
+        <div className="admin-panel mt-4">
+          <ProductsTable
+            products={products}
+            pageInfo={pageInfo}
+            handlePageChange={handlePageChange}
+            openProductModal={openProductModal}
+            openDeleteModal={openDeleteModal}
+            productCount={productCount}
+          />
+        </div>
       </div>
 
       {/* Modals */}

@@ -16,20 +16,23 @@ export const useCoupons = () => {
   const [pageInfo, setPageInfo] = useState({});
 
   // 統一入口
-  const fetchCoupons = useCallback(async (params = {}) => {
-    start();
+  const fetchCoupons = useCallback(
+    async (params) => {
+      start();
 
-    try {
-      // const res = isAdmin ? await getAdminCoupons(params) : await getCoupons(params);
-      const res = await getAdminCoupons(params);
-      setCoupons(res.data || []);
-      setPageInfo(res.pagination || {});
-    } catch (error) {
-      showError(extractErrorMessage(error));
-    } finally {
-      stop();
-    }
-  }, []);
+      try {
+        // const res = isAdmin ? await getAdminCoupons(params) : await getCoupons(params);
+        const res = await getAdminCoupons(params.page || 1);
+        setCoupons(res.data || []);
+        setPageInfo(res.pagination || {});
+      } catch (error) {
+        showError(extractErrorMessage(error));
+      } finally {
+        stop();
+      }
+    },
+    [showError, start, stop],
+  );
 
   return {
     coupons,

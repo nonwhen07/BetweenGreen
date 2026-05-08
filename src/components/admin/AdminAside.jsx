@@ -1,14 +1,5 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-// import {
-//   FaTachometerAlt,
-//   FaBoxOpen,
-//   // FaShoppingCart,
-//   // FaTicketAlt,
-//   // FaNewspaper,
-//   FaHome,
-//   FaAlignJustify,
-// } from 'react-icons/fa';
 
 import {
   Activity,
@@ -43,12 +34,12 @@ const menu = [
     path: '/admin/orders',
     icon: <ShoppingBag size={18} />,
   },
-  // {
-  //   name: 'Coupons',
-  //   path: '/admin/coupons',
-  //   title: '優惠卷列表',
-  //   icon: <BookOpen size={18} />,
-  // },
+  {
+    name: 'Coupons',
+    path: '/admin/coupons',
+    title: '優惠卷列表',
+    icon: <BookOpen size={18} />,
+  },
   {
     name: 'Articles',
     path: '/admin/articles',

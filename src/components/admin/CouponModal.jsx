@@ -34,7 +34,7 @@ const CouponModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <h5 className="modal-title text-light fs-4">
-              {modalMode === 'create' ? '新增優惠卷' : `編輯 - ${watchTitle || ''}`}
+              {modalMode === 'create' ? '新增優惠券' : `編輯 - ${watchTitle || ''}`}
             </h5>
             <button
               type="button"
@@ -47,79 +47,121 @@ const CouponModal = ({
           <div className="modal-body p-4">
             {/* 第一/二列： 名稱、優惠碼 */}
             <div className="admin-form-section">
-              <div className="col-md-6">
-                <label htmlFor="title" className="form-label">
-                  優惠卷標題
-                </label>
-                <input
-                  {...register('title', { required: '請輸入優惠卷標題' })}
-                  id="title"
-                  type="text"
-                  className="form-control"
-                />
-                {errors.title && <small className="text-danger">{errors.title.message}</small>}
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="code" className="form-label">
-                  優惠代碼
-                </label>
-                <input
-                  {...register('code', { required: '請輸入優惠代碼' })}
-                  id="code"
-                  type="text"
-                  className="form-control"
-                />
-                {errors.code && <small className="text-danger">{errors.code.message}</small>}
+              <div className="admin-form-section__body">
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <label htmlFor="title" className="form-label">
+                      優惠券標題
+                    </label>
+                    <input
+                      {...register('title', {
+                        required: '請輸入優惠券標題',
+                        maxLength: {
+                          value: 10,
+                          message: '標題長度不得超過 10碼',
+                        },
+                      })}
+                      maxLength={10}
+                      id="title"
+                      type="text"
+                      className="form-control"
+                    />
+                    {errors.title && <small className="text-danger">{errors.title.message}</small>}
+                  </div>
+                  <div className="col-md-6">
+                    <label htmlFor="code" className="form-label">
+                      優惠代碼
+                    </label>
+                    <input
+                      {...register('code', {
+                        required: '請輸入優惠代碼',
+                        minLength: {
+                          value: 4,
+                          message: '優惠代碼不得低於 4碼',
+                        },
+                        maxLength: {
+                          value: 10,
+                          message: '優惠代碼不得超過 10碼',
+                        },
+                      })}
+                      id="code"
+                      type="text"
+                      className="form-control"
+                    />
+                    {errors.code && <small className="text-danger">{errors.code.message}</small>}
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* 第三列：折扣 % */}
             {/* 第四列：上架開始，後面可以像 Article 那樣在客製化 下架日 */}
             <div className="admin-form-section">
-              <div className="col-md-6">
-                <label htmlFor="percent" className="form-label">
-                  折扣 %
-                </label>
-                <input
-                  {...register('percent', { required: '請輸入折扣 %' })}
-                  id="percent"
-                  type="number"
-                  className="form-control"
-                />
-                <div className="admin-form-section__header d-flex justify-content-between align-items-center">
-                  <h6 className="mb-0">優惠設定</h6>
-                  <div className="admin-coupon-preview">
-                    <strong>{watchPercent || 0}% OFF</strong>
+              <div className="admin-form-section__header d-flex justify-content-between align-items-center">
+                <h6 className="mb-0">優惠設定</h6>
+                <div className="admin-coupon-preview">
+                  <strong>{watchPercent || 0}% OFF</strong>
+                </div>
+              </div>
+              <div className="admin-form-section__body">
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <label htmlFor="percent" className="form-label">
+                      折扣 %
+                    </label>
+                    <input
+                      {...register('percent', {
+                        required: '請輸入折扣 %',
+                        min: {
+                          value: 1,
+                          message: '折扣不得低於 1%',
+                        },
+                        max: {
+                          value: 100,
+                          message: '折扣不得超過 100%',
+                        },
+                      })}
+                      id="percent"
+                      type="number"
+                      className="form-control"
+                    />
+
+                    {errors.percent && (
+                      <small className="text-danger">{errors.percent.message}</small>
+                    )}
+                  </div>
+                  <div className="col-md-6">
+                    <label htmlFor="due_date" className="form-label">
+                      優惠到期日
+                    </label>
+                    <input
+                      {...register('due_date')}
+                      id="due_date"
+                      type="date"
+                      className="form-control"
+                    />
                   </div>
                 </div>
-                {errors.percent && <small className="text-danger">{errors.percent.message}</small>}
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="publishStart" className="form-label">
-                  優惠到期日
-                </label>
-                <input
-                  {...register('due_date')}
-                  id="publishStart"
-                  type="date"
-                  className="form-control"
-                />
               </div>
             </div>
 
             {/* 第五列：啟用 */}
-            <div className="admin-form-section align-items-end">
-              <div className="col-12 pb-2">
-                <div className="form-check mt-4">
-                  <input
-                    {...register('is_enabled')}
-                    type="checkbox"
-                    className="form-check-input"
-                    id="isEnabled"
-                  />
-                  <label className="form-check-label" htmlFor="isEnabled">
-                    是否啟用
-                  </label>
+            <div className="admin-form-section">
+              <div className="admin-form-section__body">
+                <div className="row g-3">
+                  <div className="col-12 pb-2">
+                    <div className="form-check mt-4">
+                      <input
+                        {...register('is_enabled')}
+                        type="checkbox"
+                        className="form-check-input"
+                        id="isEnabled"
+                      />
+                      <label className="form-check-label" htmlFor="isEnabled">
+                        是否啟用
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

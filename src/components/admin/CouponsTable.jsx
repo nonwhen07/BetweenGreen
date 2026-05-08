@@ -23,20 +23,20 @@ const CouponsTable = ({
     <>
       <div className="admin-panel__header">
         <div>
-          <h4 className="mb-1">優惠卷快速總覽</h4>
-          <p className="text-muted small mb-0">目前共 {couponCount} 筆優惠卷資料</p>
+          <h4 className="mb-1">優惠券快速總覽</h4>
+          <p className="text-muted small mb-0">目前共 {couponCount} 筆優惠券資料</p>
         </div>
 
         <button className="btn btn-primary px-4" onClick={() => openCouponModal('create')}>
-          ＋ 新增優惠卷
+          ＋ 新增優惠券
         </button>
       </div>
 
       <div className="admin-panel__body">
         {couponCount === 0 ? (
           <div className="text-center py-5">
-            <p className="text-muted mb-2">目前尚無優惠卷資料</p>
-            <small className="text-secondary">點擊右上角「新增優惠卷」開始建立第一篇內容</small>
+            <p className="text-muted mb-2">目前尚無優惠券資料</p>
+            <small className="text-secondary">點擊右上角「新增優惠券」開始建立第一篇內容</small>
           </div>
         ) : (
           <table className="table admin-table align-middle mb-0">

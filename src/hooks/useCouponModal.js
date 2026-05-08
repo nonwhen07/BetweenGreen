@@ -2,14 +2,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 // constants
-import {
-  formatDateInputToUnix,
-  formatUnixToDateInput,
-  formatOptionalDateToUnix,
-} from '@/utils/adminBuilderUtils';
+import { formatDateInputToUnix, formatUnixToDateInput } from '@/utils/adminBuilderUtils';
 import { DEFAULT_COUPON } from '@/utils/adminBuilderUtils';
 // services
-import { createCoupon, updateCoupon, getAdminCoupon } from '@/services/couponService';
+import { createCoupon, updateCoupon } from '@/services/couponService';
 // hooks
 // import { useToast } from '@/hooks/useToast';
 // utils
@@ -27,7 +23,6 @@ export const useCouponModal = () => {
   } = useForm({
     defaultValues: {
       ...DEFAULT_COUPON,
-      // create_at: formatUnixToDateInput(DEFAULT_COUPON.create_at), // api沒有該欄位，有需要可以客製化
     },
     mode: 'onBlur',
   });
@@ -39,16 +34,6 @@ export const useCouponModal = () => {
   const [modalMode, setModalMode] = useState('create');
   const [editCouponId, setEditCouponId] = useState(null);
 
-  // helper：資料正規化
-  const normalizeArticle = (coupon = {}) => ({
-    ...DEFAULT_COUPON,
-    ...coupon,
-    create_at: formatUnixToDateInput(coupon.create_at),
-    // 客製欄位
-    publishStart: formatUnixToDateInput(coupon.publishStart),
-    publishEnd: formatUnixToDateInput(coupon.publishEnd),
-  });
-
   // modal lifecycle
   const openCouponModal = async (mode, coupon = null) => {
     setModalMode(mode);
@@ -57,17 +42,17 @@ export const useCouponModal = () => {
       setEditCouponId(null);
       reset({
         ...DEFAULT_COUPON,
-        // create_at: formatUnixToDateInput(DEFAULT_COUPON.create_at),
       });
     } else {
       setEditCouponId(coupon.id);
 
-      // 關鍵：重新打單篇完整資料
-      const res = await getAdminCoupon(coupon.id); // 這邊有點問題由於api只有列表(getAdminCoupons)，要怎麼打開單筆資料?
-      const fullCoupon = res.data;
-
-      const normalized = normalizeArticle(fullCoupon);
-      reset(normalized);
+      // 列表 API 回傳的資料 = 編輯需要的完整資料，所以不用再額外查詢 GET 單筆資料
+      // 本質上就是： 「拿列表那筆資料 → 做表單格式轉換 → 塞進 RHF」
+      reset({
+        ...DEFAULT_COUPON,
+        ...coupon,
+        due_date: formatUnixToDateInput(coupon.due_date),
+      });
     }
 
     setIsModalOpen(true);
@@ -79,7 +64,6 @@ export const useCouponModal = () => {
 
     reset({
       ...DEFAULT_COUPON,
-      // create_at: formatUnixToDateInput(DEFAULT_COUPON.create_at),
     });
   };
 
@@ -88,13 +72,11 @@ export const useCouponModal = () => {
     const submitData = {
       ...formData,
       id: editCouponId,
-      create_at: formatDateInputToUnix(formData.create_at),
+      percent: Number(formData.percent),
+      due_date: formatDateInputToUnix(formData.due_date),
+      is_enabled: formData.is_enabled ? 1 : 0,
 
       // RHF這邊自動帶入客製欄位(假設有新增的話)，以 article作為範例： Category / viewerScope / priorityLevel
-
-      // 日期欄位需手動轉unix
-      publishStart: formatOptionalDateToUnix(formData.publishStart),
-      publishEnd: formatOptionalDateToUnix(formData.publishEnd),
     };
 
     try {
@@ -108,7 +90,7 @@ export const useCouponModal = () => {
       onSuccess?.();
       return true;
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '更新文章失敗，請稍後再試。');
+      const errorMessage = extractErrorMessage(error, null, '更新優惠券失敗，請稍後再試。');
       onError?.(errorMessage);
       return false;
     }
