@@ -103,6 +103,16 @@ const CouponsPage = () => {
     <>
       <div className="container py-1">
         <div className="admin-panel mt-4">
+          <div className="admin-panel__header">
+            <div>
+              <h4 className="mb-1">優惠券快速總覽</h4>
+              <p className="text-muted small mb-0">目前共 {couponCount} 筆優惠券資料</p>
+            </div>
+
+            <button className="btn btn-primary px-4" onClick={() => openCouponModal('create')}>
+              ＋ 新增優惠券
+            </button>
+          </div>
           <CouponsTable
             coupons={coupons}
             pageInfo={pageInfo}
@@ -161,5 +171,11 @@ const CouponsPage = () => {
 //
 // 5. 等 CRUD 穩定後再整理 Admin UI System
 // （admin-panel / admin-form-section / toolbar / filters）
+//
+// 6. 後面可考慮補：
+// - coupon JSON 匯入 / 匯出
+// - 支援 JSON 字串 / 物件格式
+// - 不合規 schema 顯示 warning
+// - 未來可給 Codex / AI 接手批量建立活動資料
 
 export default CouponsPage;

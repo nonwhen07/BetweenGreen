@@ -1,11 +1,3 @@
-// constants
-// import {
-//   ARTICLE_CATEGORY_MAP,
-//   ARTICLE_VIEWER_SCOPE_MAP,
-//   ARTICLE_TAG_MAP,
-//   ARTICLE_PRIORITY_MAP,
-// } from '@/constants/adminBuilderMaps';
-
 // components
 import { formatUnixToDateInput } from '@/utils/adminBuilderUtils';
 // components
@@ -21,7 +13,7 @@ const CouponsTable = ({
 }) => {
   return (
     <>
-      <div className="admin-panel__header">
+      {/* <div className="admin-panel__header">
         <div>
           <h4 className="mb-1">優惠券快速總覽</h4>
           <p className="text-muted small mb-0">目前共 {couponCount} 筆優惠券資料</p>
@@ -30,9 +22,10 @@ const CouponsTable = ({
         <button className="btn btn-primary px-4" onClick={() => openCouponModal('create')}>
           ＋ 新增優惠券
         </button>
-      </div>
+      </div> */}
 
       <div className="admin-panel__body">
+        {' '}
         {couponCount === 0 ? (
           <div className="text-center py-5">
             <p className="text-muted mb-2">目前尚無優惠券資料</p>
