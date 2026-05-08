@@ -7,6 +7,7 @@ import {
   ARTICLE_VIEWER_SCOPE_MAP,
   ARTICLE_TAG_MAP,
   ARTICLE_PRIORITY_MAP,
+  ARTICLE_DISPLAY_ZONE_MAP,
 } from '@/constants/adminBuilderMaps';
 
 const ArticleModal = ({
@@ -205,34 +206,6 @@ const ArticleModal = ({
               </div>
             </div>
 
-            {/* 第五列：摘要 */}
-            <div className="mb-3">
-              <label htmlFor="description" className="form-label">
-                文章摘要
-              </label>
-              <textarea
-                {...register('description')}
-                id="description"
-                rows={3}
-                className="form-control"
-                placeholder="請輸入文章摘要"
-              ></textarea>
-            </div>
-
-            {/* 第六列：內容 */}
-            <div className="mb-3">
-              <label htmlFor="content" className="form-label">
-                文章內容
-              </label>
-              <textarea
-                {...register('content')}
-                id="content"
-                rows={6}
-                className="form-control"
-                placeholder="請輸入文章內容"
-              ></textarea>
-            </div>
-
             {/* 第七列：標籤 + 公開 */}
             <div className="row g-3 mb-3 align-items-end">
               <div className="col-md-9">
@@ -272,6 +245,34 @@ const ArticleModal = ({
                   </label>
                 </div>
               </div>
+            </div>
+
+            {/* 第五列：摘要 */}
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">
+                文章摘要
+              </label>
+              <textarea
+                {...register('description')}
+                id="description"
+                rows={3}
+                className="form-control"
+                placeholder="請輸入文章摘要"
+              ></textarea>
+            </div>
+
+            {/* 第六列：內容 */}
+            <div className="mb-3">
+              <label htmlFor="content" className="form-label">
+                文章內容
+              </label>
+              <textarea
+                {...register('content')}
+                id="content"
+                rows={6}
+                className="form-control"
+                placeholder="請輸入文章內容"
+              ></textarea>
             </div>
 
             {/* 第八列：圖片 */}

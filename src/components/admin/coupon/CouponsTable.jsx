@@ -25,7 +25,6 @@ const CouponsTable = ({
       </div> */}
 
       <div className="admin-panel__body">
-        {' '}
         {couponCount === 0 ? (
           <div className="text-center py-5">
             <p className="text-muted mb-2">目前尚無優惠券資料</p>

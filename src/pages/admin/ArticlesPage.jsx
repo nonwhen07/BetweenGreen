@@ -11,8 +11,8 @@ import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
-import ArticlesTable from '@/components/admin/ArticlesTable';
-import ArticleModal from '@/components/admin/ArticleModal';
+import ArticlesTable from '@/components/admin/article/ArticlesTable';
+import ArticleModal from '@/components/admin/article/ArticleModal';
 import DeleteModal from '@/components/admin/DeleteModal';
 
 const ArticlesPage = () => {

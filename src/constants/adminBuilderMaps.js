@@ -199,6 +199,14 @@ export const ARTICLE_CATEGORY_MAP = {
     encodeKey: 'AC_BRAND',
     badge: 'olive',
   },
+
+  seasonal: {
+    label: '季節企劃',
+    shortLabel: '季節',
+    value: 'seasonal-event',
+    encodeKey: 'AT_SEASON',
+    badge: 'gold',
+  },
 };
 
 export const ARTICLE_VIEWER_SCOPE_MAP = {

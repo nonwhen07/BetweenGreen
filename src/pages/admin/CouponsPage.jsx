@@ -12,8 +12,8 @@ import { useDeleteModal } from '@/hooks/useDeleteModal';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 // components
-import CouponsTable from '@/components/admin/CouponsTable';
-import CouponModal from '@/components/admin/CouponModal';
+import CouponsTable from '@/components/admin/coupon/CouponsTable';
+import CouponModal from '@/components/admin/coupon/CouponModal';
 import DeleteModal from '@/components/admin/DeleteModal';
 
 const CouponsPage = () => {
@@ -57,7 +57,7 @@ const CouponsPage = () => {
       formData,
       async () => {
         await fetchCoupons({ page: pageInfo.current_page || 1 });
-        success(modalMode === 'create' ? '優惠卷新增成功！' : '優惠卷更新成功！');
+        success(modalMode === 'create' ? '優惠券新增成功！' : '優惠券更新成功！');
         stop();
       },
       (errorMessage) => {
@@ -75,9 +75,9 @@ const CouponsPage = () => {
       // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
       closeDeleteModal();
       await fetchCoupons({ page: pageInfo.current_page || 1 });
-      success('優惠卷刪除成功！');
+      success('優惠券刪除成功！');
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '刪除優惠卷失敗，請稍後再試。');
+      const errorMessage = extractErrorMessage(error, null, '刪除優惠券失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
       stop();
@@ -90,7 +90,7 @@ const CouponsPage = () => {
       try {
         await fetchCoupons({ page: 1 });
       } catch (error) {
-        const errorMessage = extractErrorMessage(error, null, '取得優惠卷列表失敗，請稍後再試。');
+        const errorMessage = extractErrorMessage(error, null, '取得優惠券列表失敗，請稍後再試。');
         showError(errorMessage);
       }
     };
@@ -140,7 +140,7 @@ const CouponsPage = () => {
         onClose={closeDeleteModal}
         onConfirm={handleDeleteCoupon}
         itemName={deleteTarget?.title}
-        itemType="優惠卷"
+        itemType="優惠券"
       />
     </>
   );

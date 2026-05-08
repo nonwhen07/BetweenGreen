@@ -1,18 +1,26 @@
 import { useEffect, useState } from 'react';
-import { getAdminOrders, deleteOrder } from '@/services/orderService';
 
+// services
+import { getAdminOrders, deleteOrder } from '@/services/orderService';
+// hooks
+import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
+// utils
+import { extractErrorMessage } from '@/utils/errorHandler';
+// components
 import Pagination from '@/components/Pagination';
 import DeleteModal from '@/components/admin/DeleteModal';
-import PageLoader from '@/components/shared/PageLoader';
-import { useToast } from '@/hooks/useToast';
-import { extractErrorMessage } from '@/utils/errorHandler';
+// import PageLoader from '@/components/shared/PageLoader';
 
 const OrdersPage = () => {
+  // hooks init
   const { success, showError } = useToast();
+  const { start, stop } = useLoading();
 
+  // states
   const [orders, setOrders] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const [tempOrder, setTempOrder] = useState({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -21,7 +29,8 @@ const OrdersPage = () => {
 
   // 取得訂單
   const getOrders = async (page = 1) => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    start();
     try {
       const res = await getAdminOrders(page);
       setOrders(res.orders);
@@ -29,7 +38,8 @@ const OrdersPage = () => {
     } catch (error) {
       showError(extractErrorMessage(error));
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
+      stop();
     }
   };
 
@@ -98,7 +108,7 @@ const OrdersPage = () => {
         )}
       </div>
 
-      <PageLoader show={isLoading} />
+      {/* <PageLoader show={isLoading} /> */}
 
       <DeleteModal
         isOpen={isDeleteModalOpen}

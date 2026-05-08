@@ -75,7 +75,8 @@ const ArticlesTable = ({
 
                           <div className="admin-product-info__content">
                             <h6>{article.title}</h6>
-                            <p>{article.description || '尚未填寫文章摘要'}</p>
+                            {/* <p>{article.description || '尚未填寫文章摘要'}</p> */}
+                            <p>{article.bannerText || '尚未填寫文章摘要'}</p>
                             <small className="text-muted">{article.author || '未填作者'}</small>
                           </div>
                         </div>
