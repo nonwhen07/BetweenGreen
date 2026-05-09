@@ -12,18 +12,16 @@ const ProductsTable = ({
   handlePageChange,
   openProductModal,
   openDeleteModal,
-  productCount,
+  // productCount,
+  productTotalCount,
 }) => {
-  // if (productCount === 0) {
-  //   return <p className="text-muted mt-4">目前沒有商品資料。</p>;
-  // }
-
   return (
     <>
       <div className="admin-panel__header">
         <div>
           <h4 className="mb-1">商品快速總覽</h4>
-          <p className="text-muted small mb-0">目前共 {productCount} 筆商品資料</p>
+          {/* <p className="text-muted small mb-0">目前共 {productCount} 筆商品資料</p> */}
+          <p className="text-muted small mb-0">目前共 {productTotalCount} 筆商品資料</p>
         </div>
 
         <button
@@ -37,10 +35,10 @@ const ProductsTable = ({
       </div>
 
       <div className="admin-panel__body">
-        {productCount === 0 ? (
+        {productTotalCount === 0 ? (
           <div className="text-center py-5">
-            <p className="text-muted mb-2">目前尚無優惠卷資料</p>
-            <small className="text-secondary">點擊右上角「新增優惠卷」開始建立第一篇內容</small>
+            <p className="text-muted mb-2">目前尚商品資料</p>
+            <small className="text-secondary">點擊右上角「新增商品」開始建立第一篇內容</small>
           </div>
         ) : (
           <table className="table admin-table align-middle mb-0">

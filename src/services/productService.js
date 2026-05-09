@@ -37,6 +37,16 @@ export const getProductDetail = async (product_id) => {
  * ===== Admin API =====
  */
 
+// 後台All商品列表
+export const getAllAdminProducts = async () => {
+  const { data } = await axiosAPI.get('/admin/products/All');
+
+  return {
+    data: data.products,
+    pagination: data.pagination,
+  };
+};
+
 // 後台商品列表
 export const getAdminProducts = async (params = {}) => {
   const { data } = await axiosAPI.get('/admin/products', {

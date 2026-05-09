@@ -19,7 +19,9 @@ const ProductsPage = () => {
   // hooks init
   const { success, showError } = useToast();
   const { start, stop } = useLoading();
-  const { products, pageInfo, fetchProducts } = useProducts({ isAdmin: true });
+  const { products, productTotalCount, pageInfo, fetchProducts } = useProducts({
+    isAdmin: true,
+  });
   const {
     isModalOpen: isProductModalOpen,
     modalMode,
@@ -51,7 +53,7 @@ const ProductsPage = () => {
   } = useDeleteModal();
 
   // derived values
-  const productCount = products?.length || 0;
+  // const productCount = products?.length || 0;
 
   // Page actions（CRUD / pagination）
   const handlePageChange = (page = 1) => {
@@ -111,6 +113,7 @@ const ProductsPage = () => {
   return (
     <>
       <div className="container py-1">
+        <h2 className="mb-1">商品列表</h2>
         <div className="admin-panel mt-4">
           <ProductsTable
             products={products}
@@ -118,7 +121,7 @@ const ProductsPage = () => {
             handlePageChange={handlePageChange}
             openProductModal={openProductModal}
             openDeleteModal={openDeleteModal}
-            productCount={productCount}
+            productTotalCount={productTotalCount}
           />
         </div>
       </div>

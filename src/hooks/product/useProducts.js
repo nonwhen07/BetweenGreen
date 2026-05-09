@@ -1,7 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // services
-import { getProducts, getAdminProducts } from '@/services/productService';
+import { getProducts, getAdminProducts, getAllAdminProducts } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
@@ -14,6 +14,7 @@ export const useProducts = ({ isAdmin = false } = {}) => {
 
   const [products, setProducts] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
+  const [productTotalCount, setProductTotalCount] = useState(0);
 
   // 統一入口
   const fetchProducts = useCallback(
@@ -36,8 +37,25 @@ export const useProducts = ({ isAdmin = false } = {}) => {
     [isAdmin],
   );
 
+  useEffect(() => {
+    const fetchProductCount = async () => {
+      try {
+        const { data } = await getAllAdminProducts();
+
+        setProductTotalCount(Object.keys(data).length);
+      } catch (error) {
+        showError(extractErrorMessage(error));
+      }
+    };
+
+    if (isAdmin) {
+      fetchProductCount();
+    }
+  }, [isAdmin]);
+
   return {
     products,
+    productTotalCount,
     pageInfo,
     fetchProducts,
   };

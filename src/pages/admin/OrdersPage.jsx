@@ -33,7 +33,7 @@ const OrdersPage = () => {
     start();
     try {
       const res = await getAdminOrders(page);
-      setOrders(res.orders);
+      setOrders(res.data);
       setPageInfo(res.pagination);
     } catch (error) {
       showError(extractErrorMessage(error));
