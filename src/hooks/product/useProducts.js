@@ -22,15 +22,13 @@ export const useProducts = ({ isAdmin = false } = {}) => {
       start();
 
       try {
-        // const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
-        const res = isAdmin ? await getAdminProducts(params) : await getProducts(params.page || 1);
+        const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
 
         setProducts(res.data || []);
         setPageInfo(res.pagination || {});
       } catch (error) {
         showError(extractErrorMessage(error));
       } finally {
-        // setIsLoading(false);
         stop();
       }
     },

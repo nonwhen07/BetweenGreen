@@ -168,4 +168,112 @@ const ProductsPage = () => {
  *
  */
 
+// ======================================================
+// TODO：Product Display Tags（商業展示標籤）
+// ======================================================
+//
+// 目前 category / content 已能描述：
+// 1. 商品是什麼（category）
+// 2. 商品有哪些風格與特性（content）
+//
+// 但首頁 ProductSection、SeasonalCollection、HeroBanner
+// 未來需要的是：
+//
+// 「現在想怎麼展示 / 推薦 / 行銷這個商品」
+//
+// ------------------------------------------------------
+// displayTags 與 category / content 的差異
+// ------------------------------------------------------
+//
+// category：商品本體分類（固定）
+// 例如：
+// DeskLiving-Plant-Succulent
+//
+// content：商品特性（半固定）
+// 例如：
+// Minimal|Nordic|EasyCare
+//
+// displayTags：商業展示狀態（可變動）
+// 例如：
+// TopSeller|Featured|SeasonalHot
+//
+// ------------------------------------------------------
+// 未來預計新增：
+// ------------------------------------------------------
+//
+// export const PRODUCT_DISPLAY_TAGS_MAP = {
+//   TopSeller: {
+//     label: '熱銷商品',
+//   },
+//
+//   Featured: {
+//     label: '精選推薦',
+//   },
+//
+//   SeasonalHot: {
+//     label: '當季熱門',
+//   },
+//
+//   EditorPick: {
+//     label: '品牌選品',
+//   },
+//
+//   Limited: {
+//     label: '限定推薦',
+//   },
+// };
+//
+// ------------------------------------------------------
+// DEFAULT_PRODUCT 預計新增：
+// ------------------------------------------------------
+//
+// displayTags: '',
+//
+// 格式：
+// 'TopSeller|Featured'
+//
+// ------------------------------------------------------
+// 實作方向
+// ------------------------------------------------------
+//
+// 實作方式可參考：
+// 1. PRODUCT_CONTENT_MAP
+// 2. parseContentTags()
+//
+// displayTags 結構會比較接近 content，
+// 而不是 category 的 Theme-Type-Species 階層式分類。
+//
+// ------------------------------------------------------
+// 未來用途
+// ------------------------------------------------------
+//
+// ProductSection：
+// → TopSeller / Featured
+//
+// SeasonalCollection：
+// → SeasonalHot / Limited
+//
+// HeroBanner：
+// → HeroFeatured（可選）
+//
+// Dashboard：
+// → 統計各 displayTags 商品數量
+//
+// ------------------------------------------------------
+// 注意事項
+// ------------------------------------------------------
+//
+// displayTags 是「商業展示用途」，
+// 不建議混入 category。
+//
+// category 是商品永久分類，
+// displayTags 是現在想怎麼賣它。
+//
+// displayTags 建議控制在 0~3 個，
+// 避免首頁 badge 過多造成 UI 混亂。
+//
+// 現階段先完成 LifestyleSection 與 Theme flow，
+// ProductSection 再回頭補 displayTags 架構。
+// ======================================================
+
 export default ProductsPage;

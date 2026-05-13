@@ -2,13 +2,84 @@
 @use 'sass:color';
 
 .ui-card {
-  background: $text-on-primary;
-  border-radius: $radius-md;
-  box-shadow: $shadow-sm;
-  transition: $transition-base;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  transition: all 0.4s ease;
+}
+
+// 暫時放這邊做比較，之後要放回_home的lifestyle_section
+.lifestyle-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  transition:
+    transform 0.45s ease,
+    box-shadow 0.45s ease;
+
+  cursor: pointer;
+
+  &__image {
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      transition: transform 0.6s ease;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    padding: 2rem;
+
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+
+    color: white;
+  }
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: $shadow-md;
+
+    .ui-card__image img {
+      transform: scale(1.05);
+    }
   }
+}
+
+// 暫時放這邊做比較，之後要放回_home的seasonal_section
+.seasonal-card {
+  min-height: 520px;
+}
+
+// 暫時放這邊做比較，之後要放回_product
+.product-card {
+  min-height: 520px;
+}
+// 這是給_home的product_section引用的
+.product-card--home {
+  min-height: 520px;
+}
+.product-card--grid {
+  min-height: 520px;
+}
+.product-card--grid {
+  min-height: 520px;
+}
+.product-card--grid {
+  min-height: 520px;
+}
+
+// 暫時放這邊做比較，之後要放回_home、_article或像關scss
+.article-card {
+  min-height: 520px;
 }

@@ -8,7 +8,7 @@ const lifestyleItems = [
     subtitle: 'Desk Companion',
     description: '為工作、閱讀與獨處時光，留下一點安靜綠意。',
     image: noImage,
-    link: '/products?scene=desk',
+    link: '/products?theme=DeskLiving',
     tag: '日常療癒',
   },
   {
@@ -17,7 +17,7 @@ const lifestyleItems = [
     subtitle: 'Space Styling',
     description: '從店內到戶外角落，讓植物成為空間氛圍的一部分。',
     image: noImage,
-    link: '/products?scene=space',
+    link: '/products?theme=SpaceStyling',
     tag: '氛圍設計',
   },
   {
@@ -26,7 +26,7 @@ const lifestyleItems = [
     subtitle: 'Balcony Living',
     description: '在城市裡，保留一個能慢慢呼吸的自然角落。',
     image: noImage,
-    link: '/products?scene=balcony',
+    link: '/products?theme=BalconyMood',
     tag: '都市植培',
   },
 ];

@@ -4,7 +4,9 @@
 export const DEFAULT_PRODUCT = {
   imageUrl: '',
   title: '',
+  // 商品種類
   category: '',
+  // 商品人格
   content: '',
   unit: '',
   origin_price: '',
@@ -12,8 +14,12 @@ export const DEFAULT_PRODUCT = {
   description: '',
   is_enabled: 0,
   imagesUrl: [''],
+
   // 新增欄位
+  // 星數
   rating: 0,
+  // 商業展示資訊
+  displayTags: '',
 };
 
 // ======================================================
@@ -22,6 +28,13 @@ export const DEFAULT_PRODUCT = {
 // icon 用 lucide-react 替換
 // ======================================================
 export const CATEGORY_THEME_MAP = {
+  AllProducts: {
+    code: 'AllProducts',
+    label: '全部商品',
+    title: 'All Products',
+    intro: '探索 Between Green 所有植感選物與生活提案。',
+    icon: 'Package2',
+  },
   DeskLiving: {
     code: 'DeskLiving',
     label: '書桌陪伴',
@@ -245,6 +258,32 @@ export const PRODUCT_CONTENT_MAP = {
   MotherDay: { label: '母親節', badge: 'Mother Day' },
   HolidaySpecial: { label: '節慶限定', badge: 'Holiday' },
   PreOrder: { label: '預購商品', badge: 'Pre Order' },
+};
+
+// ======================================================
+// PRODUCT DISPLAY TAGS MAP：
+// 顯示該商品的亮相、販售狀態，用法(同時上首頁的熱銷商品、精選推薦的品項) displayTags: 'TopSeller|Featured'
+// ======================================================
+export const PRODUCT_DISPLAY_TAGS_MAP = {
+  TopSeller: {
+    label: '熱銷商品',
+  },
+
+  Featured: {
+    label: '精選推薦',
+  },
+
+  SeasonalHot: {
+    label: '當季熱門',
+  },
+
+  EditorPick: {
+    label: '品牌選品',
+  },
+
+  Limited: {
+    label: '限定推薦',
+  },
 };
 
 // ======================================================

@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { FaCartPlus, FaSearch } from 'react-icons/fa';
 import { Link, useSearchParams } from 'react-router-dom';
 
+// constants
+import { CATEGORY_THEME_MAP } from '@/constants/productConstants';
+
 // services
 // import { getProducts } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
@@ -18,43 +21,41 @@ import ProductImage from '@/components/ProductImage';
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
+  // api的category 格式是 DeskLiving-Plant-Succulent，split 分類： Theme-Type-Species， const { themeCategory, themeSubcategory, themeDetail } = searchParams.get('category').split('-');
+  // 但是目前 home傳值：'/products?theme=DeskLiving'，直接使用即可
+  const theme = searchParams.get('theme');
+  const currentTheme = theme ? CATEGORY_THEME_MAP[theme] : CATEGORY_THEME_MAP.AllProducts;
+
   const { showError } = useToast();
   const { products, isLoading, fetchProducts } = useProducts({ isAdmin: false });
   const { refreshCart } = useCartActions();
-  const category = searchParams.get('category');
 
   // show 錯誤訊息狀態
   const [errorMessage, setErrorMessage] = useState('');
   const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
 
+  // theme filter
+  const filteredProducts = theme
+    ? products.filter((product) => {
+        return product.category?.startsWith(theme);
+      })
+    : products;
+
   // 目前分類準備：flowers
-  const isEmpty = Array.isArray(products) && products.length === 0;
+  const isEmpty = Array.isArray(filteredProducts) && filteredProducts.length === 0;
 
   // 取得商品列表
   const initProducts = async () => {
     setErrorMessage('');
 
     try {
-      // let result = [];
       // if (category) {
-      //   result = await getProducts(category);
+      //   // api的 category 格式是 DeskLiving-Plant-Succulent，所以完整category字串查詢
+      //   await fetchProducts({ category: 'DeskLiving-Plant-Succulent' });
       // } else {
-      //   result = await getProducts();
+      //   await fetchProducts();
       // }
-      // // 防呆：確保是陣列，避免API 出問題或回 undefined
-      // if (!Array.isArray(result)) {
-      //   throw new Error('產品資料格式錯誤');
-      // }
-      // if (category && result.length === 0) {
-      //   setErrorMessage('目前此分類沒有商品');
-      // }
-      // setProducts(result);
-
-      if (category) {
-        await fetchProducts({ category: category });
-      } else {
-        await fetchProducts();
-      }
+      await fetchProducts();
     } catch (error) {
       const errorMessage = extractErrorMessage(
         error,
@@ -67,9 +68,10 @@ const ProductsPage = () => {
 
   useEffect(() => {
     initProducts();
+    // 由於前端 filter，所以theme 改變 不需要重新 fetchProducts()
 
     /* eslint-disable react-hooks/exhaustive-deps */
-  }, [category]);
+  }, []);
 
   // 加入購物車
   const handleAddCartItem = async (product_id, qty = 1) => {
@@ -98,8 +100,22 @@ const ProductsPage = () => {
 
   return (
     <>
-      <div className="container ui-container">
-        <div className="mt-4">
+      {/* Hero-Section、ui-container--product、product-hero、product-main...尚未切板完成(可參考cart切版)，請home切板後接續 */}
+      <div className="container ui-container ui-container--product">
+        {/* Hero-Section */}
+        {currentTheme && (
+          <div className="product-hero">
+            <h1
+              className="page-title"
+              key={currentTheme.code}
+              data-aos="flip-left"
+              data-aos-delay="300"
+            >
+              {currentTheme.label} - {currentTheme.intro}
+            </h1>
+          </div>
+        )}
+        <div className="product-main mt-4">
           {errorMessage && (
             <div className="mx-auto alert alert-danger w-50 text-center">{errorMessage}</div>
           )}
@@ -120,7 +136,7 @@ const ProductsPage = () => {
                   </td>
                 </tr>
               ) : (
-                products.map((product) => (
+                filteredProducts.map((product) => (
                   <tr key={product.id}>
                     <td style={{ width: '200px' }}>
                       <ProductImage src={product.imageUrl} alt={product.title} size="medium" />

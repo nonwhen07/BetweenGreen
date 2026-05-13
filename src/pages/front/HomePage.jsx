@@ -80,20 +80,20 @@ const HomePage = () => {
     <>
       {/* --- 品牌敘事 --- */}
       <HeroBanner />
+      {/* lifestyle: [ 'DeskLiving', 'BalconyMood', 'SpaceStyling', ], */}
       <LifestyleSection />
       <BrandStory />
-
       {/* --- 商品 --- */}
-
+      {/* ProductSection: [ 'CelebrationGift', 'Top20' ], */}
       <ProductSection topProducts={topProducts} />
+      {/* --- 季節限定/季節活動 --- */}
+      {/* seasonal: [ 'SeasonGift', 'CelebrationGift', ], */}
       {isSeasonActive && <SeasonalCollection />}
-
       {/* --- 互動信任 --- */}
-      {/* 
       <GardenTipsSection />
+      {/* 
       <ReviewSection />
       <NewsletterSection /> */}
-
       {/* ScreenLoading */}
       <PageLoader show={isLoading} zIndex={2000} />
     </>
