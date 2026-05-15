@@ -113,7 +113,7 @@
 /* =========================
   Lifestyle Section
 ========================= */
-.ui-lifestyle-section {
+.lifestyle-section {
   background: #f8f6f1;
 
   .ui-container {
@@ -121,7 +121,7 @@
   }
 }
 
-.ui-lifestyle-section__heading {
+.lifestyle-section__heading {
   max-width: 720px;
   margin: 0 auto 40px;
   text-align: center;
@@ -135,7 +135,7 @@
   }
 }
 
-.ui-lifestyle-section__eyebrow {
+.lifestyle-section__eyebrow {
   margin-bottom: 12px;
   color: #2f6d4f;
   letter-spacing: 0.12em;
@@ -144,7 +144,7 @@
   text-transform: uppercase;
 }
 
-.ui-lifestyle-section__title {
+.lifestyle-section__title {
   margin-bottom: 16px;
   line-height: 1.4;
   color: #2b2b2b;
@@ -160,7 +160,7 @@
   }
 }
 
-.ui-lifestyle-section__intro {
+.lifestyle-section__intro {
   margin: 0;
   line-height: 1.8;
   color: #5a5a5a;
@@ -175,10 +175,10 @@
   }
 }
 
-.ui-lifestyle-section__grid {
+.lifestyle-section__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 16px;
 
   @include respond($breakpoints, pad) {
     grid-template-columns: repeat(2, 1fr);
@@ -187,126 +187,14 @@
 
   @include respond($breakpoints, desktop) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
+    gap: 32px;
   }
 }
 
 /* =========================
   Lifestyle Card
 ========================= */
-.ui-lifestyle-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 24px;
-  background: #fff;
-  box-shadow: 0 10px 30px rgba(43, 43, 43, 0.06);
-  cursor: pointer;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(43, 43, 43, 0.1);
-
-    .ui-lifestyle-card__image img {
-      transform: scale(1.04);
-    }
-
-    .ui-lifestyle-card__arrow {
-      transform: translateX(4px);
-    }
-  }
-
-  &:focus-visible {
-    outline: 2px solid #2f6d4f;
-    outline-offset: 4px;
-  }
-}
-
-.ui-lifestyle-card__image {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: #ece8de;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s ease;
-  }
-}
-
-.ui-lifestyle-card__content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 20px;
-
-  @include respond($breakpoints, pad) {
-    padding: 24px;
-  }
-}
-
-.ui-lifestyle-card__tag {
-  display: inline-flex;
-  align-self: flex-start;
-  margin-bottom: 14px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(47, 109, 79, 0.08);
-  color: #2f6d4f;
-  letter-spacing: 0.04em;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.ui-lifestyle-card__title {
-  margin-bottom: 8px;
-  line-height: 1.4;
-  color: #2b2b2b;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.ui-lifestyle-card__subtitle {
-  margin-bottom: 14px;
-  color: #7b7b7b;
-  letter-spacing: 0.08em;
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.ui-lifestyle-card__desc {
-  margin-bottom: 20px;
-  line-height: 1.8;
-  color: #4f4f4f;
-  font-size: 15px;
-  flex: 1;
-
-  @include respond($breakpoints, pad) {
-    font-size: 16px;
-  }
-}
-
-.ui-lifestyle-card__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #2f6d4f;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.ui-lifestyle-card__arrow {
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
+// 暫時放_card，之後要放回_home的lifestyle_section
 
 /* =========================
   Seasonal Section
@@ -362,52 +250,153 @@
 }
 
 /* =========================
-  brand Section
+  brand story Section
 ========================= */
-.brand-story {
+// .brand-story {
+//   background: #f8f6f1;
+
+//   .ui-container {
+//     max-width: 1296px;
+//   }
+
+//   &__layout {
+//     display: grid;
+//     gap: 32px;
+
+//     @include respond($breakpoints, desktop) {
+//       grid-template-columns: 1fr 1fr;
+//       align-items: center;
+//       gap: 64px;
+//     }
+//   }
+
+//   &__media {
+//     img {
+//       width: 100%;
+//       border-radius: 16px;
+//       object-fit: cover;
+//       border: 1px solid rgba(0, 0, 0, 0.04);
+//     }
+//   }
+
+//   &__content {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 16px;
+//   }
+
+//   &__eyebrow {
+//     font-size: 0.875rem;
+//     color: $color-primary-light;
+//     letter-spacing: 1px;
+//   }
+
+//   &__title {
+//     font-size: 2rem;
+//     font-weight: 600;
+//   }
+
+//   &__desc {
+//     color: $text-main;
+//     line-height: 1.6;
+//   }
+
+//   &__actions {
+//     margin-top: 12px;
+//   }
+// }
+
+.brand-story-section {
+  position: relative;
+
   &__layout {
     display: grid;
-    gap: 32px;
+    gap: $space-8;
+    align-items: center;
 
     @include respond($breakpoints, desktop) {
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      gap: 64px;
+      grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+      gap: $space-12;
     }
   }
 
+  // ---------- media ----------
   &__media {
+    position: relative;
+  }
+
+  &__media-inner {
+    overflow: hidden;
+    border-radius: $radius-xl;
+
+    border: 1px solid rgba(0, 0, 0, 0.04);
+
+    // box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+    box-shadow: $shadow-lg;
+
+    background: $color-bg-soft;
+
     img {
       width: 100%;
-      border-radius: 16px;
+      aspect-ratio: 16 / 10;
       object-fit: cover;
+
+      filter: brightness(0.96) saturate(0.96) contrast(0.98);
+
+      // transition: filter 0.8s ease;
+      transition: filter $transition-slow;
+    }
+
+    @include respond($breakpoints, desktop) {
+      &:hover {
+        img {
+          filter: brightness(1.02) saturate(1) contrast(1);
+        }
+      }
     }
   }
 
+  // ---------- content ----------
   &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    max-width: 460px;
+
+    @include respond($breakpoints, desktop) {
+      transform: translateY(-8px);
+    }
   }
 
   &__eyebrow {
-    font-size: 0.875rem;
+    margin-bottom: $space-3;
+
     color: $color-primary-light;
-    letter-spacing: 1px;
+
+    font-size: $font-size-sm;
+    letter-spacing: 0.18em;
   }
 
   &__title {
-    font-size: 2rem;
-    font-weight: 600;
+    margin-bottom: $space-5;
+
+    color: $text-main;
+
+    line-height: 1.4;
+
+    font-size: clamp(2rem, 3vw, 3rem);
   }
 
   &__desc {
-    color: $text-main;
-    line-height: 1.6;
+    color: $text-body;
+
+    // line-height: 1.9;
+    line-height: $line-height-loose;
+
+    &:not(:last-child) {
+      margin-bottom: $space-4;
+    }
   }
 
   &__actions {
-    margin-top: 12px;
+    margin-top: $space-8;
   }
 }
 

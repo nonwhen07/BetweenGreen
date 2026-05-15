@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import noImage from '@/assets/images/no-image.png';
 
 const LifestyleCard = ({ item }) => {
   const navigate = useNavigate();
@@ -9,38 +10,6 @@ const LifestyleCard = ({ item }) => {
 
   return (
     <>
-      {/* <article
-        className="ui-lifestyle-card"
-        onClick={handleClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleClick();
-          }
-        }}
-      >
-        <div className="ui-lifestyle-card__image">
-          <img src={item.image} alt={item.title} />
-        </div>
-
-        <div className="ui-lifestyle-card__content">
-          <span className="ui-lifestyle-card__tag">{item.tag}</span>
-
-          <h3 className="ui-lifestyle-card__title">{item.title}</h3>
-
-          <p className="ui-lifestyle-card__subtitle">{item.subtitle}</p>
-
-          <p className="ui-lifestyle-card__desc">{item.description}</p>
-
-          <span className="ui-lifestyle-card__link">
-            探索場景
-            <span className="ui-lifestyle-card__arrow">→</span>
-          </span>
-        </div>
-      </article> */}
-
       <article
         className="ui-card lifestyle-card"
         onClick={handleClick}
@@ -54,7 +23,14 @@ const LifestyleCard = ({ item }) => {
         }}
       >
         <div className="lifestyle-card__image">
-          <img src={item.image} alt={item.title} />
+          <img
+            src={item.image}
+            alt={item.title}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = noImage;
+            }}
+          />
         </div>
 
         <div className="lifestyle-card__overlay">
@@ -62,7 +38,9 @@ const LifestyleCard = ({ item }) => {
 
           <h3 className="lifestyle-card__title">{item.title}</h3>
 
-          <span className="lifestyle-card__link">Explore →</span>
+          <span className="lifestyle-card__link">
+            Explore <span className="lifestyle-card__arrow">→</span>
+          </span>
         </div>
       </article>
     </>

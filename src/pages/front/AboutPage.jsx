@@ -140,7 +140,7 @@ const AboutPage = () => {
               只需要改變一個角落。
             </p>
 
-            <button className="btn ui-btn-primary">探索商品</button>
+            <button className="ui-btn ui-btn--primary">探索商品</button>
           </div>
         </div>
       </section>

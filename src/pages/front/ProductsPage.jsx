@@ -10,6 +10,7 @@ import { CATEGORY_THEME_MAP } from '@/constants/productConstants';
 import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
+import { useLoading } from '@/hooks/useLoading';
 import { useProducts } from '@/hooks/product/useProducts';
 import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
@@ -27,7 +28,9 @@ const ProductsPage = () => {
   const currentTheme = theme ? CATEGORY_THEME_MAP[theme] : CATEGORY_THEME_MAP.AllProducts;
 
   const { showError } = useToast();
-  const { products, isLoading, fetchProducts } = useProducts({ isAdmin: false });
+  const { start, stop } = useLoading();
+  // const { products, isLoading, fetchProducts } = useProducts({ isAdmin: false });
+  const { products, fetchProducts } = useProducts({ isAdmin: false });
   const { refreshCart } = useCartActions();
 
   // show 錯誤訊息狀態
@@ -47,14 +50,9 @@ const ProductsPage = () => {
   // 取得商品列表
   const initProducts = async () => {
     setErrorMessage('');
+    start();
 
     try {
-      // if (category) {
-      //   // api的 category 格式是 DeskLiving-Plant-Succulent，所以完整category字串查詢
-      //   await fetchProducts({ category: 'DeskLiving-Plant-Succulent' });
-      // } else {
-      //   await fetchProducts();
-      // }
       await fetchProducts();
     } catch (error) {
       const errorMessage = extractErrorMessage(
@@ -63,6 +61,8 @@ const ProductsPage = () => {
         '取得產品列表失敗，請稍後再試。',
       );
       showError(errorMessage);
+    } finally {
+      stop();
     }
   };
 
@@ -185,7 +185,7 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      <PageLoader show={isLoading} zIndex={2000} />
+      {/* <PageLoader show={isLoading} zIndex={2000} /> */}
     </>
   );
 };

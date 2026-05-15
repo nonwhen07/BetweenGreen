@@ -65,10 +65,18 @@ button {
   max-width: $strip-width;
   margin: 0 auto;
   // padding: 60px 0;
-  padding: $section-space-md 0;
+  padding: $section-space-sm 0;
 
   background: transparent;
   // background: $color-bg-muted;
+
+  @include respond($breakpoints, pad) {
+    padding: $section-space-md 0;
+  }
+
+  @include respond($breakpoints, desktop) {
+    padding: $section-space-lg 0;
+  }
 
   &--soft {
     background: $color-bg-soft;
@@ -97,11 +105,11 @@ button {
   }
 
   &--loose {
-    padding: $section-space-lg 0;
-  }
+    padding-top: $section-space-xl;
 
-  @include respond($breakpoints, desktop) {
-    padding: 96px 0;
+    @include respond($breakpoints, desktop) {
+      padding-top: calc($section-space-xl + 20px);
+    }
   }
 }
 

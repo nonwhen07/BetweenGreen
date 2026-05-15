@@ -8,7 +8,8 @@ const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/BetweenGreen/', // 這裡要加結尾的 / （vite 官方建議）
+  // base: '/BetweenGreen/', // 這裡要加結尾的 / （vite 官方建議）
+  base: import.meta.env.PROD ? '/BetweenGreen/' : '/',
   plugins: [react()],
   // 直接用 import.meta.url 包一層
   // resolve: {
