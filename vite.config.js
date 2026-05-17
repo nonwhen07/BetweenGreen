@@ -7,9 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   // base: '/BetweenGreen/', // 這裡要加結尾的 / （vite 官方建議）
-  base: import.meta.env.PROD ? '/BetweenGreen/' : '/',
+  base: mode === 'production' ? '/BetweenGreen/' : '/',
   plugins: [react()],
   // 直接用 import.meta.url 包一層
   // resolve: {
@@ -23,4 +23,4 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-});
+}));

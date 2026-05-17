@@ -9,7 +9,7 @@ import { useAuthInit } from '@/hooks/auth/useAuthInit';
 // import PageLoader from '@/components/shared/PageLoader';
 import AdminAside from '@/components/admin/AdminAside';
 import AdminHeader from '@/components/admin/AdminHeader';
-import GoTop from '@/components/GoTop';
+import GoTop from '@/components/shared/GoTop';
 
 const AdminLayout = () => {
   // Custom Hook = 可重用的「邏輯」，而不是 UI。

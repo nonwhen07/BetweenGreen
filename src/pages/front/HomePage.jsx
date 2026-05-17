@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useProducts } from '@/hooks/product/useProducts';
+import { useLoading } from '@/hooks/useLoading';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
@@ -10,18 +11,18 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 import HeroBanner from '@/components/front/home/HeroBanner';
 // import CategorySection from '@/components/front/home/Category/CategorySection';
 import LifestyleSection from '@/components/front/home/Lifestyle/LifestyleSection';
-
 import SeasonalCollection from '@/components/front/home/Seasonal/SeasonalSection';
 import ProductSection from '@/components/front/home/Product/ProductSection';
 import GardenTipsSection from '@/components/front/home/GardenTips/GardenTipsSection';
 import ReviewSection from '@/components/front/home/ReviewSection';
 import NewsletterSection from '@/components/front/home/NewsletterSection';
-import PageLoader from '@/components/shared/PageLoader';
+// import PageLoader from '@/components/shared/PageLoader';
 import BrandStory from '@/components/front/home/BrandStory';
 
 const HomePage = () => {
-  const { products, isLoading, fetchProducts } = useProducts({ isAdmin: false });
+  const { products, fetchProducts } = useProducts({ isAdmin: false });
   const { showError } = useToast();
+  const { start, stop } = useLoading();
   const [topProducts, setTpProducts] = useState([]);
   // const [ProductCategory, setProductCategory] = useState([]);
 
@@ -32,42 +33,28 @@ const HomePage = () => {
 
   // 取得商品列表
   const initProducts = async () => {
+    start();
+
     try {
-      // const productData = await getProducts();
-      // 取 top7 給ProductSection當作隨機熱銷商品
-      // const hotItems = productData
-      //   .filter((item) => Number(item.is_enabled) === 1)
-      //   .sort(() => Math.random() - 0.5)
-      //   .slice(0, 7);
-      // setTpProducts(hotItems);
-
-      // 可視情況帶入參數
       await fetchProducts({});
-
-      // 取 top7 給ProductSection當作隨機熱銷商品
-      const hotItems = products
-        .filter((item) => Number(item.is_enabled) === 1)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 7);
-
-      setTpProducts(hotItems);
-
-      // 取 productData的 Category(必須 Number(item.is_enabled) === 1) 種類 給CategorySection使用(todo)
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。');
+
       showError(errorMessage);
+    } finally {
+      stop();
     }
   };
 
   // 用 useEffect 監聽 products，避免fetchProducts 更新 state，但 state 不會立刻變
   useEffect(() => {
     if (!products.length) return;
-
+    console.log('products', products);
     const hotItems = products
       .filter((item) => Number(item.is_enabled) === 1)
       .sort(() => Math.random() - 0.5)
       .slice(0, 7);
-
+    console.log('products-hotItems', hotItems);
     setTpProducts(hotItems);
   }, [products]);
 
@@ -95,7 +82,7 @@ const HomePage = () => {
       <ReviewSection />
       <NewsletterSection /> */}
       {/* ScreenLoading */}
-      <PageLoader show={isLoading} zIndex={2000} />
+      {/* <PageLoader show={isLoading} zIndex={2000} /> */}
     </>
   );
 };

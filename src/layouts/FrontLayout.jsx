@@ -9,7 +9,8 @@ import { useCartInit } from '@/hooks/cart/useCartInit';
 // components
 import FrontHeader from '@/components/front/FrontHeader';
 import FrontFooter from '@/components/front/FrontFooter';
-import GoTop from '@/components/GoTop';
+import ScrollToTop from '@/components/shared/ScrollToTop';
+import GoTop from '@/components/shared/GoTop';
 
 const FrontLayout = () => {
   // 初始化 Auth、Cart 狀態
@@ -30,12 +31,14 @@ const FrontLayout = () => {
 
   // 避免React 路由切換的問題，AOS沒有刷新
   useEffect(() => {
-    AOS.refresh();
-  }, []);
+    // AOS.refresh();
+    AOS.refreshHard();
+  }, [location.pathname]);
 
   return (
     <>
       <div className={`${mode}${season}`}>
+        <ScrollToTop />
         <FrontHeader />
         <main className={`ui-wrapper ${isHeroPage ? 'ui-wrapper-hero' : 'ui-wrapper-spacing'}`}>
           <Outlet />

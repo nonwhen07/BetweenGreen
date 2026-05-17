@@ -1,41 +1,73 @@
 import noImage from '@/assets/images/no-image.png';
+import { Link } from 'react-router-dom';
+import { parseCategoryParts, parseContentTags } from '@/constants/productConstants';
 
-const ProductCard = ({ productItem }) => {
-  // const productItem = {
-  //   title: 'Monstera Deliciosa',
-  //   price: 35,
-  //   image: '/img/product-plant.jpg',
-  // };
+const ProductCard = ({ product }) => {
+  const isEmptySrc = !product.imageUrl || product.imageUrl.trim() === '';
 
-  const isEmptySrc = !productItem.imageUrl || productItem.imageUrl.trim() === '';
+  const { theme, species } = parseCategoryParts(product.category);
+  const previewTags = parseContentTags(product.content).slice(0, 2);
 
   return (
-    <>
-      {/* <div className="card-product">
-        <div className="card-product__image">
-          <img src={productItem.imageUrl} alt={productItem.title} loading="lazy" />
+    <article className="product-card">
+      <Link to={`/products/${product.id}`} className="product-card__link">
+        {/* image */}
+        <div className="product-card__media">
+          <img
+            // src={productItem.imageUrl}
+            src={!isEmptySrc ? product.imageUrl : noImage}
+            alt={product.title}
+            className="product-card__image"
+          />
+
+          <div className="product-card__overlay" />
+
+          {/* display tag (負責處理熱銷、促銷庫存...商業處理標籤，後台尚未開工) */}
+          {/* displayTags 後續接 PRODUCT_DISPLAY_TAGS_MAP */}
+          {/* {product.displayTags && (
+              <span className="product-card__badge">{product.displayTags}</span>
+            )} */}
         </div>
 
-        <div className="card-product__body">
-          <h3 className="card-product__title">{productItem.title}</h3>
+        {/* body */}
+        <div className="product-card__body">
+          {/* eyebrow */}
+          <p className="product-card__eyebrow">{theme?.title || 'Between Green'}</p>
 
-          <p className="card-product__price">${productItem.price}</p>
-        </div>
-      </div> */}
-      <div className="product-slider-card">
-        {/* <img src={productItem.imageUrl} alt={productItem.title} loading="lazy" /> */}
-        <img
-          src={!isEmptySrc ? productItem.imageUrl : noImage}
-          alt={productItem.title}
-          loading="lazy"
-        />
+          {/* title */}
+          <h3 className="product-card__title">{product.title}</h3>
 
-        <div className="card-body">
-          <h3 className="card-title">{productItem.title}</h3>
-          <p className="card-price">${productItem.price}</p>
+          {/* optional species */}
+          <p className="product-card__species">{species?.label}</p>
+
+          {/* content tags */}
+          {previewTags.length > 0 && (
+            <ul className="product-card__tags">
+              {previewTags.map((tag) => (
+                <li key={tag.badge} className="product-card__tag">
+                  {tag.badge}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* footer */}
+          <div className="product-card__footer">
+            <p className="product-card__price">NT$ {product.price?.toLocaleString()}</p>
+
+            <div className="product-card__actions">
+              <button type="button" className="product-card__icon-btn" aria-label="加入收藏">
+                收藏
+              </button>
+
+              <button type="button" className="product-card__cart-btn">
+                加入購物車
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </>
+      </Link>
+    </article>
   );
 };
 

@@ -1,21 +1,63 @@
-// components
-import SectionHeader from '@/components/front/home/Product/SectionHeader';
-import ProductSlider from '@/components/front/home/Product/ProductSlider';
+import { Link } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+// // components
+// import SectionHeader from '@/components/front/home/Product/SectionHeader';
+// import ProductSlider from '@/components/front/home/Product/ProductSlider';
+
+import ProductCard from '@/components/front/home/Product/ProductCard';
 
 const ProductSection = ({ topProducts }) => {
   return (
-    <section id="product" className="product-section ui-section">
-      <div className=" ui-container">
-        {/* <div className="text-center mb-5">
-          <h2 className="section-title">Featured Products</h2>
-          <p className="section-subtitle">探索不同風格的植物與花藝</p>
-        </div> */}
+    <>
+      <section id="product" className="ui-section product-section">
+        <div className="container ui-container">
+          <div className="product-section__header">
+            <div className="product-section__intro">
+              <p className="product-section__eyebrow">Between Green Selection</p>
 
-        <SectionHeader title="Featured Products" link="/products" />
-        <p className="section-subtitle">探索不同風格的植物與花藝</p>
-        <ProductSlider products={topProducts} />
-      </div>
-    </section>
+              <h2 className="product-section__title">精選植感選物</h2>
+            </div>
+
+            <Link to="/products" className="product-section__more">
+              View All
+            </Link>
+          </div>
+
+          <Swiper
+            className="product-section__swiper"
+            modules={[Pagination, Navigation, Autoplay]}
+            autoplay={{
+              delay: 3500,
+              disableOnInteraction: false,
+            }}
+            spaceBetween={24}
+            slidesPerView={1.15}
+            breakpoints={{
+              576: {
+                slidesPerView: 1.15,
+              },
+              768: {
+                slidesPerView: 2.4,
+              },
+              1200: {
+                slidesPerView: 3.4,
+              },
+            }}
+          >
+            {topProducts.map((product) => (
+              <SwiperSlide key={product.id}>
+                <ProductCard product={product} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </section>
+    </>
   );
 };
 
