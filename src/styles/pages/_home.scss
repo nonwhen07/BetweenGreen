@@ -197,6 +197,83 @@
 
 .product-section {
   overflow: hidden;
+  //  overflow: visible; //fade edge 是 absolute，可能會改成visible(pad/desktop)。
+
+  position: relative;
+
+  &::before,
+  &::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 5;
+    width: 120px;
+    pointer-events: none;
+    content: '';
+
+    display: none;
+  }
+
+  // 左側 fade
+  &::before {
+    left: 0;
+
+    background: linear-gradient(
+      to right,
+      $color-bg-main 0%,
+      rgba($color-bg-main, 0.92) 20%,
+      rgba($color-bg-main, 0.75) 45%,
+      rgba($color-bg-main, 0.35) 70%,
+      transparent 100%
+    );
+  }
+
+  // 右側 fade
+  &::after {
+    right: 0;
+
+    background: linear-gradient(
+      to left,
+      $color-bg-main 0%,
+      rgba($color-bg-main, 0.92) 20%,
+      rgba($color-bg-main, 0.75) 45%,
+      rgba($color-bg-main, 0.35) 70%,
+      transparent 100%
+    );
+  }
+
+  // =========================
+  // MOBILE
+  // =========================
+
+  @include respond($breakpoints, pad) {
+    &::before,
+    &::after {
+      display: block;
+
+      width: 56px;
+    }
+  }
+
+  @include respond($breakpoints, desktop) {
+    &::before,
+    &::after {
+      width: 120px;
+    }
+
+    &__header {
+      align-items: flex-start;
+      flex-direction: column;
+
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-direction: row;
+    }
+
+    &__title {
+      font-size: 32px;
+    }
+  }
 
   // =========================
   // HEADER
@@ -231,7 +308,7 @@
 
     color: $neutral-700;
 
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 600;
     line-height: 1.2;
   }
@@ -277,18 +354,35 @@
   }
 
   // =========================
-  // MOBILE
+  // SWIPER PROGRESS
   // =========================
 
-  @include respond($breakpoints, desktop) {
-    &__header {
-      align-items: flex-start;
-      flex-direction: column;
-    }
+  &__progress {
+    position: relative;
 
-    &__title {
-      font-size: 28px;
-    }
+    width: 240px;
+    height: 2px;
+
+    margin: 32px auto 0;
+
+    border-radius: 999px;
+
+    background: rgba($neutral-400, 0.15);
+  }
+
+  &__progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 72px;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: $color-primary;
+
+    transition: transform 0.45s ease;
   }
 }
 

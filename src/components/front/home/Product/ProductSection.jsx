@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
@@ -8,10 +9,11 @@ import 'swiper/css/pagination';
 // // components
 // import SectionHeader from '@/components/front/home/Product/SectionHeader';
 // import ProductSlider from '@/components/front/home/Product/ProductSlider';
-
 import ProductCard from '@/components/front/home/Product/ProductCard';
 
 const ProductSection = ({ topProducts }) => {
+  const [progress, setProgress] = useState(0.2);
+
   return (
     <>
       <section id="product" className="ui-section product-section">
@@ -30,6 +32,27 @@ const ProductSection = ({ topProducts }) => {
 
           <Swiper
             className="product-section__swiper"
+            onSlideChange={(swiper) => {
+              // const totalSlides = swiper.slides.length;
+              // const currentIndex = swiper.realIndex;
+              // const progressPercent = (currentIndex / (totalSlides - 1)) * 100;
+              // setProgress(progressPercent);
+
+              const totalSlides = swiper.slides.length;
+
+              const slidesPerView = Number(swiper.params.slidesPerView);
+
+              const currentIndex = swiper.realIndex;
+
+              const maxScrollableIndex = totalSlides - slidesPerView;
+
+              // progress track 可移動距離
+              const maxTranslate = 240 - 72;
+
+              const progress = (currentIndex / maxScrollableIndex) * maxTranslate;
+
+              setProgress(progress);
+            }}
             modules={[Pagination, Navigation, Autoplay]}
             autoplay={{
               delay: 3500,
@@ -55,6 +78,16 @@ const ProductSection = ({ topProducts }) => {
               </SwiperSlide>
             ))}
           </Swiper>
+
+          <div className="product-section__progress">
+            <div
+              className="product-section__progress-bar"
+              style={{
+                // transform: `scaleX(${progress / 100})`,
+                transform: `translateX(${progress}px)`,
+              }}
+            />
+          </div>
         </div>
       </section>
     </>

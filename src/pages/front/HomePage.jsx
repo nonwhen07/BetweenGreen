@@ -49,12 +49,10 @@ const HomePage = () => {
   // 用 useEffect 監聽 products，避免fetchProducts 更新 state，但 state 不會立刻變
   useEffect(() => {
     if (!products.length) return;
-    console.log('products', products);
     const hotItems = products
       .filter((item) => Number(item.is_enabled) === 1)
       .sort(() => Math.random() - 0.5)
       .slice(0, 7);
-    console.log('products-hotItems', hotItems);
     setTpProducts(hotItems);
   }, [products]);
 

@@ -1,5 +1,8 @@
-import noImage from '@/assets/images/no-image.png';
 import { Link } from 'react-router-dom';
+
+// assets
+import noImage from '@/assets/images/no-image.png';
+// constants
 import { parseCategoryParts, parseContentTags } from '@/constants/productConstants';
 
 const ProductCard = ({ product }) => {
