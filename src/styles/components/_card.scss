@@ -146,26 +146,18 @@
     transform 0.4s ease,
     box-shadow 0.4s ease;
 
-  &:hover {
-    transform: translateY(-4px);
-
-    .product-card__image {
-      transform: scale(1.04);
-    }
-
-    .product-card__overlay {
-      opacity: 1;
-    }
-  }
-
   &__link {
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
 
-    height: 100%;
+    // height: 100%;
 
-    color: inherit;
+    // color: inherit;
+    // text-decoration: none;
+
+    display: block;
     text-decoration: none;
+    color: inherit;
   }
 
   // =========================
@@ -174,20 +166,17 @@
 
   &__media {
     position: relative;
-
     overflow: hidden;
 
-    aspect-ratio: 4 / 5;
-
-    background: $neutral-100;
+    aspect-ratio: 1 / 1.08;
+    border-radius: $radius-xl;
+    background: #f5f5f5;
   }
 
   &__image {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
     transition: transform 0.7s ease;
   }
 
@@ -195,11 +184,11 @@
     position: absolute;
     inset: 0;
 
-    opacity: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0));
 
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.12), transparent 55%);
+    opacity: 1;
 
-    transition: opacity 0.4s ease;
+    transition: opacity 0.35s ease;
   }
 
   &__badge {
@@ -220,6 +209,35 @@
     letter-spacing: 0.04em;
   }
 
+  &__actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 5;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__icon-btn {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    backdrop-filter: blur(8px);
+
+    cursor: pointer;
+
+    transition:
+      background 0.25s ease,
+      transform 0.25s ease;
+  }
+
   // =========================
   // BODY
   // =========================
@@ -230,16 +248,28 @@
     flex-direction: column;
     gap: 12px;
 
-    padding: 20px;
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   // 小標題（品牌分類）
   &__eyebrow {
     color: $color-primary;
-
+    margin-bottom: 6px;
     font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
@@ -250,12 +280,14 @@
 
     color: $neutral-700;
 
+    margin-bottom: 10px;
+
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.4;
 
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    // -webkit-line-clamp: 2;
+    // -webkit-box-orient: vertical;
   }
 
   // 次要資訊
@@ -311,15 +343,15 @@
   &__price {
     color: $neutral-700;
 
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 500;
     line-height: 1;
   }
 
-  &__actions {
-    display: flex;
-    gap: 12px;
-  }
+  // &__actions {
+  //   display: flex;
+  //   gap: 12px;
+  // }
 
   &__icon-btn,
   &__cart-btn {
@@ -375,16 +407,93 @@
   }
 
   // =========================
-  // DESKTOP
+  // breakpoints
   // =========================
 
   @include respond($breakpoints, desktop) {
     &__body {
-      padding: 24px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    &__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    &__meta {
+      align-items: flex-end;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    &__tags {
+      justify-content: flex-end;
     }
 
     &__title {
       font-size: 22px;
+    }
+
+    &__overlay {
+      opacity: 0;
+    }
+
+    &__actions {
+      opacity: 0;
+      visibility: hidden;
+
+      transform: translateX(12px);
+
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        visibility 0.3s;
+    }
+
+    &__icon-btn {
+      opacity: 0;
+      transform: translateX(10px);
+
+      transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+    }
+
+    &:hover {
+      .product-card__icon-btn {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .product-card__icon-btn:nth-child(1) {
+        transition-delay: 0.02s;
+      }
+
+      .product-card__icon-btn:nth-child(2) {
+        transition-delay: 0.12s;
+      }
+
+      .product-card__icon-btn:nth-child(3) {
+        transition-delay: 0.24s;
+      }
+
+      .product-card__overlay {
+        opacity: 1;
+      }
+
+      .product-card__image {
+        transform: scale(1.04);
+      }
+
+      .product-card__actions {
+        opacity: 1;
+        visibility: visible;
+
+        transform: translateX(0);
+      }
     }
   }
 }

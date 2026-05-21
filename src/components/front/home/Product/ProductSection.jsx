@@ -6,10 +6,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// // components
-// import SectionHeader from '@/components/front/home/Product/SectionHeader';
-// import ProductSlider from '@/components/front/home/Product/ProductSlider';
-import ProductCard from '@/components/front/home/Product/ProductCard';
+// components
+import ProductCard from '@/components/shared/ProductCard';
 
 const ProductSection = ({ topProducts }) => {
   const [progress, setProgress] = useState(0.2);

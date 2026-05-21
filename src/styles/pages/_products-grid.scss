@@ -1,0 +1,45 @@
+.products-grid {
+  &__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px 24px;
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 320px;
+
+    border-radius: $radius-2xl;
+
+    background: rgba(255, 255, 255, 0.55);
+
+    border: 1px dashed rgba($color-primary, 0.12);
+
+    color: rgba($color-text, 0.52);
+
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+  }
+
+  @include respond($breakpoints, pad) {
+    &__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @include respond($breakpoints, desktop) {
+    &__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 48px 28px;
+    }
+  }
+
+  @include respond($breakpoints, desktop-xl) {
+    &__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+}

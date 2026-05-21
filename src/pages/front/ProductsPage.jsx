@@ -5,6 +5,9 @@ import { Link, useSearchParams } from 'react-router-dom';
 // constants
 import { CATEGORY_THEME_MAP } from '@/constants/productConstants';
 
+// assets
+import productsBanner from '@/assets/images/brand/hero/hero-desk.png';
+
 // services
 // import { getProducts } from '@/services/productService';
 import { addsCartItem } from '@/services/cartService';
@@ -19,6 +22,11 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 import PageLoader from '@/components/shared/PageLoader';
 import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
+// import ProductCard from '@/components/front/home/Product/ProductCard';
+import ProductCard from '@/components/shared/ProductCard';
+import PageHero from '@/components/shared/PageHero';
+import ProductsFilter from '@/components/front/product/ProductsFilter';
+import ProductsGrid from '@/components/front/product/ProductsGrid';
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -185,7 +193,39 @@ const ProductsPage = () => {
         </div>
       </div>
 
-      {/* <PageLoader show={isLoading} zIndex={2000} /> */}
+      <div className="products-page ">
+        {/* <PageHero /> */}
+        {/* <PageHero
+          eyebrow="Between Green Collection"
+          title="探索植感生活選物"
+          text="從書桌陪伴、陽台生活到空間造景， 找到適合你日常節奏的植物與生活提案。"
+          backgroundImage={productsBanner}
+        /> */}
+
+        <PageHero
+          eyebrow="Between Green Collection"
+          title="探索植感生活選物"
+          text="從書桌陪伴、陽台生活到空間造景，找到適合你日常節奏的植物與生活提案。"
+          backgroundImage={productsBanner}
+          tone=""
+          align="left"
+          size="md"
+        />
+
+        <section className="products-page__section ui-section">
+          <div className="ui-container">
+            {/* top filter area */}
+            <div className="products-page__toolbar">
+              <ProductsFilter />
+            </div>
+
+            {/* products grid */}
+            <div className="products-page__content mt-4">
+              <ProductsGrid products={filteredProducts} />
+            </div>
+          </div>
+        </section>
+      </div>
     </>
   );
 };
