@@ -5,10 +5,10 @@
 
 // Mobile-First，但是目前部分樣式先混用，除非有2種區別需要處理，ex:header__collapse
 :root {
-  --brand-height: 60px; // 預設brand高度、寬度auto，header根據brand高度在調整高度+樣式
+  --brand-height: 60px !important; // 預設brand高度、寬度auto，header根據brand高度在調整高度+樣式
 
   @include respond($breakpoints, desktop) {
-    --brand-height: 80px; // desktop 較大時的高度
+    --brand-height: 80px !important; // desktop 較大時的高度
   }
 }
 
@@ -79,6 +79,10 @@
     background-color: rgba($color-primary, 0.8);
     color: $text-on-primary;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    @include respond($breakpoints, desktop) {
+      padding: 10px 0 !important;
+    }
   }
 
   // ========================

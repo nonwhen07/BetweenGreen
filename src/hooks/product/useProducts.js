@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 
 // services
-import { getProducts, getAdminProducts, getAllAdminProducts } from '@/services/productService';
+import {
+  // getProducts,
+  getAllProducts,
+  getAdminProducts,
+  getAllAdminProducts,
+} from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
@@ -22,7 +27,8 @@ export const useProducts = ({ isAdmin = false } = {}) => {
       start();
 
       try {
-        const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
+        // const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
+        const res = isAdmin ? await getAdminProducts(params) : await getAllProducts();
 
         setProducts(res.data || []);
         setPageInfo(res.pagination || {});

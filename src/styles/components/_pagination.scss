@@ -1,0 +1,140 @@
+@use '@/styles/helpers/variables' as *;
+
+/* =====================================
+  Pagination
+
+  HTML 結構：
+  <nav class="ui-pagination" aria-label="Pagination">
+    <button
+      class="ui-pagination__item ui-pagination__item--prev is-disabled"
+      aria-label="Previous page"
+      disabled
+    >
+      ‹
+    </button>
+
+    <button class="ui-pagination__item">1</button>
+
+    <button class="ui-pagination__item is-active" aria-current="page">
+      2
+    </button>
+
+    <button class="ui-pagination__item">3</button>
+
+    <button
+      class="ui-pagination__item ui-pagination__item--next"
+      aria-label="Next page"
+    >
+      ›
+    </button>
+  </nav>
+===================================== */
+.ui-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 72px;
+
+  &__item {
+    width: 48px;
+    height: 48px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.72);
+
+    color: rgba($text-main, 0.72);
+
+    font-size: 1rem;
+    font-weight: 500;
+
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease,
+      opacity 0.25s ease;
+
+    &:hover:not(:disabled) {
+      background: rgba($color-primary, 0.12);
+
+      color: $color-primary;
+
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.32;
+      cursor: not-allowed;
+    }
+
+    &.is-active {
+      background: $color-primary;
+
+      color: white;
+
+      box-shadow: 0 12px 24px rgba($color-primary, 0.18);
+    }
+  }
+}
+
+.brand-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 72px;
+
+  &__item {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.72);
+
+    color: rgba($text-main, 0.72);
+
+    font-size: 1rem;
+    font-weight: 500;
+
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease,
+      opacity 0.25s ease,
+      box-shadow 0.25s ease;
+
+    &:hover:not(:disabled) {
+      background: rgba($color-primary, 0.12);
+
+      color: $color-primary;
+
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.32;
+
+      cursor: not-allowed;
+    }
+
+    &.is-active {
+      background: $color-primary;
+
+      color: white;
+
+      box-shadow: 0 12px 24px rgba($color-primary, 0.18);
+    }
+  }
+}

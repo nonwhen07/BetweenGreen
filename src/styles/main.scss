@@ -14,15 +14,6 @@
 @use './layout/footer';
 @use './layout/theme';
 
-// @use './layout/articles';
-// @use './layout/herosection';
-// @use './layout/infosection';
-// @use './layout/hotspot';
-// @use './layout/trending';
-// @use './layout/scam';
-// @use './layout/repostpost';
-// @use './layout/findStores';
-
 @use './components/hero';
 @use './components/buttons';
 @use './components/spinners';
@@ -31,12 +22,7 @@
 @use './components/card';
 @use './components/toast';
 @use './components/sidebar';
-// @use './components/carousel';
-// @use './components/pagination';
-// @use './components/checkbox';
-// @use './components/dropdown-skin';
-// @use './components/searchbar';
-// @use './components/cards';
+@use './components/pagination';
 
 // @use './pages/index';
 @use './pages/home';

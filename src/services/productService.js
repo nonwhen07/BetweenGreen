@@ -24,6 +24,16 @@ export const getProducts = async (params = {}) => {
   };
 };
 
+// 取得商品列表All (全部取出後交給前端坐filter)
+export const getAllProducts = async () => {
+  const { data } = await axiosAPI.get('/products/all');
+
+  return {
+    data: data.products,
+    pagination: data.pagination,
+  };
+};
+
 // 取得單一商品
 export const getProductDetail = async (product_id) => {
   const { data } = await axiosAPI.get(`/product/${product_id}`);

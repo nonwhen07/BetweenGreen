@@ -332,6 +332,15 @@
       color 0.25s ease,
       transform 0.25s ease;
 
+    &.is-active {
+      background: $color-primary;
+      color: white;
+
+      border-color: $color-primary;
+
+      box-shadow: 0 8px 20px rgba($color-primary, 0.18);
+    }
+
     &:hover {
       background: $color-primary;
       color: white;
@@ -372,30 +381,5 @@
     &__sort {
       justify-content: flex-start;
     }
-  }
-}
-
-// ==========================================================================
-//   Products-grid
-// ==========================================================================
-// _products-grid.scss
-
-.products-grid {
-  &__placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 480px;
-    border-radius: $radius-2xl;
-
-    background: rgba(255, 255, 255, 0.55);
-
-    border: 1px dashed rgba($color-primary, 0.18);
-
-    color: rgba($text-main, 0.5);
-
-    font-size: 1rem;
-    letter-spacing: 0.08em;
   }
 }

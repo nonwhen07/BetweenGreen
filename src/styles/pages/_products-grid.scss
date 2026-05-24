@@ -1,3 +1,14 @@
+@use '@/styles/helpers/custom-text' as *;
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+@use 'sass:color';
+
+// ==========================================================================
+//   Products-grid
+// ==========================================================================
+// _products-grid.scss
+
 .products-grid {
   &__list {
     display: grid;
@@ -18,9 +29,27 @@
 
     border: 1px dashed rgba($color-primary, 0.12);
 
-    color: rgba($color-text, 0.52);
+    color: rgba($text-main, 0.52);
 
     font-size: 0.95rem;
+    letter-spacing: 0.08em;
+  }
+
+  &__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 480px;
+    border-radius: $radius-2xl;
+
+    background: rgba(255, 255, 255, 0.55);
+
+    border: 1px dashed rgba($color-primary, 0.18);
+
+    color: rgba($text-main, 0.5);
+
+    font-size: 1rem;
     letter-spacing: 0.08em;
   }
 
