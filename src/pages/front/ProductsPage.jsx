@@ -1,7 +1,7 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCartPlus, FaSearch } from 'react-icons/fa';
 import { Link, useSearchParams } from 'react-router-dom';
-import clsx from 'clsx';
+// import clsx from 'clsx';
 
 // constants
 import { CATEGORY_THEME_MAP } from '@/constants/productConstants';
@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { useProducts } from '@/hooks/product/useProducts';
 import { useCartActions } from '@/hooks/cart/useCartActions';
+import { usePagination } from '@/hooks/usePagination';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
@@ -28,43 +29,47 @@ import ProductCard from '@/components/shared/ProductCard';
 import PageHero from '@/components/shared/PageHero';
 import ProductsFilter from '@/components/front/product/ProductsFilter';
 import ProductsGrid from '@/components/front/product/ProductsGrid';
+import BrandPagination from '@/components/shared/BrandPagination';
 
 const ProductsPage = () => {
   const PRODUCTS_PER_PAGE = 12;
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   // api的category 格式是 DeskLiving-Plant-Succulent，split 分類： Theme-Type-Species， const { themeCategory, themeSubcategory, themeDetail } = searchParams.get('category').split('-');
   // 但是目前 home傳值：'/products?theme=DeskLiving'，直接使用即可
   const theme = searchParams.get('theme');
-  const currentTheme = theme ? CATEGORY_THEME_MAP[theme] : CATEGORY_THEME_MAP.AllProducts;
+  // const currentTheme = theme ? CATEGORY_THEME_MAP[theme] : CATEGORY_THEME_MAP.AllProducts;
+  // const [selectedTheme, setSelectedTheme] = useState('AllProducts');
+  const initialTheme = theme && CATEGORY_THEME_MAP[theme] ? theme : 'AllProducts';
+  const [selectedTheme, setSelectedTheme] = useState(initialTheme);
 
   const { showError } = useToast();
   const { start, stop } = useLoading();
-  // const { products, isLoading, fetchProducts } = useProducts({ isAdmin: false });
+
   const { products, fetchProducts } = useProducts({ isAdmin: false });
   const { refreshCart } = useCartActions();
 
-  const [selectedTheme, setSelectedTheme] = useState('AllProducts');
   const [selectedType, setSelectedType] = useState('');
 
-  // show 錯誤訊息狀態
-  const [errorMessage, setErrorMessage] = useState('');
   const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
 
+  // sort
+  const [sortType, setSortType] = useState('latest');
+
   // theme filter
-  const filteredProducts = theme
-    ? products.filter((product) => {
-        return product.category?.startsWith(theme);
-      })
-    : products;
+  // const filteredProducts = theme
+  //   ? products.filter((product) => {
+  //       return product.category?.startsWith(theme);
+  //     })
+  //   : products;
 
   const themeFilteredProducts =
     selectedTheme === 'AllProducts'
       ? products
       : products.filter((product) => product.category?.startsWith(selectedTheme));
 
-  const fullyFilteredProducts = !selectedType
+  const filteredProducts = !selectedType
     ? themeFilteredProducts
     : themeFilteredProducts.filter((product) => {
         const [, type] = product.category.split('-');
@@ -72,30 +77,64 @@ const ProductsPage = () => {
         return type === selectedType;
       });
 
-  const totalPages = Math.max(1, Math.ceil(fullyFilteredProducts.length / PRODUCTS_PER_PAGE));
-  const currentPageProducts = useMemo(() => {
-    const start = (page - 1) * PRODUCTS_PER_PAGE;
+  // const fullyFilteredProducts = !selectedType
+  //   ? themeFilteredProducts
+  //   : themeFilteredProducts.filter((product) => {
+  //       const [, type] = product.category.split('-');
 
-    return fullyFilteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
-  }, [fullyFilteredProducts, page]);
+  //       return type === selectedType;
+  //     });
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortType) {
+      case 'highPrice':
+        return b.price - a.price;
+
+      case 'lowPrice':
+        return a.price - b.price;
+
+      case 'popular':
+        return (b.rating || 0) - (a.rating || 0);
+
+      case 'latest':
+      default:
+        return b.create_at - a.create_at;
+    }
+  });
+
+  // const totalPages = Math.max(1, Math.ceil(fullyFilteredProducts.length / PRODUCTS_PER_PAGE));
+  // const currentPageProducts = useMemo(() => {
+  //   const start = (page - 1) * PRODUCTS_PER_PAGE;
+
+  //   return fullyFilteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
+  // }, [fullyFilteredProducts, page]);
+  const {
+    page,
+    totalPages,
+    currentItems: currentPageProducts,
+    goToPage,
+    resetPage,
+  } = usePagination({
+    items: sortedProducts,
+    perPage: PRODUCTS_PER_PAGE,
+  });
 
   // 目前分類準備：flowers
-  const isEmpty = Array.isArray(filteredProducts) && filteredProducts.length === 0;
+  // const isEmpty = Array.isArray(filteredProducts) && filteredProducts.length === 0;
 
   // 取得商品列表
   const initProducts = async () => {
-    setErrorMessage('');
+    // setErrorMessage('');
     start();
 
     try {
       await fetchProducts();
     } catch (error) {
-      const errorMessage = extractErrorMessage(
-        error,
-        setErrorMessage,
-        '取得產品列表失敗，請稍後再試。',
-      );
-      // const errorMessage = extractErrorMessage(error, '', '取得產品列表失敗，請稍後再試。');
+      // const errorMessage = extractErrorMessage(
+      //   error,
+      //   setErrorMessage,
+      //   '取得產品列表失敗，請稍後再試。',
+      // );
+      const errorMessage = extractErrorMessage(error, '', '取得產品列表失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
       stop();
@@ -124,8 +163,8 @@ const ProductsPage = () => {
       await addsCartItem(product_id, qty);
       await refreshCart();
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
-      // const errorMessage = extractErrorMessage(error, '', '加入購物車失敗');
+      // const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
+      const errorMessage = extractErrorMessage(error, '', '加入購物車失敗');
       showError(errorMessage);
     } finally {
       setLoadingItems((prev) => ({
@@ -138,7 +177,7 @@ const ProductsPage = () => {
   return (
     <>
       {/* Hero-Section、ui-container--product、product-hero、product-main...尚未切板完成(可參考cart切版)，請home切板後接續 */}
-      <div className="container ui-container ui-container--product">
+      {/* <div className="container ui-container ui-container--product">
         {currentTheme && (
           <div className="product-hero">
             <h1
@@ -218,7 +257,7 @@ const ProductsPage = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div> */}
 
       <div className="products-page">
         {/* <PageHero /> */}
@@ -232,16 +271,20 @@ const ProductsPage = () => {
           size="md"
         />
 
-        <section className="products-page__section ui-section">
+        <section className="products-page__section ui-section mt-3">
           <div className="ui-container">
             {/* top filter area */}
             <div className="products-page__toolbar">
               <ProductsFilter
                 selectedTheme={selectedTheme}
                 setSelectedTheme={setSelectedTheme}
+                setSearchParams={setSearchParams}
                 selectedType={selectedType}
                 setSelectedType={setSelectedType}
-                setPage={setPage}
+                sortType={sortType}
+                setSortType={setSortType}
+                // setPage={setPage}
+                resetPage={resetPage}
               />
             </div>
 
@@ -249,9 +292,8 @@ const ProductsPage = () => {
             <div className="products-page__content mt-4">
               <ProductsGrid products={currentPageProducts} />
 
-              {totalPages > 1 && (
+              {/* {totalPages > 1 && (
                 <nav className="brand-pagination" aria-label="Pagination">
-                  {/* prev */}
                   <button
                     type="button"
                     className="brand-pagination__item"
@@ -261,7 +303,6 @@ const ProductsPage = () => {
                     ‹
                   </button>
 
-                  {/* page numbers */}
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                     <button
                       key={pageNum}
@@ -273,7 +314,6 @@ const ProductsPage = () => {
                     </button>
                   ))}
 
-                  {/* next */}
                   <button
                     type="button"
                     className="brand-pagination__item"
@@ -283,7 +323,9 @@ const ProductsPage = () => {
                     ›
                   </button>
                 </nav>
-              )}
+              )} */}
+
+              <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
             </div>
           </div>
         </section>

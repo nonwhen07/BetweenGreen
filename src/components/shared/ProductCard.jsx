@@ -34,15 +34,30 @@ const ProductCard = ({ product }) => {
 
           {/* hover actions */}
           <div className="product-card__actions">
-            <button type="button" className="product-card__icon-btn" aria-label="加入收藏">
+            <button
+              type="button"
+              className="product-card__icon-btn"
+              aria-label="加入收藏"
+              title="加入收藏"
+            >
               <Heart size={18} strokeWidth={1.75} />
             </button>
 
-            <button type="button" className="product-card__icon-btn" aria-label="快速查看">
+            <button
+              type="button"
+              className="product-card__icon-btn"
+              aria-label="快速查看"
+              title="快速查看"
+            >
               <Eye size={18} strokeWidth={1.75} />
             </button>
 
-            <button type="button" className="product-card__icon-btn" aria-label="加入購物車">
+            <button
+              type="button"
+              className="product-card__icon-btn"
+              aria-label="加入購物車"
+              title="加入購物車"
+            >
               <ShoppingBag size={18} strokeWidth={1.75} />
             </button>
           </div>

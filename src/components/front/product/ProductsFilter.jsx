@@ -4,7 +4,7 @@ import {
   THEME_TYPE_RELATION_MAP,
   CATEGORY_TYPE_MAP,
   CATEGORY_THEME_MAP,
-  PRIMARY_CONTENT_TAGS,
+  // PRIMARY_CONTENT_TAGS,
 } from '@/constants/productConstants';
 
 import clsx from 'clsx';
@@ -12,9 +12,12 @@ import clsx from 'clsx';
 const ProductsFilter = ({
   selectedTheme,
   setSelectedTheme,
+  setSearchParams,
   selectedType,
   setSelectedType,
-  setPage,
+  sortType,
+  setSortType,
+  resetPage,
 }) => {
   return (
     <div className="products-filter">
@@ -35,8 +38,11 @@ const ProductsFilter = ({
               className={clsx('products-filter__chip', selectedTheme === theme.code && 'is-active')}
               onClick={() => {
                 setSelectedTheme(theme.code);
+                setSearchParams({
+                  theme: theme.code,
+                });
                 setSelectedType('');
-                setPage(1);
+                resetPage();
               }}
             >
               {theme.label}
@@ -65,7 +71,7 @@ const ProductsFilter = ({
                   )}
                   onClick={() => {
                     setSelectedType(type.code);
-                    setPage(1);
+                    resetPage();
                   }}
                 >
                   {type.label}
@@ -97,11 +103,18 @@ const ProductsFilter = ({
 
       {/* sort */}
       <div className="products-filter__sort">
-        <select className="products-filter__select">
+        <select
+          className="products-filter__select"
+          value={sortType}
+          onChange={(e) => {
+            setSortType(e.target.value);
+            resetPage();
+          }}
+        >
           <option value="latest">最新上架</option>
           <option value="highPrice">價格高到低</option>
           <option value="lowPrice">價格低到高</option>
-          <option value="popular">人氣推薦</option>
+          {/* <option value="popular">人氣推薦</option> */}
         </select>
       </div>
     </div>
