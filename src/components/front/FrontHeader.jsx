@@ -78,8 +78,9 @@ const FrontHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const isHeroPage = heroPagePaths.includes(location.pathname);
-  const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about-us');
+  // const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about-us');
+  const heroPagePaths = ['/', '/home', '/about-us', '/products'];
+  const isHeroPage = heroPagePaths.includes(location.pathname);
 
   const { success, showError } = useToast();
 

@@ -6,10 +6,13 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+// hooks
+import { useAddToCart } from '@/hooks/cart/useAddToCart';
 // components
 import ProductCard from '@/components/shared/ProductCard';
 
 const ProductSection = ({ topProducts }) => {
+  const { loadingItems, handleAddCartItem } = useAddToCart();
   const [progress, setProgress] = useState(0.2);
 
   return (
@@ -31,19 +34,10 @@ const ProductSection = ({ topProducts }) => {
           <Swiper
             className="product-section__swiper"
             onSlideChange={(swiper) => {
-              // const totalSlides = swiper.slides.length;
-              // const currentIndex = swiper.realIndex;
-              // const progressPercent = (currentIndex / (totalSlides - 1)) * 100;
-              // setProgress(progressPercent);
-
               const totalSlides = swiper.slides.length;
-
               const slidesPerView = Number(swiper.params.slidesPerView);
-
               const currentIndex = swiper.realIndex;
-
               const maxScrollableIndex = totalSlides - slidesPerView;
-
               // progress track 可移動距離
               const maxTranslate = 240 - 72;
 
@@ -72,7 +66,12 @@ const ProductSection = ({ topProducts }) => {
           >
             {topProducts.map((product) => (
               <SwiperSlide key={product.id}>
-                <ProductCard product={product} />
+                <ProductCard
+                  product={product}
+                  variant="compact"
+                  onAddCart={handleAddCartItem}
+                  loading={loadingItems[product.id]}
+                />
               </SwiperSlide>
             ))}
           </Swiper>

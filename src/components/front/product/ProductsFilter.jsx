@@ -38,9 +38,16 @@ const ProductsFilter = ({
               className={clsx('products-filter__chip', selectedTheme === theme.code && 'is-active')}
               onClick={() => {
                 setSelectedTheme(theme.code);
-                setSearchParams({
-                  theme: theme.code,
-                });
+                // setSearchParams({
+                //   theme: theme.code,
+                // });
+                if (theme.code === 'AllProducts') {
+                  setSearchParams({});
+                } else {
+                  setSearchParams({
+                    theme: theme.code,
+                  });
+                }
                 setSelectedType('');
                 resetPage();
               }}
@@ -114,6 +121,7 @@ const ProductsFilter = ({
           <option value="latest">最新上架</option>
           <option value="highPrice">價格高到低</option>
           <option value="lowPrice">價格低到高</option>
+          {/* 人氣推薦再考慮看看是否用商品的rating欄位處理，還是displayTags欄位處理 */}
           {/* <option value="popular">人氣推薦</option> */}
         </select>
       </div>

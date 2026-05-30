@@ -11,12 +11,14 @@ import productsBanner from '@/assets/images/brand/hero/hero-desk.png';
 
 // services
 // import { getProducts } from '@/services/productService';
-import { addsCartItem } from '@/services/cartService';
+// import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { useProducts } from '@/hooks/product/useProducts';
-import { useCartActions } from '@/hooks/cart/useCartActions';
+// import { useCartActions } from '@/hooks/cart/useCartActions';
+import { useAddToCart } from '@/hooks/cart/useAddToCart';
+
 import { usePagination } from '@/hooks/usePagination';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
@@ -48,11 +50,12 @@ const ProductsPage = () => {
   const { start, stop } = useLoading();
 
   const { products, fetchProducts } = useProducts({ isAdmin: false });
-  const { refreshCart } = useCartActions();
+
+  // const { refreshCart } = useCartActions();
+  // const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
+  const { loadingItems, handleAddCartItem } = useAddToCart();
 
   const [selectedType, setSelectedType] = useState('');
-
-  const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
 
   // sort
   const [sortType, setSortType] = useState('latest');
@@ -92,8 +95,8 @@ const ProductsPage = () => {
       case 'lowPrice':
         return a.price - b.price;
 
-      case 'popular':
-        return (b.rating || 0) - (a.rating || 0);
+      // case 'popular':
+      //   return (b.rating || 0) - (a.rating || 0);
 
       case 'latest':
       default:
@@ -129,11 +132,6 @@ const ProductsPage = () => {
     try {
       await fetchProducts();
     } catch (error) {
-      // const errorMessage = extractErrorMessage(
-      //   error,
-      //   setErrorMessage,
-      //   '取得產品列表失敗，請稍後再試。',
-      // );
       const errorMessage = extractErrorMessage(error, '', '取得產品列表失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
@@ -142,37 +140,43 @@ const ProductsPage = () => {
   };
 
   useEffect(() => {
+    const nextTheme = theme && CATEGORY_THEME_MAP[theme] ? theme : 'AllProducts';
+
+    setSelectedTheme(nextTheme);
+  }, [theme]);
+
+  useEffect(() => {
     initProducts();
     // 由於前端 filter，所以theme 改變 不需要重新 fetchProducts()
 
     /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
-  // 加入購物車
-  const handleAddCartItem = async (product_id, qty = 1) => {
-    // setIsScreenLoading(true); // 加入購物車不需要整個畫面都 loading，改為按鈕局部 loading
-    if (loadingItems[product_id]) return; // 防止重複點擊
-    if (!product_id || qty < 1) return;
+  // // 加入購物車
+  // const handleAddCartItem = async (product_id, qty = 1) => {
+  //   // setIsScreenLoading(true); // 加入購物車不需要整個畫面都 loading，改為按鈕局部 loading
+  //   if (loadingItems[product_id]) return; // 防止重複點擊
+  //   if (!product_id || qty < 1) return;
 
-    setLoadingItems((prev) => ({
-      ...prev,
-      [product_id]: true,
-    }));
+  //   setLoadingItems((prev) => ({
+  //     ...prev,
+  //     [product_id]: true,
+  //   }));
 
-    try {
-      await addsCartItem(product_id, qty);
-      await refreshCart();
-    } catch (error) {
-      // const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
-      const errorMessage = extractErrorMessage(error, '', '加入購物車失敗');
-      showError(errorMessage);
-    } finally {
-      setLoadingItems((prev) => ({
-        ...prev,
-        [product_id]: false,
-      }));
-    }
-  };
+  //   try {
+  //     await addsCartItem(product_id, qty);
+  //     await refreshCart();
+  //   } catch (error) {
+  //     // const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
+  //     const errorMessage = extractErrorMessage(error, '', '加入購物車失敗');
+  //     showError(errorMessage);
+  //   } finally {
+  //     setLoadingItems((prev) => ({
+  //       ...prev,
+  //       [product_id]: false,
+  //     }));
+  //   }
+  // };
 
   return (
     <>
@@ -271,7 +275,7 @@ const ProductsPage = () => {
           size="md"
         />
 
-        <section className="products-page__section ui-section mt-3">
+        <section className="products-page__section ui-section ui-section--tight">
           <div className="ui-container">
             {/* top filter area */}
             <div className="products-page__toolbar">
@@ -290,41 +294,11 @@ const ProductsPage = () => {
 
             {/* products grid & pagination */}
             <div className="products-page__content mt-4">
-              <ProductsGrid products={currentPageProducts} />
-
-              {/* {totalPages > 1 && (
-                <nav className="brand-pagination" aria-label="Pagination">
-                  <button
-                    type="button"
-                    className="brand-pagination__item"
-                    disabled={page <= 1}
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  >
-                    ‹
-                  </button>
-
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                    <button
-                      key={pageNum}
-                      type="button"
-                      className={clsx('brand-pagination__item', page === pageNum && 'is-active')}
-                      onClick={() => setPage(pageNum)}
-                    >
-                      {pageNum}
-                    </button>
-                  ))}
-
-                  <button
-                    type="button"
-                    className="brand-pagination__item"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                  >
-                    ›
-                  </button>
-                </nav>
-              )} */}
-
+              <ProductsGrid
+                products={currentPageProducts}
+                onAddCart={handleAddCartItem}
+                loadingItems={loadingItems}
+              />
               <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
             </div>
           </div>

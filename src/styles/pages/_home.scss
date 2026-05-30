@@ -175,26 +175,6 @@
   Product Section
 ========================= */
 
-// .product-slider {
-//   display: flex;
-//   gap: 16px;
-//   overflow-x: auto;
-//   scroll-snap-type: x mandatory;
-//   scroll-behavior: smooth;
-//   padding-bottom: 8px;
-
-//   &::-webkit-scrollbar {
-//     display: none;
-//   }
-// }
-
-// .product-slider-item {
-//   flex: 0 0 auto;
-//   width: 25%;
-
-//   scroll-snap-align: start;
-// }
-
 .product-section {
   overflow: hidden;
   //  overflow: visible; //fade edge 是 absolute，可能會改成visible(pad/desktop)。
@@ -346,7 +326,7 @@
 
   .swiper {
     overflow: visible;
-    padding-bottom: 12px;
+    padding-bottom: 20px;
   }
 
   .swiper-wrapper {

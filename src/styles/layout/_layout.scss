@@ -102,6 +102,10 @@ button {
 
   &--tight {
     padding: $section-space-sm 0;
+
+    @include respond($breakpoints, desktop) {
+      padding-top: calc($section-space-sm + 20px);
+    }
   }
 
   &--loose {

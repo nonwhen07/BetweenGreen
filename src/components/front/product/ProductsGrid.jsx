@@ -1,6 +1,6 @@
 import ProductCard from '@/components/shared/ProductCard';
 
-const ProductsGrid = ({ products = [] }) => {
+const ProductsGrid = ({ products = [], onAddCart, loadingItems = {} }) => {
   const isEmpty = Array.isArray(products) && products.length === 0;
 
   if (isEmpty) {
@@ -15,7 +15,13 @@ const ProductsGrid = ({ products = [] }) => {
     <section className="products-grid">
       <div className="products-grid__list">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          // <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddCart={onAddCart}
+            loading={loadingItems[product.id]}
+          />
         ))}
       </div>
     </section>

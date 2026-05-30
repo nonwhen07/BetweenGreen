@@ -1,22 +1,42 @@
 import { Link } from 'react-router-dom';
 import { Heart, Eye, ShoppingBag } from 'lucide-react';
+import clsx from 'clsx';
 
 // assets
 import noImage from '@/assets/images/no-image.png';
 // constants
 import { parseCategoryParts, parseContentTags } from '@/constants/productConstants';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({
+  product,
+  onAddCart,
+  onToggleFavorite,
+  onQuickView,
+
+  loading = false,
+
+  variant = 'default',
+}) => {
   const isEmptySrc = !product.imageUrl || product.imageUrl.trim() === '';
 
   const { theme, species } = parseCategoryParts(product.category);
   const previewTags = parseContentTags(product.content).slice(0, 2);
 
+  const isCompact = variant === 'compact';
+  const isMinimal = variant === 'minimal';
+
   return (
-    <article className="product-card">
+    <article
+      className={clsx(
+        'product-card',
+        `product-card--${variant}`,
+        loading && 'is-loading',
+        !product.is_enabled && 'is-disabled',
+      )}
+    >
       <Link to={`/product/${product.id}`} className="product-card__link">
         {/* image */}
-        <div className="product-card__media">
+        <div className={clsx('product-card__media', isEmptySrc && 'is-fallback')}>
           <img
             // src={productItem.imageUrl}
             src={!isEmptySrc ? product.imageUrl : noImage}
@@ -33,34 +53,61 @@ const ProductCard = ({ product }) => {
             )} */}
 
           {/* hover actions */}
-          <div className="product-card__actions">
-            <button
-              type="button"
-              className="product-card__icon-btn"
-              aria-label="加入收藏"
-              title="加入收藏"
-            >
-              <Heart size={18} strokeWidth={1.75} />
-            </button>
+          {!isMinimal && (
+            <div className="product-card__actions">
+              {onToggleFavorite && (
+                <button
+                  type="button"
+                  className="product-card__icon-btn"
+                  aria-label="加入收藏"
+                  title="加入收藏"
+                >
+                  <Heart size={18} strokeWidth={1.75} />
+                </button>
+              )}
 
-            <button
-              type="button"
-              className="product-card__icon-btn"
-              aria-label="快速查看"
-              title="快速查看"
-            >
-              <Eye size={18} strokeWidth={1.75} />
-            </button>
+              {onQuickView && (
+                <button
+                  type="button"
+                  className="product-card__icon-btn"
+                  aria-label="快速查看"
+                  title="快速查看"
+                  // onClick={(e) => {
+                  //   e.preventDefault();
+                  //   e.stopPropagation();
 
-            <button
-              type="button"
-              className="product-card__icon-btn"
-              aria-label="加入購物車"
-              title="加入購物車"
-            >
-              <ShoppingBag size={18} strokeWidth={1.75} />
-            </button>
-          </div>
+                  //   onQuickView?.(product.id);
+                  // }}
+                >
+                  <Eye size={18} strokeWidth={1.75} />
+                </button>
+              )}
+
+              {onAddCart && (
+                <button
+                  type="button"
+                  // className="product-card__icon-btn"
+                  className={clsx('product-card__icon-btn', loading && 'is-loading')}
+                  aria-label="加入購物車"
+                  title="加入購物車"
+                  disabled={loading || !product.is_enabled}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    onAddCart?.(product.id);
+                  }}
+                >
+                  {/* <ShoppingBag size={18} strokeWidth={1.75} /> */}
+                  {loading ? (
+                    <span className="product-card__loading-dot" />
+                  ) : (
+                    <ShoppingBag size={18} strokeWidth={1.75} />
+                  )}
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* body */}
@@ -68,15 +115,14 @@ const ProductCard = ({ product }) => {
           {/* left */}
           <div className="product-card__info">
             <p className="product-card__eyebrow">{theme?.title || 'Between Green'}</p>
-
             <h3 className="product-card__title">{product.title}</h3>
-
-            <p className="product-card__species">{species?.label}</p>
+            {/* {!isMinimal && <p className="product-card__species">{species?.label}</p>} */}
+            {!isMinimal && !isCompact && <p className="product-card__species">{species?.label}</p>}
           </div>
 
           {/* right */}
           <div className="product-card__meta">
-            {previewTags.length > 0 && (
+            {!isCompact && previewTags.length > 0 && (
               <ul className="product-card__tags">
                 {previewTags.map((tag) => (
                   <li key={tag.badge} className="product-card__tag">
