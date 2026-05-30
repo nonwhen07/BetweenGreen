@@ -22,9 +22,12 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 // components
 import PageLoader from '@/components/shared/PageLoader';
 import ProductImage from '@/components/front/product/ProductImage';
-import ProductSwiper from '@/components/front/product/ProductSwiper';
+// import ProductSwiper from '@/components/front/product/ProductSwiper';
+import ProductGallery from '@/components/front/product/ProductGallery';
+
 // import ProductInfo from '@/components/front/product/ProductInfo';
-import ProductInfo_2 from '@/components/front/product/ProductInfo_2';
+// import ProductInfo_2 from '@/components/front/product/ProductInfo_2';
+import ProductInfo_V3 from '@/components/front/product/ProductInfo_V3';
 
 const ProductDetailPage = () => {
   const { start, stop } = useLoading();
@@ -109,11 +112,12 @@ const ProductDetailPage = () => {
           <div className="product-detail col-12">
             <div className="row g-4">
               <div className="col-lg-7 col-xl-6">
-                <ProductSwiper product={product} />
+                {/* <ProductSwiper product={product} /> */}
+                <ProductGallery product={product} />
               </div>
               <div className="col-lg-5 col-xl-6">
                 {/* 商品資訊 */}
-                <ProductInfo_2
+                {/* <ProductInfo_2
                   product={product}
                   qtySelect={qtySelect}
                   setQtySelect={setQtySelect}
@@ -121,6 +125,14 @@ const ProductDetailPage = () => {
                   isLoading={isCartLoading}
                   cartMessage={cartMessage}
                   isAdded={isAdded}
+                /> */}
+
+                <ProductInfo_V3
+                  product={product}
+                  qtySelect={qtySelect}
+                  setQtySelect={setQtySelect}
+                  addCartItem={handleAddCartItem}
+                  isLoading={isCartLoading}
                 />
               </div>
             </div>

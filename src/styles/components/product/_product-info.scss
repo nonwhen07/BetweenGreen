@@ -1,0 +1,192 @@
+@use '@/styles/helpers/custom-text' as *;
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+@use 'sass:color';
+
+// ==========================================================================
+//   Products-info
+// ==========================================================================
+// _products-info.scss
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  &__eyebrow {
+    color: $color-primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.08em;
+  }
+
+  &__title {
+    margin: 0;
+
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: $font-weight-bold;
+
+    color: $text-main;
+  }
+
+  &__sub {
+    display: flex;
+    gap: $space-4;
+
+    color: $text-muted;
+    font-size: $font-size-sm;
+  }
+
+  // =====================
+  // Pricing
+  // =====================
+
+  &__pricing {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  &__price {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+
+    color: $color-primary;
+  }
+
+  &__origin {
+    display: flex;
+    gap: $space-3;
+
+    color: $text-muted;
+
+    span:first-child {
+      text-decoration: line-through;
+    }
+  }
+
+  // =====================
+  // Tags
+  // =====================
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  &__tag {
+    padding: $space-2 $space-3;
+
+    border-radius: $radius-pill;
+
+    background: $neutral-200;
+
+    font-size: $font-size-sm;
+  }
+
+  // =====================
+  // Summary
+  // =====================
+
+  &__summary {
+    color: $text-body;
+    line-height: $line-height-loose;
+  }
+
+  // =====================
+  // Purchase
+  // =====================
+
+  &__purchase {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  &__qty {
+    display: flex;
+    align-items: center;
+
+    width: fit-content;
+
+    border: 1px solid $border-color-base;
+    border-radius: $radius-pill;
+
+    overflow: hidden;
+
+    button {
+      width: 48px;
+      height: 48px;
+
+      border: 0;
+      background: transparent;
+    }
+
+    span {
+      min-width: 56px;
+      text-align: center;
+    }
+  }
+
+  &__cart-btn {
+    height: 56px;
+
+    border: 0;
+    border-radius: $radius-pill;
+
+    background: $color-primary;
+    color: $text-on-primary;
+
+    font-weight: $font-weight-semibold;
+  }
+
+  // =====================
+  // Service
+  // =====================
+
+  &__service {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: $space-3;
+  }
+
+  &__service-item {
+    padding: $space-4;
+
+    border-radius: $radius-md;
+
+    background: $color-bg-soft;
+  }
+
+  // =====================
+  // Meta
+  // =====================
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+
+    border-top: 1px solid $border-color-base;
+
+    padding-top: $space-4;
+  }
+
+  &__meta-item {
+    display: flex;
+    justify-content: space-between;
+
+    padding: $space-3 0;
+
+    border-bottom: 1px solid $border-color-soft;
+  }
+}

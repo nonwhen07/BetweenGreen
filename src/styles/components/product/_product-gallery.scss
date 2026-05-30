@@ -1,0 +1,64 @@
+@use '@/styles/helpers/custom-text' as *;
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+@use 'sass:color';
+
+// ==========================================================================
+//   Products-gallery
+// ==========================================================================
+// _products-gallery.scss
+
+.product-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__main {
+    overflow: hidden;
+    border-radius: $radius-xl;
+    background: $color-bg-surface;
+  }
+
+  &__image {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+
+  &__image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
+  }
+
+  &__thumbs {
+    overflow: hidden;
+  }
+
+  &__thumb {
+    cursor: pointer;
+
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+    border-radius: $radius-md;
+
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    transition: all 0.25s ease;
+  }
+
+  &__thumb img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
+  }
+
+  .swiper-slide-thumb-active &__thumb {
+    border-color: $color-primary;
+  }
+}
