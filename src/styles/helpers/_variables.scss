@@ -1,3 +1,6 @@
+// _variables.scss
+@use 'sass:math';
+
 // ==========================================================================
 //   網站底層色調 (Base Palette)
 // ==========================================================================
@@ -167,7 +170,8 @@ $z-loader: 2000;
 // ==========================================================================
 
 // 主圖比例（用在產品詳細頁、快速預覽等）
-$product-main-image-aspect: 13 / 10; // Desktop 主視覺比例 ≈ 650:500
+// $product-main-image-aspect: 13 / 10; // Desktop 主視覺比例 ≈ 650:500
+$product-main-image-aspect: math.div(13, 10);
 
 // 縮圖高度
 $product-thumb-height: 80px; // 桌面版縮圖
@@ -177,4 +181,5 @@ $product-thumb-height-mobile: 68px; // 手機版縮圖（可選）
 $product-button-height: 56px;
 
 // 商品卡片用圖片比例（如果之後要做商品列表頁）
-$product-card-aspect: 4 / 3;
+// $product-card-aspect: 4 / 3;
+$product-card-aspect: math.div(4, 3);

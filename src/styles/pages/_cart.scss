@@ -1,6 +1,7 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
+@use 'sass:color';
 
 $transition-speed: 0.3s;
 
@@ -315,7 +316,7 @@ $transition-speed: 0.3s;
     text-decoration: none;
     transition: color 0.2s;
     &:hover {
-      color: lighten($color-primary-light, 15%);
+      color: color.adjust($color-primary-light, $lightness: 15%);
     }
   }
 
@@ -367,8 +368,9 @@ $transition-speed: 0.3s;
       color: #fff;
       border-radius: 0; // 電商常見的方正俐落感
       padding: 0.75rem 2.5rem;
+
       &:hover {
-        background-color: darken($color-primary-light, 10%);
+        background-color: color.adjust($color-primary-light, $lightness: -10%);
       }
     }
   }

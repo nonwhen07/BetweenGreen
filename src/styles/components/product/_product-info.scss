@@ -125,14 +125,27 @@
     button {
       width: 48px;
       height: 48px;
-
       border: 0;
       background: transparent;
+
+      cursor: pointer;
+      transition: all 0.25s ease;
+
+      &:hover {
+        background: rgba($color-primary, 0.08);
+        color: $color-primary;
+      }
     }
 
     span {
-      min-width: 56px;
       text-align: center;
+      min-width: 56px;
+
+      border-left: 1px solid $border-color-base;
+      border-right: 1px solid $border-color-base;
+
+      font-weight: 600;
+      font-size: 1.05rem;
     }
   }
 

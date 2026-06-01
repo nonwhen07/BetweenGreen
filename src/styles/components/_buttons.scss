@@ -39,8 +39,7 @@
     color: $text-on-primary;
 
     &:hover {
-      // background: darken($color-primary, 5%);
-      background: darken($color-secondary, 5%);
+      background: color.adjust($color-secondary, $lightness: -5%);
       color: $text-on-primary;
     }
   }
@@ -60,7 +59,7 @@
     color: $text-on-primary;
 
     &:hover {
-      background: darken($color-accent, 5%);
+      background: color.adjust($color-accent, $lightness: -5%);
       color: $text-on-primary;
     }
   }
@@ -70,7 +69,7 @@
     color: $text-on-primary;
 
     &:hover {
-      background: darken($color-danger, 8%);
+      background: color.adjust($color-danger, $lightness: -8%);
     }
   }
   &--outline-danger {
@@ -129,13 +128,13 @@
   &:hover {
     // transform: translateY(-3px) scale(1.05);
 
-    color: darken($color-primary-light, 10%);
+    color: color.adjust($color-primary-light, $lightness: -10%);
 
     // 如果有 theme，就用 theme 色
     // background: var(--season-primary, darken($color-primary, 40%));
     // background: var(--season-bg, darken($color-primary, 40%));
     background: $color-accent;
-    border: 1px solid darken($color-primary-light, 10%);
+    border: 1px solid color.adjust($color-primary-light, $lightness: -10%);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
   }
 
