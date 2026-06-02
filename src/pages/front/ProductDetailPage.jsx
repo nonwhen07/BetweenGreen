@@ -16,20 +16,23 @@ import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
+import { useProducts } from '@/hooks/product/useProducts';
 import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
-import PageLoader from '@/components/shared/PageLoader';
 import ProductImage from '@/components/front/product/ProductImage';
 // import ProductSwiper from '@/components/front/product/ProductSwiper';
 import ProductGallery from '@/components/front/product/ProductGallery';
+import ProductDetailTabs from '@/components/front/product/ProductDetailTabs';
+import RelatedProducts from '@/components/front/product/RelatedProducts';
 
 // import ProductInfo from '@/components/front/product/ProductInfo';
 // import ProductInfo_2 from '@/components/front/product/ProductInfo_2';
 import ProductInfo_V3 from '@/components/front/product/ProductInfo_V3';
 
 const ProductDetailPage = () => {
+  const { products, fetchProducts } = useProducts({ isAdmin: false });
   const { start, stop } = useLoading();
 
   // 根據路由的參數命名來取得該命名參數，ex path: 'product/:product_id'
@@ -45,16 +48,14 @@ const ProductDetailPage = () => {
   const [isCartLoading, setCartIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState('');
-  const [cartMessage, setCartMessage] = useState('');
+  // const [cartMessage, setCartMessage] = useState('');
   const [isAdded, setIsAdded] = useState(false);
 
   // const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   // 畫面渲染後初步載入產品細項
-  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const initDetail = async () => {
-      // setIsScreenLoading(true);
       start();
       try {
         const res = await getProductDetail(product_id);
@@ -65,12 +66,12 @@ const ProductDetailPage = () => {
         const errorMessage = extractErrorMessage(error, setErrorMessage, '取得產品細項失敗');
         showError(errorMessage);
       } finally {
-        // setIsScreenLoading(false);
         stop();
       }
     };
 
     initDetail();
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [product_id]);
 
   //加入購物車
@@ -83,12 +84,12 @@ const ProductDetailPage = () => {
       await addsCartItem(productId, qty);
       await refreshCart();
 
-      setCartMessage('✓ 已加入購物車');
+      // setCartMessage('✓ 已加入購物車');
       success('✓ 已加入購物車');
 
       setIsAdded(true); // 成功加入購物車後，設定isAdded為true
       setTimeout(() => {
-        setCartMessage('');
+        // setCartMessage('');
         setIsAdded(false);
       }, 2000);
     } catch (error) {
@@ -98,6 +99,25 @@ const ProductDetailPage = () => {
       setCartIsLoading(false);
     }
   };
+
+  // 取得商品列表
+  const initProducts = async () => {
+    start();
+
+    try {
+      await fetchProducts({});
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。');
+
+      showError(errorMessage);
+    } finally {
+      stop();
+    }
+  };
+  useEffect(() => {
+    initProducts();
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, []);
 
   return (
     <>
@@ -110,10 +130,10 @@ const ProductDetailPage = () => {
           )}
 
           <div className="product-detail col-12">
-            <div className="row g-4">
+            <div className="row">
               <div className="col-lg-7 col-xl-6">
                 {/* <ProductSwiper product={product} /> */}
-                <ProductGallery product={product} />
+                <ProductGallery currentProduct={product} />
               </div>
               <div className="col-lg-5 col-xl-6">
                 {/* 商品資訊 */}
@@ -128,24 +148,27 @@ const ProductDetailPage = () => {
                 /> */}
 
                 <ProductInfo_V3
-                  product={product}
+                  currentProduct={product}
                   qtySelect={qtySelect}
                   setQtySelect={setQtySelect}
                   addCartItem={handleAddCartItem}
                   isLoading={isCartLoading}
+                  isAdded={isAdded}
                 />
+              </div>
+
+              <div className="col-12">
+                <ProductDetailTabs product={product} />
               </div>
             </div>
             {/* ==================== 相關推薦商品 ==================== */}
-            <div className="mt-5 pt-5 border-top">
-              <h5 className="fw-semibold mb-4 text-center text-primary">為您推薦 · 搭配建議</h5>
-              {/* <RelatedProducts productId={product.id} limit={4} /> */}
+            <div className="mt-5 border-top">
+              {/* <h5 className="fw-semibold mb-4 text-center text-primary">為您推薦 · 搭配建議</h5> */}
+              <RelatedProducts currentProduct={product} products={products} limit={5} />
             </div>
           </div>
         </div>
       </div>
-
-      {/* <PageLoader show={isScreenLoading} zIndex={2000} /> */}
     </>
   );
 };

@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  // width: 500px; //目前感覺主圖高度大約450-550，與下面的swiper縮圖搭配起來後，會和右邊info相當
 
   &__main {
     overflow: hidden;

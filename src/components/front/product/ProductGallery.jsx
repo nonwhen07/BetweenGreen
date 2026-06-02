@@ -14,35 +14,16 @@ import NO_IMAGE from '@/assets/images/no-image.png';
 // utils
 import { buildProductGalleryImages } from '@/utils/productGallery';
 
-const ProductGallery = ({ product }) => {
+const ProductGallery = ({ currentProduct }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const allImages = useMemo(() => {
-    // const images = [];
-    // if (product?.imageUrl?.trim()) {
-    //   images.push(product.imageUrl.trim());
-    // }
-
-    // if (Array.isArray(product?.imagesUrl)) {
-    //   product.imagesUrl.forEach((url) => {
-    //     if (url?.trim() && !images.includes(url.trim())) {
-    //       images.push(url.trim());
-    //     }
-    //   });
-    // }
-
-    // if (images.length === 0) {
-    //   images.push(NO_IMAGE);
-    // }
-
-    // return images;
-
-    const galleryImages = buildProductGalleryImages(product);
+    const galleryImages = buildProductGalleryImages(currentProduct);
     if (galleryImages.length === 0) {
       galleryImages.push(NO_IMAGE);
     }
     return galleryImages;
-  }, [product]);
+  }, [currentProduct]);
 
   return (
     <div className="product-gallery">
@@ -60,7 +41,7 @@ const ProductGallery = ({ product }) => {
               <div className="product-gallery__image">
                 <img
                   src={imgUrl}
-                  alt={`${product?.title} - ${index + 1}`}
+                  alt={`${currentProduct?.title} - ${index + 1}`}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = NO_IMAGE;
@@ -73,31 +54,29 @@ const ProductGallery = ({ product }) => {
       </div>
 
       {/* 縮圖 */}
-      {allImages.length > 1 && (
-        <div className="product-gallery__thumbs">
-          <Swiper
-            onSwiper={setThumbsSwiper}
-            watchSlidesProgress
-            slidesPerView={5}
-            spaceBetween={12}
-            className="product-gallery__thumb-swiper"
-          >
-            {allImages.map((imgUrl, index) => (
-              <SwiperSlide key={index}>
-                <div className="product-gallery__thumb">
-                  <img
-                    src={imgUrl}
-                    alt={`thumb-${index + 1}`}
-                    onError={(e) => {
-                      e.target.src = NO_IMAGE;
-                    }}
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-      )}
+      <div className="product-gallery__thumbs">
+        <Swiper
+          onSwiper={setThumbsSwiper}
+          watchSlidesProgress
+          slidesPerView={5}
+          spaceBetween={12}
+          className="product-gallery__thumb-swiper"
+        >
+          {allImages.map((imgUrl, index) => (
+            <SwiperSlide key={index}>
+              <div className="product-gallery__thumb">
+                <img
+                  src={imgUrl}
+                  alt={`thumb-${index + 1}`}
+                  onError={(e) => {
+                    e.target.src = NO_IMAGE;
+                  }}
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </div>
   );
 };

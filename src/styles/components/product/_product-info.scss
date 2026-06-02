@@ -108,12 +108,18 @@
   &__purchase {
     display: flex;
     flex-direction: column;
-    gap: $space-4;
+    gap: $space-3;
+
+    @include respond($breakpoints, desktop) {
+      flex-direction: row;
+      // align-items: stretch;
+    }
   }
 
   &__qty {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 
     width: fit-content;
 
@@ -121,21 +127,21 @@
     border-radius: $radius-pill;
 
     overflow: hidden;
+    width: 160px;
+    // button {
+    //   width: 48px;
+    //   height: 48px;
+    //   border: 0;
+    //   background: transparent;
 
-    button {
-      width: 48px;
-      height: 48px;
-      border: 0;
-      background: transparent;
+    //   cursor: pointer;
+    //   transition: all 0.25s ease;
 
-      cursor: pointer;
-      transition: all 0.25s ease;
-
-      &:hover {
-        background: rgba($color-primary, 0.08);
-        color: $color-primary;
-      }
-    }
+    //   &:hover {
+    //     background: rgba($color-primary, 0.08);
+    //     color: $color-primary;
+    //   }
+    // }
 
     span {
       text-align: center;
@@ -149,16 +155,37 @@
     }
   }
 
+  &__qty-btn {
+    width: 48px;
+    height: 48px;
+
+    border: 0;
+    background: transparent;
+
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: rgba($color-primary, 0.08);
+      color: $color-primary;
+    }
+  }
+
   &__cart-btn {
     height: 56px;
 
+    flex: 1;
+
     border: 0;
-    border-radius: $radius-pill;
+    border-radius: $radius-md;
 
     background: $color-primary;
     color: $text-on-primary;
 
     font-weight: $font-weight-semibold;
+
+    &.is-success {
+      background: $color-success;
+    }
   }
 
   // =====================

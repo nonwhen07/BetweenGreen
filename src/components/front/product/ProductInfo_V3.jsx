@@ -1,12 +1,24 @@
+// constants
 import { parseCategoryParts, parseContentTags } from '@/constants/productConstants';
+// components
+import BtnLoader from '@/components/BtnLoader';
 
-const ProductInfo_V3 = ({ product, qtySelect, setQtySelect, addCartItem, isLoading }) => {
-  const { theme, species } = parseCategoryParts(product?.category);
+const ProductInfo_V3 = ({
+  currentProduct,
+  qtySelect,
+  setQtySelect,
+  addCartItem,
+  isLoading,
+  isAdded,
+}) => {
+  const { theme, species } = parseCategoryParts(currentProduct?.category);
 
-  const tags = parseContentTags(product?.content).slice(0, 4);
+  const tags = parseContentTags(currentProduct?.content).slice(0, 4);
 
   const discount =
-    product?.origin_price > product?.price ? product.origin_price - product.price : 0;
+    currentProduct?.origin_price > currentProduct?.price
+      ? currentProduct.origin_price - currentProduct.price
+      : 0;
 
   return (
     <div className="product-info">
@@ -14,7 +26,7 @@ const ProductInfo_V3 = ({ product, qtySelect, setQtySelect, addCartItem, isLoadi
       <section className="product-info__header">
         <p className="product-info__eyebrow">{theme?.title || 'Between Green'}</p>
 
-        <h1 className="product-info__title">{product?.title}</h1>
+        <h1 className="product-info__title">{currentProduct?.title}</h1>
 
         <div className="product-info__sub">
           <span>{species?.label}</span>
@@ -24,11 +36,13 @@ const ProductInfo_V3 = ({ product, qtySelect, setQtySelect, addCartItem, isLoadi
 
       {/* Price */}
       <section className="product-info__pricing">
-        <div className="product-info__price">NT$ {product?.price?.toLocaleString()}</div>
+        <div className="product-info__price">NT$ {currentProduct?.price?.toLocaleString()}</div>
 
         {discount > 0 && (
           <div className="product-info__origin">
-            <span className="text-danger">NT$ {product?.origin_price?.toLocaleString()}</span>
+            <span className="text-danger">
+              NT$ {currentProduct?.origin_price?.toLocaleString()}
+            </span>
 
             <span>現省 NT$ {discount.toLocaleString()}</span>
           </div>
@@ -47,31 +61,58 @@ const ProductInfo_V3 = ({ product, qtySelect, setQtySelect, addCartItem, isLoadi
       )}
 
       {/* Summary */}
-      <section className="product-info__summary">
+      {/* <section className="product-info__summary">
         <p>{product?.description}</p>
-      </section>
+      </section> */}
 
       {/* Purchase */}
       <section className="product-info__purchase">
         <div className="product-info__qty">
-          <button type="button" onClick={() => setQtySelect((prev) => Math.max(1, prev - 1))}>
+          <button
+            type="button"
+            className={`
+              product-info__qty-btn
+              ${isAdded ? 'is-success' : ''}
+            `}
+            disabled={isLoading || isAdded}
+            onClick={() => setQtySelect((prev) => Math.max(1, prev - 1))}
+          >
             −
           </button>
 
           <span>{qtySelect}</span>
 
-          <button type="button" onClick={() => setQtySelect((prev) => Math.min(10, prev + 1))}>
+          <button
+            type="button"
+            className={`
+              product-info__qty-btn
+              ${isAdded ? 'is-success' : ''}
+            `}
+            disabled={isLoading || isAdded}
+            onClick={() => setQtySelect((prev) => Math.min(10, prev + 1))}
+          >
             +
           </button>
         </div>
 
         <button
           type="button"
-          className="product-info__cart-btn"
+          className="ui-btn ui-btn--primary product-info__cart-btn"
           disabled={isLoading}
-          onClick={() => addCartItem(product?.id, qtySelect)}
+          onClick={() => addCartItem(currentProduct?.id, qtySelect)}
         >
-          {isLoading ? '加入中...' : '加入購物車'}
+          {isLoading ? (
+            <>
+              <div className="d-flex justify-content-center align-items-center">
+                <BtnLoader size="sm" />
+                <span className="ms-2">加入中...</span>
+              </div>
+            </>
+          ) : isAdded ? (
+            '✓ 已加入購物車'
+          ) : (
+            '加入購物車'
+          )}
         </button>
       </section>
 
@@ -84,24 +125,6 @@ const ProductInfo_V3 = ({ product, qtySelect, setQtySelect, addCartItem, isLoadi
         <div className="product-info__service-item">專業防撞包裝</div>
 
         <div className="product-info__service-item">到貨補寄保障</div>
-      </section>
-
-      {/* Meta */}
-      <section className="product-info__meta">
-        <div className="product-info__meta-item">
-          <span>尺寸</span>
-          <span>約 15-25 cm</span>
-        </div>
-
-        <div className="product-info__meta-item">
-          <span>光照</span>
-          <span>明亮散射光</span>
-        </div>
-
-        <div className="product-info__meta-item">
-          <span>難易度</span>
-          <span>新手友善</span>
-        </div>
       </section>
     </div>
   );

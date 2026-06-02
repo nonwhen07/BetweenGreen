@@ -29,6 +29,8 @@
 @use './pages/product-detail';
 @use './components/product/product-gallery';
 @use './components/product/product-info';
+@use './components/product/product-detail-tabs';
+@use './components/product/related-products';
 
 // @use './pages/index';
 @use './pages/home';

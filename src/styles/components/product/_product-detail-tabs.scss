@@ -1,0 +1,53 @@
+@use '@/styles/helpers/custom-text' as *;
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+@use 'sass:color';
+
+// ==========================================================================
+//   product-detail-tabs
+// ==========================================================================
+// _product-detail-tabs.scss
+
+.product-detail-tabs {
+  margin-top: $space-10;
+
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+
+  &__section {
+    height: 100%;
+    padding: $space-6;
+
+    background: $color-bg-surface;
+
+    border-radius: $radius-lg;
+
+    box-shadow: $shadow-sm;
+  }
+
+  &__title {
+    margin-bottom: $space-4;
+
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+
+    color: $color-primary;
+  }
+
+  &__content {
+    color: $text-body;
+
+    line-height: 1.8;
+
+    ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    li + li {
+      margin-top: $space-2;
+    }
+  }
+}
