@@ -16,6 +16,7 @@ import { buildProductGalleryImages } from '@/utils/productGallery';
 
 const ProductGallery = ({ currentProduct }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const allImages = useMemo(() => {
     const galleryImages = buildProductGalleryImages(currentProduct);
@@ -34,6 +35,7 @@ const ProductGallery = ({ currentProduct }) => {
           navigation
           spaceBetween={12}
           thumbs={{ swiper: thumbsSwiper }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           className="product-gallery__main-swiper"
         >
           {allImages.map((imgUrl, index) => (
@@ -64,7 +66,7 @@ const ProductGallery = ({ currentProduct }) => {
         >
           {allImages.map((imgUrl, index) => (
             <SwiperSlide key={index}>
-              <div className="product-gallery__thumb">
+              <div className={`product-gallery__thumb ${activeIndex === index ? 'is-active' : ''}`}>
                 <img
                   src={imgUrl}
                   alt={`thumb-${index + 1}`}

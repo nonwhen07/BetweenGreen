@@ -1,5 +1,6 @@
 // constants
 import { parseCategoryParts, parseContentTags } from '@/constants/productConstants';
+
 // components
 import BtnLoader from '@/components/BtnLoader';
 
@@ -30,7 +31,7 @@ const ProductInfo_V3 = ({
 
         <div className="product-info__sub">
           <span>{species?.label}</span>
-          <span>★★★★☆</span>
+          {/* <span>★★★★☆</span> */}
         </div>
       </section>
 
@@ -54,7 +55,7 @@ const ProductInfo_V3 = ({
         <section className="product-info__tags">
           {tags.map((tag) => (
             <span key={tag.badge} className="product-info__tag">
-              {tag.badge}
+              {tag.label}
             </span>
           ))}
         </section>
@@ -74,7 +75,7 @@ const ProductInfo_V3 = ({
               product-info__qty-btn
               ${isAdded ? 'is-success' : ''}
             `}
-            disabled={isLoading || isAdded}
+            disabled={isLoading || isAdded || qtySelect <= 1}
             onClick={() => setQtySelect((prev) => Math.max(1, prev - 1))}
           >
             −

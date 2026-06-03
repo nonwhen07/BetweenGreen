@@ -10,11 +10,11 @@
 // _related-products.scss
 
 .related-products {
+  position: relative;
   margin-top: $space-12;
 
   &__header {
     margin-bottom: $space-6;
-
     text-align: center;
   }
 
@@ -23,7 +23,6 @@
 
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
-
     color: $text-main;
   }
 
@@ -32,5 +31,38 @@
 
     color: $text-muted;
     font-size: $font-size-sm;
+  }
+
+  &__swiper {
+    padding-bottom: $space-2;
+
+    .swiper-slide {
+      height: auto;
+    }
+
+    .product-card {
+      height: 100%;
+    }
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none;
+  }
+
+  &::after {
+    content: '';
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 80px;
+    height: 100%;
+
+    pointer-events: none;
+
+    background: linear-gradient(to left, rgba(248, 247, 243, 1), rgba(248, 247, 243, 0));
   }
 }

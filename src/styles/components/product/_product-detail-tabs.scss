@@ -25,15 +25,40 @@
     border-radius: $radius-lg;
 
     box-shadow: $shadow-sm;
+
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+
+      box-shadow: $shadow-lg;
+    }
   }
 
   &__title {
-    margin-bottom: $space-4;
+    position: relative;
 
+    margin-bottom: $space-4;
     font-size: $font-size-xl;
     font-weight: $font-weight-semibold;
-
     color: $color-primary;
+
+    &::after {
+      content: '';
+
+      display: block;
+
+      width: 32px;
+      height: 3px;
+
+      margin-top: 8px;
+
+      background: $color-primary;
+
+      border-radius: 999px;
+    }
   }
 
   &__content {

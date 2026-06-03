@@ -13,12 +13,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  // width: 500px; //目前感覺主圖高度大約450-550，與下面的swiper縮圖搭配起來後，會和右邊info相當
+  height: 100%;
 
   &__main {
+    flex: 1;
     overflow: hidden;
     border-radius: $radius-xl;
     background: $color-bg-surface;
+    aspect-ratio: 4 / 3;
   }
 
   &__image {
@@ -29,37 +31,90 @@
   &__image img {
     width: 100%;
     height: 100%;
-
     display: block;
     object-fit: cover;
   }
 
   &__thumbs {
     overflow: hidden;
+    flex-shrink: 0;
   }
 
   &__thumb {
-    cursor: pointer;
-
-    aspect-ratio: 1 / 1;
-
+    // cursor: pointer;
+    // aspect-ratio: 1 / 1;
+    // overflow: hidden;
+    // border-radius: $radius-md;
+    // border: 1px solid rgba(0, 0, 0, 0.08);
+    // transition: all 0.25s ease;
+    position: relative;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
-    border-radius: $radius-md;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease,
+      opacity 0.2s ease;
 
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.45);
+      opacity: 1;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
 
-    transition: all 0.25s ease;
-  }
+    &:hover {
+      transform: translateY(-2px);
 
-  &__thumb img {
-    width: 100%;
-    height: 100%;
+      &::after {
+        opacity: 0.15;
+      }
+    }
 
-    display: block;
-    object-fit: cover;
+    &.is-active {
+      border-color: $color-primary;
+      transform: translateY(-2px);
+
+      &::after {
+        opacity: 0;
+      }
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
   }
 
   .swiper-slide-thumb-active &__thumb {
     border-color: $color-primary;
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+    transition: all 0.2s ease;
+  }
+
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    font-size: 20px;
+    font-weight: 700;
+    color: $color-primary;
   }
 }

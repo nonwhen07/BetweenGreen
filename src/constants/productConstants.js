@@ -6,7 +6,7 @@ export const DEFAULT_PRODUCT = {
   title: '',
   // 商品種類
   category: '',
-  // 商品人格
+  // 商品人格(處要處理產品標籤)
   content: '',
   unit: '',
   origin_price: '',
@@ -18,7 +18,7 @@ export const DEFAULT_PRODUCT = {
   // 新增欄位
   // 星數
   rating: 0,
-  // 商業展示資訊
+  // 商業展示資訊  {/* display tag (負責處理熱銷、促銷庫存...商業處理標籤，後台尚未開工) */}
   displayTags: '',
 };
 

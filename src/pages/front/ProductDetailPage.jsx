@@ -21,14 +21,9 @@ import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
-import ProductImage from '@/components/front/product/ProductImage';
-// import ProductSwiper from '@/components/front/product/ProductSwiper';
 import ProductGallery from '@/components/front/product/ProductGallery';
 import ProductDetailTabs from '@/components/front/product/ProductDetailTabs';
 import RelatedProducts from '@/components/front/product/RelatedProducts';
-
-// import ProductInfo from '@/components/front/product/ProductInfo';
-// import ProductInfo_2 from '@/components/front/product/ProductInfo_2';
 import ProductInfo_V3 from '@/components/front/product/ProductInfo_V3';
 
 const ProductDetailPage = () => {
@@ -122,7 +117,7 @@ const ProductDetailPage = () => {
   return (
     <>
       <div className="container ui-container">
-        <div className="row align-items-start mt-4">
+        <div className="row align-items-start mt-5">
           {errorMessage && (
             <div className="col-12">
               <div className="alert alert-danger py-2">{errorMessage}</div>
@@ -131,22 +126,11 @@ const ProductDetailPage = () => {
 
           <div className="product-detail col-12">
             <div className="row">
-              <div className="col-lg-7 col-xl-6">
-                {/* <ProductSwiper product={product} /> */}
+              <div className="col-lg-7">
                 <ProductGallery currentProduct={product} />
               </div>
-              <div className="col-lg-5 col-xl-6">
-                {/* 商品資訊 */}
-                {/* <ProductInfo_2
-                  product={product}
-                  qtySelect={qtySelect}
-                  setQtySelect={setQtySelect}
-                  addCartItem={handleAddCartItem}
-                  isLoading={isCartLoading}
-                  cartMessage={cartMessage}
-                  isAdded={isAdded}
-                /> */}
-
+              <div className="col-lg-5">
+                {/* 商品資訊-1 */}
                 <ProductInfo_V3
                   currentProduct={product}
                   qtySelect={qtySelect}
@@ -156,7 +140,7 @@ const ProductDetailPage = () => {
                   isAdded={isAdded}
                 />
               </div>
-
+              {/* 商品資訊-2(商品特色、養護指南、配送說明) */}
               <div className="col-12">
                 <ProductDetailTabs product={product} />
               </div>

@@ -90,6 +90,15 @@
     background: $neutral-200;
 
     font-size: $font-size-sm;
+
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: $color-primary;
+      color: $neutral-100;
+
+      transform: translateY(-2px);
+    }
   }
 
   // =====================
@@ -121,31 +130,21 @@
     align-items: center;
     flex-shrink: 0;
 
-    width: fit-content;
+    width: 160px;
+    height: 56px;
 
     border: 1px solid $border-color-base;
     border-radius: $radius-pill;
 
     overflow: hidden;
-    width: 160px;
-    // button {
-    //   width: 48px;
-    //   height: 48px;
-    //   border: 0;
-    //   background: transparent;
-
-    //   cursor: pointer;
-    //   transition: all 0.25s ease;
-
-    //   &:hover {
-    //     background: rgba($color-primary, 0.08);
-    //     color: $color-primary;
-    //   }
-    // }
 
     span {
-      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
       min-width: 56px;
+      // text-align: center;
 
       border-left: 1px solid $border-color-base;
       border-right: 1px solid $border-color-base;
@@ -156,17 +155,38 @@
   }
 
   &__qty-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 100%;
 
     border: 0;
     background: transparent;
+    color: $color-primary;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
 
-    transition: all 0.25s ease;
+    &:first-child {
+      border-radius: $radius-pill 0 0 $radius-pill;
+    }
 
-    &:hover {
+    &:last-child {
+      border-radius: 0 $radius-pill $radius-pill 0;
+    }
+
+    &:hover:not(:disabled) {
       background: rgba($color-primary, 0.08);
       color: $color-primary;
+    }
+
+    &:active:not(:disabled) {
+      background: rgba($color-primary, 0.14);
+    }
+
+    &:disabled {
+      background: transparent;
+      color: $text-muted;
+      cursor: not-allowed;
+      opacity: 0.35;
     }
   }
 
@@ -206,6 +226,16 @@
     border-radius: $radius-md;
 
     background: $color-bg-soft;
+
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+
+      box-shadow: $shadow-md;
+
+      background: white;
+    }
   }
 
   // =====================
