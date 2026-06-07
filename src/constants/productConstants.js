@@ -6,7 +6,7 @@ export const DEFAULT_PRODUCT = {
   title: '',
   // 商品種類
   category: '',
-  // 商品人格(處要處理產品標籤)
+  // 商品人格(用來處理產品 tags，原由是當初沒注意到可以自由新增欄位)
   content: '',
   unit: '',
   origin_price: '',
@@ -18,7 +18,7 @@ export const DEFAULT_PRODUCT = {
   // 新增欄位
   // 星數
   rating: 0,
-  // 商業展示資訊  {/* display tag (負責處理熱銷、促銷庫存...商業處理標籤，後台尚未開工) */}
+  // 商業展示資訊  {/* display tag (負責處理熱銷、促銷庫存...商業處理標籤，後台欄位+實際運作邏輯 尚未開工) */}
   displayTags: '',
 };
 
@@ -120,6 +120,12 @@ export const CATEGORY_TYPE_MAP = {
     label: '花禮禮盒',
     icon: 'Flower2',
   },
+
+  GiftBox: {
+    code: 'GiftBox',
+    label: '品牌禮盒',
+    icon: 'Gift',
+  },
 };
 
 export const CATEGORY_SPECIES_MAP = {
@@ -132,24 +138,132 @@ export const CATEGORY_SPECIES_MAP = {
   Hoya: { code: 'Hoya', label: '球蘭吊植' },
   ZZPlant: { code: 'ZZPlant', label: '雪鐵芋植栽' },
 
+  // =========================
+  // Tool
+  // =========================
   WateringCan: { code: 'WateringCan', label: '澆水器具' },
   Pruner: { code: 'Pruner', label: '修枝工具' },
   PlantLamp: { code: 'PlantLamp', label: '補光燈具' },
+  Mister: {
+    code: 'Mister',
+    label: '植栽噴霧器',
+  },
 
+  MoistureMeter: {
+    code: 'MoistureMeter',
+    label: '土壤濕度計',
+  },
+
+  PlantBrush: {
+    code: 'PlantBrush',
+    label: '葉片清潔刷',
+  },
+
+  // =========================
+  // Pottery
+  // =========================
   CeramicPot: { code: 'CeramicPot', label: '陶瓷花器' },
   GlassVase: { code: 'GlassVase', label: '玻璃花器' },
+  HangingPlanter: {
+    code: 'HangingPlanter',
+    label: '吊掛盆器',
+  },
 
+  StonePlanter: {
+    code: 'StonePlanter',
+    label: '石紋花器',
+  },
+
+  SelfWateringPot: {
+    code: 'SelfWateringPot',
+    label: '自動吸水盆',
+  },
+
+  // =========================
+  // Compost
+  // =========================
   OrganicSoil: { code: 'OrganicSoil', label: '有機培養土' },
   SlowReleaseFeed: { code: 'SlowReleaseFeed', label: '緩釋肥料' },
+  SoilMix: {
+    code: 'SoilMix',
+    label: '植栽介質土',
+  },
 
+  LiquidFeed: {
+    code: 'LiquidFeed',
+    label: '液態肥料',
+  },
+
+  // =========================
+  // Lifestyle
+  // =========================
   PlantMug: { code: 'PlantMug', label: '植感杯器' },
   AquariumCoupon: { code: 'AquariumCoupon', label: '合作優惠券' },
+  DisplayTray: {
+    code: 'DisplayTray',
+    label: '植景展示托盤',
+  },
 
-  TulipGiftBox: { code: 'TulipGiftBox', label: '鬱金香球根禮盒' },
+  ScentCandle: {
+    code: 'ScentCandle',
+    label: '植感香氛蠟燭',
+  },
+
+  TableLamp: {
+    code: 'TableLamp',
+    label: '植感桌燈',
+  },
+
+  PlantShelf: {
+    code: 'PlantShelf',
+    label: '植栽展示層架',
+  },
+
+  // =========================
+  // FlowerGift
+  // =========================
   GraduationBouquet: { code: 'GraduationBouquet', label: '畢業花禮' },
   TeacherBouquet: { code: 'TeacherBouquet', label: '謝師花束' },
   MotherDayBouquet: { code: 'MotherDayBouquet', label: '母親節花盒' },
-  HolidayGiftBox: { code: 'HolidayGiftBox', label: '冬季植感禮盒' },
+  // HolidayGiftBox: { code: 'HolidayGiftBox', label: '冬季植感禮盒' },
+  OpeningFlower: {
+    code: 'OpeningFlower',
+    label: '開幕誌慶花禮',
+  },
+
+  NewHomeGift: {
+    code: 'NewHomeGift',
+    label: '新居祝賀植禮',
+  },
+
+  // =========================
+  // GiftBox (之後再把剩餘精品禮盒補進去)
+  // =========================
+  // TulipGiftBox: { code: 'TulipGiftBox', label: '鬱金香球根禮盒' },
+  SpringGiftBox: {
+    code: 'SpringGiftBox',
+    label: '春日植感禮盒',
+  },
+
+  SummerGiftBox: {
+    code: 'SummerGiftBox',
+    label: '夏日綠境禮盒',
+  },
+
+  AutumnGiftBox: {
+    code: 'AutumnGiftBox',
+    label: '秋光植語禮盒',
+  },
+
+  WinterGiftBox: {
+    code: 'WinterGiftBox',
+    label: '冬暮植感禮盒',
+  },
+
+  SignatureGiftBox: {
+    code: 'SignatureGiftBox',
+    label: '品牌經典禮盒',
+  },
 };
 
 // ======================================================
@@ -165,7 +279,7 @@ export const THEME_TYPE_RELATION_MAP = {
 
   PlantCare: ['Tool', 'Compost', 'Pottery'],
 
-  SeasonGift: ['FlowerGift'],
+  SeasonGift: ['GiftBox'],
 
   CelebrationGift: ['FlowerGift'],
 };
@@ -177,21 +291,39 @@ export const THEME_TYPE_RELATION_MAP = {
 export const TYPE_SPECIES_RELATION_MAP = {
   Plant: ['Succulent', 'Cactus', 'Foliage', 'Fern', 'Orchid', 'Monstera', 'Hoya', 'ZZPlant'],
 
-  Tool: ['WateringCan', 'Pruner', 'PlantLamp'],
+  Tool: ['WateringCan', 'Mister', 'MoistureMeter', 'Pruner', 'PlantBrush', 'PlantLamp'],
 
-  Pottery: ['CeramicPot', 'GlassVase'],
+  Pottery: ['CeramicPot', 'GlassVase', 'HangingPlanter', 'StonePlanter', 'SelfWateringPot'],
 
-  Compost: ['OrganicSoil', 'SlowReleaseFeed'],
+  Compost: ['OrganicSoil', 'SoilMix', 'SlowReleaseFeed', 'LiquidFeed'],
 
-  Lifestyle: ['PlantMug', 'AquariumCoupon'],
+  Lifestyle: [
+    'PlantMug',
+    'DisplayTray',
+    'ScentCandle',
+    'TableLamp',
+    'PlantShelf',
+    'AquariumCoupon',
+  ],
 
+  // FlowerGift: [
+  //   'GraduationBouquet',
+  //   'TeacherBouquet',
+  //   'MotherDayBouquet',
+  //   'HolidayGiftBox',
+  //   'OpeningFlower',
+  //   'NewHomeGift',
+  // ],
   FlowerGift: [
-    'TulipGiftBox',
     'GraduationBouquet',
     'TeacherBouquet',
     'MotherDayBouquet',
-    'HolidayGiftBox',
+    'OpeningFlower',
+    'NewHomeGift',
   ],
+
+  // GiftBox: ['TulipGiftBox'],
+  GiftBox: ['SpringGiftBox', 'SummerGiftBox', 'AutumnGiftBox', 'WinterGiftBox', 'SignatureGiftBox'],
 };
 
 // ======================================================

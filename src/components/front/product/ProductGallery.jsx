@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -32,7 +33,10 @@ const ProductGallery = ({ currentProduct }) => {
       <div className="product-gallery__main">
         <Swiper
           modules={[Navigation, Thumbs]}
-          navigation
+          navigation={{
+            prevEl: '.product-gallery__prev',
+            nextEl: '.product-gallery__next',
+          }}
           spaceBetween={12}
           thumbs={{ swiper: thumbsSwiper }}
           onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
@@ -53,6 +57,13 @@ const ProductGallery = ({ currentProduct }) => {
             </SwiperSlide>
           ))}
         </Swiper>
+        <button type="button" className="product-gallery__nav product-gallery__prev">
+          <ChevronLeft size={24} strokeWidth={2} />
+        </button>
+
+        <button type="button" className="product-gallery__nav product-gallery__next">
+          <ChevronRight size={24} strokeWidth={2} />
+        </button>
       </div>
 
       {/* 縮圖 */}
@@ -71,6 +82,7 @@ const ProductGallery = ({ currentProduct }) => {
                   src={imgUrl}
                   alt={`thumb-${index + 1}`}
                   onError={(e) => {
+                    e.target.onerror = null;
                     e.target.src = NO_IMAGE;
                   }}
                 />
