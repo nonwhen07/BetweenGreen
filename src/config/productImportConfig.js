@@ -1,4 +1,6 @@
-import { PRODUCT_CATEGORY_MAP } from '@/constants/adminBuilderMaps';
+// import { PRODUCT_CATEGORY_MAP } from '@/constants/adminBuilderMaps';
+// utils
+import { formatCategoryPreview } from '@/utils/productFormatter';
 
 import { createProduct } from '@/services/productService';
 
@@ -18,7 +20,8 @@ export const productImportConfig = {
     {
       key: 'category',
       label: '商品分類',
-      map: PRODUCT_CATEGORY_MAP,
+      // map: PRODUCT_CATEGORY_MAP,
+      formatter: formatCategoryPreview,
     },
 
     {

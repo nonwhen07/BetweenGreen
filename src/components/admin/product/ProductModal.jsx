@@ -7,9 +7,9 @@ import {
   CATEGORY_THEME_MAP,
   CATEGORY_TYPE_MAP,
   CATEGORY_SPECIES_MAP,
-  PRIMARY_CONTENT_TAGS,
-  SECONDARY_CONTENT_TAGS,
-  PRODUCT_CONTENT_MAP,
+  PRIMARY_PERSONALITY_TAGS,
+  SECONDARY_PERSONALITY_TAGS,
+  PRODUCT_PERSONALITY_MAP,
   PRODUCT_UNIT_MAP,
   TYPE_SPECIES_RELATION_MAP,
   THEME_TYPE_RELATION_MAP,
@@ -49,7 +49,8 @@ const ProductModal = ({
   const watchTitle = watch('title');
   const watchRating = watch('rating');
   const watchCategory = watch('category');
-  const watchContent = watch('content');
+  const watchPersonalityTags = watch('personalityTags');
+  // const watchContent = watch('content');
   const watchUnit = watch('unit');
 
   // 副圖預覽陣列
@@ -68,9 +69,11 @@ const ProductModal = ({
     .filter(Boolean)
     .join(' - ');
   // 商品屬性標籤摘要
-  const selectedSecondaryTags = selectedTags.filter((tag) => SECONDARY_CONTENT_TAGS.includes(tag));
+  const selectedSecondaryTags = selectedTags.filter((tag) =>
+    SECONDARY_PERSONALITY_TAGS.includes(tag),
+  );
   const secondaryTagPreviewText = selectedSecondaryTags
-    .map((key) => PRODUCT_CONTENT_MAP[key]?.label)
+    .map((key) => PRODUCT_PERSONALITY_MAP[key]?.label)
     .filter(Boolean)
     .join('、');
   // 單位摘要
@@ -286,16 +289,16 @@ const ProductModal = ({
                   <label className="form-label fw-semibold">商品屬性標籤</label>
                   <input
                     type="hidden"
-                    {...register('content', {
+                    {...register('personalityTags', {
                       validate: (value) => value?.trim() !== '' || '請至少選擇一個商品標籤',
                     })}
                   />
 
                   {/* 常用標籤 */}
                   <div className="d-flex flex-wrap gap-2 mb-2">
-                    {PRIMARY_CONTENT_TAGS.map((key) => {
+                    {PRIMARY_PERSONALITY_TAGS.map((key) => {
                       const isActive = selectedTags.includes(key);
-                      const item = PRODUCT_CONTENT_MAP[key];
+                      const item = PRODUCT_PERSONALITY_MAP[key];
 
                       return (
                         <button
@@ -336,9 +339,9 @@ const ProductModal = ({
 
                   {showMoreTags && (
                     <div className="d-flex flex-wrap gap-2 mb-2 border rounded-3 p-2 bg-light">
-                      {SECONDARY_CONTENT_TAGS.map((key) => {
+                      {SECONDARY_PERSONALITY_TAGS.map((key) => {
                         const isActive = selectedTags.includes(key);
-                        const item = PRODUCT_CONTENT_MAP[key];
+                        const item = PRODUCT_PERSONALITY_MAP[key];
 
                         return (
                           <button
@@ -358,11 +361,13 @@ const ProductModal = ({
 
                   <div className="row g-3">
                     <div className="form-control bg-light small text-muted">
-                      {watchContent ? watchContent.split('|').join(' | ') : '尚未選擇商品標籤'}
+                      {watchPersonalityTags
+                        ? watchPersonalityTags.split('|').join(' | ')
+                        : '尚未選擇商品標籤'}
                     </div>
                     <div className="mt-1">
-                      {errors.content && (
-                        <small className="text-danger">{errors.content.message}</small>
+                      {errors.personalityTags && (
+                        <small className="text-danger">{errors.personalityTags.message}</small>
                       )}
                     </div>
                   </div>
@@ -437,6 +442,18 @@ const ProductModal = ({
                     />
                     {errors.price && <small className="text-danger">{errors.price.message}</small>}
                   </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label fw-semibold">商品詳細內容</label>
+                  <textarea
+                    {...register('content')}
+                    name="content"
+                    id="content"
+                    className="form-control"
+                    rows={4}
+                    placeholder="請輸入商品詳細內容"
+                  ></textarea>
                 </div>
 
                 <div className="mb-3">

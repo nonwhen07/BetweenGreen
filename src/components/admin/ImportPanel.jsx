@@ -13,6 +13,7 @@ import { getLabelByValue } from '@/utils/adminBuilderUtils';
 import { productImportConfig } from '@/config/productImportConfig';
 
 // 先處理商品後面，透過載入constants(product、coupon、article)共用化
+
 const ImportPanel = () => {
   const config = productImportConfig;
   const {
@@ -31,6 +32,18 @@ const ImportPanel = () => {
     handleValidate,
     handleImport,
   } = useImportPanel({ config });
+
+  const renderPreviewValue = (column, value) => {
+    if (column.formatter) {
+      return column.formatter(value);
+    }
+
+    if (column.map) {
+      return getLabelByValue(column.map, value);
+    }
+
+    return value;
+  };
 
   return (
     <>
@@ -58,14 +71,22 @@ const ImportPanel = () => {
                   <tbody>
                     {parsedData.map((item) => (
                       <tr key={item.title}>
-                        {previewColumns.map((column) => {
+                        {/* {previewColumns.map((column) => {
                           const value = item[column.key];
 
                           return (
                             <td key={column.key}>
-                              {column.map ? getLabelByValue(column.map, value) : value}
+                              {column.formatter
+                                ? column.formatter(value)
+                                : column.map
+                                  ? getLabelByValue(column.map, value)
+                                  : value}
                             </td>
                           );
+                        })} */}
+                        {previewColumns.map((column) => {
+                          const value = item[column.key];
+                          return <td key={column.key}>{renderPreviewValue(column, value)}</td>;
                         })}
                       </tr>
                     ))}

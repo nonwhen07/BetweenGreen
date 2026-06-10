@@ -5,6 +5,7 @@ import { deleteProduct } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
+
 import { useProducts } from '@/hooks/product/useProducts';
 import { useProductModal } from '@/hooks/useProductModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
@@ -237,8 +238,8 @@ const ProductsPage = () => {
 // ------------------------------------------------------
 //
 // 實作方式可參考：
-// 1. PRODUCT_CONTENT_MAP
-// 2. parseContentTags()
+// 1. PRODUCT_PERSONALITY_MAP
+// 2. parsePersonalityTags()
 //
 // displayTags 結構會比較接近 content，
 // 而不是 category 的 Theme-Type-Species 階層式分類。

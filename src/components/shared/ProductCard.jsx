@@ -5,7 +5,7 @@ import clsx from 'clsx';
 // assets
 import noImage from '@/assets/images/no-image.png';
 // constants
-import { parseCategoryParts, parseContentTags } from '@/constants/productConstants';
+import { parseCategoryParts, parsePersonalityTags } from '@/constants/productConstants';
 
 const ProductCard = ({
   product,
@@ -20,7 +20,7 @@ const ProductCard = ({
   const isEmptySrc = !product.imageUrl || product.imageUrl.trim() === '';
 
   const { theme, species } = parseCategoryParts(product.category);
-  const previewTags = parseContentTags(product.content).slice(0, 2);
+  const previewTags = parsePersonalityTags(product.content).slice(0, 2);
 
   const isCompact = variant === 'compact';
   const isMinimal = variant === 'minimal';

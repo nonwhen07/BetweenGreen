@@ -1,5 +1,5 @@
 // constants
-import { PRODUCT_CONTENT_MAP } from '@/constants/productConstants';
+import { PRODUCT_PERSONALITY_MAP } from '@/constants/productConstants';
 // utils
 import { formatCategoryPreview, getProductUnitLabel } from '@/utils/productFormatter';
 // components
@@ -54,7 +54,9 @@ const ProductsTable = ({
 
             <tbody>
               {products.map((product) => {
-                const rawTags = product.content ? product.content.split('|') : [];
+                // const rawTags = product.content ? product.content.split('|') : [];
+                // const contentTags = rawTags.slice(0, 2);
+                const rawTags = product.personalityTags ? product.personalityTags.split('|') : [];
                 const contentTags = rawTags.slice(0, 2);
                 const extraTagCount = rawTags.length - 2;
 
@@ -91,7 +93,7 @@ const ProductsTable = ({
                             <>
                               {contentTags.map((tag, i) => (
                                 <span key={i} className="badge text-bg-light border">
-                                  {PRODUCT_CONTENT_MAP[tag]?.label || tag}
+                                  {PRODUCT_PERSONALITY_MAP[tag]?.label || tag}
                                 </span>
                               ))}
 

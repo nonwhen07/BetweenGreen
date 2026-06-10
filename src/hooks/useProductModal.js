@@ -80,7 +80,8 @@ export const useProductModal = () => {
       reset(normalized); // modal 開啟時讓 RHF 一起知道現在表單值。
 
       setValue('category', normalized.category || '');
-      setValue('content', normalized.content || '');
+      // setValue('content', normalized.content || '');
+      setValue('personalityTags', normalized.personalityTags || '');
       setValue('imagesUrl', normalized.imagesUrl || ['']);
       setValue('rating', normalized.rating || 0);
 
@@ -92,7 +93,8 @@ export const useProductModal = () => {
         species,
       });
 
-      setSelectedTags(normalized.content ? normalized.content.split('|') : []);
+      // setSelectedTags(normalized.content ? normalized.content.split('|') : []);
+      setSelectedTags(normalized.personalityTags ? normalized.personalityTags.split('|') : []);
     }
 
     setIsModalOpen(true);
@@ -158,9 +160,10 @@ export const useProductModal = () => {
 
     setSelectedTags(updatedTags);
 
-    const contentCode = updatedTags.join('|');
-
-    setValue('content', contentCode);
+    // const contentCode = updatedTags.join('|');
+    // setValue('content', contentCode);
+    const tagsCode = updatedTags.join('|');
+    setValue('personalityTags', tagsCode);
   };
   // Modal表單- 客製欄位(原handleModalInputChange)
   const handleCustomFieldChange = (e) => {

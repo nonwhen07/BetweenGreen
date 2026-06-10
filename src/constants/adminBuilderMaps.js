@@ -47,7 +47,7 @@ export const PRODUCT_CATEGORY_MAP = {
   },
 };
 
-export const PRODUCT_CONTENT_MAP = {
+export const PRODUCT_PERSONALITY_MAP = {
   japanese_style: {
     label: '日系簡約',
     shortLabel: '日系',

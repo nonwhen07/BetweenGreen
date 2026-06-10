@@ -1,5 +1,5 @@
 // constants
-import { parseCategoryParts, parseContentTags } from '@/constants/productConstants';
+import { parseCategoryParts, parsePersonalityTags } from '@/constants/productConstants';
 
 // components
 import BtnLoader from '@/components/BtnLoader';
@@ -14,7 +14,8 @@ const ProductInfo_V3 = ({
 }) => {
   const { theme, species } = parseCategoryParts(currentProduct?.category);
 
-  const tags = parseContentTags(currentProduct?.content).slice(0, 4);
+  // const tags = parsePersonalityTags(currentProduct?.content).slice(0, 4);
+  const tags = parsePersonalityTags(currentProduct?.personalityTags).slice(0, 4);
 
   const discount =
     currentProduct?.origin_price > currentProduct?.price
@@ -61,9 +62,9 @@ const ProductInfo_V3 = ({
         </section>
       )}
 
-      {/* Summary */}
+      {/* Summary 產品實際內容說明 */}
       {/* <section className="product-info__summary">
-        <p>{product?.description}</p>
+        <p>{product?.content}</p>
       </section> */}
 
       {/* Purchase */}

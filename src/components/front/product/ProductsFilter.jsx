@@ -4,7 +4,7 @@ import {
   THEME_TYPE_RELATION_MAP,
   CATEGORY_TYPE_MAP,
   CATEGORY_THEME_MAP,
-  // PRIMARY_CONTENT_TAGS,
+  // PRIMARY_PERSONALITY_TAGS,
 } from '@/constants/productConstants';
 
 import clsx from 'clsx';
@@ -96,7 +96,7 @@ const ProductsFilter = ({
         </div>
 
         <div className="products-filter__chips">
-          {PRIMARY_CONTENT_TAGS.map((tag) => (
+          {PRIMARY_PERSONALITY_TAGS.map((tag) => (
             <button
               key={tag}
               type="button"
