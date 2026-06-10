@@ -299,7 +299,13 @@ const ProductsPage = () => {
                 onAddCart={handleAddCartItem}
                 loadingItems={loadingItems}
               />
-              <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
+              <div className="m-4">
+                <BrandPagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={goToPage}
+                />
+              </div>
             </div>
           </div>
         </section>

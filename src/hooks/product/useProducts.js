@@ -1,12 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 // services
-import {
-  // getProducts,
-  getAllProducts,
-  getAdminProducts,
-  getAllAdminProducts,
-} from '@/services/productService';
+import { getAllProducts, getAllAdminProducts } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
@@ -18,49 +13,50 @@ export const useProducts = ({ isAdmin = false } = {}) => {
   const { start, stop } = useLoading();
 
   const [products, setProducts] = useState([]);
-  const [pageInfo, setPageInfo] = useState({});
-  const [productTotalCount, setProductTotalCount] = useState(0);
+  // const [productTotalCount, setProductTotalCount] = useState(0);
 
-  // 統一入口
-  const fetchProducts = useCallback(
-    async (params = {}) => {
-      start();
+  // 取得商品
+  const fetchProducts = useCallback(async () => {
+    start();
 
-      try {
-        // const res = isAdmin ? await getAdminProducts(params) : await getProducts(params);
-        const res = isAdmin ? await getAdminProducts(params) : await getAllProducts();
+    try {
+      // 現在改成全部撈出後前端filter(getAllAdminProducts)，未來有參數使用時再引用getAdminProducts(page指定、CATEGORY指定)
+      // const res = isAdmin ? await getAdminProducts(params) : await getAllProducts();
+      const res = isAdmin ? await getAllAdminProducts() : await getAllProducts();
 
-        setProducts(res.data || []);
-        setPageInfo(res.pagination || {});
-      } catch (error) {
-        showError(extractErrorMessage(error));
-      } finally {
-        stop();
-      }
-    },
-    [isAdmin],
-  );
+      const productList = Object.values(res.data || {});
 
-  useEffect(() => {
-    const fetchProductCount = async () => {
-      try {
-        const { data } = await getAllAdminProducts();
-
-        setProductTotalCount(Object.keys(data).length);
-      } catch (error) {
-        showError(extractErrorMessage(error));
-      }
-    };
-
-    if (isAdmin) {
-      fetchProductCount();
+      setProducts(productList);
+    } catch (error) {
+      showError(extractErrorMessage(error));
+    } finally {
+      stop();
     }
+    // [isAdmin, showError, start, stop]
   }, [isAdmin]);
+
+  // // 後台商品總數
+  // useEffect(() => {
+  //   if (!isAdmin) return;
+
+  //   const fetchProductCount = async () => {
+  //     try {
+  //       const { data } = await getAllAdminProducts();
+
+  //       setProductTotalCount(Object.keys(data || {}).length);
+  //     } catch (error) {
+  //       showError(extractErrorMessage(error));
+  //     }
+  //   };
+
+  //   fetchProductCount();
+  //   // [isAdmin, showError]
+  // }, [isAdmin]);
 
   return {
     products,
-    productTotalCount,
-    pageInfo,
+    // productTotalCount,
+    // pageInfo,
     fetchProducts,
   };
 };

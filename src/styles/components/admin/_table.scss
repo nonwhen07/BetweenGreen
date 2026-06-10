@@ -1,4 +1,7 @@
 @use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+
 @use '@/styles/helpers/admin/admin-variables' as *;
 
 .admin {
@@ -9,6 +12,11 @@
   .admin-table {
     width: 100%;
     border-collapse: collapse;
+
+    &__row--active {
+      outline: 2px solid rgba($admin-sidebar-active, 0.35);
+      outline-offset: -2px;
+    }
   }
 
   .admin-table th,

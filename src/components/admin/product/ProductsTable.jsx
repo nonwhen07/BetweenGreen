@@ -3,17 +3,17 @@ import { PRODUCT_PERSONALITY_MAP } from '@/constants/productConstants';
 // utils
 import { formatCategoryPreview, getProductUnitLabel } from '@/utils/productFormatter';
 // components
-import Pagination from '@/components/Pagination';
 import StarRating from '@/components/admin/StarRating';
 
 const ProductsTable = ({
   products,
-  pageInfo,
-  handlePageChange,
+  // pageInfo,
+  // handlePageChange,
   openProductModal,
   openDeleteModal,
   // productCount,
   productTotalCount,
+  selectedProductId,
 }) => {
   return (
     <>
@@ -54,19 +54,24 @@ const ProductsTable = ({
 
             <tbody>
               {products.map((product) => {
-                // const rawTags = product.content ? product.content.split('|') : [];
-                // const contentTags = rawTags.slice(0, 2);
                 const rawTags = product.personalityTags ? product.personalityTags.split('|') : [];
                 const contentTags = rawTags.slice(0, 2);
                 const extraTagCount = rawTags.length - 2;
 
                 return (
-                  <tr key={product.id}>
+                  <tr
+                    key={product.id}
+                    className={
+                      selectedProductId === product.id
+                        ? 'table-active admin-table__row--active'
+                        : ''
+                    }
+                  >
                     {/* 商品資訊 */}
                     <td>
                       <div className="admin-product-info">
                         <div className="admin-product-info__thumb">
-                          <img src={product.imageUrl} alt={product.title} />
+                          <img src={product.imageUrl || null} alt={product.title} />
                         </div>
 
                         <div className="admin-product-info__content">
@@ -147,9 +152,14 @@ const ProductsTable = ({
         )}
       </div>
 
-      <div className="admin-panel__footer d-flex justify-content-center">
+      {/* <div className="admin-panel__footer d-flex justify-content-center">
         <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
-      </div>
+        <BrandPagination
+          currentPage={pageInfo.current_page}
+          totalPages={pageInfo.total_pages}
+          onPageChange={handlePageChange}
+        />
+      </div> */}
     </>
   );
 };

@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 // services
 import { deleteProduct } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
+import { usePagination } from '@/hooks/usePagination';
 
 import { useProducts } from '@/hooks/product/useProducts';
 import { useProductModal } from '@/hooks/useProductModal';
@@ -15,12 +16,16 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 import ProductsTable from '@/components/admin/product/ProductsTable';
 import ProductModal from '@/components/admin/product/ProductModal';
 import DeleteModal from '@/components/admin/DeleteModal';
+import BrandPagination from '@/components/shared/BrandPagination';
+import AdminFilter from '@/components/admin/AdminFilter';
+// constants
+import { CATEGORY_THEME_MAP } from '@/constants/productConstants';
 
 const ProductsPage = () => {
   // hooks init
   const { success, showError } = useToast();
   const { start, stop } = useLoading();
-  const { products, productTotalCount, pageInfo, fetchProducts } = useProducts({
+  const { products, fetchProducts } = useProducts({
     isAdmin: true,
   });
   const {
@@ -46,6 +51,32 @@ const ProductsPage = () => {
     watch,
     errors,
   } = useProductModal();
+
+  // AdminFilter
+  const [keyword, setKeyword] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  // const filteredProducts = products.filter((product) => {
+  //   const matchKeyword = !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
+  //   const matchCategory = !selectedCategory || product.category?.split('-')[0] === selectedCategory;
+  //   return matchKeyword && matchCategory;
+  // });
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const matchKeyword = !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
+
+      const matchCategory =
+        !selectedCategory || product.category?.split('-')[0] === selectedCategory;
+
+      return matchKeyword && matchCategory;
+    });
+  }, [products, keyword, selectedCategory]);
+
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const handleOpenProductModal = (mode, product) => {
+    setSelectedProductId(product?.id || null);
+
+    openProductModal(mode, product);
+  };
   const {
     isOpen: isDeleteModalOpen,
     targetItem: deleteTarget,
@@ -53,13 +84,10 @@ const ProductsPage = () => {
     closeDeleteModal,
   } = useDeleteModal();
 
-  // derived values
-  // const productCount = products?.length || 0;
-
   // Page actions（CRUD / pagination）
-  const handlePageChange = (page = 1) => {
-    fetchProducts({ page });
-  };
+  // const handlePageChange = (page = 1) => {
+  //   fetchProducts({ page });
+  // };
   const handleUpdateProduct = handleSubmit((formData) => {
     // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
     start();
@@ -67,7 +95,8 @@ const ProductsPage = () => {
     return handleSubmitProduct(
       formData,
       async () => {
-        await fetchProducts({ page: pageInfo.current_page || 1 });
+        // await fetchProducts({ page: pageInfo.current_page || 1 });
+        await fetchProducts();
         success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！');
         stop();
       },
@@ -85,7 +114,8 @@ const ProductsPage = () => {
       await deleteProduct(deleteTarget.id);
       // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
       closeDeleteModal();
-      await fetchProducts({ page: pageInfo.current_page || 1 });
+      // await fetchProducts({ page: pageInfo.current_page || 1 });
+      await fetchProducts();
       success('產品刪除成功！');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
@@ -95,12 +125,24 @@ const ProductsPage = () => {
     }
   };
 
+  const {
+    page,
+    totalPages,
+    currentItems: currentPageProducts,
+    goToPage,
+    resetPage,
+  } = usePagination({
+    items: filteredProducts,
+    perPage: 10,
+  });
+
   // lifecycle
   useEffect(() => {
     // useEffect getProducts 初始載入產品資料，先page=1，category先不指定
     const initProducts = async () => {
       try {
-        await fetchProducts({ page: 1 });
+        // await fetchProducts({ page: 1 });
+        await fetchProducts();
       } catch (error) {
         const errorMessage = extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。');
         showError(errorMessage);
@@ -111,19 +153,48 @@ const ProductsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 監控 keyword/category 變化，重置分頁到第一頁
+  useEffect(() => {
+    resetPage();
+  }, [keyword, selectedCategory]);
+
+  // useEffect(() => {
+  //   console.log('products changed:', products.length);
+  //   console.log(products);
+  // }, [products]);
+
   return (
     <>
       <div className="container py-1">
         <h2 className="mb-1">商品列表</h2>
-        <div className="admin-panel mt-4">
-          <ProductsTable
-            products={products}
-            pageInfo={pageInfo}
-            handlePageChange={handlePageChange}
-            openProductModal={openProductModal}
-            openDeleteModal={openDeleteModal}
-            productTotalCount={productTotalCount}
+
+        <div className="admin-panel m-2">
+          <AdminFilter
+            keyword={keyword}
+            setKeyword={setKeyword}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
           />
+
+          <ProductsTable
+            // products={filteredProducts}
+            products={currentPageProducts}
+            // pageInfo={pageInfo}
+            // handlePageChange={handlePageChange}
+            // openProductModal={openProductModal}
+            openProductModal={handleOpenProductModal}
+            openDeleteModal={openDeleteModal}
+            productTotalCount={filteredProducts.length}
+            selectedProductId={selectedProductId}
+          />
+          <div className="m-4">
+            {/* <BrandPagination
+              currentPage={pageInfo.current_page}
+              totalPages={pageInfo.total_pages}
+              onPageChange={handlePageChange}
+            /> */}
+            <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
+          </div>
         </div>
       </div>
 

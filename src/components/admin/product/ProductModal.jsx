@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FaStar } from 'react-icons/fa';
 
@@ -79,6 +79,22 @@ const ProductModal = ({
   // 單位摘要
   const unitPreviewText =
     Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === watchUnit)?.label || '';
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -227,11 +243,13 @@ const ProductModal = ({
                         onChange={(e) => handleCategoryBuilderChange('theme', e.target.value)}
                       >
                         <option value="">選擇主題分類</option>
-                        {Object.values(CATEGORY_THEME_MAP).map((item) => (
-                          <option key={item.code} value={item.code}>
-                            {item.label}
-                          </option>
-                        ))}
+                        {Object.values(CATEGORY_THEME_MAP)
+                          .filter((item) => item.code !== 'AllProducts')
+                          .map((item) => (
+                            <option key={item.code} value={item.code}>
+                              {item.label}
+                            </option>
+                          ))}
                       </select>
                     </div>
 

@@ -4,7 +4,6 @@ import {
   THEME_TYPE_RELATION_MAP,
   CATEGORY_TYPE_MAP,
   CATEGORY_THEME_MAP,
-  // PRIMARY_PERSONALITY_TAGS,
 } from '@/constants/productConstants';
 
 import clsx from 'clsx';
