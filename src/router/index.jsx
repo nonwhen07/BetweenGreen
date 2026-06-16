@@ -35,6 +35,9 @@ import AboutPage from '@/pages/front/AboutPage';
 import ProductsPage from '@/pages/front/ProductsPage';
 import ProductDetailPage from '@/pages/front/ProductDetailPage';
 import CartPage from '@/pages/front/CartPage';
+import CheckoutSuccessPage from '@/pages/front/CheckoutSuccessPage';
+// import CustomerOrders from '@/pages/front/CustomerOrders';
+import CustomerOrdersPage from '@/pages/front/CustomerOrdersPage';
 import NotFoundPage from '@/pages/front/NotFoundPage';
 import LoginPage from '@/pages/admin/LoginPage';
 
@@ -57,7 +60,9 @@ const routes = [
       { path: 'products', element: <ProductsPage /> },
       { path: 'product/:product_id', element: <ProductDetailPage /> },
       { path: 'cart/:step', element: <CartPage /> },
-      // { path: 'customer-orders', element: <CustomerOrders /> },
+      { path: 'checkout-success', element: <CheckoutSuccessPage /> },
+      { path: 'customer-orders', element: <CustomerOrdersPage /> },
+
       { path: 'login', element: <LoginPage /> },
       {
         // 404頁面

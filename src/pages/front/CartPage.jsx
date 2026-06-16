@@ -10,11 +10,11 @@ import CartEmpty from '@/components/front/Cart/CartEmpty';
 import CartTable from '@/components/front/Cart/CartTable';
 import CheckoutForm from '@/components/front/Cart/CheckoutForm';
 import CartSummary from '@/components/front/Cart/CartSummary';
-import OrderSuccess from '@/components/front/Cart/OrderSuccess';
-// import PageLoader from '@/components/shared/PageLoader';
+import CheckoutPayment from '@/components/front/Cart/CheckoutPayment';
 
 // services
-import { createOrder } from '@/services/cartService';
+// import { createOrder } from '@/services/cartService';
+import { createOrder, payOrder } from '@/services/orderService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
@@ -35,13 +35,11 @@ const CartPage = () => {
   const routeState = location.state || {};
 
   const navigate = useNavigate();
-  // const { refreshCart } = useCartActions();
   const { success, showError, warning } = useToast();
   const { start, stop } = useLoading();
 
   const {
     carts,
-    // isLoading,
     loadingItems,
     error,
     fetchCart,
@@ -50,10 +48,8 @@ const CartPage = () => {
     handleClearCart,
   } = useCart();
 
-  // const [carts, setCarts] = useState([]);
   const [lastOrderCart, setLastOrderCart] = useState([]);
   const [orderID, setOrderID] = useState(null);
-  // const [isScreenLoading, setIsScreenLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const finalError = error || errorMessage;
@@ -77,18 +73,17 @@ const CartPage = () => {
 
   // 送出購物車轉化成訂單 + Submit事件驅動
   const handleCreateOrder = async (orderPayload) => {
-    // setIsScreenLoading(true);
     start();
     try {
       const orderData = await createOrder(orderPayload);
       // 由於前台沒有會員機制，所以是所有人共用cart， 訂單送出成功後刷新購物車等待下一位客人，
       // 並先記錄紀錄這一次訂單資料(轉換成訂單後購物車會被清空)
-      setLastOrderCart([...carts]); // OrderSuccess 顯示訂單資料
+      setLastOrderCart([...carts]); // OrderCreated  顯示訂單資料
       const currentCartSnapshot = [...carts];
       await fetchCart();
 
       const { orderId } = orderData;
-      setOrderID(orderId); // OrderSuccess 顯示訂單ID
+      setOrderID(orderId); // OrderCreated  顯示訂單ID
 
       //成功後才跳轉到 Step_3
       navigate('/cart/step3', {
@@ -104,7 +99,6 @@ const CartPage = () => {
       const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單送出失敗。');
       showError(errorMessage);
     } finally {
-      // setIsScreenLoading(false);
       stop();
     }
   };
@@ -131,10 +125,42 @@ const CartPage = () => {
     await handleCreateOrder(orderPayload);
   });
 
+  // 付款金流事件驅動
+  const handlePay = async (event) => {
+    event?.preventDefault();
+
+    const targetOrderID = finalOrderID;
+    const targetCart = finalCart;
+
+    if (!targetOrderID) {
+      warning('找不到訂單編號，請重新建立訂單。');
+      return;
+    }
+
+    start();
+
+    try {
+      await payOrder(targetOrderID);
+
+      success('您的訂單付款成功。');
+
+      navigate('/checkout-success', {
+        state: {
+          orderId: targetOrderID,
+          carts: targetCart,
+        },
+      });
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error, setErrorMessage, '訂單付款失敗。');
+      showError(errorMessage);
+    } finally {
+      stop();
+    }
+  };
+
   // 畫面渲染後初步載入購物車
   useEffect(() => {
     const initCart = async () => {
-      // setIsScreenLoading(true);
       start();
       try {
         await fetchCart();
@@ -144,7 +170,6 @@ const CartPage = () => {
         const errorMessage = extractErrorMessage(error, setErrorMessage);
         showError(errorMessage);
       } finally {
-        // setIsScreenLoading(false);
         stop();
       }
     };
@@ -252,14 +277,16 @@ const CartPage = () => {
               ) : finalCart.length === 0 ? (
                 <p>訂單內容為空</p>
               ) : (
-                <OrderSuccess orderID={finalOrderID} lastOrderCart={finalCart} />
+                <CheckoutPayment
+                  orderID={finalOrderID}
+                  lastOrderCart={finalCart}
+                  onSubmit={handlePay}
+                />
               )}
             </section>
           )}
         </div>
       </div>
-
-      {/* <PageLoader show={isScreenLoading || isLoading} zIndex={2000} /> */}
     </>
   );
 };
