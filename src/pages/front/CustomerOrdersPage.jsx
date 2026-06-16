@@ -103,7 +103,7 @@ const CustomerOrdersPage = () => {
   return (
     <div className="container ui-container py-5">
       <div className="cart-hero text-center mb-4">
-        <h1 className="page-title">顧客訂單查詢</h1>
+        <h1 className="page-title">顧客歷次訂單查詢</h1>
         {/* <p className="text-muted mb-0">
           目前為六角 API Demo 訂單列表，尚未串接會員系統，因此會顯示前台共用訂單資料。
         </p> */}

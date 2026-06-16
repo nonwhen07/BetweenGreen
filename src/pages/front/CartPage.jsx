@@ -13,7 +13,6 @@ import CartSummary from '@/components/front/Cart/CartSummary';
 import CheckoutPayment from '@/components/front/Cart/CheckoutPayment';
 
 // services
-// import { createOrder } from '@/services/cartService';
 import { createOrder, payOrder } from '@/services/orderService';
 // hooks
 import { useToast } from '@/hooks/useToast';

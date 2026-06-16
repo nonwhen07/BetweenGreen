@@ -12,11 +12,6 @@ import axiosAPI from '@/api/axiosAPI';
 
 // 建立訂單 - 購物車送出並轉換成訂單
 export const createOrder = async (orderPayload) => {
-  // const { data } = await axiosAPI.post('/order', {
-  //   data: orderData,
-  // });
-  // return data;
-
   const { data } = await axiosAPI.post('/order', orderPayload);
   return data;
 };

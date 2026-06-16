@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Package, ShoppingCart, LayoutDashboard, Users, LogOut } from 'lucide-react';
+import { Package, ShoppingCart, ReceiptText, LayoutDashboard, Users, LogOut } from 'lucide-react';
 // import {
 //   FaBars,
 //   FaBox,
@@ -41,6 +41,14 @@ const routes = [
     type: 'link',
     showInNav: true,
   },
+  {
+    path: '/customer-orders',
+    name: 'CustomerOrders',
+    title: '歷次訂單',
+    label: '歷次訂單',
+    type: 'link',
+    showInNav: true,
+  },
   // { path: '/favorite', name: 'Favorite', title: '回到首頁' },
   // { path: '/orders', name: 'Orders', title: '歷史' },
 ];
@@ -62,6 +70,12 @@ const menuItems = [
     path: '/cart/step1',
     label: '購物車',
     icon: ShoppingCart,
+  },
+  {
+    type: 'link',
+    path: '/customer-orders',
+    label: '歷次訂單',
+    icon: ReceiptText,
   },
   {
     type: 'action',

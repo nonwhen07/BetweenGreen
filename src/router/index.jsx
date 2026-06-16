@@ -36,7 +36,6 @@ import ProductsPage from '@/pages/front/ProductsPage';
 import ProductDetailPage from '@/pages/front/ProductDetailPage';
 import CartPage from '@/pages/front/CartPage';
 import CheckoutSuccessPage from '@/pages/front/CheckoutSuccessPage';
-// import CustomerOrders from '@/pages/front/CustomerOrders';
 import CustomerOrdersPage from '@/pages/front/CustomerOrdersPage';
 import NotFoundPage from '@/pages/front/NotFoundPage';
 import LoginPage from '@/pages/admin/LoginPage';

@@ -79,9 +79,6 @@ const CheckoutSuccessPage = () => {
         </table>
       )}
 
-      {/* <Link to="/customer-orders" className="btn ui-btn ui-btn--outline-primary">
-        查看歷史訂單
-      </Link> */}
       <div className="success-actions">
         <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
           查看歷史訂單

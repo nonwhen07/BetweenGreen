@@ -5,6 +5,8 @@ import taiwanDistricts from '@/data/taiwanDistricts.json';
 
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
+// utils
+import { formatCategoryPreview2, getProductUnitLabel } from '@/utils/productFormatter';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 
@@ -306,13 +308,15 @@ const CheckoutForm = ({
 
               {carts.map((item) => (
                 <div key={item.id} className="d-flex justify-content-between mb-3">
-                  <span style={{ width: '150px' }}>{item.product.title}</span>
-                  <span>{item.product.category}</span>
+                  <span style={{ width: '120px' }}>{item.product.title}</span>
+                  <span style={{ width: '150px' }}>
+                    {formatCategoryPreview2(item.product.category) || '未設定分類'}
+                  </span>
                   <span>
                     {item.qty}
-                    {item.product.unit}
+                    {getProductUnitLabel(item.product.unit) || '未設定單位'}
                   </span>
-                  <span>NT$ {item.total}</span>
+                  <span>NT$ {item.total.toLocaleString()}</span>
                 </div>
               ))}
 
@@ -320,7 +324,7 @@ const CheckoutForm = ({
 
               <div className="d-flex justify-content-between mb-3">
                 <strong>小計</strong>
-                <strong>NT$ {total}</strong>
+                <strong>NT$ {total.toLocaleString()}</strong>
               </div>
               <div className="d-flex justify-content-between mb-3">
                 <strong>運費(本館滿 {minfreeShippingFee} 免運)</strong>
@@ -330,7 +334,7 @@ const CheckoutForm = ({
                   </>
                 ) : (
                   <>
-                    <strong>NT$ {shippingFee}</strong>
+                    <strong>NT$ {shippingFee.toLocaleString()}</strong>
                   </>
                 )}
               </div>
@@ -339,11 +343,11 @@ const CheckoutForm = ({
                 <strong>合計</strong>
                 {total >= minfreeShippingFee ? (
                   <>
-                    <strong>NT$ {total}</strong>
+                    <strong>NT$ {total.toLocaleString()}</strong>
                   </>
                 ) : (
                   <>
-                    <strong>NT$ {total + shippingFee}</strong>
+                    <strong>NT$ {(total + shippingFee).toLocaleString()}</strong>
                   </>
                 )}
               </div>

@@ -65,7 +65,6 @@ const CartSummary = ({ carts, actions, onNext }) => {
       </div>
       {/* 底部動作列 */}
       <div className="cart-table-actions text-end py-3">
-        {/* */}
         <button
           type="button"
           onClick={actions.onClear}
