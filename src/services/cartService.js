@@ -40,8 +40,8 @@ export const clearCart = async () => {
   await axiosAPI.delete('/carts');
 };
 
-// 購物車送出並轉換成訂單，並取得訂單資料(未來可能可以搬出去orderService，和orders查詢整合)
-export const createOrder = async (orderData) => {
-  const res = await axiosAPI.post('/order', orderData);
-  return res.data;
-};
+// // 購物車送出並轉換成訂單，並取得訂單資料(未來可能可以搬出去orderService，和orders查詢整合)
+// export const createOrder = async (orderData) => {
+//   const res = await axiosAPI.post('/order', orderData);
+//   return res.data;
+// };

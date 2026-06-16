@@ -24,7 +24,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 import ProductGallery from '@/components/front/product/ProductGallery';
 import ProductDetailTabs from '@/components/front/product/ProductDetailTabs';
 import RelatedProducts from '@/components/front/product/RelatedProducts';
-import ProductInfo_V3 from '@/components/front/product/ProductInfo_V3';
+import ProductInfo from '@/components/front/product/ProductInfo';
 
 const ProductDetailPage = () => {
   const { products, fetchProducts } = useProducts({ isAdmin: false });
@@ -131,7 +131,7 @@ const ProductDetailPage = () => {
               </div>
               <div className="col-lg-5">
                 {/* 商品資訊-1 */}
-                <ProductInfo_V3
+                <ProductInfo
                   currentProduct={product}
                   qtySelect={qtySelect}
                   setQtySelect={setQtySelect}

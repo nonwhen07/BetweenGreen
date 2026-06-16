@@ -10,14 +10,14 @@ export const CART_STEPS = [
   },
   {
     id: 2,
-    label: '填寫資料及付款方式',
+    label: '填寫資料',
     hash: '#step2',
     path: 'step2',
     icon: CreditCard,
   },
   {
     id: 3,
-    label: '訂購完成',
+    label: '商品付款',
     hash: '#step3',
     path: 'step3',
     icon: CheckCircle,

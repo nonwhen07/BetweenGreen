@@ -323,7 +323,7 @@ const CheckoutForm = ({
                 <strong>NT$ {total}</strong>
               </div>
               <div className="d-flex justify-content-between mb-3">
-                <strong>運費(本館滿799免運)</strong>
+                <strong>運費(本館滿 {minfreeShippingFee} 免運)</strong>
                 {total >= minfreeShippingFee ? (
                   <>
                     <strong className="text-success">已享免運</strong>

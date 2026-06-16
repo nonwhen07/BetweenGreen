@@ -46,7 +46,8 @@ const ProductGallery = ({ currentProduct }) => {
             <SwiperSlide key={index}>
               <div className="product-gallery__image">
                 <img
-                  src={imgUrl}
+                  // src={imgUrl}
+                  src={!imgUrl.trim() === '' ? imgUrl : NO_IMAGE}
                   alt={`${currentProduct?.title} - ${index + 1}`}
                   onError={(e) => {
                     e.target.onerror = null;
@@ -79,7 +80,8 @@ const ProductGallery = ({ currentProduct }) => {
             <SwiperSlide key={index}>
               <div className={`product-gallery__thumb ${activeIndex === index ? 'is-active' : ''}`}>
                 <img
-                  src={imgUrl}
+                  // src={imgU  rl}
+                  src={!imgUrl.trim() === '' ? imgUrl : NO_IMAGE}
                   alt={`thumb-${index + 1}`}
                   onError={(e) => {
                     e.target.onerror = null;

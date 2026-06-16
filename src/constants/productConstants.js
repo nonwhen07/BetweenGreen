@@ -136,6 +136,8 @@ export const CATEGORY_SPECIES_MAP = {
   Monstera: { code: 'Monstera', label: '龜背葉植栽' },
   Hoya: { code: 'Hoya', label: '球蘭吊植' },
   ZZPlant: { code: 'ZZPlant', label: '雪鐵芋植栽' },
+  AirPlant: { code: 'AirPlant', label: '空氣鳳梨' },
+  Herb: { code: 'Herb', label: '香草植栽' },
 
   // =========================
   // Tool
@@ -218,6 +220,16 @@ export const CATEGORY_SPECIES_MAP = {
     label: '植栽展示層架',
   },
 
+  PlantJournal: {
+    code: 'PlantJournal',
+    label: '植栽成長日誌',
+  },
+
+  PlantMarker: {
+    code: 'PlantMarker',
+    label: '植物標籤卡',
+  },
+
   // =========================
   // FlowerGift
   // =========================
@@ -263,6 +275,11 @@ export const CATEGORY_SPECIES_MAP = {
     code: 'SignatureGiftBox',
     label: '品牌經典禮盒',
   },
+
+  MemoryKit: {
+    code: 'MemoryKit',
+    label: '紀念植栽禮盒',
+  },
 };
 
 // ======================================================
@@ -276,7 +293,7 @@ export const THEME_TYPE_RELATION_MAP = {
 
   SpaceStyling: ['Plant', 'Pottery', 'Lifestyle'],
 
-  PlantCare: ['Tool', 'Compost', 'Pottery'],
+  PlantCare: ['Tool', 'Compost', 'Pottery', 'Lifestyle'],
 
   SeasonGift: ['GiftBox'],
 
@@ -288,7 +305,18 @@ export const THEME_TYPE_RELATION_MAP = {
 //
 // ======================================================
 export const TYPE_SPECIES_RELATION_MAP = {
-  Plant: ['Succulent', 'Cactus', 'Foliage', 'Fern', 'Orchid', 'Monstera', 'Hoya', 'ZZPlant'],
+  Plant: [
+    'Succulent',
+    'Cactus',
+    'Foliage',
+    'Fern',
+    'Orchid',
+    'Monstera',
+    'Hoya',
+    'ZZPlant',
+    'AirPlant',
+    'Herb',
+  ],
 
   Tool: ['WateringCan', 'Mister', 'MoistureMeter', 'Pruner', 'PlantBrush', 'PlantLamp'],
 
@@ -303,16 +331,10 @@ export const TYPE_SPECIES_RELATION_MAP = {
     'TableLamp',
     'PlantShelf',
     'AquariumCoupon',
+    'PlantJournal',
+    'PlantMarker',
   ],
 
-  // FlowerGift: [
-  //   'GraduationBouquet',
-  //   'TeacherBouquet',
-  //   'MotherDayBouquet',
-  //   'HolidayGiftBox',
-  //   'OpeningFlower',
-  //   'NewHomeGift',
-  // ],
   FlowerGift: [
     'GraduationBouquet',
     'TeacherBouquet',
@@ -322,7 +344,14 @@ export const TYPE_SPECIES_RELATION_MAP = {
   ],
 
   // GiftBox: ['TulipGiftBox'],
-  GiftBox: ['SpringGiftBox', 'SummerGiftBox', 'AutumnGiftBox', 'WinterGiftBox', 'SignatureGiftBox'],
+  GiftBox: [
+    'SpringGiftBox',
+    'SummerGiftBox',
+    'AutumnGiftBox',
+    'WinterGiftBox',
+    'SignatureGiftBox',
+    'MemoryKit',
+  ],
 };
 
 // ======================================================
@@ -543,60 +572,6 @@ export const PRODUCT_PERSONALITY_MAP = {
     badge: 'Petite',
     group: 'attribute',
   },
-
-  // // ======================================================
-  // // 待刪除項目
-  // // ======================================================
-  // GardenTool: {
-  //   label: '待刪除-GardenTool',
-  //   badge: 'GardenTool',
-  //   group: 'XXXXX',
-  // },
-  // OrganicMix: {
-  //   label: '待刪除-OrganicMix',
-  //   badge: 'OrganicMix',
-  //   group: 'XXXXX',
-  // },
-  // SpringOnly: {
-  //   label: '待刪除-SpringOnly',
-  //   badge: 'SpringOnly',
-  //   group: 'XXXXX',
-  // },
-  // LimitedEdition: {
-  //   label: '待刪除-LimitedEdition',
-  //   badge: 'LimitedEdition',
-  //   group: 'XXXXX',
-  // },
-  // HolidaySpecial: {
-  //   label: '待刪除-HolidaySpecial',
-  //   badge: 'HolidaySpecial',
-  //   group: 'XXXXX',
-  // },
-  // GraduationSeason: {
-  //   label: '待刪除-GraduationSeason',
-  //   badge: 'GraduationSeason',
-  //   group: 'XXXXX',
-  // },
-  // TeacherGift: {
-  //   label: '待刪除-TeacherGift',
-  //   badge: 'TeacherGift',
-  //   group: 'XXXXX',
-  // },
-  // MotherDay: {
-  //   label: '待刪除-MotherDay',
-  //   badge: 'MotherDay',
-  //   group: 'XXXXX',
-  // },
-  // CustomOrder: {
-  //   label: '待刪除-CustomOrder',
-  //   badge: 'CustomOrder',
-  //   group: 'XXXXX',
-  // },
-  // PreOrder: {
-  //   label: '待刪除-PreOrder',
-  //   badge: 'PreOrder',
-  //   group: 'XXXXX',
-  // },
 };
 
 // ======================================================
