@@ -2,15 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Package, ShoppingCart, ReceiptText, LayoutDashboard, Users, LogOut } from 'lucide-react';
-// import {
-//   FaBars,
-//   FaBox,
-//   FaShoppingCart,
-//   FaTachometerAlt,
-//   FaUsers,
-//   FaSignOutAlt,
-//   FaCreditCard,
-// } from 'react-icons/fa';
 
 // features
 import { logoutAction } from '@/features/auth/authSlice';
@@ -50,7 +41,6 @@ const routes = [
     showInNav: true,
   },
   // { path: '/favorite', name: 'Favorite', title: '回到首頁' },
-  // { path: '/orders', name: 'Orders', title: '歷史' },
 ];
 const menuItems = [
   {

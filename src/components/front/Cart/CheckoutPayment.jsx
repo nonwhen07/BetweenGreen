@@ -1,25 +1,29 @@
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
+import { CreditCard, Landmark, PackageCheck, Smartphone } from 'lucide-react';
 
-import { calculateCartTotal } from '@/utils/cartUtils';
+// utils
+import { calculateCartTotal, formatCardNumber } from '@/utils/cartUtils';
+// constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
-
+// components
 import ProductImage from '@/components/ProductImage';
 
-const formatCardNumber = (value = '') => {
-  return value
-    .replace(/\D/g, '')
-    .slice(0, 16)
-    .replace(/(\d{4})(?=\d)/g, '$1 ');
-};
+// const formatCardNumber = (value = '') => {
+//   return value
+//     .replace(/\D/g, '')
+//     .slice(0, 16)
+//     .replace(/(\d{4})(?=\d)/g, '$1 ');
+// };
 
 const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    // watch,
     setValue,
+    control,
   } = useForm({
     defaultValues: {
       paymentMethod: 'credit-card',
@@ -30,7 +34,33 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
     },
   });
 
-  const paymentMethod = watch('paymentMethod');
+  // const paymentMethod = watch('paymentMethod');
+  // const cardNumber = watch('cardNumber');
+  // const cardHolder = watch('cardHolder');
+  // const expiredDate = watch('expiredDate');
+  const paymentMethod = useWatch({
+    control,
+    name: 'paymentMethod',
+    defaultValue: 'credit-card',
+  });
+
+  const cardNumber = useWatch({
+    control,
+    name: 'cardNumber',
+    defaultValue: '',
+  });
+
+  const cardHolder = useWatch({
+    control,
+    name: 'cardHolder',
+    defaultValue: '',
+  });
+
+  const expiredDate = useWatch({
+    control,
+    name: 'expiredDate',
+    defaultValue: '',
+  });
 
   const cartTotal = useMemo(() => calculateCartTotal(lastOrderCart), [lastOrderCart]);
 
@@ -43,6 +73,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
 
   const handleCardNumberChange = (event) => {
     const formattedValue = formatCardNumber(event.target.value);
+
     setValue('cardNumber', formattedValue, {
       shouldValidate: true,
       shouldDirty: true,
@@ -52,17 +83,21 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
   return (
     <div className="checkout-payment-page">
       <div className="checkout-payment-hero text-center mb-4">
+        <span className="checkout-payment-hero__eyebrow">Payment</span>
         <h2 className="mb-2">請完成付款流程</h2>
-        <p className="text-muted mb-0">您的訂單編號為：{orderID}</p>
+        <p className="text-muted mb-0">訂單已建立，您的訂單編號為：{orderID}</p>
       </div>
 
       <form onSubmit={handlePaymentSubmit}>
         <div className="row cart-checkout checkout-payment-layout">
           <div className="col-lg-7">
             <div className="checkout-payment-card card p-3 mb-3">
-              <h3 className="mb-3">本次訂單明細</h3>
+              <div className="checkout-payment-card__header">
+                <h3 className="mb-1">本次訂單明細</h3>
+                <p className="text-muted mb-0">請確認商品與數量後完成付款。</p>
+              </div>
 
-              <div className="table-responsive checkout-carttable">
+              <div className="table-responsive checkout-carttable mt-3">
                 <table className="table cart-table align-middle">
                   <thead className="cart-table__header">
                     <tr>
@@ -109,9 +144,14 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
             </div>
 
             <div className="checkout-payment-card card p-3">
-              <h3 className="mb-3">付款方式</h3>
+              <div className="checkout-payment-card__header">
+                <h3 className="mb-1">付款方式</h3>
+                <p className="text-muted mb-0">
+                  此為作品集模擬付款流程，用於呈現第三方金流串接與欄位驗證體驗。
+                </p>
+              </div>
 
-              <div className="checkout-payment-methods mb-4">
+              <div className="checkout-payment-methods mt-3 mb-4">
                 <label
                   className={`checkout-payment-method ${
                     paymentMethod === 'credit-card' ? 'active' : ''
@@ -122,6 +162,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                     value="credit-card"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
+                  <CreditCard size={20} />
                   <span>信用卡</span>
                 </label>
 
@@ -135,6 +176,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                     value="line-pay"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
+                  <Smartphone size={20} />
                   <span>LINE Pay</span>
                 </label>
 
@@ -146,6 +188,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                     value="atm"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
+                  <Landmark size={20} />
                   <span>ATM 轉帳</span>
                 </label>
 
@@ -157,6 +200,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                     value="cod"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
+                  <PackageCheck size={20} />
                   <span>貨到付款</span>
                 </label>
               </div>
@@ -169,12 +213,14 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                 <div className="checkout-payment-form">
                   <div className="fake-card-preview mb-4">
                     <div className="fake-card-preview__brand">BETWEEN GREEN CARD</div>
+
                     <div className="fake-card-preview__number">
-                      {watch('cardNumber') || '4242 4242 4242 4242'}
+                      {cardNumber || '4242 4242 4242 4242'}
                     </div>
+
                     <div className="fake-card-preview__footer">
-                      <span>{watch('cardHolder') || 'CARD HOLDER'}</span>
-                      <span>{watch('expiredDate') || 'MM/YY'}</span>
+                      <span>{cardHolder || 'CARD HOLDER'}</span>
+                      <span>{expiredDate || 'MM/YY'}</span>
                     </div>
                   </div>
 
@@ -183,6 +229,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                       <label htmlFor="cardNumber" className="form-label">
                         卡號
                       </label>
+
                       <input
                         id="cardNumber"
                         type="text"
@@ -196,6 +243,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                           onChange: handleCardNumberChange,
                         })}
                       />
+
                       {errors.cardNumber && (
                         <p className="text-danger my-2">{errors.cardNumber.message}</p>
                       )}
@@ -207,6 +255,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                       <label htmlFor="cardHolder" className="form-label">
                         持卡人姓名
                       </label>
+
                       <input
                         id="cardHolder"
                         type="text"
@@ -216,6 +265,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                           required: '持卡人姓名欄位必填',
                         })}
                       />
+
                       {errors.cardHolder && (
                         <p className="text-danger my-2">{errors.cardHolder.message}</p>
                       )}
@@ -227,6 +277,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                       <label htmlFor="expiredDate" className="form-label">
                         有效期限
                       </label>
+
                       <input
                         id="expiredDate"
                         type="text"
@@ -240,6 +291,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                           },
                         })}
                       />
+
                       {errors.expiredDate && (
                         <p className="text-danger my-2">{errors.expiredDate.message}</p>
                       )}
@@ -249,6 +301,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                       <label htmlFor="cvv" className="form-label">
                         安全碼
                       </label>
+
                       <input
                         id="cvv"
                         type="password"
@@ -263,6 +316,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
                           },
                         })}
                       />
+
                       {errors.cvv && <p className="text-danger my-2">{errors.cvv.message}</p>}
                     </div>
                   </div>
@@ -271,26 +325,47 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
 
               {paymentMethod === 'line-pay' && (
                 <div className="checkout-payment-note">
-                  將模擬導向 LINE Pay 付款流程，確認後會直接完成付款。
+                  <h4 className="checkout-payment-note__title">LINE Pay 模擬付款</h4>
+                  <p className="checkout-payment-note__text">
+                    確認付款後，系統將模擬導向 LINE Pay 授權流程，並透過測試付款 API 更新訂單狀態。
+                  </p>
+                  <p className="checkout-payment-note__hint">
+                    實際商業環境會由後端建立付款請求，導向 LINE Pay
+                    頁面後再透過金流回傳結果確認付款。
+                  </p>
                 </div>
               )}
 
               {paymentMethod === 'atm' && (
                 <div className="checkout-payment-note">
-                  轉帳帳號：808 玉山銀行 1234-5678-9012。此專案會以模擬付款完成訂單。
+                  <h4 className="checkout-payment-note__title">ATM 轉帳資訊</h4>
+                  <p className="checkout-payment-note__text">
+                    轉帳銀行：玉山銀行 808
+                    <br />
+                    模擬帳號：1234-5678-9012
+                  </p>
+                  <p className="checkout-payment-note__hint">
+                    本專案會在確認付款後模擬完成訂單付款狀態；實際商業環境通常需等待銀行入帳通知或後台人工核帳。
+                  </p>
                 </div>
               )}
 
               {paymentMethod === 'cod' && (
                 <div className="checkout-payment-note">
-                  選擇貨到付款後，系統會模擬完成付款狀態，實際商業專案需由物流與後台核帳。
+                  <h4 className="checkout-payment-note__title">貨到付款</h4>
+                  <p className="checkout-payment-note__text">
+                    選擇貨到付款後，系統將模擬建立待出貨訂單，並於本作品集中以付款完成狀態呈現。
+                  </p>
+                  <p className="checkout-payment-note__hint">
+                    實際商業環境通常會由物流配送與後台收款狀態共同確認，不會由前端單方面決定付款完成。
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
           <div className="col-lg-5">
-            <div className="cart-summary card p-3">
+            <div className="cart-summary checkout-payment-summary card p-3">
               <h3 className="mb-3">付款摘要</h3>
 
               <div className="d-flex justify-content-between mb-3">
@@ -312,6 +387,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
 
               <div className="d-flex justify-content-between mb-3">
                 <strong>運費</strong>
+
                 {shipping === 0 ? (
                   <strong className="text-success">免運費</strong>
                 ) : (
@@ -331,7 +407,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
               </button>
 
               <p className="text-muted small mt-3 mb-0">
-                此為作品集模擬付款流程，不會送出真實信用卡資訊。
+                此頁面用於模擬金流流程與欄位驗證，不會送出真實信用卡資訊。
               </p>
             </div>
           </div>

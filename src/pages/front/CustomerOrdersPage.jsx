@@ -104,9 +104,6 @@ const CustomerOrdersPage = () => {
     <div className="container ui-container py-5">
       <div className="cart-hero text-center mb-4">
         <h1 className="page-title">顧客歷次訂單查詢</h1>
-        {/* <p className="text-muted mb-0">
-          目前為六角 API Demo 訂單列表，尚未串接會員系統，因此會顯示前台共用訂單資料。
-        </p> */}
       </div>
 
       {errorMessage && (
@@ -137,14 +134,16 @@ const CustomerOrdersPage = () => {
             const isPaid = order.is_paid;
             const orderId = order.id;
             const isPaying = payingOrderId === orderId;
+            const orderAmount = order.final_total ?? order.total ?? 0;
 
             return (
               <section key={orderId} className="card customer-order-card p-3 mb-4">
                 <div className="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
-                  <div>
+                  <div className="text-lg-Start">
                     <h2 className="h5 mb-2">訂單編號：{orderId}</h2>
-                    <p className="mb-1 text-muted">建立日期：{formatDate(order.create_at)}</p>
-                    <p className="mb-0 text-muted">收件人：{order.user?.name || '—'}</p>
+                    <p className="mb-1 text-muted">
+                      收件人：{order.user?.name || '—'} 、 建立日期：{formatDate(order.create_at)}
+                    </p>
                   </div>
 
                   <div className="text-lg-end">
@@ -152,7 +151,7 @@ const CustomerOrdersPage = () => {
                       {isPaid ? '已付款' : '未付款'}
                     </span>
                     <p className="mt-2 mb-0 fw-bold">
-                      訂單金額：NT$ {Math.round(order.total || 0).toLocaleString()}
+                      訂單金額：NT$ {Math.round(orderAmount).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -172,11 +171,13 @@ const CustomerOrdersPage = () => {
                     <tbody className="cart-table__body">
                       {orderProducts.map((item) => (
                         <tr key={item.id}>
-                          <td className="cart-table__col--info">{item.product?.title || '—'}</td>
+                          <td className="cart-table__col--info">
+                            {item.product?.title || `商品 ID：${order.product_id || '—'}`}
+                          </td>
                           <td className="cart-table__col--image">
                             <ProductImage
                               src={item.product?.imageUrl}
-                              alt={item.product?.title || '訂單商品'}
+                              alt={item.product?.title || `商品 ID：${order.product_id}`}
                               size="small"
                             />
                           </td>

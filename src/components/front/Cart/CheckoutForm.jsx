@@ -5,7 +5,6 @@ import taiwanDistricts from '@/data/taiwanDistricts.json';
 
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
-// utils
 import { formatCategoryPreview2, getProductUnitLabel } from '@/utils/productFormatter';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';

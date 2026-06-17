@@ -424,6 +424,18 @@ $transition-speed: 0.3s;
 .checkout-payment-page {
   .checkout-payment-hero {
     margin-bottom: 24px;
+
+    &__eyebrow {
+      display: inline-block;
+
+      margin-bottom: 8px;
+
+      color: $color-primary;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
   }
 
   .checkout-payment-layout {
@@ -433,6 +445,10 @@ $transition-speed: 0.3s;
   .checkout-payment-card {
     margin-right: 0;
     margin-left: 0;
+  }
+
+  .checkout-payment-card__header {
+    padding-bottom: 4px;
   }
 
   .checkout-payment-methods {
@@ -488,6 +504,26 @@ $transition-speed: 0.3s;
     border-radius: 12px;
     background-color: $color-bg-muted;
     color: $color-secondary;
+
+    &__title {
+      margin-bottom: 8px;
+
+      color: $color-primary;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    &__text {
+      margin-bottom: 8px;
+    }
+
+    &__hint {
+      margin-bottom: 0;
+
+      color: $text-muted;
+      font-size: 14px;
+      line-height: 1.6;
+    }
   }
 
   .fake-card-preview {
@@ -530,6 +566,11 @@ $transition-speed: 0.3s;
       text-transform: uppercase;
     }
   }
+
+  .checkout-payment-summary {
+    position: sticky;
+    top: 96px;
+  }
 }
 
 @media (max-width: 992px) {
@@ -538,7 +579,9 @@ $transition-speed: 0.3s;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .cart-summary {
+    .checkout-payment-summary {
+      position: static;
+
       margin-top: 24px;
     }
   }
@@ -556,6 +599,11 @@ $transition-speed: 0.3s;
 
       &__number {
         font-size: 20px;
+      }
+
+      &__footer {
+        flex-direction: column;
+        gap: 8px;
       }
     }
   }

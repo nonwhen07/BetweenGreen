@@ -17,9 +17,16 @@ export const CART_STEPS = [
   },
   {
     id: 3,
-    label: '商品付款',
+    label: '確認付款',
     hash: '#step3',
     path: 'step3',
+    icon: CheckCircle,
+  },
+  {
+    id: 4,
+    label: '付款完成',
+    hash: '#success',
+    path: 'success',
     icon: CheckCircle,
   },
 ];
