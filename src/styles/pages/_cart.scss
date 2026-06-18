@@ -227,7 +227,7 @@ $transition-speed: 0.3s;
 
       &.cart-table__col--category,
       &.cart-table__col--price {
-        width: 200px;
+        width: 160px;
       }
 
       color: $text-on-primary !important; // 用 !important 暫時確保壓過 Bootstrap，或提高權重
@@ -380,7 +380,108 @@ $transition-speed: 0.3s;
   cart-summary
 ======================== */
 .cart-summary-list {
-  padding: 0;
+  padding-left: 0;
+  margin-bottom: 0;
+
+  list-style: none;
+}
+
+.cart-summary-coupon {
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 8px;
+  }
+
+  &__current {
+    color: $color-primary;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__input-group {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+
+    .form-control {
+      min-height: 48px;
+    }
+
+    .ui-btn {
+      min-width: 76px;
+      padding-right: 16px;
+      padding-left: 16px;
+    }
+  }
+}
+
+.cart-coupon-applied {
+  padding: 12px 14px;
+
+  border: 1px solid rgba($color-primary, 0.24);
+  border-radius: 12px;
+  background-color: color.adjust($color-primary-light, $lightness: 34%);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 6px;
+  }
+
+  &__label {
+    color: $color-secondary;
+    font-size: 14px;
+  }
+
+  &__code {
+    color: $color-primary;
+    font-size: 14px;
+    letter-spacing: 0.6px;
+  }
+
+  &__text {
+    margin-bottom: 4px;
+
+    color: $color-success;
+    font-size: 14px;
+  }
+
+  &__hint {
+    margin-bottom: 0;
+
+    color: $text-muted;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
+.cart-category-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  max-width: 180px;
+}
+
+.cart-category-tag {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 8px;
+
+  border-radius: 999px;
+  background-color: color.adjust($color-primary-light, $lightness: 34%);
+  color: $color-primary;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 // 響應式微調：在手機版隱藏不必要的欄位

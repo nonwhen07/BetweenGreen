@@ -92,7 +92,7 @@ export const PRODUCT_PERSONALITY_MAP = {
 export const PRODUCT_UNIT_MAP = {
   pot_set: {
     label: '單盆植栽',
-    shortLabel: '單盆',
+    shortLabel: '盆',
     value: '1 pot set',
     encodeKey: 'UNIT_POT',
     badge: 'green',
@@ -100,7 +100,7 @@ export const PRODUCT_UNIT_MAP = {
 
   double_pot: {
     label: '雙盆組合',
-    shortLabel: '雙盆',
+    shortLabel: '雙盆組',
     value: '2 pot set',
     encodeKey: 'UNIT_DOUBLE',
     badge: 'green',
@@ -108,7 +108,7 @@ export const PRODUCT_UNIT_MAP = {
 
   glass_terrarium: {
     label: '玻璃植景',
-    shortLabel: '玻璃植景',
+    shortLabel: '盆器',
     value: '1 glass terrarium',
     encodeKey: 'UNIT_GLASS',
     badge: 'blue',
@@ -116,7 +116,7 @@ export const PRODUCT_UNIT_MAP = {
 
   hanging_set: {
     label: '吊掛植組',
-    shortLabel: '吊掛',
+    shortLabel: '掛組',
     value: '1 hanging set',
     encodeKey: 'UNIT_HANG',
     badge: 'olive',
@@ -124,7 +124,7 @@ export const PRODUCT_UNIT_MAP = {
 
   bloom_pot: {
     label: '開花盆栽',
-    shortLabel: '花盆',
+    shortLabel: '盆',
     value: '1 bloom pot',
     encodeKey: 'UNIT_BLOOM',
     badge: 'rose',
@@ -132,7 +132,7 @@ export const PRODUCT_UNIT_MAP = {
 
   large_pot: {
     label: '大型盆栽',
-    shortLabel: '大型',
+    shortLabel: '大型盆',
     value: '1 large pot',
     encodeKey: 'UNIT_LARGE',
     badge: 'brown',

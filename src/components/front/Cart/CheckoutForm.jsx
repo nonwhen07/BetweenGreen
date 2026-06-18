@@ -9,16 +9,7 @@ import { formatCategoryPreview2, getProductUnitLabel } from '@/utils/productForm
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 
-const CheckoutForm = ({
-  carts,
-  register,
-  onSubmit,
-  setValue,
-  // getValues,
-  watch,
-  errors,
-  onBack,
-}) => {
+const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBack }) => {
   const total = calculateCartTotal(carts);
   const [isSame, setIsSame] = useState(false);
 
@@ -116,32 +107,7 @@ const CheckoutForm = ({
 
             <div className="cart-checkout-again card row justify-content-center p-3">
               <h2 className="mb-3">寄送資訊</h2>
-              {/* <button
-                type="button"
-                onClick={() => {
-                  setValue('shippingName', getValues('name'));
-                  setValue('shippingTel', getValues('tel'));
-                  setValue('shippingEmail', getValues('email'));
-                }}
-              >
-                同訂購人資訊
-              </button> */}
               <div className="col-12 mb-3">
-                {/* <input
-                  type="checkbox"
-                  checked={isSame}
-                  onChange={(e) => {
-                    const checked = e.target.checked;
-                    setIsSame(checked);
-
-                    if (checked) {
-                      setValue('shippingName', getValues('name'));
-                      setValue('shippingTel', getValues('tel'));
-                      setValue('shippingEmail', getValues('email'));
-                    }
-                  }}
-                />
-                同訂購人資訊 */}
                 <label className={`ui-toggle-btn ${isSame ? 'active' : ''}`}>
                   <input
                     type="checkbox"

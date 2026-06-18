@@ -38,6 +38,7 @@ const CartPage = () => {
   const { start, stop } = useLoading();
 
   const {
+    cartData,
     carts,
     loadingItems,
     error,
@@ -45,6 +46,8 @@ const CartPage = () => {
     handleUpdateCartItem,
     handleDeleteCartItem,
     handleClearCart,
+    handleApplyCoupon,
+    isCouponLoading,
   } = useCart();
 
   const [lastOrderCart, setLastOrderCart] = useState([]);
@@ -232,16 +235,21 @@ const CartPage = () => {
                   />
                   <CartSummary
                     carts={carts}
+                    cartData={cartData}
+                    isCouponLoading={isCouponLoading}
                     actions={{
                       onClear: handleClearCart,
+                      onApplyCoupon: handleApplyCoupon,
                     }}
                     onNext={() => {
                       setErrorMessage(''); // 先重置
+
                       if (carts?.length === 0) {
                         setErrorMessage('您的購物車是空的!!');
                         warning('您的購物車是空的!!');
                         return;
                       }
+
                       navigate('/cart/step2');
                     }}
                   />

@@ -3,17 +3,27 @@ import { useState } from 'react';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
-// import { useCart } from '@/hooks/useCart';
 import { useCartActions } from '@/hooks/cart/useCartActions';
 // services
 import { getCartItems, updateCartItem, deleteCartItem, clearCart } from '@/services/cartService';
+import { applyCoupon } from '@/services/couponService';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
+const EMPTY_CART_DATA = {
+  carts: [],
+  total: 0,
+  final_total: 0,
+};
+
 export const useCart = () => {
-  const [carts, setCarts] = useState([]);
+  // const [carts, setCarts] = useState([]);
+  // const [loadingItems, setLoadingItems] = useState({});
+
+  // const [error, setError] = useState('');
+  const [cartData, setCartData] = useState(EMPTY_CART_DATA);
   const [loadingItems, setLoadingItems] = useState({});
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isCouponLoading, setIsCouponLoading] = useState(false);
   const [error, setError] = useState('');
 
   const { success, showError } = useToast();
@@ -21,23 +31,37 @@ export const useCart = () => {
 
   const { refreshCart } = useCartActions();
 
+  const carts = cartData.carts || [];
+
+  // const fetchCart = async () => {
+  //   const carts = await getCartItems();
+  //   setCarts(carts);
+  //   await refreshCart();
+  // };
   const fetchCart = async () => {
-    const carts = await getCartItems();
-    setCarts(carts);
+    const data = await getCartItems();
+    const carts = data.carts || [];
+
+    const calculatedTotal = carts.reduce((total, cart) => total + Number(cart.total || 0), 0);
+
+    setCartData({
+      carts,
+      total: Number(data?.total ?? calculatedTotal),
+      final_total: Number(data?.final_total ?? data?.total ?? calculatedTotal),
+    });
+
     await refreshCart();
   };
 
   // 調整購物車品項
   const handleUpdateCartItem = async (cart_id, product_id, qty = 1) => {
-    // 如果 qty 小於 1，直接返回不做任何處理 作法A
-    // 如果 qty 小於 1，直接刪掉cart item 作法B
+    // 如果 qty 小於 1，直接返回不做任何處理 作法A 或 直接刪掉cart item 作法B
     if (qty < 1) {
       const confirmDelete = window.confirm('商品數量為 0 會直接刪除購物車品項，確定要刪除嗎？');
 
       if (!confirmDelete) return;
 
       await handleDeleteCartItem(cart_id);
-      // 成功後刷新購物車 + 更新全局購物車狀態
       await fetchCart();
       return;
     }
@@ -49,7 +73,6 @@ export const useCart = () => {
 
     try {
       await updateCartItem(cart_id, product_id, qty);
-      // 成功後刷新購物車 + 更新全局購物車狀態
       await fetchCart();
       setError('');
     } catch (error) {
@@ -65,12 +88,11 @@ export const useCart = () => {
   };
   // 刪除購物車品項
   const handleDeleteCartItem = async (cart_id) => {
-    // 改為在局部按鈕上顯示 loading， 避免整個畫面都被遮罩，提升使用體驗
-
     setLoadingItems((prev) => ({
       ...prev,
       [cart_id]: 'delete',
     }));
+
     try {
       await deleteCartItem(cart_id);
       // 成功後刷新購物車 + 更新全局購物車狀態
@@ -90,7 +112,9 @@ export const useCart = () => {
   // 移除全部購物車品項
   const handleClearCart = async () => {
     if (!window.confirm('確定要清空購物車嗎？')) return;
+
     start();
+
     try {
       await clearCart();
       await fetchCart();
@@ -105,15 +129,45 @@ export const useCart = () => {
       stop();
     }
   };
+  // 購物車中輸入優惠卷
+  const handleApplyCoupon = async (couponCode) => {
+    // await applyCoupon(couponCode);
+    // await fetchCart();
+    const trimmedCode = couponCode.trim();
+
+    if (!trimmedCode) {
+      showError('請輸入優惠碼。');
+      return;
+    }
+
+    setIsCouponLoading(true);
+
+    try {
+      await applyCoupon(trimmedCode);
+      await fetchCart();
+
+      setError('');
+      success('優惠碼已套用。');
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error, setError, '優惠碼套用失敗。');
+      showError(errorMessage);
+    } finally {
+      setIsCouponLoading(false);
+    }
+  };
 
   return {
+    cartData,
     carts,
 
     loadingItems,
+    isCouponLoading,
     error,
+
     fetchCart,
     handleUpdateCartItem,
     handleDeleteCartItem,
     handleClearCart,
+    handleApplyCoupon,
   };
 };

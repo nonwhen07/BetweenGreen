@@ -3,24 +3,24 @@ import { Link } from 'react-router-dom';
 import { FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
 
+// constants
+import { PRODUCT_UNIT_MAP } from '@/constants/adminBuilderMaps';
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
+// utils
+import { getShortLabelByValue } from '@/utils/adminBuilderUtils';
+import { formatCategoryPreview } from '@/utils/productFormatter';
 
 // components
 import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
 
-const CartTable = ({
-  carts,
-
-  // onClear,
-  // onUpdate,
-  // onDelete,
-  actions,
-  isQtyLoading,
-  isDeleteLoading,
-}) => {
+const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
   const cartTotal = useMemo(() => calculateCartTotal(carts), [carts]);
+
+  const getCategoryParts = (category = '') => {
+    return formatCategoryPreview(category).split('-').filter(Boolean);
+  };
 
   if (carts?.length === 0) {
     return null; // 如果購物車是空的，就不顯示摘要
@@ -63,7 +63,15 @@ const CartTable = ({
                     </button>
                   </td>
                   <td className="cart-table__col--info">{cart.product.title}</td>
-                  <td className="cart-table__col--category">{cart.product.category}</td>
+                  <td className="cart-table__col--category">
+                    <div className="cart-category-tags">
+                      {getCategoryParts(cart.product.category).map((item) => (
+                        <span key={item} className="cart-category-tag">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
                   <td className="cart-table__col--image">
                     <ProductImage
                       src={cart.product.imageUrl}
@@ -110,7 +118,7 @@ const CartTable = ({
                         </button>
                       </div>
                       <span className="input-group-text bg-transparent border-0">
-                        {cart.product.unit}
+                        {getShortLabelByValue(PRODUCT_UNIT_MAP, cart.product.unit, '未設定單位')}
                       </span>
                     </div>
                   </td>

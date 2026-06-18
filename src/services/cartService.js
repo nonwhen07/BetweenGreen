@@ -3,7 +3,8 @@ import axiosAPI from '@/api/axiosAPI';
 // 取得購物車列表
 export const getCartItems = async () => {
   const res = await axiosAPI.get('/cart');
-  return res.data.data.carts;
+
+  return res.data.data;
 };
 // 取得購物車列表 + 剩餘完整資料
 export const getCartSummary = async () => {
