@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+// components
+// import ProductImage from '@/components/ProductImage';
 import ProductImage from '@/components/ProductImage';
-import { getOrders, payOrder } from '@/services/orderService';
+// services
+// import { getOrders, payOrder } from '@/services/orderService';
+import { getOrders } from '@/services/orderService';
+// hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
+// utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 const normalizeOrders = (orders) => {
@@ -46,13 +52,16 @@ const formatDate = (timestamp) => {
 };
 
 const CustomerOrdersPage = () => {
-  const { success, showError } = useToast();
+  const navigate = useNavigate();
+
+  // const { success, showError } = useToast();
+  const { showError } = useToast();
   const { start, stop } = useLoading();
 
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [payingOrderId, setPayingOrderId] = useState(null);
+  // const [payingOrderId, setPayingOrderId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
 
   const sortedOrders = useMemo(() => {
@@ -76,23 +85,23 @@ const CustomerOrdersPage = () => {
     }
   };
 
-  const handlePayOrder = async (orderId) => {
-    if (!orderId) return;
+  // const handlePayOrder = async (orderId) => {
+  //   if (!orderId) return;
 
-    setPayingOrderId(orderId);
+  //   setPayingOrderId(orderId);
 
-    try {
-      await payOrder(orderId);
+  //   try {
+  //     await payOrder(orderId);
 
-      success('訂單付款成功。');
-      await fetchOrders(currentPage);
-    } catch (error) {
-      const message = extractErrorMessage(error, setErrorMessage, '訂單付款失敗。');
-      showError(message);
-    } finally {
-      setPayingOrderId(null);
-    }
-  };
+  //     success('訂單付款成功。');
+  //     await fetchOrders(currentPage);
+  //   } catch (error) {
+  //     const message = extractErrorMessage(error, setErrorMessage, '訂單付款失敗。');
+  //     showError(message);
+  //   } finally {
+  //     setPayingOrderId(null);
+  //   }
+  // };
 
   useEffect(() => {
     fetchOrders(currentPage);
@@ -133,7 +142,7 @@ const CustomerOrdersPage = () => {
             const orderProducts = getOrderProducts(order);
             const isPaid = order.is_paid;
             const orderId = order.id;
-            const isPaying = payingOrderId === orderId;
+            // const isPaying = payingOrderId === orderId;
             const orderAmount = order.final_total ?? order.total ?? 0;
 
             return (
@@ -202,7 +211,7 @@ const CustomerOrdersPage = () => {
                     繼續購物
                   </Link>
 
-                  {!isPaid && (
+                  {/* {!isPaid && (
                     <button
                       type="button"
                       className="ui-btn ui-btn--primary"
@@ -210,6 +219,15 @@ const CustomerOrdersPage = () => {
                       onClick={() => handlePayOrder(orderId)}
                     >
                       {isPaying ? '付款處理中...' : '立即付款'}
+                    </button>
+                  )} */}
+                  {!isPaid && (
+                    <button
+                      type="button"
+                      className="ui-btn ui-btn--primary"
+                      onClick={() => navigate(`/checkout-payment/${orderId}`)}
+                    >
+                      前往付款
                     </button>
                   )}
                 </div>

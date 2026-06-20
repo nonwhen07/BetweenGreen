@@ -35,6 +35,7 @@ import AboutPage from '@/pages/front/AboutPage';
 import ProductsPage from '@/pages/front/ProductsPage';
 import ProductDetailPage from '@/pages/front/ProductDetailPage';
 import CartPage from '@/pages/front/CartPage';
+import CheckoutPaymentPage from '@/pages/front/CheckoutPaymentPage';
 import CheckoutSuccessPage from '@/pages/front/CheckoutSuccessPage';
 import CustomerOrdersPage from '@/pages/front/CustomerOrdersPage';
 import NotFoundPage from '@/pages/front/NotFoundPage';
@@ -59,7 +60,9 @@ const routes = [
       { path: 'products', element: <ProductsPage /> },
       { path: 'product/:product_id', element: <ProductDetailPage /> },
       { path: 'cart/:step', element: <CartPage /> },
-      { path: 'checkout-success', element: <CheckoutSuccessPage /> },
+      { path: 'checkout-payment/:orderId', element: <CheckoutPaymentPage /> },
+      // { path: 'checkout-success', element: <CheckoutSuccessPage /> },
+      { path: 'checkout-success/:orderId', element: <CheckoutSuccessPage /> },
       { path: 'customer-orders', element: <CustomerOrdersPage /> },
 
       { path: 'login', element: <LoginPage /> },

@@ -146,7 +146,13 @@ const CartPage = () => {
 
       success('您的訂單付款成功。');
 
-      navigate('/checkout-success', {
+      // navigate('/checkout-success', {
+      //   state: {
+      //     orderId: targetOrderID,
+      //     carts: targetCart,
+      //   },
+      // });
+      navigate(`/checkout-success/${targetOrderID}`, {
         state: {
           orderId: targetOrderID,
           carts: targetCart,
