@@ -250,9 +250,15 @@ const CheckoutPaymentPage = () => {
             </Link>
           </div>
         ) : (
+          // <CheckoutPayment
+          //   orderID={orderId}
+          //   lastOrderCart={orderProducts}
+          //   orderAmount={orderAmount}
+          //   onSubmit={handlePay}
+          // />
           <CheckoutPayment
             orderID={orderId}
-            lastOrderCart={orderProducts}
+            orderItems={orderProducts}
             orderAmount={orderAmount}
             onSubmit={handlePay}
           />

@@ -36,8 +36,20 @@ const getItemTotal = (item) => {
   return Number(item.final_total ?? item.total ?? getProductPrice(item) * Number(item.qty || 0));
 };
 
+const formatCurrency = (value = 0) => {
+  return Math.round(Number(value || 0)).toLocaleString();
+};
+
 // const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
-const CheckoutPayment = ({ orderID, lastOrderCart = [], orderAmount = null, onSubmit }) => {
+const CheckoutPayment = ({
+  orderID,
+  orderItems,
+  lastOrderCart = [],
+  orderAmount = null,
+  onSubmit,
+}) => {
+  const paymentItems = orderItems || lastOrderCart;
+
   const {
     register,
     handleSubmit,
@@ -81,21 +93,21 @@ const CheckoutPayment = ({ orderID, lastOrderCart = [], orderAmount = null, onSu
   // const cartTotal = useMemo(() => calculateCartTotal(lastOrderCart), [lastOrderCart]);
   // const shipping = cartTotal >= minfreeShippingFee ? 0 : shippingFee;
   // const paymentTotal = cartTotal + shipping;
-
-  const cartTotal = useMemo(() => {
-    const calculatedTotal = calculateCartTotal(lastOrderCart);
+  const itemsTotal = useMemo(() => {
+    const calculatedTotal = calculateCartTotal(paymentItems);
 
     if (calculatedTotal > 0) {
       return calculatedTotal;
     }
 
-    return lastOrderCart.reduce((total, item) => total + getItemTotal(item), 0);
-  }, [lastOrderCart]);
-  const shipping = cartTotal >= minfreeShippingFee ? 0 : shippingFee;
-  const paymentTotal = Number(orderAmount) > 0 ? Math.round(orderAmount) : cartTotal + shipping;
+    return paymentItems.reduce((total, item) => total + getItemTotal(item), 0);
+  }, [paymentItems]);
+  const shipping = itemsTotal >= minfreeShippingFee ? 0 : shippingFee;
+  const paymentTotal =
+    Number(orderAmount) > 0 ? Math.round(Number(orderAmount)) : itemsTotal + shipping;
 
-  const handlePaymentSubmit = handleSubmit(() => {
-    onSubmit();
+  const handlePaymentSubmit = handleSubmit((formData) => {
+    onSubmit?.(formData);
   });
 
   const handleCardNumberChange = (event) => {
@@ -165,7 +177,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart = [], orderAmount = null, onSu
                         </td>
                       </tr>
                     ))} */}
-                    {lastOrderCart.map((item) => {
+                    {/* {lastOrderCart.map((item) => {
                       const title = getProductTitle(item);
                       const imageUrl = getProductImage(item);
                       const price = getProductPrice(item);
@@ -191,6 +203,36 @@ const CheckoutPayment = ({ orderID, lastOrderCart = [], orderAmount = null, onSu
 
                           <td className="cart-table__col--subtotal">
                             NT$ {itemTotal.toLocaleString()}
+                          </td>
+                        </tr>
+                      );
+                    })} */}
+                    {paymentItems.map((item) => {
+                      const title = getProductTitle(item);
+                      const imageUrl = getProductImage(item);
+                      const price = getProductPrice(item);
+                      const unit = getProductUnit(item);
+                      const itemTotal = getItemTotal(item);
+
+                      return (
+                        <tr key={item.id || item.product_id}>
+                          <td className="cart-table__col--info">{title}</td>
+
+                          <td className="cart-table__col--image">
+                            <ProductImage src={imageUrl} alt={title} size="small" />
+                          </td>
+
+                          <td className="cart-table__col--price">NT$ {formatCurrency(price)}</td>
+
+                          <td className="cart-table__col--qty">
+                            <div className="d-flex justify-content-center align-items-center">
+                              <span className="me-2">{item.qty}</span>
+                              <span className="bg-transparent border-0">{unit}</span>
+                            </div>
+                          </td>
+
+                          <td className="cart-table__col--subtotal">
+                            NT$ {formatCurrency(itemTotal)}
                           </td>
                         </tr>
                       );
@@ -439,7 +481,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart = [], orderAmount = null, onSu
 
               <div className="d-flex justify-content-between mb-3">
                 <strong>商品小計</strong>
-                <strong>NT$ {cartTotal.toLocaleString()}</strong>
+                <strong>NT$ {formatCurrency(itemsTotal)}</strong>
               </div>
 
               <div className="d-flex justify-content-between mb-3">
@@ -448,7 +490,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart = [], orderAmount = null, onSu
                 {shipping === 0 ? (
                   <strong className="text-success">免運費</strong>
                 ) : (
-                  <strong>NT$ {shipping.toLocaleString()}</strong>
+                  <strong>NT$ {formatCurrency(shipping)}</strong>
                 )}
               </div>
 
@@ -456,7 +498,7 @@ const CheckoutPayment = ({ orderID, lastOrderCart = [], orderAmount = null, onSu
 
               <div className="d-flex justify-content-between mb-3">
                 <strong>應付金額</strong>
-                <strong>NT$ {paymentTotal.toLocaleString()}</strong>
+                <strong>NT$ {formatCurrency(paymentTotal)}</strong>
               </div>
 
               <button type="submit" className="ui-btn ui-btn--primary w-100">
