@@ -9,13 +9,6 @@ import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 // components
 import ProductImage from '@/components/ProductImage';
 
-// const formatCardNumber = (value = '') => {
-//   return value
-//     .replace(/\D/g, '')
-//     .slice(0, 16)
-//     .replace(/(\d{4})(?=\d)/g, '$1 ');
-// };
-
 const getProductTitle = (item) => {
   return item.product?.title || `商品 ID：${item.product_id || '—'}`;
 };
@@ -40,15 +33,10 @@ const formatCurrency = (value = 0) => {
   return Math.round(Number(value || 0)).toLocaleString();
 };
 
-// const CheckoutPayment = ({ orderID, lastOrderCart, onSubmit }) => {
-const CheckoutPayment = ({
-  orderID,
-  orderItems,
-  lastOrderCart = [],
-  orderAmount = null,
-  onSubmit,
-}) => {
-  const paymentItems = orderItems || lastOrderCart;
+const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmit }) => {
+  const paymentItems = useMemo(() => {
+    return Array.isArray(orderItems) ? orderItems : [];
+  }, [orderItems]);
 
   const {
     register,
@@ -64,6 +52,7 @@ const CheckoutPayment = ({
       expiredDate: '',
       cvv: '',
     },
+    shouldUnregister: true,
   });
 
   const paymentMethod = useWatch({
@@ -90,9 +79,6 @@ const CheckoutPayment = ({
     defaultValue: '',
   });
 
-  // const cartTotal = useMemo(() => calculateCartTotal(lastOrderCart), [lastOrderCart]);
-  // const shipping = cartTotal >= minfreeShippingFee ? 0 : shippingFee;
-  // const paymentTotal = cartTotal + shipping;
   const itemsTotal = useMemo(() => {
     const calculatedTotal = calculateCartTotal(paymentItems);
 
@@ -149,64 +135,6 @@ const CheckoutPayment = ({
                   </thead>
 
                   <tbody className="cart-table__body">
-                    {/* {lastOrderCart.map((cart) => (
-                      <tr key={cart.id}>
-                        <td className="cart-table__col--info">{cart.product.title}</td>
-
-                        <td className="cart-table__col--image">
-                          <ProductImage
-                            src={cart.product.imageUrl}
-                            alt={cart.product.title}
-                            size="small"
-                          />
-                        </td>
-
-                        <td className="cart-table__col--price">
-                          NT$ {cart.product.price.toLocaleString()}
-                        </td>
-
-                        <td className="cart-table__col--qty">
-                          <div className="d-flex justify-content-center align-items-center">
-                            <span className="me-2">{cart.qty}</span>
-                            <span className="bg-transparent border-0">{cart.product.unit}</span>
-                          </div>
-                        </td>
-
-                        <td className="cart-table__col--subtotal">
-                          NT$ {cart.total.toLocaleString()}
-                        </td>
-                      </tr>
-                    ))} */}
-                    {/* {lastOrderCart.map((item) => {
-                      const title = getProductTitle(item);
-                      const imageUrl = getProductImage(item);
-                      const price = getProductPrice(item);
-                      const unit = getProductUnit(item);
-                      const itemTotal = getItemTotal(item);
-
-                      return (
-                        <tr key={item.id || item.product_id}>
-                          <td className="cart-table__col--info">{title}</td>
-
-                          <td className="cart-table__col--image">
-                            <ProductImage src={imageUrl} alt={title} size="small" />
-                          </td>
-
-                          <td className="cart-table__col--price">NT$ {price.toLocaleString()}</td>
-
-                          <td className="cart-table__col--qty">
-                            <div className="d-flex justify-content-center align-items-center">
-                              <span className="me-2">{item.qty}</span>
-                              <span className="bg-transparent border-0">{unit}</span>
-                            </div>
-                          </td>
-
-                          <td className="cart-table__col--subtotal">
-                            NT$ {itemTotal.toLocaleString()}
-                          </td>
-                        </tr>
-                      );
-                    })} */}
                     {paymentItems.map((item) => {
                       const title = getProductTitle(item);
                       const imageUrl = getProductImage(item);

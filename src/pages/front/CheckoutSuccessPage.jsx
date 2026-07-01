@@ -110,7 +110,7 @@ const CheckoutSuccessPage = () => {
   }, [stateCarts, orderProducts]);
 
   const finalTotal = useMemo(() => {
-    if (orderData?.final_total || orderData?.total) {
+    if (orderData?.final_total != null || orderData?.total != null) {
       return Number(orderData.final_total ?? orderData.total);
     }
 
@@ -221,9 +221,9 @@ const CheckoutSuccessPage = () => {
             </div>
           </section>
 
-          <section className="checkout-success__summary-grid row g-3  mt-3">
+          <section className="checkout-success__summary-grid row g-3 mt-3">
             <div className="col-4">
-              <article className="checkout-success__summary-card card p-3">
+              <article className="checkout-success__summary-card card p-3 h-100">
                 <div className="checkout-success__summary-icon">
                   <ReceiptText size={22} />
                 </div>
@@ -236,7 +236,7 @@ const CheckoutSuccessPage = () => {
             </div>
 
             <div className="col-4">
-              <article className="checkout-success__summary-card card p-3">
+              <article className="checkout-success__summary-card card p-3 h-100">
                 <div className="checkout-success__summary-icon">
                   <PackageCheck size={22} />
                 </div>
@@ -249,7 +249,7 @@ const CheckoutSuccessPage = () => {
             </div>
 
             <div className="col-4">
-              <article className="checkout-success__summary-card card p-3">
+              <article className="checkout-success__summary-card card p-3 h-100">
                 <div className="checkout-success__summary-icon">
                   <ClipboardList size={22} />
                 </div>

@@ -69,7 +69,6 @@ const CartPage = () => {
   } = useForm();
 
   // 修改/刪除 cart item 時的 loading 狀態，由於是區域性的狀態，且會同時存在多個，所以改用物件來儲存，以 cart_id 作為 key 來標定 loading 的位置
-  // const [loadingItems, setLoadingItems] = useState({}); // 用物件儲存各商品的 Loading 狀態
   const isQtyLoading = (id) => loadingItems[id] === 'qty';
   const isDeleteLoading = (id) => loadingItems[id] === 'delete';
 
@@ -113,13 +112,26 @@ const CartPage = () => {
     }
 
     // data資料"解構"成message，剩下的打包一起變成user
-    const { name, tel, email, city, district, addressDetail, message } = formData;
+    // const { name, tel, email, city, district, addressDetail, message } = formData;
+    // const fullAddress = `${city}${district}${addressDetail}`;
+    // const orderPayload = {
+    //   data: {
+    //     user: { name, tel, email, address: fullAddress },
+    //     message,
+    //   },
+    // };
 
+    const { shippingName, shippingTel, shippingEmail, city, district, addressDetail, message } =
+      formData;
     const fullAddress = `${city}${district}${addressDetail}`;
-
     const orderPayload = {
       data: {
-        user: { name, tel, email, address: fullAddress },
+        user: {
+          name: shippingName,
+          tel: shippingTel,
+          email: shippingEmail,
+          address: fullAddress,
+        },
         message,
       },
     };
@@ -128,9 +140,7 @@ const CartPage = () => {
   });
 
   // 付款金流事件驅動
-  const handlePay = async (event) => {
-    event?.preventDefault();
-
+  const handlePay = async () => {
     const targetOrderID = finalOrderID;
     const targetCart = finalCart;
 
@@ -146,12 +156,6 @@ const CartPage = () => {
 
       success('您的訂單付款成功。');
 
-      // navigate('/checkout-success', {
-      //   state: {
-      //     orderId: targetOrderID,
-      //     carts: targetCart,
-      //   },
-      // });
       navigate(`/checkout-success/${targetOrderID}`, {
         state: {
           orderId: targetOrderID,
@@ -292,7 +296,7 @@ const CartPage = () => {
               ) : (
                 <CheckoutPayment
                   orderID={finalOrderID}
-                  lastOrderCart={finalCart}
+                  orderItems={finalCart}
                   onSubmit={handlePay}
                 />
               )}

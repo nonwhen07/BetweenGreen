@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // components
-// import ProductImage from '@/components/ProductImage';
 import ProductImage from '@/components/ProductImage';
 // services
-// import { getOrders, payOrder } from '@/services/orderService';
 import { getOrders } from '@/services/orderService';
 // hooks
 import { useToast } from '@/hooks/useToast';
@@ -54,14 +52,12 @@ const formatDate = (timestamp) => {
 const CustomerOrdersPage = () => {
   const navigate = useNavigate();
 
-  // const { success, showError } = useToast();
   const { showError } = useToast();
   const { start, stop } = useLoading();
 
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [payingOrderId, setPayingOrderId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
 
   const sortedOrders = useMemo(() => {
@@ -84,24 +80,6 @@ const CustomerOrdersPage = () => {
       stop();
     }
   };
-
-  // const handlePayOrder = async (orderId) => {
-  //   if (!orderId) return;
-
-  //   setPayingOrderId(orderId);
-
-  //   try {
-  //     await payOrder(orderId);
-
-  //     success('訂單付款成功。');
-  //     await fetchOrders(currentPage);
-  //   } catch (error) {
-  //     const message = extractErrorMessage(error, setErrorMessage, '訂單付款失敗。');
-  //     showError(message);
-  //   } finally {
-  //     setPayingOrderId(null);
-  //   }
-  // };
 
   useEffect(() => {
     fetchOrders(currentPage);
@@ -142,13 +120,25 @@ const CustomerOrdersPage = () => {
             const orderProducts = getOrderProducts(order);
             const isPaid = order.is_paid;
             const orderId = order.id;
-            // const isPaying = payingOrderId === orderId;
             const orderAmount = order.final_total ?? order.total ?? 0;
+            const paymentAction = isPaid ? (
+              <Link to={`/checkout-success/${orderId}`} className="ui-btn ui-btn--outline-primary">
+                查看付款完成
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="ui-btn ui-btn--primary"
+                onClick={() => navigate(`/checkout-payment/${orderId}`)}
+              >
+                前往付款
+              </button>
+            );
 
             return (
               <section key={orderId} className="card customer-order-card p-3 mb-4">
                 <div className="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
-                  <div className="text-lg-Start">
+                  <div className="text-lg-start">
                     <h2 className="h5 mb-2">訂單編號：{orderId}</h2>
                     <p className="mb-1 text-muted">
                       收件人：{order.user?.name || '—'} 、 建立日期：{formatDate(order.create_at)}
@@ -181,12 +171,12 @@ const CustomerOrdersPage = () => {
                       {orderProducts.map((item) => (
                         <tr key={item.id}>
                           <td className="cart-table__col--info">
-                            {item.product?.title || `商品 ID：${order.product_id || '—'}`}
+                            {item.product?.title || `商品 ID：${item.product_id || '—'}`}
                           </td>
                           <td className="cart-table__col--image">
                             <ProductImage
                               src={item.product?.imageUrl}
-                              alt={item.product?.title || `商品 ID：${order.product_id}`}
+                              alt={item.product?.title || `商品 ID：${item.product_id || '—'}`}
                               size="small"
                             />
                           </td>
@@ -198,7 +188,7 @@ const CustomerOrdersPage = () => {
                             {item.product?.unit || ''}
                           </td>
                           <td className="cart-table__col--subtotal">
-                            NT$ {Number(item.total || 0).toLocaleString()}
+                            NT$ {Number(item.final_total ?? item.total ?? 0).toLocaleString()}
                           </td>
                         </tr>
                       ))}
@@ -211,25 +201,7 @@ const CustomerOrdersPage = () => {
                     繼續購物
                   </Link>
 
-                  {/* {!isPaid && (
-                    <button
-                      type="button"
-                      className="ui-btn ui-btn--primary"
-                      disabled={isPaying}
-                      onClick={() => handlePayOrder(orderId)}
-                    >
-                      {isPaying ? '付款處理中...' : '立即付款'}
-                    </button>
-                  )} */}
-                  {!isPaid && (
-                    <button
-                      type="button"
-                      className="ui-btn ui-btn--primary"
-                      onClick={() => navigate(`/checkout-payment/${orderId}`)}
-                    >
-                      前往付款
-                    </button>
-                  )}
+                  {paymentAction}
                 </div>
               </section>
             );

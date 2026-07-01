@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 
 import taiwanDistricts from '@/data/taiwanDistricts.json';
@@ -185,7 +184,7 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
               </div>
               <div className="row mb-3">
                 <div className="col-12">
-                  <h3>訂購人地址</h3>
+                  <h3>收件地址</h3>
                 </div>
                 <div className="col-lg-6">
                   {/* 縣市 */}
@@ -226,19 +225,9 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
               </div>
               <div className="row mb-3">
                 <div className="col-12">
-                  {/* <label htmlFor="address" className="form-label">
-                    訂購人地址
-                  </label>
-                  <input
-                    {...register('address', { required: '地址 欄位必填' })}
-                    id="address"
-                    type="text"
-                    className={`form-control ${errors.address ? 'is-invalid' : ''}`}
-                    placeholder="請輸入地址"
-                  /> */}
                   {/* 詳細地址 */}
                   <label htmlFor="addressDetail" className="form-label">
-                    訂購人地址
+                    詳細地址
                   </label>
                   <input
                     id="addressDetail"
@@ -249,7 +238,9 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
                   />
                 </div>
 
-                {errors.address && <p className="text-danger my-2">{errors.address.message}</p>}
+                {errors.addressDetail && (
+                  <p className="text-danger my-2">{errors.addressDetail.message}</p>
+                )}
               </div>
               <div className="row mb-3">
                 <div className="col-12">

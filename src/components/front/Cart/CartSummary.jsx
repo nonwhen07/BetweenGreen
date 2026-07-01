@@ -19,8 +19,13 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
   const amountToFreeShipping = Math.max(minfreeShippingFee - finalTotal, 0);
   const appliedCoupon = getAppliedCoupon(carts);
 
+  // const handleApplyCoupon = () => {
+  //   actions.onApplyCoupon?.(couponCode);
+  // };
   const handleApplyCoupon = () => {
-    actions.onApplyCoupon?.(couponCode);
+    const trimmedCode = couponCode.trim();
+    if (!trimmedCode) return;
+    actions.onApplyCoupon?.(trimmedCode);
   };
 
   if (carts?.length === 0) {

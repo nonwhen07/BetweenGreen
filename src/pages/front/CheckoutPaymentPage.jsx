@@ -46,23 +46,6 @@ const CheckoutPaymentPage = () => {
     return Number(orderData?.final_total ?? orderData?.total ?? 0);
   }, [orderData]);
 
-  // const fetchOrder = async () => {
-  //   if (!orderId) return;
-
-  //   start();
-
-  //   try {
-  //     const res = await getOrder(orderId);
-
-  //     setOrderData(res.data);
-  //     setErrorMessage('');
-  //   } catch (error) {
-  //     const message = extractErrorMessage(error, setErrorMessage, '取得訂單付款資料失敗。');
-  //     showError(message);
-  //   } finally {
-  //     stop();
-  //   }
-  // };
   const fetchOrder = async () => {
     if (!orderId) return;
 
@@ -88,37 +71,7 @@ const CheckoutPaymentPage = () => {
     }
   };
 
-  // const handlePay = async (event) => {
-  //   event?.preventDefault();
-
-  //   if (!orderId) {
-  //     warning('找不到訂單編號，請返回訂單查詢頁重新操作。');
-  //     return;
-  //   }
-
-  //   start();
-
-  //   try {
-  //     await payOrder(orderId);
-
-  //     success('您的訂單付款成功。');
-
-  //     navigate(`/checkout-success/${orderId}`, {
-  //       state: {
-  //         orderId,
-  //         carts: orderProducts,
-  //       },
-  //     });
-  //   } catch (error) {
-  //     const message = extractErrorMessage(error, setErrorMessage, '訂單付款失敗。');
-  //     showError(message);
-  //   } finally {
-  //     stop();
-  //   }
-  // };
-  const handlePay = async (event) => {
-    event?.preventDefault();
-
+  const handlePay = async (paymentData) => {
     if (!orderId) {
       warning('找不到訂單編號，請返回訂單查詢頁重新操作。');
       return;
@@ -142,6 +95,7 @@ const CheckoutPaymentPage = () => {
         navigate(`/checkout-success/${orderId}`, {
           state: {
             orderId,
+            paymentMethod: paymentData?.paymentMethod,
           },
         });
 
@@ -156,6 +110,7 @@ const CheckoutPaymentPage = () => {
         state: {
           orderId,
           carts: orderProducts,
+          paymentMethod: paymentData?.paymentMethod,
         },
       });
     } catch (error) {
@@ -250,12 +205,6 @@ const CheckoutPaymentPage = () => {
             </Link>
           </div>
         ) : (
-          // <CheckoutPayment
-          //   orderID={orderId}
-          //   lastOrderCart={orderProducts}
-          //   orderAmount={orderAmount}
-          //   onSubmit={handlePay}
-          // />
           <CheckoutPayment
             orderID={orderId}
             orderItems={orderProducts}
