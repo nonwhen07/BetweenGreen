@@ -84,7 +84,7 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                   </td>
                   <td className="cart-table__col--qty" style={{ width: '150px' }}>
                     <div className="qty-group d-flex align-items-center">
-                      <div className="btn-group me-2" role="group">
+                      <div className="btn-group" role="group">
                         <button
                           onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)}
                           disabled={isQtyLoading(cart.id)}

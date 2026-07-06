@@ -187,7 +187,6 @@ const CheckoutSuccessPage = () => {
         <section className="checkout-success checkout-success--error card p-4 text-center my-4">
           <h2 className="h5 mb-2">暫時無法取得訂單資料</h2>
           <p className="text-muted mb-3">{errorMessage}</p>
-
           <div className="d-flex justify-content-center gap-2">
             <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
               重新整理
@@ -202,7 +201,7 @@ const CheckoutSuccessPage = () => {
 
       {!errorMessage && (
         <div className="checkout-success mt-4">
-          <section className="checkout-success__hero card p-4 text-center">
+          <section className="checkout-success__hero card p-4 text-center" data-aos="fade-up">
             <div className="checkout-success__icon mx-auto mb-3">
               <CheckCircle2 size={40} />
             </div>
@@ -221,7 +220,11 @@ const CheckoutSuccessPage = () => {
             </div>
           </section>
 
-          <section className="checkout-success__summary-grid row g-3 mt-3">
+          <section
+            className="checkout-success__summary-grid row g-3 mt-3"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
             <div className="col-4">
               <article className="checkout-success__summary-card card p-3 h-100">
                 <div className="checkout-success__summary-icon">
@@ -264,7 +267,11 @@ const CheckoutSuccessPage = () => {
             </div>
           </section>
 
-          <section className="checkout-success__content row g-4 mt-1">
+          <section
+            className="checkout-success__content row g-4 mt-1"
+            data-aos="fade-up"
+            data-aos-delay="150"
+          >
             <div className="col-lg-8">
               <div className="checkout-success__items card p-3">
                 <div className="checkout-success__section-header mb-3">

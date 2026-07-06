@@ -200,13 +200,21 @@ const CartPage = () => {
     <>
       <div className="container ui-container ui-container--cart">
         {/* Hero-Section */}
-        <div className="cart-hero">
+        {/* <div className="cart-hero">
           <h1 className="page-title" key={activeStep} data-aos="flip-left" data-aos-delay="300">
+            {currentStepData.label}
+          </h1>
+        </div> */}
+        <div className="cart-hero" data-aos="fade-up">
+          <h1 className="page-title" key={activeStep}>
             {currentStepData.label}
           </h1>
         </div>
         {/* Step Indicator */}
-        <CartSteps currentStep={activeStep} />
+        {/* <CartSteps currentStep={activeStep} /> */}
+        <div className="cart-steps-container" data-aos="fade-in" data-aos-delay="100">
+          <CartSteps currentStep={activeStep} />
+        </div>
 
         {/* Main Content */}
         <div className="cart-main">

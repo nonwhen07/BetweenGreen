@@ -34,7 +34,7 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
 
   return (
     <>
-      <div className="cart-summary card p-3">
+      <div className="cart-summary card mt-3 p-3">
         <h2 className="mb-3">訂單摘要</h2>
 
         <ul className="cart-summary-list">

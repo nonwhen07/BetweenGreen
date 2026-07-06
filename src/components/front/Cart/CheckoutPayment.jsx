@@ -118,7 +118,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
           <div className="col-lg-7">
             <div className="checkout-payment-card card p-3 mb-3">
               <div className="checkout-payment-card__header">
-                <h3 className="mb-1">本次訂單明細</h3>
+                <h2 className="mb-1">本次訂單明細</h2>
                 <p className="text-muted mb-0">請確認商品與數量後完成付款。</p>
               </div>
 
@@ -172,7 +172,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
 
             <div className="checkout-payment-card card p-3">
               <div className="checkout-payment-card__header">
-                <h3 className="mb-1">付款方式</h3>
+                <h2 className="mb-1">付款方式</h2>
                 <p className="text-muted mb-0">
                   此為作品集模擬付款流程，用於呈現第三方金流串接與欄位驗證體驗。
                 </p>
@@ -352,7 +352,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
 
               {paymentMethod === 'line-pay' && (
                 <div className="checkout-payment-note">
-                  <h4 className="checkout-payment-note__title">LINE Pay 模擬付款</h4>
+                  <h3 className="checkout-payment-note__title">LINE Pay 模擬付款</h3>
                   <p className="checkout-payment-note__text">
                     確認付款後，系統將模擬導向 LINE Pay 授權流程，並透過測試付款 API 更新訂單狀態。
                   </p>
@@ -365,7 +365,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
 
               {paymentMethod === 'atm' && (
                 <div className="checkout-payment-note">
-                  <h4 className="checkout-payment-note__title">ATM 轉帳資訊</h4>
+                  <h3 className="checkout-payment-note__title">ATM 轉帳資訊</h3>
                   <p className="checkout-payment-note__text">
                     轉帳銀行：玉山銀行 808
                     <br />
@@ -379,7 +379,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
 
               {paymentMethod === 'cod' && (
                 <div className="checkout-payment-note">
-                  <h4 className="checkout-payment-note__title">貨到付款</h4>
+                  <h3 className="checkout-payment-note__title">貨到付款</h3>
                   <p className="checkout-payment-note__text">
                     選擇貨到付款後，系統將模擬建立待出貨訂單，並於本作品集中以付款完成狀態呈現。
                   </p>

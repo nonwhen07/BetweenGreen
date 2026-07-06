@@ -94,7 +94,7 @@ const CustomerOrdersPage = () => {
       </div>
 
       {errorMessage && (
-        <div className="card p-4 text-center mb-4">
+        <div className="card cart-state-card p-4 text-center mb-4">
           <h2 className="h5 mb-2">暫時無法取得訂單資料</h2>
           <p className="text-muted mb-3">可能是網路連線不穩或系統忙碌，請稍後再試。</p>
           <button
@@ -108,7 +108,7 @@ const CustomerOrdersPage = () => {
       )}
 
       {sortedOrders.length === 0 ? (
-        <div className="card p-4 text-center">
+        <div className="card cart-state-card p-4 text-center">
           <h2 className="mb-3">目前沒有訂單資料</h2>
           <Link to="/products" className="ui-btn ui-btn--primary">
             去逛商品
@@ -116,7 +116,7 @@ const CustomerOrdersPage = () => {
         </div>
       ) : (
         <div className="customer-orders">
-          {sortedOrders.map((order) => {
+          {sortedOrders.map((order, index) => {
             const orderProducts = getOrderProducts(order);
             const isPaid = order.is_paid;
             const orderId = order.id;
@@ -136,10 +136,15 @@ const CustomerOrdersPage = () => {
             );
 
             return (
-              <section key={orderId} className="card customer-order-card p-3 mb-4">
+              <section
+                key={orderId}
+                className="card customer-order-card p-3 mb-4"
+                data-aos="fade-up"
+                data-aos-delay={Math.min(index * 50, 200)}
+              >
                 <div className="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
                   <div className="text-lg-start">
-                    <h2 className="h5 mb-2">訂單編號：{orderId}</h2>
+                    <h2 className="customer-order-card__title mb-2">訂單編號：{orderId}</h2>
                     <p className="mb-1 text-muted">
                       收件人：{order.user?.name || '—'} 、 建立日期：{formatDate(order.create_at)}
                     </p>
@@ -196,7 +201,14 @@ const CustomerOrdersPage = () => {
                   </table>
                 </div>
 
-                <div className="d-flex justify-content-end gap-2 mt-3">
+                {/* <div className="d-flex justify-content-end gap-2 mt-3">
+                  <Link to="/products" className="ui-btn ui-btn--outline-primary">
+                    繼續購物
+                  </Link>
+
+                  {paymentAction}
+                </div> */}
+                <div className="cart-cta-group customer-order-card__actions">
                   <Link to="/products" className="ui-btn ui-btn--outline-primary">
                     繼續購物
                   </Link>

@@ -130,12 +130,14 @@ const CheckoutPaymentPage = () => {
   if (!orderId) {
     return (
       <div className="container ui-container py-5 text-center">
-        <h1 className="page-title mb-3">找不到付款資料</h1>
-        <p className="text-muted mb-4">缺少訂單編號，請回到訂單查詢頁重新操作。</p>
+        <div className="cart-state-card">
+          <h1 className="page-title mb-3">找不到付款資料</h1>
+          <p className="text-muted mb-4">缺少訂單編號，請回到訂單查詢頁重新操作。</p>
 
-        <Link to="/customer-orders" className="ui-btn ui-btn--primary">
-          回到歷次訂單
-        </Link>
+          <Link to="/customer-orders" className="ui-btn ui-btn--primary">
+            回到歷次訂單
+          </Link>
+        </div>
       </div>
     );
   }
@@ -143,17 +145,18 @@ const CheckoutPaymentPage = () => {
   if (errorMessage) {
     return (
       <div className="container ui-container py-5 text-center">
-        <h1 className="page-title mb-3">暫時無法取得訂單資料</h1>
-        <p className="text-muted mb-4">{errorMessage}</p>
+        <div className="cart-state-card">
+          <h1 className="page-title mb-3">暫時無法取得訂單資料</h1>
+          <p className="text-muted mb-4">{errorMessage}</p>
+          <div className="d-flex justify-content-center gap-2">
+            <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
+              重新整理
+            </button>
 
-        <div className="d-flex justify-content-center gap-2">
-          <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
-            重新整理
-          </button>
-
-          <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
-            回到歷次訂單
-          </Link>
+            <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
+              回到歷次訂單
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -162,7 +165,9 @@ const CheckoutPaymentPage = () => {
   if (!orderData) {
     return (
       <div className="container ui-container py-5 text-center">
-        <p className="text-muted mb-0">訂單資料載入中...</p>
+        <div className="cart-state-card">
+          <p className="text-muted mb-0">訂單資料載入中...</p>
+        </div>
       </div>
     );
   }
@@ -170,17 +175,18 @@ const CheckoutPaymentPage = () => {
   if (orderData.is_paid) {
     return (
       <div className="container ui-container py-5 text-center">
-        <h1 className="page-title mb-3">此訂單已付款</h1>
-        <p className="text-muted mb-4">這筆訂單已完成付款，不需要再次付款。</p>
+        <div className="cart-state-card">
+          <h1 className="page-title mb-3">此訂單已付款</h1>
+          <p className="text-muted mb-4">這筆訂單已完成付款，不需要再次付款。</p>
+          <div className="d-flex justify-content-center gap-2">
+            <Link to={`/checkout-success/${orderId}`} className="ui-btn ui-btn--primary">
+              查看付款完成頁
+            </Link>
 
-        <div className="d-flex justify-content-center gap-2">
-          <Link to={`/checkout-success/${orderId}`} className="ui-btn ui-btn--primary">
-            查看付款完成頁
-          </Link>
-
-          <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
-            回到歷次訂單
-          </Link>
+            <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
+              回到歷次訂單
+            </Link>
+          </div>
         </div>
       </div>
     );
