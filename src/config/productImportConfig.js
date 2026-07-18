@@ -1,4 +1,3 @@
-// import { PRODUCT_CATEGORY_MAP } from '@/constants/adminBuilderMaps';
 // utils
 import { formatCategoryPreview } from '@/utils/productFormatter';
 

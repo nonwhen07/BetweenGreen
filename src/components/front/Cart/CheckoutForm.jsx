@@ -4,7 +4,8 @@ import taiwanDistricts from '@/data/taiwanDistricts.json';
 
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
-import { formatCategoryPreview2, getProductUnitLabel } from '@/utils/productFormatter';
+// import { formatCategoryShortPreview, getProductUnitLabel } from '@/utils/productFormatter';
+import { formatCategoryShortPreview, getProductUnitShortLabel } from '@/utils/productFormatter';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 
@@ -266,11 +267,10 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
                 <div key={item.id} className="d-flex justify-content-between mb-3">
                   <span style={{ width: '120px' }}>{item.product.title}</span>
                   <span style={{ width: '150px' }}>
-                    {formatCategoryPreview2(item.product.category) || '未設定分類'}
+                    {formatCategoryShortPreview(item.product.category) || '未設定分類'}
                   </span>
                   <span>
-                    {item.qty}
-                    {getProductUnitLabel(item.product.unit) || '未設定單位'}
+                    {item.qty} {getProductUnitShortLabel(item.product?.unit) || '未設定單位'}
                   </span>
                   <span>NT$ {item.total.toLocaleString()}</span>
                 </div>

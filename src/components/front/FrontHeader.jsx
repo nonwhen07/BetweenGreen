@@ -283,7 +283,7 @@ const FrontHeader = () => {
                   </li>
                 );
               })}
-              {isAuth && (
+              {/* {isAuth && (
                 <li className="header__item">
                   <button
                     type="button"
@@ -298,7 +298,7 @@ const FrontHeader = () => {
                     <span className="ms-2">登出</span>
                   </button>
                 </li>
-              )}
+              )} */}
             </ul>
           </div>
         </div>

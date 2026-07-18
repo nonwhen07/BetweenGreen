@@ -9,6 +9,7 @@ import { getOrders } from '@/services/orderService';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 // utils
+import { getProductUnitShortLabel } from '@/utils/productFormatter';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 const normalizeOrders = (orders) => {
@@ -189,8 +190,10 @@ const CustomerOrdersPage = () => {
                             NT$ {Number(item.product?.price || 0).toLocaleString()}
                           </td>
                           <td className="cart-table__col--qty">
-                            {item.qty}
-                            {item.product?.unit || ''}
+                            <span>
+                              {item.qty}{' '}
+                              {getProductUnitShortLabel(item.product?.unit) || '未設定單位'}
+                            </span>
                           </td>
                           <td className="cart-table__col--subtotal">
                             NT$ {Number(item.final_total ?? item.total ?? 0).toLocaleString()}

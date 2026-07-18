@@ -4,6 +4,7 @@ import { CreditCard, Landmark, PackageCheck, Smartphone } from 'lucide-react';
 
 // utils
 import { calculateCartTotal, formatCardNumber } from '@/utils/cartUtils';
+import { getProductUnitShortLabel } from '@/utils/productFormatter';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 // components
@@ -21,8 +22,11 @@ const getProductPrice = (item) => {
   return Number(item.product?.price || 0);
 };
 
+// const getProductUnit = (item) => {
+//   return item.product?.unit || '';
+// };
 const getProductUnit = (item) => {
-  return item.product?.unit || '';
+  return getProductUnitShortLabel(item.product?.unit) || '未設定單位';
 };
 
 const getItemTotal = (item) => {

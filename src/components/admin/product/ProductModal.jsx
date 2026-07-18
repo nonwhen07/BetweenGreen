@@ -47,6 +47,7 @@ const ProductModal = ({
   const watchImageUrl = watch('imageUrl');
   const watchImages = watch('imagesUrl') || [''];
   const watchTitle = watch('title');
+  const watchTitleEn = watch('titleEn');
   const watchRating = watch('rating');
   const watchCategory = watch('category');
   const watchPersonalityTags = watch('personalityTags');
@@ -108,7 +109,10 @@ const ProductModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <h5 className="modal-title text-light fs-4">
-              {modalMode === 'create' ? '新增產品' : '編輯 - ' + (watchTitle || '')}
+              {/* {modalMode === 'create' ? '新增產品' : '編輯 - ' + (watchTitle || '')} */}
+              {modalMode === 'create'
+                ? '新增產品'
+                : `編輯 - ${watchTitle || ''}${watchTitleEn ? ` ${watchTitleEn}` : ''}`}
             </h5>
             <button
               type="button"
@@ -175,7 +179,7 @@ const ProductModal = ({
 
               <div className="col-md-8">
                 <div className="row g-3 mb-3">
-                  <div className="col-6">
+                  <div className="col-4">
                     <label htmlFor="title" className="form-label">
                       標題
                     </label>
@@ -190,7 +194,24 @@ const ProductModal = ({
                     />
                     {errors.title && <small className="text-danger">{errors.title.message}</small>}
                   </div>
-                  <div className="col-6">
+                  <div className="col-4">
+                    <label htmlFor="titleEn" className="form-label">
+                      英文標題
+                    </label>
+                    <input
+                      {...register('titleEn', {
+                        required: '請輸入英文標題',
+                      })}
+                      id="titleEn"
+                      type="text"
+                      className="form-control"
+                      placeholder="請輸入英文標題"
+                    />
+                    {errors.titleEn && (
+                      <small className="text-danger">{errors.titleEn.message}</small>
+                    )}
+                  </div>
+                  <div className="col-4">
                     <label className="form-label">商品評價</label>
                     <div className="d-flex " style={{ fontSize: '24px', cursor: 'pointer' }}>
                       {Array.from({ length: 5 }, (_, i) => {
@@ -223,6 +244,21 @@ const ProductModal = ({
                     </div>
                     <small className="text-muted">已選擇 {watchRating || 0} 顆星</small>
                   </div>
+                  {/* <div className="col-6">
+                    <label htmlFor="slug" className="form-label">
+                      英文標題
+                    </label>
+                    <input
+                      {...register('slug', {
+                        required: '請輸入slug',
+                      })}
+                      id="slug"
+                      type="text"
+                      className="form-control"
+                      placeholder="請輸入slug"
+                    />
+                    {errors.slug && <small className="text-danger">{errors.slug.message}</small>}
+                  </div> */}
                 </div>
 
                 <div className="mb-3">

@@ -4,12 +4,11 @@ import { FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
 
 // constants
-import { PRODUCT_UNIT_MAP } from '@/constants/adminBuilderMaps';
+
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
-// utils
-import { getShortLabelByValue } from '@/utils/adminBuilderUtils';
-import { formatCategoryPreview } from '@/utils/productFormatter';
+// import { formatCategoryPreview, getProductUnitLabel } from '@/utils/productFormatter';
+import { formatCategoryPreview, getProductUnitShortLabel } from '@/utils/productFormatter';
 
 // components
 import BtnLoader from '@/components/BtnLoader';
@@ -117,8 +116,9 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                           )}
                         </button>
                       </div>
+
                       <span className="input-group-text bg-transparent border-0">
-                        {getShortLabelByValue(PRODUCT_UNIT_MAP, cart.product.unit, '未設定單位')}
+                        {getProductUnitShortLabel(cart.product.unit) || '未設定單位'}
                       </span>
                     </div>
                   </td>

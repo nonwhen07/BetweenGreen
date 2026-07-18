@@ -1,5 +1,3 @@
-// src/constants/adminBuilderMaps.js
-
 /* =========================================
   共用欄位格式說明
   label      : 中文顯示

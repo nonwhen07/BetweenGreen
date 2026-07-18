@@ -18,7 +18,7 @@ export const formatCategoryPreview = (categoryCode = '') => {
     .join(' - ');
 };
 
-export const formatCategoryPreview2 = (categoryCode = '') => {
+export const formatCategoryShortPreview = (categoryCode = '') => {
   const parts = categoryCode.split('-');
   const theme = parts[0]; // 第一段 主題theme
   const species = parts[2]; // 第三段 產品細項
@@ -33,4 +33,11 @@ export const getProductUnitLabel = (unitValue = '') => {
   return (
     Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === unitValue)?.label || unitValue
   );
+};
+
+// 產品單位 value => 中文label(Short)
+export const getProductUnitShortLabel = (unitValue = '') => {
+  const unitItem = Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === unitValue);
+
+  return unitItem?.shortLabel || unitItem?.label || unitValue;
 };

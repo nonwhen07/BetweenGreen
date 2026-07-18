@@ -10,6 +10,7 @@ import CartSteps from '@/components/front/Cart/CartSteps';
 import ProductImage from '@/components/ProductImage';
 
 // utils
+import { getProductUnitShortLabel } from '@/utils/productFormatter';
 import { calculateCartFinalTotal, calculateCartTotal } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
@@ -42,8 +43,11 @@ const getProductPrice = (item) => {
   return Number(item.product?.price || 0);
 };
 
+// const getProductUnit = (item) => {
+//   return item.product?.unit || '';
+// };
 const getProductUnit = (item) => {
-  return item.product?.unit || '';
+  return getProductUnitShortLabel(item.product?.unit) || '未設定單位';
 };
 
 const getItemTotal = (item) => {

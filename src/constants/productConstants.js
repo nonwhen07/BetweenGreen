@@ -4,6 +4,8 @@
 export const DEFAULT_PRODUCT = {
   imageUrl: '',
   title: '',
+  titleEn: '', // 商品英文標題
+  // slug: '', // 商品轉址slug(替代id查詢)
   category: '', // 商品種類
   content: '', // 商品詳細內容（規格、材質、尺寸）
   unit: '',
@@ -634,91 +636,109 @@ export const PRODUCT_DISPLAY_TAGS_MAP = {
 export const PRODUCT_UNIT_MAP = {
   PotSet: {
     label: '單盆植栽',
+    shortLabel: '盆',
     value: '1 pot set',
   },
 
   DoublePot: {
     label: '雙盆組合',
+    shortLabel: '組',
     value: '2 pot set',
   },
 
   GlassTerrarium: {
     label: '玻璃植景',
+    shortLabel: '座',
     value: '1 glass terrarium',
   },
 
   HangingSet: {
     label: '吊掛植組',
+    shortLabel: '組',
     value: '1 hanging set',
   },
 
   BloomPot: {
     label: '開花盆栽',
+    shortLabel: '盆',
     value: '1 bloom pot',
   },
 
   LargePot: {
     label: '大型盆栽',
+    shortLabel: '盆',
     value: '1 large pot',
   },
 
   Piece: {
     label: '單件商品',
+    shortLabel: '件',
     value: '1 piece',
   },
 
   ToolSet: {
     label: '工具組',
+    shortLabel: '組',
     value: '1 set',
   },
 
   CeramicPot: {
     label: '陶瓷花器',
+    shortLabel: '個',
     value: '1 ceramic pot',
   },
 
   GlassVase: {
     label: '玻璃花器',
+    shortLabel: '個',
     value: '1 glass vase',
   },
 
   Bag: {
     label: '袋裝',
+    shortLabel: '袋',
     value: '1 bag',
   },
 
   Pack: {
     label: '包裝',
+    shortLabel: '包',
     value: '1 pack',
   },
 
   Mug: {
     label: '杯器',
+    shortLabel: '個',
     value: '1 mug',
   },
 
   Voucher: {
     label: '優惠券',
+    shortLabel: '張',
     value: '1 voucher',
   },
 
   Bouquet: {
     label: '花束',
+    shortLabel: '束',
     value: '1 bouquet',
   },
 
   FlowerBox: {
     label: '花盒',
+    shortLabel: '盒',
     value: '1 flower box',
   },
 
   GiftBox: {
     label: '禮盒',
+    shortLabel: '盒',
     value: '1 gift box',
   },
 
   GiftSet: {
     label: '禮品組',
+    shortLabel: '組',
     value: '1 gift set',
   },
 };
