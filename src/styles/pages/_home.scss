@@ -150,6 +150,7 @@
   opacity: 1;
   transition: 0.5s;
   background: var(--season-bg, $color-bg-main);
+
   &.inactive {
     opacity: 0.3;
   }

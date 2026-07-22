@@ -4,42 +4,22 @@ import { CreditCard, Landmark, PackageCheck, Smartphone } from 'lucide-react';
 
 // utils
 import { calculateCartTotal, formatCardNumber } from '@/utils/cartUtils';
-import { getProductUnitShortLabel } from '@/utils/productFormatter';
+import { normalizeOrderItems } from '@/utils/orderItemUtils';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 // components
-import ProductImage from '@/components/ProductImage';
-
-const getProductTitle = (item) => {
-  return item.product?.title || `商品 ID：${item.product_id || '—'}`;
-};
-
-const getProductImage = (item) => {
-  return item.product?.imageUrl || '';
-};
-
-const getProductPrice = (item) => {
-  return Number(item.product?.price || 0);
-};
-
-// const getProductUnit = (item) => {
-//   return item.product?.unit || '';
-// };
-const getProductUnit = (item) => {
-  return getProductUnitShortLabel(item.product?.unit) || '未設定單位';
-};
-
-const getItemTotal = (item) => {
-  return Number(item.final_total ?? item.total ?? getProductPrice(item) * Number(item.qty || 0));
-};
+import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
 const formatCurrency = (value = 0) => {
   return Math.round(Number(value || 0)).toLocaleString();
 };
 
 const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmit }) => {
+  // const paymentItems = useMemo(() => {
+  //   return Array.isArray(orderItems) ? orderItems : [];
+  // }, [orderItems]);
   const paymentItems = useMemo(() => {
-    return Array.isArray(orderItems) ? orderItems : [];
+    return normalizeOrderItems(orderItems);
   }, [orderItems]);
 
   const {
@@ -83,15 +63,19 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
     defaultValue: '',
   });
 
+  // const itemsTotal = useMemo(() => {
+  //   const calculatedTotal = calculateCartTotal(paymentItems);
+
+  //   if (calculatedTotal > 0) {
+  //     return calculatedTotal;
+  //   }
+
+  //   return paymentItems.reduce((total, item) => total + getItemTotal(item), 0);
+  // }, [paymentItems]);
   const itemsTotal = useMemo(() => {
-    const calculatedTotal = calculateCartTotal(paymentItems);
-
-    if (calculatedTotal > 0) {
-      return calculatedTotal;
-    }
-
-    return paymentItems.reduce((total, item) => total + getItemTotal(item), 0);
+    return calculateCartTotal(paymentItems);
   }, [paymentItems]);
+
   const shipping = itemsTotal >= minfreeShippingFee ? 0 : shippingFee;
   const paymentTotal =
     Number(orderAmount) > 0 ? Math.round(Number(orderAmount)) : itemsTotal + shipping;
@@ -118,7 +102,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
       </div>
 
       <form onSubmit={handlePaymentSubmit}>
-        <div className="row cart-checkout checkout-payment-layout">
+        <div className="row cart-checkout checkout-payment-layout mx-0">
           <div className="col-lg-7">
             <div className="checkout-payment-card card p-3 mb-3">
               <div className="checkout-payment-card__header">
@@ -126,51 +110,12 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                 <p className="text-muted mb-0">請確認商品與數量後完成付款。</p>
               </div>
 
-              <div className="table-responsive checkout-carttable mt-3">
-                <table className="table cart-table align-middle">
-                  <thead className="cart-table__header">
-                    <tr>
-                      <th className="cart-table__col--info">商品名稱</th>
-                      <th className="cart-table__col--image">圖片</th>
-                      <th className="cart-table__col--price">單價</th>
-                      <th className="cart-table__col--qty">數量</th>
-                      <th className="cart-table__col--subtotal">小計</th>
-                    </tr>
-                  </thead>
-
-                  <tbody className="cart-table__body">
-                    {paymentItems.map((item) => {
-                      const title = getProductTitle(item);
-                      const imageUrl = getProductImage(item);
-                      const price = getProductPrice(item);
-                      const unit = getProductUnit(item);
-                      const itemTotal = getItemTotal(item);
-
-                      return (
-                        <tr key={item.id || item.product_id}>
-                          <td className="cart-table__col--info">{title}</td>
-
-                          <td className="cart-table__col--image">
-                            <ProductImage src={imageUrl} alt={title} size="small" />
-                          </td>
-
-                          <td className="cart-table__col--price">NT$ {formatCurrency(price)}</td>
-
-                          <td className="cart-table__col--qty">
-                            <div className="d-flex justify-content-center align-items-center">
-                              <span className="me-2">{item.qty}</span>
-                              <span className="bg-transparent border-0">{unit}</span>
-                            </div>
-                          </td>
-
-                          <td className="cart-table__col--subtotal">
-                            NT$ {formatCurrency(itemTotal)}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+              <div className="mt-3">
+                <ReadonlyOrderItems
+                  items={paymentItems}
+                  emptyTitle="訂單內容為空"
+                  emptyDescription="目前無法顯示這筆訂單的商品明細。"
+                />
               </div>
             </div>
 
@@ -255,7 +200,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                     </div>
                   </div>
 
-                  <div className="row mb-3">
+                  <div className="row mb-3 mx-0">
                     <div className="col-12">
                       <label htmlFor="cardNumber" className="form-label">
                         卡號
@@ -281,7 +226,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                     </div>
                   </div>
 
-                  <div className="row mb-3">
+                  <div className="row mb-3 mx-0">
                     <div className="col-12">
                       <label htmlFor="cardHolder" className="form-label">
                         持卡人姓名
@@ -303,7 +248,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                     </div>
                   </div>
 
-                  <div className="row mb-3">
+                  <div className="row mb-3 mx-0">
                     <div className="col-lg-6">
                       <label htmlFor="expiredDate" className="form-label">
                         有效期限

@@ -1,7 +1,7 @@
 const ProductDetailTabs = ({ product }) => {
   return (
     <section className="product-detail-tabs">
-      <div className="row g-4">
+      <div className="row g-4 mx-0">
         {/* 商品介紹 */}
         <div className="col-12 col-md-6 col-lg-4">
           <article className="product-detail-tabs__section">

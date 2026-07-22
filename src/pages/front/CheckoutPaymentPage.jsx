@@ -14,19 +14,20 @@ import { useLoading } from '@/hooks/useLoading';
 
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
+import { normalizeOrderItems } from '@/utils/orderItemUtils';
 
-const normalizeOrderProducts = (products) => {
-  if (!products) return [];
+// const normalizeOrderProducts = (products) => {
+//   if (!products) return [];
 
-  if (Array.isArray(products)) {
-    return products;
-  }
+//   if (Array.isArray(products)) {
+//     return products;
+//   }
 
-  return Object.entries(products).map(([id, item]) => ({
-    id,
-    ...item,
-  }));
-};
+//   return Object.entries(products).map(([id, item]) => ({
+//     id,
+//     ...item,
+//   }));
+// };
 
 const CheckoutPaymentPage = () => {
   const { orderId } = useParams();
@@ -39,7 +40,7 @@ const CheckoutPaymentPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const orderProducts = useMemo(() => {
-    return normalizeOrderProducts(orderData?.products);
+    return normalizeOrderItems(orderData?.products);
   }, [orderData]);
 
   const orderAmount = useMemo(() => {

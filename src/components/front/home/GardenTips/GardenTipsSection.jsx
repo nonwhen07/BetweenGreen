@@ -29,14 +29,14 @@ const tips = [
 
 const GardenTipsSection = () => {
   return (
-    <section className="ui-section garden-tips">
-      <div className="ui-container">
+    <section className="garden-tips">
+      <div className="container ui-container">
         <div className="section-header text-center mb-5">
           <h2>Garden Tips</h2>
           <p className="text-muted">簡單的園藝技巧，讓你的植物更健康成長</p>
         </div>
 
-        <div className="row g-4">
+        <div className="row g-4 mx-0">
           {tips.map((tip) => (
             <div key={tip.id} className="col-md-6 col-lg-4">
               <GardenTipCard tip={tip} />

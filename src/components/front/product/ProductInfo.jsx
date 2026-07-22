@@ -69,53 +69,62 @@ const ProductInfo = ({
 
       {/* Purchase */}
       <section className="product-info__purchase">
-        <div className="product-info__qty">
-          <button
-            type="button"
-            className={`
+        <div className="row mx-0">
+          <div className="col-6">
+            <div className="d-flex align-items-center">
+              <div className="product-info__qty">
+                <button
+                  type="button"
+                  className={`
               product-info__qty-btn
               ${isAdded ? 'is-success' : ''}
             `}
-            disabled={isLoading || isAdded || qtySelect <= 1}
-            onClick={() => setQtySelect((prev) => Math.max(1, prev - 1))}
-          >
-            −
-          </button>
+                  disabled={isLoading || isAdded || qtySelect <= 1}
+                  onClick={() => setQtySelect((prev) => Math.max(1, prev - 1))}
+                >
+                  −
+                </button>
 
-          <span>{qtySelect}</span>
+                <span>{qtySelect}</span>
 
-          <button
-            type="button"
-            className={`
+                <button
+                  type="button"
+                  className={`
               product-info__qty-btn
               ${isAdded ? 'is-success' : ''}
             `}
-            disabled={isLoading || isAdded}
-            onClick={() => setQtySelect((prev) => Math.min(10, prev + 1))}
-          >
-            +
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className="ui-btn ui-btn--primary product-info__cart-btn"
-          disabled={isLoading}
-          onClick={() => addCartItem(currentProduct?.id, qtySelect)}
-        >
-          {isLoading ? (
-            <>
-              <div className="d-flex justify-content-center align-items-center">
-                <BtnLoader size="sm" />
-                <span className="ms-2">加入中...</span>
+                  disabled={isLoading || isAdded}
+                  onClick={() => setQtySelect((prev) => Math.min(10, prev + 1))}
+                >
+                  +
+                </button>
               </div>
-            </>
-          ) : isAdded ? (
-            '✓ 已加入購物車'
-          ) : (
-            '加入購物車'
-          )}
-        </button>
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="d-flex align-items-center">
+              <button
+                type="button"
+                className="ui-btn ui-btn--primary product-info__cart-btn"
+                disabled={isLoading}
+                onClick={() => addCartItem(currentProduct?.id, qtySelect)}
+              >
+                {isLoading ? (
+                  <>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <BtnLoader size="sm" />
+                      <span className="ms-2">加入中...</span>
+                    </div>
+                  </>
+                ) : isAdded ? (
+                  '✓ 已加入購物車'
+                ) : (
+                  '加入購物車'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Service */}

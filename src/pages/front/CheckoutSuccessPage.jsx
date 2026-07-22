@@ -8,28 +8,17 @@ import { getOrder } from '@/services/orderService';
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
 import ProductImage from '@/components/ProductImage';
+import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
 // utils
 import { getProductUnitShortLabel } from '@/utils/productFormatter';
 import { calculateCartFinalTotal, calculateCartTotal } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
+import { normalizeOrderItems } from '@/utils/orderItemUtils';
 
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
-
-const normalizeOrderProducts = (products) => {
-  if (!products) return [];
-
-  if (Array.isArray(products)) {
-    return products;
-  }
-
-  return Object.entries(products).map(([id, item]) => ({
-    id,
-    ...item,
-  }));
-};
 
 const getProductTitle = (item) => {
   return item.product?.title || `商品 ID：${item.product_id || '—'}`;
@@ -93,7 +82,8 @@ const CheckoutSuccessPage = () => {
       return stateCarts;
     }
 
-    return normalizeOrderProducts(orderData?.products);
+    // return normalizeOrderProducts(orderData?.products);
+    return normalizeOrderItems(orderData?.products);
   }, [stateCarts, orderData]);
 
   const productCount = useMemo(() => {
@@ -225,7 +215,7 @@ const CheckoutSuccessPage = () => {
           </section>
 
           <section
-            className="checkout-success__summary-grid row g-3 mt-3"
+            className="checkout-success__summary-grid row g-3 mt-3 mx-0 mx-0"
             data-aos="fade-up"
             data-aos-delay="100"
           >
@@ -272,7 +262,7 @@ const CheckoutSuccessPage = () => {
           </section>
 
           <section
-            className="checkout-success__content row g-4 mt-1"
+            className="checkout-success__content row g-4 mt-1 mx-0 mx-0"
             data-aos="fade-up"
             data-aos-delay="150"
           >

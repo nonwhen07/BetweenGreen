@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // components
-import ProductImage from '@/components/ProductImage';
+// import ProductImage from '@/components/ProductImage';
+import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 // services
 import { getOrders } from '@/services/orderService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 // utils
-import { getProductUnitShortLabel } from '@/utils/productFormatter';
+// import { getProductUnitShortLabel } from '@/utils/productFormatter';
+import { normalizeOrderItems } from '@/utils/orderItemUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 const normalizeOrders = (orders) => {
@@ -22,19 +24,6 @@ const normalizeOrders = (orders) => {
   return Object.entries(orders).map(([id, order]) => ({
     id,
     ...order,
-  }));
-};
-
-const getOrderProducts = (order) => {
-  if (!order?.products) return [];
-
-  if (Array.isArray(order.products)) {
-    return order.products;
-  }
-
-  return Object.entries(order.products).map(([id, item]) => ({
-    id,
-    ...item,
   }));
 };
 
@@ -118,7 +107,7 @@ const CustomerOrdersPage = () => {
       ) : (
         <div className="customer-orders">
           {sortedOrders.map((order, index) => {
-            const orderProducts = getOrderProducts(order);
+            const orderProducts = normalizeOrderItems(order.products);
             const isPaid = order.is_paid;
             const orderId = order.id;
             const orderAmount = order.final_total ?? order.total ?? 0;
@@ -161,56 +150,12 @@ const CustomerOrdersPage = () => {
                   </div>
                 </div>
 
-                <div className="table-responsive checkout-carttable">
-                  <table className="table cart-table align-middle">
-                    <thead className="cart-table__header">
-                      <tr>
-                        <th className="cart-table__col--info">商品名稱</th>
-                        <th className="cart-table__col--image">圖片</th>
-                        <th className="cart-table__col--price">單價</th>
-                        <th className="cart-table__col--qty">數量</th>
-                        <th className="cart-table__col--subtotal">小計</th>
-                      </tr>
-                    </thead>
+                <ReadonlyOrderItems
+                  items={orderProducts}
+                  emptyTitle="此訂單沒有商品明細"
+                  emptyDescription="目前無法顯示這筆訂單的商品資料。"
+                />
 
-                    <tbody className="cart-table__body">
-                      {orderProducts.map((item) => (
-                        <tr key={item.id}>
-                          <td className="cart-table__col--info">
-                            {item.product?.title || `商品 ID：${item.product_id || '—'}`}
-                          </td>
-                          <td className="cart-table__col--image">
-                            <ProductImage
-                              src={item.product?.imageUrl}
-                              alt={item.product?.title || `商品 ID：${item.product_id || '—'}`}
-                              size="small"
-                            />
-                          </td>
-                          <td className="cart-table__col--price">
-                            NT$ {Number(item.product?.price || 0).toLocaleString()}
-                          </td>
-                          <td className="cart-table__col--qty">
-                            <span>
-                              {item.qty}{' '}
-                              {getProductUnitShortLabel(item.product?.unit) || '未設定單位'}
-                            </span>
-                          </td>
-                          <td className="cart-table__col--subtotal">
-                            NT$ {Number(item.final_total ?? item.total ?? 0).toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* <div className="d-flex justify-content-end gap-2 mt-3">
-                  <Link to="/products" className="ui-btn ui-btn--outline-primary">
-                    繼續購物
-                  </Link>
-
-                  {paymentAction}
-                </div> */}
                 <div className="cart-cta-group customer-order-card__actions">
                   <Link to="/products" className="ui-btn ui-btn--outline-primary">
                     繼續購物

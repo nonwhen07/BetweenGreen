@@ -35,7 +35,7 @@ const SeasonalSection = () => {
           <h2 className="section-title">Seasonal Collection</h2>
           <p className="section-subtitle">為即將到來的節日準備好花禮</p>
         </div>
-        <div className="row g-4">
+        <div className="row g-4 mx-0">
           {seasonalProducts.map((product) => (
             <div key={product.id} className="col-md-6 col-lg-3">
               <SeasonalProductCard product={product} />
