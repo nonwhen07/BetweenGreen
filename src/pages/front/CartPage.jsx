@@ -111,16 +111,6 @@ const CartPage = () => {
       return;
     }
 
-    // data資料"解構"成message，剩下的打包一起變成user
-    // const { name, tel, email, city, district, addressDetail, message } = formData;
-    // const fullAddress = `${city}${district}${addressDetail}`;
-    // const orderPayload = {
-    //   data: {
-    //     user: { name, tel, email, address: fullAddress },
-    //     message,
-    //   },
-    // };
-
     const { shippingName, shippingTel, shippingEmail, city, district, addressDetail, message } =
       formData;
     const fullAddress = `${city}${district}${addressDetail}`;

@@ -15,9 +15,6 @@ const formatCurrency = (value = 0) => {
 };
 
 const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmit }) => {
-  // const paymentItems = useMemo(() => {
-  //   return Array.isArray(orderItems) ? orderItems : [];
-  // }, [orderItems]);
   const paymentItems = useMemo(() => {
     return normalizeOrderItems(orderItems);
   }, [orderItems]);
@@ -341,50 +338,55 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
           </div>
 
           <div className="col-lg-5">
-            <div className="cart-summary checkout-payment-summary card p-3">
-              <h3 className="mb-3">付款摘要</h3>
-
-              <div className="d-flex justify-content-between mb-3">
-                <span>訂單編號</span>
-                <strong>{orderID}</strong>
+            <div className="cart-summary order-summary checkout-payment-summary card p-3">
+              <div className="order-summary__header">
+                <h3 className="mb-3">付款摘要</h3>
               </div>
 
-              <div className="d-flex justify-content-between mb-3">
-                <span>付款狀態</span>
-                <strong className="text-warning">尚未付款</strong>
+              <div className="order-summary__list">
+                <div className="order-summary__row">
+                  <span className="order-summary__label">訂單編號</span>
+                  <strong className="order-summary__value">{orderID}</strong>
+                </div>
+
+                <div className="order-summary__row">
+                  <span className="order-summary__label">付款狀態</span>
+                  <strong className="order-summary__value text-warning">尚未付款</strong>
+                </div>
+
+                <hr className="order-summary__divider" />
+
+                <div className="order-summary__row">
+                  <strong className="order-summary__label">商品小計</strong>
+                  <strong className="order-summary__value">NT$ {formatCurrency(itemsTotal)}</strong>
+                </div>
+
+                <div className="order-summary__row">
+                  <strong className="order-summary__label">運費</strong>
+                  <strong className="order-summary__value">
+                    {shipping === 0 ? '免運費' : `NT$ ${formatCurrency(shipping)}`}
+                  </strong>
+                </div>
+
+                <hr className="order-summary__divider" />
+
+                <div className="order-summary__row order-summary__row--total">
+                  <strong className="order-summary__label">應付金額</strong>
+                  <strong className="order-summary__value">
+                    NT$ {formatCurrency(paymentTotal)}
+                  </strong>
+                </div>
               </div>
 
-              <hr className="mb-3" />
-
-              <div className="d-flex justify-content-between mb-3">
-                <strong>商品小計</strong>
-                <strong>NT$ {formatCurrency(itemsTotal)}</strong>
+              <div className="order-summary__actions">
+                <button type="submit" className="ui-btn ui-btn--primary w-100">
+                  確認付款
+                </button>
               </div>
 
-              <div className="d-flex justify-content-between mb-3">
-                <strong>運費</strong>
-
-                {shipping === 0 ? (
-                  <strong className="text-success">免運費</strong>
-                ) : (
-                  <strong>NT$ {formatCurrency(shipping)}</strong>
-                )}
-              </div>
-
-              <hr className="mb-3" />
-
-              <div className="d-flex justify-content-between mb-3">
-                <strong>應付金額</strong>
-                <strong>NT$ {formatCurrency(paymentTotal)}</strong>
-              </div>
-
-              <button type="submit" className="ui-btn ui-btn--primary w-100">
-                確認付款
-              </button>
-
-              <p className="text-muted small mt-3 mb-0">
-                此頁面用於模擬金流流程與欄位驗證，不會送出真實信用卡資訊。
-              </p>
+              {/* <p className="order-summary__note text-muted small mt-3 mb-0">
+                此頁面用於模擬金流流程畫面與欄位驗證，不會送出真實信用卡資訊。
+              </p> */}
             </div>
           </div>
         </div>

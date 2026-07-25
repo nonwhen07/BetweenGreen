@@ -6,14 +6,47 @@ const formatCurrency = (value = 0) => {
 
 const ReadonlyOrderItems = ({
   items = [],
+  variant = 'detail',
   emptyTitle = '目前沒有商品明細',
   emptyDescription = '目前無法顯示這筆訂單的商品資料。',
 }) => {
+  const isSummary = variant === 'summary';
+
   if (items.length === 0) {
     return (
-      <div className="cart-state-card p-4 text-center">
-        <h3 className="h5 mb-2">{emptyTitle}</h3>
-        <p className="text-muted mb-0">{emptyDescription}</p>
+      <div className="cart-state-card cart-state-card--empty">
+        <h3 className="cart-state-card__title">{emptyTitle}</h3>
+
+        <p className="cart-state-card__description">{emptyDescription}</p>
+      </div>
+    );
+  }
+
+  if (isSummary) {
+    return (
+      <div className="order-items order-items--summary">
+        <div className="order-items__summary-list">
+          {items.map((item) => (
+            <article
+              key={`summary-${item.displayId || item.id || item.product_id}`}
+              className="order-item-summary"
+            >
+              <div className="order-item-summary__main">
+                <h3 className="order-item-summary__title">{item.title}</h3>
+
+                <p className="order-item-summary__meta">
+                  {item.qty} {item.unit || '未設定單位'}
+                  <span aria-hidden="true"> · </span>
+                  單價 NT$ {formatCurrency(item.price)}
+                </p>
+              </div>
+
+              <strong className="order-item-summary__subtotal">
+                NT$ {formatCurrency(item.total)}
+              </strong>
+            </article>
+          ))}
+        </div>
       </div>
     );
   }

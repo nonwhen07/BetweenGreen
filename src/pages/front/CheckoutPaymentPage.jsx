@@ -4,30 +4,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
 import CheckoutPayment from '@/components/front/Cart/CheckoutPayment';
-
 // services
 import { getOrder, payOrder } from '@/services/orderService';
-
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
-
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
-
-// const normalizeOrderProducts = (products) => {
-//   if (!products) return [];
-
-//   if (Array.isArray(products)) {
-//     return products;
-//   }
-
-//   return Object.entries(products).map(([id, item]) => ({
-//     id,
-//     ...item,
-//   }));
-// };
 
 const CheckoutPaymentPage = () => {
   const { orderId } = useParams();
@@ -130,14 +114,17 @@ const CheckoutPaymentPage = () => {
 
   if (!orderId) {
     return (
-      <div className="container ui-container py-5 text-center">
-        <div className="cart-state-card">
-          <h1 className="page-title mb-3">找不到付款資料</h1>
-          <p className="text-muted mb-4">缺少訂單編號，請回到訂單查詢頁重新操作。</p>
+      <div className="container ui-container py-5">
+        <div className="cart-state-card cart-state-card--error">
+          <h1 className="cart-state-card__title">找不到付款資料</h1>
 
-          <Link to="/customer-orders" className="ui-btn ui-btn--primary">
-            回到歷次訂單
-          </Link>
+          <p className="cart-state-card__description">缺少訂單編號，請回到訂單查詢頁重新操作。</p>
+
+          <div className="cart-state-card__actions cart-cta-group">
+            <Link to="/customer-orders" className="ui-btn ui-btn--primary">
+              回到歷次訂單
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -145,11 +132,13 @@ const CheckoutPaymentPage = () => {
 
   if (errorMessage) {
     return (
-      <div className="container ui-container py-5 text-center">
-        <div className="cart-state-card">
-          <h1 className="page-title mb-3">暫時無法取得訂單資料</h1>
-          <p className="text-muted mb-4">{errorMessage}</p>
-          <div className="d-flex justify-content-center gap-2">
+      <div className="container ui-container py-5">
+        <div className="cart-state-card cart-state-card--error">
+          <h1 className="cart-state-card__title">暫時無法取得訂單資料</h1>
+
+          <p className="cart-state-card__description">{errorMessage}</p>
+
+          <div className="cart-state-card__actions cart-cta-group">
             <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
               重新整理
             </button>
@@ -165,9 +154,11 @@ const CheckoutPaymentPage = () => {
 
   if (!orderData) {
     return (
-      <div className="container ui-container py-5 text-center">
-        <div className="cart-state-card">
-          <p className="text-muted mb-0">訂單資料載入中...</p>
+      <div className="container ui-container py-5">
+        <div className="cart-state-card cart-state-card--loading">
+          <h1 className="cart-state-card__title">訂單資料載入中</h1>
+
+          <p className="cart-state-card__description">正在確認這筆訂單的付款資訊，請稍候。</p>
         </div>
       </div>
     );
@@ -175,11 +166,13 @@ const CheckoutPaymentPage = () => {
 
   if (orderData.is_paid) {
     return (
-      <div className="container ui-container py-5 text-center">
-        <div className="cart-state-card">
-          <h1 className="page-title mb-3">此訂單已付款</h1>
-          <p className="text-muted mb-4">這筆訂單已完成付款，不需要再次付款。</p>
-          <div className="d-flex justify-content-center gap-2">
+      <div className="container ui-container py-5">
+        <div className="cart-state-card cart-state-card--empty">
+          <h1 className="cart-state-card__title">此訂單已付款</h1>
+
+          <p className="cart-state-card__description">這筆訂單已完成付款，不需要再次付款。</p>
+
+          <div className="cart-state-card__actions cart-cta-group">
             <Link to={`/checkout-success/${orderId}`} className="ui-btn ui-btn--primary">
               查看付款完成頁
             </Link>
@@ -203,13 +196,16 @@ const CheckoutPaymentPage = () => {
 
       <section className="ui-section ui-section--cart active">
         {orderProducts.length === 0 ? (
-          <div className="card p-4 text-center">
-            <h2 className="h5 mb-2">訂單內容為空</h2>
-            <p className="text-muted mb-3">目前無法顯示這筆訂單的商品明細。</p>
+          <div className="cart-state-card cart-state-card--empty">
+            <h2 className="cart-state-card__title">訂單內容為空</h2>
 
-            <Link to="/customer-orders" className="ui-btn ui-btn--primary">
-              回到歷次訂單
-            </Link>
+            <p className="cart-state-card__description">目前無法顯示這筆訂單的商品明細。</p>
+
+            <div className="cart-state-card__actions cart-cta-group">
+              <Link to="/customer-orders" className="ui-btn ui-btn--primary">
+                回到歷次訂單
+              </Link>
+            </div>
           </div>
         ) : (
           <CheckoutPayment

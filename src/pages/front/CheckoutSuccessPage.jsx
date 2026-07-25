@@ -7,11 +7,11 @@ import { getOrder } from '@/services/orderService';
 
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
-import ProductImage from '@/components/ProductImage';
+// import ProductImage from '@/components/ProductImage';
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
 // utils
-import { getProductUnitShortLabel } from '@/utils/productFormatter';
+// import { getProductUnitShortLabel } from '@/utils/productFormatter';
 import { calculateCartFinalTotal, calculateCartTotal } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
@@ -20,13 +20,13 @@ import { normalizeOrderItems } from '@/utils/orderItemUtils';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 
-const getProductTitle = (item) => {
-  return item.product?.title || `商品 ID：${item.product_id || '—'}`;
-};
+// const getProductTitle = (item) => {
+//   return item.product?.title || `商品 ID：${item.product_id || '—'}`;
+// };
 
-const getProductImage = (item) => {
-  return item.product?.imageUrl || '';
-};
+// const getProductImage = (item) => {
+//   return item.product?.imageUrl || '';
+// };
 
 const getProductPrice = (item) => {
   return Number(item.product?.price || 0);
@@ -35,9 +35,9 @@ const getProductPrice = (item) => {
 // const getProductUnit = (item) => {
 //   return item.product?.unit || '';
 // };
-const getProductUnit = (item) => {
-  return getProductUnitShortLabel(item.product?.unit) || '未設定單位';
-};
+// const getProductUnit = (item) => {
+//   return getProductUnitShortLabel(item.product?.unit) || '未設定單位';
+// };
 
 const getItemTotal = (item) => {
   return Number(item.final_total ?? item.total ?? getProductPrice(item) * Number(item.qty || 0));
@@ -156,14 +156,17 @@ const CheckoutSuccessPage = () => {
 
   if (!orderID) {
     return (
-      <div className="container ui-container py-5 text-center">
-        <div className="checkout-success checkout-success--empty">
-          <h1 className="page-title mb-3">找不到付款完成資料</h1>
-          <p className="text-muted mb-4">缺少訂單編號，請回到商品頁重新操作。</p>
+      <div className="container ui-container py-5">
+        <div className="checkout-success checkout-success--empty cart-state-card cart-state-card--empty card">
+          <h1 className="cart-state-card__title">找不到付款完成資料</h1>
 
-          <Link to="/products" className="ui-btn ui-btn--primary">
-            回到商品頁
-          </Link>
+          <p className="cart-state-card__description">缺少訂單編號，請回到商品頁重新操作。</p>
+
+          <div className="cart-state-card__actions">
+            <Link to="/products" className="ui-btn ui-btn--primary">
+              回到商品頁
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -178,10 +181,12 @@ const CheckoutSuccessPage = () => {
       <CartSteps currentStep={4} />
 
       {errorMessage && (
-        <section className="checkout-success checkout-success--error card p-4 text-center my-4">
-          <h2 className="h5 mb-2">暫時無法取得訂單資料</h2>
-          <p className="text-muted mb-3">{errorMessage}</p>
-          <div className="d-flex justify-content-center gap-2">
+        <section className="checkout-success checkout-success--error cart-state-card cart-state-card--error card">
+          <h2 className="cart-state-card__title">暫時無法取得訂單資料</h2>
+
+          <p className="cart-state-card__description">{errorMessage}</p>
+
+          <div className="cart-state-card__actions cart-cta-group">
             <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
               重新整理
             </button>
@@ -274,83 +279,32 @@ const CheckoutSuccessPage = () => {
                 </div>
 
                 {isFetchingOrder && orderProducts.length === 0 ? (
-                  <div className="checkout-success__empty card p-4 text-center">
-                    <h4 className="h5 mb-2">訂單明細載入中</h4>
-                    <p className="text-muted mb-0">正在確認付款完成資料，請稍候。</p>
-                  </div>
-                ) : orderProducts.length > 0 ? (
-                  <div className="table-responsive checkout-carttable">
-                    <table className="table cart-table align-middle mb-0">
-                      <thead className="cart-table__header">
-                        <tr>
-                          <th className="cart-table__col--info">商品名稱</th>
-                          <th className="cart-table__col--image">圖片</th>
-                          <th className="cart-table__col--price">單價</th>
-                          <th className="cart-table__col--qty">數量</th>
-                          <th className="cart-table__col--subtotal">小計</th>
-                        </tr>
-                      </thead>
+                  <div className="checkout-success__empty cart-state-card cart-state-card--loading">
+                    <h4 className="cart-state-card__title">訂單明細載入中</h4>
 
-                      <tbody className="cart-table__body">
-                        {orderProducts.map((item) => {
-                          const title = getProductTitle(item);
-                          const price = getProductPrice(item);
-                          const itemTotal = getItemTotal(item);
-
-                          return (
-                            <tr key={item.id || item.product_id}>
-                              <td className="cart-table__col--info">{title}</td>
-
-                              <td className="cart-table__col--image">
-                                <ProductImage
-                                  src={getProductImage(item)}
-                                  alt={title}
-                                  size="small"
-                                />
-                              </td>
-
-                              <td className="cart-table__col--price">
-                                NT$ {price.toLocaleString()}
-                              </td>
-
-                              <td className="cart-table__col--qty">
-                                <div className="d-flex justify-content-center align-items-center">
-                                  <span className="me-2">{item.qty}</span>
-                                  <span className="bg-transparent border-0">
-                                    {getProductUnit(item)}
-                                  </span>
-                                </div>
-                              </td>
-
-                              <td className="cart-table__col--subtotal">
-                                NT$ {formatCurrency(itemTotal)}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                    <p className="cart-state-card__description">正在確認付款完成資料，請稍候。</p>
                   </div>
                 ) : (
-                  <div className="checkout-success__empty card p-4 text-center">
-                    <h4 className="h5 mb-2">目前沒有商品明細</h4>
-                    <p className="text-muted mb-0">您仍可以前往訂單查詢頁確認訂單狀態。</p>
-                  </div>
+                  <ReadonlyOrderItems
+                    items={orderProducts}
+                    emptyTitle="目前沒有商品明細"
+                    emptyDescription="您仍可以前往訂單查詢頁確認訂單狀態。"
+                  />
                 )}
               </div>
             </div>
 
             <div className="col-lg-4">
-              <aside className="checkout-success__aside card p-3">
-                <div className="checkout-success__section-header mb-3">
+              <aside className="checkout-success__aside order-summary card p-3">
+                <div className="checkout-success__section-header order-summary__header mb-3">
                   <h3 className="mb-1">訂單摘要</h3>
                   <p className="text-muted mb-0">付款與收件資訊</p>
                 </div>
 
-                <div className="checkout-success__info-list">
-                  <div className="checkout-success__info-row">
-                    <span>訂單狀態</span>
-                    <strong>{orderStatusText}</strong>
+                <div className="checkout-success__info-list order-summary__list">
+                  <div className="checkout-success__info-row order-summary__row">
+                    <span className="order-summary__label">訂單狀態</span>
+                    <strong className="order-summary__value">{orderStatusText}</strong>
                   </div>
 
                   <div className="checkout-success__info-row">
@@ -365,13 +319,16 @@ const CheckoutSuccessPage = () => {
                     </div>
                   )}
 
-                  <div className="checkout-success__info-row checkout-success__info-row--total">
-                    <span>訂單金額</span>
-                    <strong>NT$ {formatCurrency(finalTotal)}</strong>
+                  <div className="checkout-success__info-row checkout-success__info-row--total order-summary__row order-summary__row--total">
+                    <span className="order-summary__label">訂單金額</span>
+                    <strong className="order-summary__value">
+                      NT$ {formatCurrency(finalTotal)}
+                    </strong>
                   </div>
                 </div>
 
                 <hr className="my-3" />
+                <hr className="checkout-success__divider" />
 
                 <div className="checkout-success__customer">
                   <h4 className="checkout-success__customer-title mb-2">收件資訊</h4>
@@ -395,7 +352,7 @@ const CheckoutSuccessPage = () => {
             </div>
           </section>
 
-          <div className="checkout-success__actions d-flex justify-content-center gap-2 mt-4">
+          <div className="checkout-success__actions cart-cta-group">
             <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
               查看歷史訂單
             </Link>

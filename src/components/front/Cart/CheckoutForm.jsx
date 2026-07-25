@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 import taiwanDistricts from '@/data/taiwanDistricts.json';
 
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
+import { normalizeOrderItems } from '@/utils/orderItemUtils';
 // import { formatCategoryShortPreview, getProductUnitLabel } from '@/utils/productFormatter';
-import { formatCategoryShortPreview, getProductUnitShortLabel } from '@/utils/productFormatter';
+// import { formatCategoryShortPreview, getProductUnitShortLabel } from '@/utils/productFormatter';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
+// components
+import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
 const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBack }) => {
   const total = calculateCartTotal(carts);
@@ -24,6 +27,10 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
 
   const cityList = getCities();
   const districtList = getDistricts(city);
+
+  const summaryItems = useMemo(() => {
+    return normalizeOrderItems(carts);
+  }, [carts]);
 
   useEffect(() => {
     setValue('district', '');
@@ -260,63 +267,58 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
             </div>
           </div>
           <div className="col-lg-5">
-            <div className="cart-summary card p-3">
-              <h2 className="mb-3">訂單摘要</h2>
+            <div className="cart-summary order-summary card p-3">
+              <div className="order-summary__header">
+                <h2 className="mb-3">訂單摘要</h2>
+              </div>
 
-              {carts.map((item) => (
-                <div key={item.id} className="d-flex justify-content-between mb-3">
-                  <span style={{ width: '120px' }}>{item.product.title}</span>
-                  <span style={{ width: '150px' }}>
-                    {formatCategoryShortPreview(item.product.category) || '未設定分類'}
-                  </span>
-                  <span>
-                    {item.qty} {getProductUnitShortLabel(item.product?.unit) || '未設定單位'}
-                  </span>
-                  <span>NT$ {item.total.toLocaleString()}</span>
+              <ReadonlyOrderItems
+                items={summaryItems}
+                variant="summary"
+                emptyTitle="購物車目前沒有商品"
+                emptyDescription="請返回購物車加入商品後再填寫訂購資料。"
+              />
+
+              <hr className="order-summary__divider" />
+
+              <div className="order-summary__list">
+                <div className="order-summary__row">
+                  <strong className="order-summary__label">小計</strong>
+                  <strong className="order-summary__value">NT$ {total.toLocaleString()}</strong>
                 </div>
-              ))}
 
-              <hr className="mb-3" />
+                <div className="order-summary__row">
+                  <strong className="order-summary__label">
+                    運費(本館滿 {minfreeShippingFee} 免運)
+                  </strong>
+                  <strong
+                    className={`order-summary__value ${total >= minfreeShippingFee ? 'text-success' : ''}`}
+                  >
+                    {total >= minfreeShippingFee ? (
+                      <>已享免運</>
+                    ) : (
+                      <>NT$ {shippingFee.toLocaleString()}</>
+                    )}
+                  </strong>
+                </div>
 
-              <div className="d-flex justify-content-between mb-3">
-                <strong>小計</strong>
-                <strong>NT$ {total.toLocaleString()}</strong>
-              </div>
-              <div className="d-flex justify-content-between mb-3">
-                <strong>運費(本館滿 {minfreeShippingFee} 免運)</strong>
-                {total >= minfreeShippingFee ? (
-                  <>
-                    <strong className="text-success">已享免運</strong>
-                  </>
-                ) : (
-                  <>
-                    <strong>NT$ {shippingFee.toLocaleString()}</strong>
-                  </>
-                )}
-              </div>
-              <hr className="mb-3" />
-              <div className="d-flex justify-content-between mb-3">
-                <strong>合計</strong>
-                {total >= minfreeShippingFee ? (
-                  <>
-                    <strong>NT$ {total.toLocaleString()}</strong>
-                  </>
-                ) : (
-                  <>
-                    <strong>NT$ {(total + shippingFee).toLocaleString()}</strong>
-                  </>
-                )}
+                <div className="order-summary__row order-summary__row--total">
+                  <strong className="order-summary__label">合計</strong>
+                  <strong className="order-summary__value">
+                    {total >= minfreeShippingFee ? (
+                      <>NT$ {total.toLocaleString()}</>
+                    ) : (
+                      <>NT$ {(total + shippingFee).toLocaleString()}</>
+                    )}
+                  </strong>
+                </div>
               </div>
 
-              <div className="summary-box mb-1">
-                <button
-                  type="button"
-                  className="ui-btn ui-btn--outline-primary w-100 mb-2"
-                  onClick={onBack}
-                >
+              <div className="order-summary__actions cart-cta-group">
+                <button type="button" className="ui-btn ui-btn--outline-primary" onClick={onBack}>
                   回到購物車
                 </button>
-                <button type="submit" className="ui-btn ui-btn--primary w-100">
+                <button type="submit" className="ui-btn ui-btn--primary">
                   送出訂單
                 </button>
               </div>

@@ -84,25 +84,34 @@ const CustomerOrdersPage = () => {
       </div>
 
       {errorMessage && (
-        <div className="card cart-state-card p-4 text-center mb-4">
-          <h2 className="h5 mb-2">暫時無法取得訂單資料</h2>
-          <p className="text-muted mb-3">可能是網路連線不穩或系統忙碌，請稍後再試。</p>
-          <button
-            type="button"
-            className="ui-btn ui-btn--primary"
-            onClick={() => fetchOrders(currentPage)}
-          >
-            重新整理
-          </button>
+        <div className="cart-state-card cart-state-card--error card">
+          <h2 className="cart-state-card__title">暫時無法取得訂單資料</h2>
+
+          <p className="cart-state-card__description">可能是網路連線不穩或系統忙碌，請稍後再試。</p>
+
+          <div className="cart-state-card__actions">
+            <button
+              type="button"
+              className="ui-btn ui-btn--primary"
+              onClick={() => fetchOrders(currentPage)}
+            >
+              重新整理
+            </button>
+          </div>
         </div>
       )}
 
       {sortedOrders.length === 0 ? (
-        <div className="card cart-state-card p-4 text-center">
-          <h2 className="mb-3">目前沒有訂單資料</h2>
-          <Link to="/products" className="ui-btn ui-btn--primary">
-            去逛商品
-          </Link>
+        <div className="cart-state-card cart-state-card--empty card">
+          <h2 className="cart-state-card__title">目前沒有訂單資料</h2>
+
+          <p className="cart-state-card__description">完成購買後，訂單紀錄會顯示在這裡。</p>
+
+          <div className="cart-state-card__actions">
+            <Link to="/products" className="ui-btn ui-btn--primary">
+              去逛商品
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="customer-orders">
@@ -156,7 +165,7 @@ const CustomerOrdersPage = () => {
                   emptyDescription="目前無法顯示這筆訂單的商品資料。"
                 />
 
-                <div className="cart-cta-group customer-order-card__actions">
+                <div className="customer-order-card__actions cart-cta-group">
                   <Link to="/products" className="ui-btn ui-btn--outline-primary">
                     繼續購物
                   </Link>
@@ -168,7 +177,7 @@ const CustomerOrdersPage = () => {
           })}
 
           {pagination?.total_pages > 1 && (
-            <div className="d-flex justify-content-center gap-2 mt-4">
+            <div className="customer-orders__pagination">
               {Array.from({ length: pagination.total_pages }).map((_, index) => {
                 const page = index + 1;
                 const isActive = page === currentPage;
