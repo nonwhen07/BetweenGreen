@@ -60,15 +60,6 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
     defaultValue: '',
   });
 
-  // const itemsTotal = useMemo(() => {
-  //   const calculatedTotal = calculateCartTotal(paymentItems);
-
-  //   if (calculatedTotal > 0) {
-  //     return calculatedTotal;
-  //   }
-
-  //   return paymentItems.reduce((total, item) => total + getItemTotal(item), 0);
-  // }, [paymentItems]);
   const itemsTotal = useMemo(() => {
     return calculateCartTotal(paymentItems);
   }, [paymentItems]);

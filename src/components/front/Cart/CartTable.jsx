@@ -3,16 +3,14 @@ import { Link } from 'react-router-dom';
 import { FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
 
-// constants
-
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
-// import { formatCategoryPreview, getProductUnitLabel } from '@/utils/productFormatter';
 import { formatCategoryPreview, getProductUnitShortLabel } from '@/utils/productFormatter';
 
 // components
 import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
+import QuantityStepper from '@/components/shared/QuantityStepper';
 
 const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
   const cartTotal = useMemo(() => calculateCartTotal(carts), [carts]);
@@ -62,11 +60,7 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                         aria-label={`刪除 ${cart.product.title}`}
                         onClick={() => actions.onDelete(cart.id)}
                       >
-                        {isDeleteLoading(cart.id) ? (
-                          <BtnLoader className="sm" />
-                        ) : (
-                          <Trash2 size={18} />
-                        )}
+                        {isDeleteLoading(cart.id) ? <BtnLoader size="sm" /> : <Trash2 size={18} />}
                       </button>
                     </div>
 
@@ -91,11 +85,7 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                           aria-label={`減少 ${cart.product.title} 數量`}
                           onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)}
                         >
-                          {isQtyLoading(cart.id) ? (
-                            <BtnLoader className="sm" />
-                          ) : (
-                            <FaMinus size={16} />
-                          )}
+                          {isQtyLoading(cart.id) ? <BtnLoader size="sm" /> : <FaMinus size={16} />}
                         </button>
 
                         <span className="editable-cart-item__qty-value">{cart.qty}</span>
@@ -107,11 +97,7 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                           aria-label={`增加 ${cart.product.title} 數量`}
                           onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)}
                         >
-                          {isQtyLoading(cart.id) ? (
-                            <BtnLoader className="sm" />
-                          ) : (
-                            <FaPlus size={16} />
-                          )}
+                          {isQtyLoading(cart.id) ? <BtnLoader size="sm" /> : <FaPlus size={16} />}
                         </button>
 
                         <span className="editable-cart-item__unit">{unitLabel}</span>
@@ -180,8 +166,8 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                       <td className="cart-table__col--price">
                         NT$ {cart.product.price.toLocaleString()}
                       </td>
-                      <td className="cart-table__col--qty" style={{ width: '150px' }}>
-                        <div className="qty-group d-flex align-items-center">
+                      <td className="cart-table__col--qty">
+                        {/* <div className="qty-group d-flex align-items-center">
                           <div className="btn-group" role="group">
                             <button
                               onClick={() =>
@@ -223,7 +209,19 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                           <span className="input-group-text bg-transparent border-0">
                             {getProductUnitShortLabel(cart.product.unit) || '未設定單位'}
                           </span>
-                        </div>
+                        </div> */}
+                        <QuantityStepper
+                          value={cart.qty}
+                          unit={getProductUnitShortLabel(cart.product.unit) || '未設定單位'}
+                          isLoading={isQtyLoading(cart.id)}
+                          itemName={cart.product.title}
+                          onDecrease={() =>
+                            actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)
+                          }
+                          onIncrease={() =>
+                            actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)
+                          }
+                        />
                       </td>
                       <td className="cart-table__col--subtotal">
                         NT$ {cart.total.toLocaleString()}

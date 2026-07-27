@@ -201,10 +201,8 @@ const CartPage = () => {
           </h1>
         </div>
         {/* Step Indicator */}
-        {/* <CartSteps currentStep={activeStep} /> */}
-        <div className="cart-steps-container" data-aos="fade-in" data-aos-delay="100">
-          <CartSteps currentStep={activeStep} />
-        </div>
+
+        <CartSteps currentStep={activeStep} data-aos="fade-in" data-aos-delay="100" />
 
         {/* Main Content */}
         <div className="cart-main">

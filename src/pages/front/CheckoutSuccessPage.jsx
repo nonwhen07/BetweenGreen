@@ -7,11 +7,9 @@ import { getOrder } from '@/services/orderService';
 
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
-// import ProductImage from '@/components/ProductImage';
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
 // utils
-// import { getProductUnitShortLabel } from '@/utils/productFormatter';
 import { calculateCartFinalTotal, calculateCartTotal } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
@@ -20,24 +18,9 @@ import { normalizeOrderItems } from '@/utils/orderItemUtils';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 
-// const getProductTitle = (item) => {
-//   return item.product?.title || `商品 ID：${item.product_id || '—'}`;
-// };
-
-// const getProductImage = (item) => {
-//   return item.product?.imageUrl || '';
-// };
-
 const getProductPrice = (item) => {
   return Number(item.product?.price || 0);
 };
-
-// const getProductUnit = (item) => {
-//   return item.product?.unit || '';
-// };
-// const getProductUnit = (item) => {
-//   return getProductUnitShortLabel(item.product?.unit) || '未設定單位';
-// };
 
 const getItemTotal = (item) => {
   return Number(item.final_total ?? item.total ?? getProductPrice(item) * Number(item.qty || 0));
@@ -78,13 +61,15 @@ const CheckoutSuccessPage = () => {
   }, [routeState.carts]);
 
   const orderProducts = useMemo(() => {
-    if (stateCarts.length > 0) {
-      return stateCarts;
-    }
+    const sourceItems = stateCarts.length > 0 ? stateCarts : orderData?.products;
 
-    // return normalizeOrderProducts(orderData?.products);
-    return normalizeOrderItems(orderData?.products);
-  }, [stateCarts, orderData]);
+    const normalizedItems = normalizeOrderItems(sourceItems);
+
+    // console.log('sourceItems', sourceItems);
+    // console.table(normalizedItems);
+
+    return normalizedItems;
+  }, [stateCarts, orderData?.products]);
 
   const productCount = useMemo(() => {
     return orderProducts.reduce((total, item) => total + Number(item.qty || 0), 0);
@@ -220,7 +205,7 @@ const CheckoutSuccessPage = () => {
           </section>
 
           <section
-            className="checkout-success__summary-grid row g-3 mt-3 mx-0 mx-0"
+            className="checkout-success__summary-grid row g-3 mt-3 mx-0"
             data-aos="fade-up"
             data-aos-delay="100"
           >
@@ -267,7 +252,7 @@ const CheckoutSuccessPage = () => {
           </section>
 
           <section
-            className="checkout-success__content row g-4 mt-1 mx-0 mx-0"
+            className="checkout-success__content row g-4 mt-1 mx-0"
             data-aos="fade-up"
             data-aos-delay="150"
           >

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // components
-// import ProductImage from '@/components/ProductImage';
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 // services
 import { getOrders } from '@/services/orderService';
@@ -10,7 +9,6 @@ import { getOrders } from '@/services/orderService';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 // utils
-// import { getProductUnitShortLabel } from '@/utils/productFormatter';
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 

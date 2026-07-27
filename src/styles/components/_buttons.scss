@@ -89,6 +89,9 @@
   }
 }
 
+/* =========================================================
+  Btn Gotop
+========================================================= */
 .ui-btn-gotop {
   position: fixed;
   right: 2.5rem;
@@ -180,5 +183,77 @@
     background: #2f6d4f;
     color: #fff;
     border-color: #2f6d4f;
+  }
+}
+
+/* =========================================================
+  Quantity Stepper
+========================================================= */
+
+.quantity-stepper {
+  display: inline-grid;
+  grid-template-columns: auto minmax(36px, auto) auto auto;
+  align-items: center;
+
+  border: 1px solid $border-color-base;
+  border-radius: $radius-sm;
+  background-color: $color-bg-surface;
+
+  overflow: hidden;
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    border: 0;
+    background-color: transparent;
+    color: $color-primary-dark;
+
+    cursor: pointer;
+
+    transition:
+      background-color $transition-base,
+      color $transition-base;
+
+    &:hover:not(:disabled) {
+      background-color: $color-primary-light;
+      color: $text-on-primary;
+    }
+
+    &:disabled {
+      color: $neutral-500;
+
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  &__value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 40px;
+    height: 36px;
+    padding-inline: $space-2;
+
+    border-right: 1px solid $border-color-base;
+    border-left: 1px solid $border-color-base;
+
+    font-weight: $font-weight-medium;
+    text-align: center;
+  }
+
+  &__unit {
+    padding-inline: $space-2;
+
+    color: $neutral-600;
+    font-size: $font-size-sm;
+    white-space: nowrap;
   }
 }

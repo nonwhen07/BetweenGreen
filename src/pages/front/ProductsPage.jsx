@@ -24,7 +24,7 @@ import { usePagination } from '@/hooks/usePagination';
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
 import PageLoader from '@/components/shared/PageLoader';
-import BtnLoader from '@/components/BtnLoader';
+// import BtnLoader from '@/components/BtnLoader';
 import ProductImage from '@/components/ProductImage';
 // import ProductCard from '@/components/front/home/Product/ProductCard';
 import ProductCard from '@/components/shared/ProductCard';

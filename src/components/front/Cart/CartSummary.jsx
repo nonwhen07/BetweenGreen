@@ -129,9 +129,9 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
             <span>全館 NT$ {minfreeShippingFee.toLocaleString()} 免運</span>
 
             {shipping === 0 ? (
-              <strong className="text-success">已享免運</strong>
+              <strong className="order-summary__value  text-success">已享免運</strong>
             ) : (
-              <span className="text-muted">
+              <span className="order-summary__value text-muted">
                 距離免運還差 NT$ {amountToFreeShipping.toLocaleString()}
               </span>
             )}
