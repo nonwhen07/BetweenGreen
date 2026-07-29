@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlus, FaMinus, FaCartPlus, FaShoppingCart } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
 
 // utils
@@ -26,13 +25,6 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
   return (
     <>
       <div className="cart-ui-wrapper">
-        {/* 工具列：未來可擴充「批次操作」或「優惠提醒」 */}
-        {/* <div className="cart-table-tools d-flex justify-content-between align-items-center text-end">
-            <div className="cart-table-tools__extra">
-              <div className="cart-table-tag">滿千免運中</div>
-            </div>
-          </div> */}
-
         <div className="editable-cart-items">
           {/* Mobile / Pad */}
           <div className="editable-cart-items__list">
@@ -78,29 +70,18 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
 
                     <div className="editable-cart-item__footer">
                       <div className="editable-cart-item__qty">
-                        <button
-                          type="button"
-                          className="btn btn-outline-dark btn-sm"
-                          disabled={isQtyLoading(cart.id)}
-                          aria-label={`減少 ${cart.product.title} 數量`}
-                          onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)}
-                        >
-                          {isQtyLoading(cart.id) ? <BtnLoader size="sm" /> : <FaMinus size={16} />}
-                        </button>
-
-                        <span className="editable-cart-item__qty-value">{cart.qty}</span>
-
-                        <button
-                          type="button"
-                          className="btn btn-outline-dark btn-sm"
-                          disabled={isQtyLoading(cart.id)}
-                          aria-label={`增加 ${cart.product.title} 數量`}
-                          onClick={() => actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)}
-                        >
-                          {isQtyLoading(cart.id) ? <BtnLoader size="sm" /> : <FaPlus size={16} />}
-                        </button>
-
-                        <span className="editable-cart-item__unit">{unitLabel}</span>
+                        <QuantityStepper
+                          value={cart.qty}
+                          unit={unitLabel}
+                          isLoading={isQtyLoading(cart.id)}
+                          itemName={cart.product.title}
+                          onDecrease={() =>
+                            actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)
+                          }
+                          onIncrease={() =>
+                            actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)
+                          }
+                        />
                       </div>
 
                       <div className="editable-cart-item__subtotal">
@@ -167,49 +148,6 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                         NT$ {cart.product.price.toLocaleString()}
                       </td>
                       <td className="cart-table__col--qty">
-                        {/* <div className="qty-group d-flex align-items-center">
-                          <div className="btn-group" role="group">
-                            <button
-                              onClick={() =>
-                                actions.onUpdate(cart.id, cart.product.id, cart.qty - 1)
-                              }
-                              disabled={isQtyLoading(cart.id)}
-                              type="button"
-                              className="btn btn-outline-dark btn-sm"
-                            >
-                              {isQtyLoading(cart.id) ? (
-                                <BtnLoader aria-hidden="true" size="sm" />
-                              ) : (
-                                <FaMinus size={20} />
-                              )}
-                            </button>
-                            <span
-                              className="btn border border-dark"
-                              style={{ width: '50px', cursor: 'auto' }}
-                            >
-                              {cart.qty}
-                            </span>
-
-                            <button
-                              onClick={() =>
-                                actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)
-                              }
-                              disabled={isQtyLoading(cart.id)}
-                              type="button"
-                              className="btn btn-outline-dark btn-sm"
-                            >
-                              {isQtyLoading(cart.id) ? (
-                                <BtnLoader aria-hidden="true" size="sm" />
-                              ) : (
-                                <FaPlus size={20} />
-                              )}
-                            </button>
-                          </div>
-
-                          <span className="input-group-text bg-transparent border-0">
-                            {getProductUnitShortLabel(cart.product.unit) || '未設定單位'}
-                          </span>
-                        </div> */}
                         <QuantityStepper
                           value={cart.qty}
                           unit={getProductUnitShortLabel(cart.product.unit) || '未設定單位'}

@@ -40,4 +40,14 @@
 // @use './pages/products-grid';
 // @use './pages/product-swiper';
 // @use './pages/product-detail';
-@use './pages/cart';
+
+//cart';
+// @use './pages/cart';
+@use './pages/cart/cart';
+@use './pages/cart/steps';
+@use './pages/cart/states';
+@use './pages/cart/order-items';
+@use './pages/cart/order-summary';
+@use './pages/cart/checkout-form';
+// @use './pages/cart/states';
+// @use './pages/cart/states';
