@@ -49,5 +49,9 @@
 @use './pages/cart/order-items';
 @use './pages/cart/order-summary';
 @use './pages/cart/checkout-form';
+@use './pages/cart/checkout-payment';
+@use './pages/cart/checkout-success';
+@use './pages/cart/customer-orders';
+
 // @use './pages/cart/states';
 // @use './pages/cart/states';

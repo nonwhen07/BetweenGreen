@@ -1,0 +1,90 @@
+@use 'sass:color';
+
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+
+$cart-card-radius: 14px;
+$cart-card-border: 1px solid rgba($color-primary, 0.1);
+$cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
+$cart-card-shadow-hover: 0 14px 36px rgba($color-primary, 0.1);
+
+// ======================================================
+// Customer Orders Page
+// ======================================================
+
+.customer-orders {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+
+  h2,
+  h3 {
+    color: $color-primary;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  p {
+    line-height: 1.7;
+  }
+}
+
+// ======================================================
+// Customer Order Card
+// ======================================================
+
+.customer-order-card {
+  border: $cart-card-border;
+  border-radius: $cart-card-radius;
+  background-color: $color-bg-surface;
+  box-shadow: $cart-card-shadow;
+
+  overflow: hidden;
+
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  .badge {
+    white-space: nowrap;
+  }
+
+  &:hover {
+    box-shadow: $cart-card-shadow-hover;
+    transform: translateY(-2px);
+  }
+}
+
+// ======================================================
+// Pad
+// ======================================================
+
+@include respond($breakpoints, pad) {
+  .customer-orders {
+    gap: 24px;
+  }
+}
+
+// ======================================================
+// Desktop
+// ======================================================
+@include respond($breakpoints, desktop) {
+  .customer-orders {
+    h2 {
+      font-size: 24px;
+    }
+
+    h3 {
+      font-size: 20px;
+    }
+  }
+}

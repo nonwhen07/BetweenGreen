@@ -280,17 +280,20 @@ $cart-card-radius: 14px;
   min-width: 760px;
   margin-bottom: 0;
 
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: $cart-card-radius;
+
+  overflow: hidden;
+
   &__header,
   &__body {
     .cart-table__col--action,
     .cart-table__col--image,
     .cart-table__col--price,
-    .cart-table__col--qty {
-      text-align: center;
-    }
-
+    .cart-table__col--qty,
     .cart-table__col--subtotal {
-      text-align: end;
+      text-align: center;
     }
   }
 
@@ -334,6 +337,7 @@ $cart-card-radius: 14px;
 
     td {
       vertical-align: middle;
+      border-bottom-width: 0px;
 
       color: $color-secondary;
       text-align: left;
@@ -369,19 +373,40 @@ $cart-card-radius: 14px;
     }
   }
 
-  &__footer {
-    border-top: 1px solid $color-primary;
+  &__divider-row {
+    height: auto;
 
-    tr {
+    td {
+      height: 1px;
+      padding: 0;
+
+      border: 0;
+      line-height: 0;
+    }
+  }
+
+  &__divider {
+    display: block;
+
+    margin: 0 $space-4;
+
+    border-top: 1px solid $border-color-soft;
+  }
+
+  &__footer {
+    tr:not(.cart-table__divider-row) {
       height: 64px;
     }
 
     td {
+      border-bottom-width: 0px;
       vertical-align: middle;
     }
   }
 
   &__total-amount {
+    width: 130px;
+
     color: $color-primary;
     font-size: 20px;
     font-weight: 700;
@@ -444,10 +469,13 @@ $cart-card-radius: 14px;
     }
   }
 
-  // .cart-table-container,
-  // .checkout-carttable {
-  //   box-shadow: none;
-  // }
+  .cart-table-container,
+  .checkout-carttable {
+    border-radius: $radius-md;
+
+    overflow: hidden;
+    box-shadow: none;
+  }
 
   .cart-table {
     &__header {
@@ -485,7 +513,7 @@ $cart-card-radius: 14px;
     }
 
     &__footer {
-      tr {
+      tr:not(.cart-table__divider-row) {
         height: 72px;
       }
     }

@@ -210,7 +210,7 @@ const CartPage = () => {
           {finalError && (
             <section className="ui-section ui-section--cartError" key={finalError}>
               <div className="d-flex flex-column align-items-center text-center py-3">
-                <div className="cartError-mian alert alert-danger">
+                <div className="cartError-main alert alert-danger">
                   <h2 className="mb-3">Oops! 您的訂單資訊有點問題</h2>
                   <p className="mt-2">詳細錯誤訊息：{finalError}</p>
                 </div>
