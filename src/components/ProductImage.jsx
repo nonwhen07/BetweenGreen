@@ -1,9 +1,16 @@
 import noImage from '@/assets/images/no-image.png';
 
-function ProductImage({ src, alt, size = 'medium', showWatermark = true }) {
+function ProductImage({ src, alt, size = 'medium' /*, showWatermark = true */ }) {
+  const isFallback = !src;
+
   return (
-    <div className={`product-img product-img-${size}`}>
+    <div
+      className={`product-image product-image--${size} ${
+        isFallback ? 'product-image--fallback' : ''
+      }`}
+    >
       <img
+        className="product-image__media"
         src={src || noImage}
         alt={alt || 'product'}
         onError={(e) => {
@@ -11,7 +18,7 @@ function ProductImage({ src, alt, size = 'medium', showWatermark = true }) {
         }}
       />
 
-      {!src && showWatermark && <span className="img-watermark">📦 No Image</span>}
+      {/* {isFallback && showWatermark && <span className="product-image__watermark">No Image</span>} */}
     </div>
   );
 }

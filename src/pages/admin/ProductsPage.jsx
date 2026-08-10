@@ -55,11 +55,7 @@ const ProductsPage = () => {
   // AdminFilter
   const [keyword, setKeyword] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  // const filteredProducts = products.filter((product) => {
-  //   const matchKeyword = !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
-  //   const matchCategory = !selectedCategory || product.category?.split('-')[0] === selectedCategory;
-  //   return matchKeyword && matchCategory;
-  // });
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchKeyword = !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
@@ -84,10 +80,6 @@ const ProductsPage = () => {
     closeDeleteModal,
   } = useDeleteModal();
 
-  // Page actions（CRUD / pagination）
-  // const handlePageChange = (page = 1) => {
-  //   fetchProducts({ page });
-  // };
   const handleUpdateProduct = handleSubmit((formData) => {
     // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
     start();
@@ -158,11 +150,6 @@ const ProductsPage = () => {
     resetPage();
   }, [keyword, selectedCategory]);
 
-  // useEffect(() => {
-  //   console.log('products changed:', products.length);
-  //   console.log(products);
-  // }, [products]);
-
   return (
     <>
       <div className="container py-1">
@@ -177,22 +164,13 @@ const ProductsPage = () => {
           />
 
           <ProductsTable
-            // products={filteredProducts}
             products={currentPageProducts}
-            // pageInfo={pageInfo}
-            // handlePageChange={handlePageChange}
-            // openProductModal={openProductModal}
             openProductModal={handleOpenProductModal}
             openDeleteModal={openDeleteModal}
             productTotalCount={filteredProducts.length}
             selectedProductId={selectedProductId}
           />
           <div className="m-4">
-            {/* <BrandPagination
-              currentPage={pageInfo.current_page}
-              totalPages={pageInfo.total_pages}
-              onPageChange={handlePageChange}
-            /> */}
             <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
           </div>
         </div>

@@ -1,38 +1,49 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
-const BrandPagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
+const BrandPagination = ({
+  currentPage = 1,
+  totalPages = 1,
+  onPageChange,
+  className,
+  ariaLabel = '分頁導覽',
+}) => {
   if (totalPages <= 1) return null;
 
   return (
-    <nav className="brand-pagination" aria-label="Pagination">
-      {/* prev */}
+    <nav className={clsx('brand-pagination', className)} aria-label={ariaLabel}>
       <button
         type="button"
         className="brand-pagination__item"
         disabled={currentPage <= 1}
+        aria-label="上一頁"
         onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
       >
         ‹
       </button>
 
-      {/* pages */}
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-        <button
-          key={pageNum}
-          type="button"
-          className={clsx('brand-pagination__item', currentPage === pageNum && 'is-active')}
-          onClick={() => onPageChange(pageNum)}
-        >
-          {pageNum}
-        </button>
-      ))}
+      {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNum) => {
+        const isActive = currentPage === pageNum;
 
-      {/* next */}
+        return (
+          <button
+            key={pageNum}
+            type="button"
+            className={clsx('brand-pagination__item', isActive && 'is-active')}
+            aria-label={`第 ${pageNum} 頁`}
+            aria-current={isActive ? 'page' : undefined}
+            onClick={() => onPageChange(pageNum)}
+          >
+            {pageNum}
+          </button>
+        );
+      })}
+
       <button
         type="button"
         className="brand-pagination__item"
         disabled={currentPage >= totalPages}
+        aria-label="下一頁"
         onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
       >
         ›
@@ -45,6 +56,8 @@ BrandPagination.propTypes = {
   currentPage: PropTypes.number,
   totalPages: PropTypes.number,
   onPageChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  ariaLabel: PropTypes.string,
 };
 
 export default BrandPagination;

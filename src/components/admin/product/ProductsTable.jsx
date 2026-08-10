@@ -151,15 +151,6 @@ const ProductsTable = ({
           </table>
         )}
       </div>
-
-      {/* <div className="admin-panel__footer d-flex justify-content-center">
-        <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
-        <BrandPagination
-          currentPage={pageInfo.current_page}
-          totalPages={pageInfo.total_pages}
-          onPageChange={handlePageChange}
-        />
-      </div> */}
     </>
   );
 };

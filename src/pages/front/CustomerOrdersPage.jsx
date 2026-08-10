@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // components
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
+import BrandPagination from '@/components/shared/BrandPagination';
 // services
 import { getOrders } from '@/services/orderService';
 // hooks
@@ -69,6 +70,17 @@ const CustomerOrdersPage = () => {
     }
   };
 
+  const handlePageChange = (page) => {
+    if (page === currentPage) return;
+
+    setCurrentPage(page);
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   useEffect(() => {
     fetchOrders(currentPage);
 
@@ -77,7 +89,7 @@ const CustomerOrdersPage = () => {
 
   return (
     <div className="container ui-container py-5">
-      <div className="cart-hero text-center mb-4">
+      <div className="cart-hero text-center">
         <h1 className="page-title">顧客歷次訂單查詢</h1>
       </div>
 
@@ -112,69 +124,80 @@ const CustomerOrdersPage = () => {
           </div>
         </div>
       ) : (
-        <div className="customer-orders">
-          {sortedOrders.map((order, index) => {
-            const orderProducts = normalizeOrderItems(order.products);
-            const isPaid = order.is_paid;
-            const orderId = order.id;
-            const orderAmount = order.final_total ?? order.total ?? 0;
-            const paymentAction = isPaid ? (
-              <Link to={`/checkout-success/${orderId}`} className="ui-btn ui-btn--outline-primary">
-                查看付款完成
-              </Link>
-            ) : (
-              <button
-                type="button"
-                className="ui-btn ui-btn--primary"
-                onClick={() => navigate(`/checkout-payment/${orderId}`)}
-              >
-                前往付款
-              </button>
-            );
+        <>
+          <BrandPagination
+            currentPage={currentPage}
+            totalPages={pagination?.total_pages ?? 1}
+            onPageChange={handlePageChange}
+            className="customer-orders__pagination customer-orders__pagination--top"
+            ariaLabel="訂單列表上方分頁"
+          />
+          <div className="customer-orders">
+            {sortedOrders.map((order, index) => {
+              const orderProducts = normalizeOrderItems(order.products);
+              const isPaid = order.is_paid;
+              const orderId = order.id;
+              const orderAmount = order.final_total ?? order.total ?? 0;
+              const paymentAction = isPaid ? (
+                <Link
+                  to={`/checkout-success/${orderId}`}
+                  className="ui-btn ui-btn--outline-primary"
+                >
+                  查看付款完成
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="ui-btn ui-btn--primary"
+                  onClick={() => navigate(`/checkout-payment/${orderId}`)}
+                >
+                  前往付款
+                </button>
+              );
 
-            return (
-              <section
-                key={orderId}
-                className="card customer-order-card p-3 mb-4"
-                data-aos="fade-up"
-                data-aos-delay={Math.min(index * 50, 200)}
-              >
-                <div className="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
-                  <div className="text-lg-start">
-                    <h2 className="customer-order-card__title mb-2">訂單編號：{orderId}</h2>
-                    <p className="mb-1 text-muted">
-                      收件人：{order.user?.name || '—'} 、 建立日期：{formatDate(order.create_at)}
-                    </p>
+              return (
+                <section
+                  key={orderId}
+                  className="card customer-order-card p-3 mb-4"
+                  data-aos="fade-up"
+                  data-aos-delay={Math.min(index * 50, 200)}
+                >
+                  <div className="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
+                    <div className="text-lg-start">
+                      <h2 className="customer-order-card__title mb-2">訂單編號：{orderId}</h2>
+                      <p className="mb-1 text-muted">
+                        收件人：{order.user?.name || '—'} 、 建立日期：{formatDate(order.create_at)}
+                      </p>
+                    </div>
+
+                    <div className="text-lg-end">
+                      <span className={`badge ${isPaid ? 'text-bg-success' : 'text-bg-warning'}`}>
+                        {isPaid ? '已付款' : '未付款'}
+                      </span>
+                      <p className="mt-2 mb-0 fw-bold">
+                        訂單金額：NT$ {Math.round(orderAmount).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="text-lg-end">
-                    <span className={`badge ${isPaid ? 'text-bg-success' : 'text-bg-warning'}`}>
-                      {isPaid ? '已付款' : '未付款'}
-                    </span>
-                    <p className="mt-2 mb-0 fw-bold">
-                      訂單金額：NT$ {Math.round(orderAmount).toLocaleString()}
-                    </p>
+                  <ReadonlyOrderItems
+                    items={orderProducts}
+                    emptyTitle="此訂單沒有商品明細"
+                    emptyDescription="目前無法顯示這筆訂單的商品資料。"
+                  />
+
+                  <div className="customer-order-card__actions cart-cta-group">
+                    <Link to="/products" className="ui-btn ui-btn--outline-primary">
+                      繼續購物
+                    </Link>
+
+                    {paymentAction}
                   </div>
-                </div>
+                </section>
+              );
+            })}
 
-                <ReadonlyOrderItems
-                  items={orderProducts}
-                  emptyTitle="此訂單沒有商品明細"
-                  emptyDescription="目前無法顯示這筆訂單的商品資料。"
-                />
-
-                <div className="customer-order-card__actions cart-cta-group">
-                  <Link to="/products" className="ui-btn ui-btn--outline-primary">
-                    繼續購物
-                  </Link>
-
-                  {paymentAction}
-                </div>
-              </section>
-            );
-          })}
-
-          {pagination?.total_pages > 1 && (
+            {/* {pagination?.total_pages > 1 && (
             <div className="customer-orders__pagination">
               {Array.from({ length: pagination.total_pages }).map((_, index) => {
                 const page = index + 1;
@@ -192,8 +215,16 @@ const CustomerOrdersPage = () => {
                 );
               })}
             </div>
-          )}
-        </div>
+          )} */}
+          </div>
+          <BrandPagination
+            currentPage={currentPage}
+            totalPages={pagination?.total_pages ?? 1}
+            onPageChange={handlePageChange}
+            className="customer-orders__pagination customer-orders__pagination--bottom"
+            ariaLabel="訂單列表下方分頁"
+          />
+        </>
       )}
     </div>
   );
