@@ -12,37 +12,56 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 // Order Summary
 // ======================================================
 
-.cart-summary {
-  width: 100%;
-  overflow: hidden;
+// .cart-summary {
+//   width: 100%;
+//   overflow: hidden;
 
-  border: $cart-card-border;
-  border-radius: $cart-card-radius;
-  background-color: $color-bg-surface;
-  box-shadow: $cart-card-shadow;
+//   border: $cart-card-border;
+//   border-radius: $cart-card-radius;
+//   background-color: $color-bg-surface;
+//   box-shadow: $cart-card-shadow;
 
-  h2 {
+//   h2 {
+//     margin-bottom: 16px;
+
+//     color: $color-primary;
+//     font-size: 22px;
+//     font-weight: 700;
+//     line-height: 1.4;
+//   }
+// }
+
+// .cart-summary-list {
+//   margin-bottom: 0;
+//   padding-left: 0;
+
+//   list-style: none;
+// }
+
+.order-summary {
+  min-width: 0;
+
+  &--cart {
+    width: 100%;
+    overflow: hidden;
+
+    border: $cart-card-border;
+    border-radius: $cart-card-radius;
+    background-color: $color-bg-surface;
+    box-shadow: $cart-card-shadow;
+  }
+
+  &__header {
+    min-width: 0;
+  }
+
+  &__title {
     margin-bottom: 16px;
 
     color: $color-primary;
     font-size: 22px;
     font-weight: 700;
     line-height: 1.4;
-  }
-}
-
-.cart-summary-list {
-  margin-bottom: 0;
-  padding-left: 0;
-
-  list-style: none;
-}
-
-.order-summary {
-  min-width: 0;
-
-  &__header {
-    min-width: 0;
   }
 
   &__list {
@@ -226,7 +245,7 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 // ======================================================
 
 @include respond($breakpoints, pad) {
-  .cart-summary {
+  .order-summary--cart {
     padding: 20px;
   }
 
@@ -261,9 +280,13 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 // ======================================================
 
 @include respond($breakpoints, desktop) {
-  .cart-summary {
-    h2 {
-      font-size: 24px;
-    }
+  // .cart-summary {
+  //   h2 {
+  //     font-size: 24px;
+  //   }
+  // }
+
+  .order-summary__title {
+    font-size: 24px;
   }
 }

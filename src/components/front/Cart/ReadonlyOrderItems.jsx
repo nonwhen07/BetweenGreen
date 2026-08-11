@@ -85,34 +85,34 @@ const ReadonlyOrderItems = ({
 
       {/* Desktop */}
       <div className="order-items__table">
-        <div className="table-responsive checkout-carttable">
-          <table className="table cart-table align-middle mb-0">
-            <thead className="cart-table__header">
+        <div className="table-responsive order-items__table-scroll">
+          <table className="table order-table order-table--readonly align-middle mb-0">
+            <thead className="order-table__header">
               <tr>
-                <th className="cart-table__col--info">商品名稱</th>
-                <th className="cart-table__col--image">圖片</th>
-                <th className="cart-table__col--price">單價</th>
-                <th className="cart-table__col--qty">數量</th>
-                <th className="cart-table__col--subtotal">小計</th>
+                <th className="order-table__col--info">商品名稱</th>
+                <th className="order-table__col--image">圖片</th>
+                <th className="order-table__col--price">單價</th>
+                <th className="order-table__col--qty">數量</th>
+                <th className="order-table__col--subtotal">小計</th>
               </tr>
             </thead>
 
-            <tbody className="cart-table__body">
+            <tbody className="order-table__body">
               {items.map((item) => (
                 <tr key={`table-${item.displayId || item.id || item.product_id}`}>
-                  <td className="cart-table__col--info">{item.title}</td>
+                  <td className="order-table__col--info">{item.title}</td>
 
-                  <td className="cart-table__col--image">
+                  <td className="order-table__col--image">
                     <ProductImage src={item.imageUrl} alt={item.title} size="small" />
                   </td>
 
-                  <td className="cart-table__col--price">NT$ {formatCurrency(item.price)}</td>
+                  <td className="order-table__col--price">NT$ {formatCurrency(item.price)}</td>
 
-                  <td className="cart-table__col--qty">
+                  <td className="order-table__col--qty">
                     {item.qty} {item.unit || '未設定單位'}
                   </td>
 
-                  <td className="cart-table__col--subtotal">NT$ {formatCurrency(item.total)}</td>
+                  <td className="order-table__col--subtotal">NT$ {formatCurrency(item.total)}</td>
                 </tr>
               ))}
             </tbody>

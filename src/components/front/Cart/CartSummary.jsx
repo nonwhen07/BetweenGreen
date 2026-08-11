@@ -30,12 +30,12 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
 
   return (
     <>
-      <div className="cart-summary order-summary card mt-3 p-3">
+      <div className="order-summary order-summary--cart card mt-3 p-3">
         <div className="order-summary__header">
-          <h2 className="mb-3">訂單摘要</h2>
+          <h2 className="order-summary__title mb-3">訂單摘要</h2>
         </div>
 
-        <ul className="cart-summary-list order-summary__list">
+        <ul className="order-summary__list">
           <li className="order-summary__row">
             <strong className="order-summary__label">商品小計</strong>
 
@@ -146,7 +146,7 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
         </div>
       </div>
 
-      <div className="cart-summary-actions order-summary__actions cart-cta-group">
+      <div className="order-summary__actions cart-cta-group">
         <button type="button" onClick={actions.onClear} className="ui-btn ui-btn--outline-danger">
           清空購物車
         </button>

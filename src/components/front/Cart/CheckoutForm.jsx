@@ -48,11 +48,11 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
 
   return (
     <>
-      <form onSubmit={onSubmit}>
-        <div className="row cart-checkout">
+      <form className="checkout-form" onSubmit={onSubmit}>
+        <div className="checkout-form__layout row">
           <div className="col-lg-7">
-            <div className="cart-checkout card row justify-content-center p-3 mb-3">
-              <h2 className="mb-3">訂購人資訊</h2>
+            <div className="checkout-form__section checkout-form__section--customer card row justify-content-center p-3 mb-3">
+              <h2 className="checkout-form__title mb-3">訂購人資訊</h2>
 
               <div className="row mb-3">
                 <div className="col-lg-6">
@@ -112,10 +112,10 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
               </div>
             </div>
 
-            <div className="cart-checkout-again card row justify-content-center p-3">
-              <h2 className="mb-3">寄送資訊</h2>
+            <div className="checkout-form__section checkout-form__section--shipping card row justify-content-center p-3">
+              <h2 className="checkout-form__title mb-3">寄送資訊</h2>
               <div className="col-12 mb-3">
-                <label className={`ui-toggle-btn ${isSame ? 'active' : ''}`}>
+                <label className={`ui-toggle-btn ${isSame ? 'is-active' : ''}`}>
                   <input
                     type="checkbox"
                     checked={isSame}
@@ -192,7 +192,7 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
               </div>
               <div className="row mb-3">
                 <div className="col-12">
-                  <h3>收件地址</h3>
+                  <h3 className="checkout-form__subtitle">收件地址</h3>
                 </div>
                 <div className="col-lg-6">
                   {/* 縣市 */}
@@ -267,9 +267,9 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
             </div>
           </div>
           <div className="col-lg-5">
-            <div className="cart-summary order-summary card p-3">
+            <div className="order-summary order-summary--cart card p-3">
               <div className="order-summary__header">
-                <h2 className="mb-3">訂單摘要</h2>
+                <h2 className="order-summary__title mb-3">訂單摘要</h2>
               </div>
 
               <ReadonlyOrderItems

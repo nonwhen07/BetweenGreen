@@ -1,5 +1,6 @@
-@use '@/styles/helpers/variables' as *;
 @use 'sass:color';
+
+@use '@/styles/helpers/variables' as *;
 
 .ui-btn {
   display: inline-flex;
@@ -162,32 +163,82 @@
   }
 }
 
+// ======================================================
+// Same As Buyer Toggle
+// ToDo Shared toggle control；若未來增加 switch / segmented variants，再拆為 _toggle.scss。
+// ======================================================
+
+// .ui-toggle-btn {
+//   display: inline-block;
+//   padding: 8px 16px;
+//   border: 1px solid #2f6d4f;
+//   border-radius: 20px;
+//   cursor: pointer;
+//   user-select: none;
+//   transition: all 0.2s ease;
+
+//   input {
+//     display: none;
+//   }
+
+//   &:hover {
+//     background: rgba(47, 109, 79, 0.1);
+//   }
+
+//   &.active {
+//     background: #2f6d4f;
+//     color: #fff;
+//     border-color: #2f6d4f;
+//   }
+// }
+
 .ui-toggle-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
   padding: 8px 16px;
-  border: 1px solid #2f6d4f;
-  border-radius: 20px;
+
+  border: 1px solid $color-bg-muted;
+  border-radius: 999px;
+  background-color: $color-bg-surface;
+
+  color: $color-secondary;
+  font-size: 14px;
+  font-weight: 600;
+
   cursor: pointer;
-  user-select: none;
-  transition: all 0.2s ease;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: $color-primary-light;
+    background-color: color.adjust($color-primary-light, $lightness: 36%);
+  }
+
+  &.is-active {
+    border-color: $color-primary;
+    background-color: color.adjust($color-primary-light, $lightness: 34%);
+    color: $color-primary;
+  }
+
+  &.is-active:hover {
+    border-color: $color-primary;
+    background-color: color.adjust($color-primary-light, $lightness: 34%);
+  }
 
   input {
     display: none;
   }
-
-  &:hover {
-    background: rgba(47, 109, 79, 0.1);
-  }
-
-  &.active {
-    background: #2f6d4f;
-    color: #fff;
-    border-color: #2f6d4f;
-  }
 }
 
 /* =========================================================
-  Quantity Stepper
+  Quantity Stepper 
+  // TODO: QuantityStepper 功能擴充或樣式變多後，拆成 _quantity-stepper.scss。
 ========================================================= */
 
 .quantity-stepper {

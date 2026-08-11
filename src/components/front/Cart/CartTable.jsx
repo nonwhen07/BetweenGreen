@@ -87,23 +87,23 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
 
         {/* Desktop */}
         <div className="editable-cart-items__table">
-          <div className="table-responsive cart-table-container">
-            <table className="table cart-table align-middle">
-              <thead className="cart-table__header">
+          <div className="table-responsive editable-cart-items__table-scroll">
+            <table className="table order-table order-table--editable align-middle">
+              <thead className="order-table__header">
                 <tr>
-                  <th className="cart-table__col--action">操作</th>
-                  <th className="cart-table__col--info">商品名稱</th>
-                  <th className="cart-table__col--category">品項種類</th>
-                  <th className="cart-table__col--image">圖片</th>
-                  <th className="cart-table__col--price">單價</th>
-                  <th className="cart-table__col--qty">數量</th>
-                  <th className="cart-table__col--subtotal">小計</th>
+                  <th className="order-table__col--action">操作</th>
+                  <th className="order-table__col--info">商品名稱</th>
+                  <th className="order-table__col--category">品項種類</th>
+                  <th className="order-table__col--image">圖片</th>
+                  <th className="order-table__col--price">單價</th>
+                  <th className="order-table__col--qty">數量</th>
+                  <th className="order-table__col--subtotal">小計</th>
                 </tr>
               </thead>
-              <tbody className="cart-table__body">
+              <tbody className="order-table__body">
                 {carts.map((cart) => (
                   <tr key={cart.id}>
-                    <td className="cart-table__col--action">
+                    <td className="order-table__col--action">
                       <button
                         onClick={() => actions.onDelete(cart.id)}
                         disabled={isDeleteLoading(cart.id)}
@@ -113,8 +113,8 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                         {isDeleteLoading(cart.id) ? <BtnLoader size="sm" /> : <Trash2 size={20} />}
                       </button>
                     </td>
-                    <td className="cart-table__col--info">{cart.product.title}</td>
-                    <td className="cart-table__col--category">
+                    <td className="order-table__col--info">{cart.product.title}</td>
+                    <td className="order-table__col--category">
                       <div className="cart-category-tags">
                         {getCategoryParts(cart.product.category).map((item) => (
                           <span key={item} className="cart-category-tag">
@@ -123,17 +123,17 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                         ))}
                       </div>
                     </td>
-                    <td className="cart-table__col--image">
+                    <td className="order-table__col--image">
                       <ProductImage
                         src={cart.product.imageUrl}
                         alt={cart.product.title}
                         size="small"
                       />
                     </td>
-                    <td className="cart-table__col--price">
+                    <td className="order-table__col--price">
                       NT$ {cart.product.price.toLocaleString()}
                     </td>
-                    <td className="cart-table__col--qty">
+                    <td className="order-table__col--qty">
                       <QuantityStepper
                         value={cart.qty}
                         unit={getProductUnitShortLabel(cart.product.unit) || '未設定單位'}
@@ -143,21 +143,23 @@ const CartTable = ({ carts, actions, isQtyLoading, isDeleteLoading }) => {
                         onIncrease={() => actions.onUpdate(cart.id, cart.product.id, cart.qty + 1)}
                       />
                     </td>
-                    <td className="cart-table__col--subtotal">NT$ {cart.total.toLocaleString()}</td>
+                    <td className="order-table__col--subtotal">
+                      NT$ {cart.total.toLocaleString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>
-              <tfoot className="cart-table__footer">
-                <tr className="cart-table__divider-row" aria-hidden="true">
+              <tfoot className="order-table__footer">
+                <tr className="order-table__divider-row" aria-hidden="true">
                   <td colSpan="7">
-                    <span className="cart-table__divider" />
+                    <span className="order-table__divider" />
                   </td>
                 </tr>
                 <tr>
                   <td colSpan="6" className="text-end">
                     總計：
                   </td>
-                  <td className="cart-table__total-amount text-end">
+                  <td className="order-table__total-amount text-end">
                     NT$ {cartTotal.toLocaleString()}
                   </td>
                 </tr>
