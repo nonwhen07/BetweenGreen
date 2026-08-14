@@ -1,4 +1,4 @@
-const ProductDetailTabs = ({ product }) => {
+const ProductDetailTabs = ({ currentProduct }) => {
   return (
     <section className="product-detail-tabs">
       <div className="row g-4 mx-0">
@@ -9,7 +9,7 @@ const ProductDetailTabs = ({ product }) => {
 
             <div className="product-detail-tabs__content">
               {/* <p>{product?.productStory}</p>description先替代商品特色，等之後的後台api多開新欄位 product?.productStory 去顯示商品特色 */}
-              <p>{product?.description}</p>
+              <p>{currentProduct?.description}</p>
             </div>
           </article>
         </div>

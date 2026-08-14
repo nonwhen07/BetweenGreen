@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 
 // assets
-import NO_IMAGE from '@/assets/images/no-image.png';
+// import NO_IMAGE from '@/assets/images/no-image.png';
 
 // services
 import { getProductDetail } from '@/services/productService';
@@ -142,7 +142,7 @@ const ProductDetailPage = () => {
               </div>
               {/* 商品資訊-2(商品特色、養護指南、配送說明) */}
               <div className="col-12">
-                <ProductDetailTabs product={product} />
+                <ProductDetailTabs currentProduct={product} />
               </div>
             </div>
             {/* ==================== 相關推薦商品 ==================== */}

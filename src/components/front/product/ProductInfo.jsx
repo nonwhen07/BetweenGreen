@@ -75,10 +75,7 @@ const ProductInfo = ({
               <div className="product-info__qty">
                 <button
                   type="button"
-                  className={`
-              product-info__qty-btn
-              ${isAdded ? 'is-success' : ''}
-            `}
+                  className={`product-info__qty-btn ${isAdded ? 'is-success' : ''} `}
                   disabled={isLoading || isAdded || qtySelect <= 1}
                   onClick={() => setQtySelect((prev) => Math.max(1, prev - 1))}
                 >

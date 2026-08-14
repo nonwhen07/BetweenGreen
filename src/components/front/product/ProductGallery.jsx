@@ -21,9 +21,11 @@ const ProductGallery = ({ currentProduct }) => {
 
   const allImages = useMemo(() => {
     const galleryImages = buildProductGalleryImages(currentProduct);
+
     if (galleryImages.length === 0) {
       galleryImages.push(NO_IMAGE);
     }
+
     return galleryImages;
   }, [currentProduct]);
 
@@ -46,8 +48,7 @@ const ProductGallery = ({ currentProduct }) => {
             <SwiperSlide key={index}>
               <div className="product-gallery__image">
                 <img
-                  // src={imgUrl}
-                  src={!imgUrl.trim() === '' ? imgUrl : NO_IMAGE}
+                  src={imgUrl && imgUrl.trim() !== '' ? imgUrl : NO_IMAGE}
                   alt={`${currentProduct?.title} - ${index + 1}`}
                   onError={(e) => {
                     e.target.onerror = null;
@@ -81,7 +82,8 @@ const ProductGallery = ({ currentProduct }) => {
               <div className={`product-gallery__thumb ${activeIndex === index ? 'is-active' : ''}`}>
                 <img
                   // src={imgU  rl}
-                  src={!imgUrl.trim() === '' ? imgUrl : NO_IMAGE}
+                  // src={!imgUrl.trim() === '' ? imgUrl : NO_IMAGE}
+                  src={imgUrl && imgUrl.trim() !== '' ? imgUrl : NO_IMAGE}
                   alt={`thumb-${index + 1}`}
                   onError={(e) => {
                     e.target.onerror = null;
