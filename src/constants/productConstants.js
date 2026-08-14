@@ -227,8 +227,8 @@ export const CATEGORY_SPECIES_MAP = {
     label: '植栽成長日誌',
   },
 
-  PlantMarker: {
-    code: 'PlantMarker',
+  CareCard: {
+    code: 'CareCard',
     label: '植物標籤卡',
   },
 
@@ -237,7 +237,7 @@ export const CATEGORY_SPECIES_MAP = {
   // =========================
   GraduationBouquet: { code: 'GraduationBouquet', label: '畢業花禮' },
   TeacherBouquet: { code: 'TeacherBouquet', label: '謝師花束' },
-  MotherDayBouquet: { code: 'MotherDayBouquet', label: '母親節花盒' },
+  MotherDayFlowerBox: { code: 'MotherDayFlowerBox', label: '母親節花盒' },
   // HolidayGiftBox: { code: 'HolidayGiftBox', label: '冬季植感禮盒' },
   OpeningFlower: {
     code: 'OpeningFlower',
@@ -334,13 +334,13 @@ export const TYPE_SPECIES_RELATION_MAP = {
     'PlantShelf',
     'AquariumCoupon',
     'PlantJournal',
-    'PlantMarker',
+    'CareCard',
   ],
 
   FlowerGift: [
     'GraduationBouquet',
     'TeacherBouquet',
-    'MotherDayBouquet',
+    'MotherDayFlowerBox',
     'OpeningFlower',
     'NewHomeGift',
   ],
@@ -634,6 +634,10 @@ export const PRODUCT_DISPLAY_TAGS_MAP = {
 // PRODUCT UNIT TAGS：
 // ======================================================
 export const PRODUCT_UNIT_MAP = {
+  // =========================
+  // 植栽與植栽組合
+  // =========================
+
   PotSet: {
     label: '單盆植栽',
     shortLabel: '盆',
@@ -644,18 +648,6 @@ export const PRODUCT_UNIT_MAP = {
     label: '雙盆組合',
     shortLabel: '組',
     value: '2 pot set',
-  },
-
-  GlassTerrarium: {
-    label: '玻璃植景',
-    shortLabel: '座',
-    value: '1 glass terrarium',
-  },
-
-  HangingSet: {
-    label: '吊掛植組',
-    shortLabel: '組',
-    value: '1 hanging set',
   },
 
   BloomPot: {
@@ -670,17 +662,27 @@ export const PRODUCT_UNIT_MAP = {
     value: '1 large pot',
   },
 
-  Piece: {
-    label: '單件商品',
-    shortLabel: '件',
-    value: '1 piece',
+  HangingSet: {
+    label: '吊掛植組',
+    shortLabel: '組',
+    value: '1 hanging set',
   },
 
-  ToolSet: {
-    label: '工具組',
+  DisplayStandSet: {
+    label: '桌上展示植組',
     shortLabel: '組',
-    value: '1 set',
+    value: '1 display stand set',
   },
+
+  GlassTerrarium: {
+    label: '玻璃植景',
+    shortLabel: '座',
+    value: '1 glass terrarium',
+  },
+
+  // =========================
+  // 花器與容器
+  // =========================
 
   CeramicPot: {
     label: '陶瓷花器',
@@ -692,6 +694,16 @@ export const PRODUCT_UNIT_MAP = {
     label: '玻璃花器',
     shortLabel: '個',
     value: '1 glass vase',
+  },
+
+  // =========================
+  // 植物照護與消耗用品
+  // =========================
+
+  ToolSet: {
+    label: '工具組',
+    shortLabel: '組',
+    value: '1 set',
   },
 
   Bag: {
@@ -706,6 +718,28 @@ export const PRODUCT_UNIT_MAP = {
     value: '1 pack',
   },
 
+  Bottle: {
+    label: '瓶裝商品',
+    shortLabel: '瓶',
+    value: '1 bottle',
+  },
+
+  PlantLabelSet: {
+    label: '植物標籤組',
+    shortLabel: '組',
+    value: '1 plant label set',
+  },
+
+  CardSet: {
+    label: '卡片組',
+    shortLabel: '組',
+    value: '1 card set',
+  },
+
+  // =========================
+  // 日常生活選物
+  // =========================
+
   Mug: {
     label: '杯器',
     shortLabel: '個',
@@ -718,6 +752,16 @@ export const PRODUCT_UNIT_MAP = {
     value: '1 voucher',
   },
 
+  Piece: {
+    label: '單件商品',
+    shortLabel: '件',
+    value: '1 piece',
+  },
+
+  // =========================
+  // 花禮與禮品
+  // =========================
+
   Bouquet: {
     label: '花束',
     shortLabel: '束',
@@ -728,6 +772,12 @@ export const PRODUCT_UNIT_MAP = {
     label: '花盒',
     shortLabel: '盒',
     value: '1 flower box',
+  },
+
+  FloralGift: {
+    label: '客製花禮',
+    shortLabel: '份',
+    value: '1 floral gift',
   },
 
   GiftBox: {

@@ -82,18 +82,18 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
   };
 
   return (
-    <div className="checkout-payment-page">
-      <div className="checkout-payment-hero text-center mb-4">
-        <span className="checkout-payment-hero__eyebrow">Payment</span>
+    <div className="checkout-payment">
+      <div className="checkout-payment__hero text-center mb-4">
+        <span className="checkout-payment__eyebrow">Payment</span>
         <h2 className="mb-2">請完成付款流程</h2>
         <p className="text-muted mb-0">訂單已建立，您的訂單編號為：{orderID}</p>
       </div>
 
       <form onSubmit={handlePaymentSubmit}>
-        <div className="row cart-checkout checkout-payment-layout mx-0">
+        <div className="row cart-checkout checkout-payment__layout mx-0">
           <div className="col-lg-7">
-            <div className="checkout-payment-card card p-3 mb-3">
-              <div className="checkout-payment-card__header">
+            <div className="checkout-payment__card card p-3 mb-3">
+              <div className="checkout-payment__card-header">
                 <h2 className="mb-1">本次訂單明細</h2>
                 <p className="text-muted mb-0">請確認商品與數量後完成付款。</p>
               </div>
@@ -107,18 +107,18 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
               </div>
             </div>
 
-            <div className="checkout-payment-card card p-3">
-              <div className="checkout-payment-card__header">
+            <div className="checkout-payment__card card p-3">
+              <div className="checkout-payment__card-header">
                 <h2 className="mb-1">付款方式</h2>
                 <p className="text-muted mb-0">
                   此為作品集模擬付款流程，用於呈現第三方金流串接與欄位驗證體驗。
                 </p>
               </div>
 
-              <div className="checkout-payment-methods mt-3 mb-4">
+              <div className="checkout-payment__methods mt-3 mb-4">
                 <label
-                  className={`checkout-payment-method ${
-                    paymentMethod === 'credit-card' ? 'active' : ''
+                  className={`checkout-payment__method ${
+                    paymentMethod === 'credit-card' ? 'is-active' : ''
                   }`}
                 >
                   <input
@@ -131,8 +131,8 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                 </label>
 
                 <label
-                  className={`checkout-payment-method ${
-                    paymentMethod === 'line-pay' ? 'active' : ''
+                  className={`checkout-payment__method ${
+                    paymentMethod === 'line-pay' ? 'is-active' : ''
                   }`}
                 >
                   <input
@@ -145,7 +145,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                 </label>
 
                 <label
-                  className={`checkout-payment-method ${paymentMethod === 'atm' ? 'active' : ''}`}
+                  className={`checkout-payment__method ${paymentMethod === 'atm' ? 'is-active' : ''}`}
                 >
                   <input
                     type="radio"
@@ -157,7 +157,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                 </label>
 
                 <label
-                  className={`checkout-payment-method ${paymentMethod === 'cod' ? 'active' : ''}`}
+                  className={`checkout-payment__method ${paymentMethod === 'cod' ? 'is-active' : ''}`}
                 >
                   <input
                     type="radio"
@@ -174,7 +174,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
               )}
 
               {paymentMethod === 'credit-card' && (
-                <div className="checkout-payment-form">
+                <div className="checkout-payment__form">
                   <div className="fake-card-preview mb-4">
                     <div className="fake-card-preview__brand">BETWEEN GREEN CARD</div>
 
@@ -288,12 +288,12 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
               )}
 
               {paymentMethod === 'line-pay' && (
-                <div className="checkout-payment-note">
-                  <h3 className="checkout-payment-note__title">LINE Pay 模擬付款</h3>
-                  <p className="checkout-payment-note__text">
+                <div className="checkout-payment__note">
+                  <h3 className="checkout-payment__note-title">LINE Pay 模擬付款</h3>
+                  <p className="checkout-payment__note-text">
                     確認付款後，系統將模擬導向 LINE Pay 授權流程，並透過測試付款 API 更新訂單狀態。
                   </p>
-                  <p className="checkout-payment-note__hint">
+                  <p className="checkout-payment__note-hint">
                     實際商業環境會由後端建立付款請求，導向 LINE Pay
                     頁面後再透過金流回傳結果確認付款。
                   </p>
@@ -301,26 +301,26 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
               )}
 
               {paymentMethod === 'atm' && (
-                <div className="checkout-payment-note">
-                  <h3 className="checkout-payment-note__title">ATM 轉帳資訊</h3>
-                  <p className="checkout-payment-note__text">
+                <div className="checkout-payment__note">
+                  <h3 className="checkout-payment__note-title">ATM 轉帳資訊</h3>
+                  <p className="checkout-payment__note-text">
                     轉帳銀行：玉山銀行 808
                     <br />
                     模擬帳號：1234-5678-9012
                   </p>
-                  <p className="checkout-payment-note__hint">
+                  <p className="checkout-payment__note-hint">
                     本專案會在確認付款後模擬完成訂單付款狀態；實際商業環境通常需等待銀行入帳通知或後台人工核帳。
                   </p>
                 </div>
               )}
 
               {paymentMethod === 'cod' && (
-                <div className="checkout-payment-note">
-                  <h3 className="checkout-payment-note__title">貨到付款</h3>
-                  <p className="checkout-payment-note__text">
+                <div className="checkout-payment__note">
+                  <h3 className="checkout-payment__note-title">貨到付款</h3>
+                  <p className="checkout-payment__note-text">
                     選擇貨到付款後，系統將模擬建立待出貨訂單，並於本作品集中以付款完成狀態呈現。
                   </p>
-                  <p className="checkout-payment-note__hint">
+                  <p className="checkout-payment__note-hint">
                     實際商業環境通常會由物流配送與後台收款狀態共同確認，不會由前端單方面決定付款完成。
                   </p>
                 </div>
@@ -329,9 +329,9 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
           </div>
 
           <div className="col-lg-5">
-            <div className="cart-summary order-summary checkout-payment-summary card p-3">
+            <div className="order-summary checkout-payment__summary card p-3">
               <div className="order-summary__header">
-                <h3 className="mb-3">付款摘要</h3>
+                <h3 className="order-summary__title mb-3">付款摘要</h3>
               </div>
 
               <div className="order-summary__list">

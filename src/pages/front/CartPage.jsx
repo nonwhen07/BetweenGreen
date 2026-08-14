@@ -187,120 +187,112 @@ const CartPage = () => {
   }, [activeStep]);
 
   return (
-    <>
-      <div className="container ui-container ui-container--cart">
-        {/* Hero-Section */}
-        {/* <div className="cart-hero">
-          <h1 className="page-title" key={activeStep} data-aos="flip-left" data-aos-delay="300">
-            {currentStepData.label}
-          </h1>
-        </div> */}
-        <div className="cart-hero" data-aos="fade-up">
-          <h1 className="page-title" key={activeStep}>
-            {currentStepData.label}
-          </h1>
-        </div>
-        {/* Step Indicator */}
+    <div className="cart-page container ui-container ui-container--cart">
+      <header className="cart-page__hero" data-aos="fade-up">
+        <h1 className="page-title" key={activeStep}>
+          {currentStepData.label}
+        </h1>
+      </header>
 
-        <CartSteps currentStep={activeStep} data-aos="fade-in" data-aos-delay="100" />
+      <CartSteps currentStep={activeStep} data-aos="fade-in" data-aos-delay="100" />
 
-        {/* Main Content */}
-        <div className="cart-main">
-          {/* error  */}
-          {finalError && (
-            <section className="ui-section ui-section--cartError" key={finalError}>
-              <div className="d-flex flex-column align-items-center text-center py-3">
-                <div className="cartError-main alert alert-danger">
-                  <h2 className="mb-3">Oops! 您的訂單資訊有點問題</h2>
-                  <p className="mt-2">詳細錯誤訊息：{finalError}</p>
-                </div>
-              </div>
-            </section>
-          )}
-          {/* step1 */}
-          {activeStep === 1 && (
-            <section
-              id="step1"
-              className="ui-section ui-section--cart ui-section--cart-slide-up active mt-4"
-            >
-              {carts?.length === 0 ? (
-                <>
-                  <CartEmpty />
-                </>
-              ) : (
-                <>
-                  <CartTable
-                    carts={carts}
-                    actions={{
-                      onClear: handleClearCart,
-                      onUpdate: handleUpdateCartItem,
-                      onDelete: handleDeleteCartItem,
-                    }}
-                    isQtyLoading={isQtyLoading}
-                    isDeleteLoading={isDeleteLoading}
-                  />
-                  <CartSummary
-                    carts={carts}
-                    cartData={cartData}
-                    isCouponLoading={isCouponLoading}
-                    actions={{
-                      onClear: handleClearCart,
-                      onApplyCoupon: handleApplyCoupon,
-                    }}
-                    onNext={() => {
-                      setErrorMessage(''); // 先重置
+      <main className="cart-page__main">
+        {finalError && (
+          <section
+            className="cart-page__error cart-state-card cart-state-card--error card"
+            key={finalError}
+          >
+            <h2 className="cart-state-card__title">Oops! 您的訂單資訊有點問題</h2>
 
-                      if (carts?.length === 0) {
-                        setErrorMessage('您的購物車是空的!!');
-                        warning('您的購物車是空的!!');
-                        return;
-                      }
+            <p className="cart-state-card__description">詳細錯誤訊息：{finalError}</p>
+          </section>
+        )}
 
-                      navigate('/cart/step2');
-                    }}
-                  />
-                </>
-              )}
-            </section>
-          )}
-
-          {/* step2 */}
-          {activeStep === 2 && (
-            <section id="step2" className="ui-section ui-section--cart active">
-              <CheckoutForm
-                carts={carts}
-                register={register}
-                errors={errors}
-                setValue={setValue}
-                getValues={getValues}
-                watch={watch}
-                onSubmit={handleSubmitOrder}
-                onBack={() => {
-                  navigate('/cart/step1');
-                }}
-              />
-            </section>
-          )}
-
-          {/* step3 */}
-          {activeStep === 3 && (
-            <section id="step3" className="ui-section ui-section--cart active">
-              {!finalOrderID ? (
-                <p>訂單資料不存在</p>
-              ) : finalCart.length === 0 ? (
-                <p>訂單內容為空</p>
-              ) : (
-                <CheckoutPayment
-                  orderID={finalOrderID}
-                  orderItems={finalCart}
-                  onSubmit={handlePay}
+        {activeStep === 1 && (
+          <section
+            id="step1"
+            className="ui-section ui-section--cart ui-section--cart-slide-up is-active mt-4"
+          >
+            {carts?.length === 0 ? (
+              <CartEmpty />
+            ) : (
+              <>
+                <CartTable
+                  carts={carts}
+                  actions={{
+                    onClear: handleClearCart,
+                    onUpdate: handleUpdateCartItem,
+                    onDelete: handleDeleteCartItem,
+                  }}
+                  isQtyLoading={isQtyLoading}
+                  isDeleteLoading={isDeleteLoading}
                 />
-              )}
-            </section>
-          )}
-        </div>
-      </div>
-    </>
+
+                <CartSummary
+                  carts={carts}
+                  cartData={cartData}
+                  isCouponLoading={isCouponLoading}
+                  actions={{
+                    onClear: handleClearCart,
+                    onApplyCoupon: handleApplyCoupon,
+                  }}
+                  onNext={() => {
+                    setErrorMessage('');
+
+                    if (carts?.length === 0) {
+                      setErrorMessage('您的購物車是空的!!');
+                      warning('您的購物車是空的!!');
+                      return;
+                    }
+
+                    navigate('/cart/step2');
+                  }}
+                />
+              </>
+            )}
+          </section>
+        )}
+
+        {activeStep === 2 && (
+          <section id="step2" className="ui-section ui-section--cart is-active">
+            <CheckoutForm
+              carts={carts}
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              getValues={getValues}
+              watch={watch}
+              onSubmit={handleSubmitOrder}
+              onBack={() => {
+                navigate('/cart/step1');
+              }}
+            />
+          </section>
+        )}
+
+        {activeStep === 3 && (
+          <section id="step3" className="ui-section ui-section--cart is-active">
+            {!finalOrderID ? (
+              <div className="cart-state-card cart-state-card--error">
+                <h2 className="cart-state-card__title">訂單資料不存在</h2>
+
+                <p className="cart-state-card__description">
+                  找不到目前要付款的訂單，請重新建立訂單。
+                </p>
+              </div>
+            ) : finalCart.length === 0 ? (
+              <div className="cart-state-card cart-state-card--empty">
+                <h2 className="cart-state-card__title">訂單內容為空</h2>
+
+                <p className="cart-state-card__description">目前無法顯示這筆訂單的商品明細。</p>
+              </div>
+            ) : (
+              <CheckoutPayment orderID={finalOrderID} orderItems={finalCart} onSubmit={handlePay} />
+            )}
+          </section>
+        )}
+      </main>
+    </div>
   );
 };
 

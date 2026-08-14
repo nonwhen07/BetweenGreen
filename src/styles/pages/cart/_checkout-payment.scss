@@ -15,24 +15,209 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 .checkout-payment-page {
   width: 100%;
 
-  h2,
-  h3 {
+  &__hero {
+    padding: 16px 8px;
+
+    text-align: center;
+  }
+
+  &__content {
+    width: 100%;
+  }
+}
+
+// ======================================================
+// Checkout Payment
+// ======================================================
+
+.checkout-payment {
+  width: 100%;
+
+  // ------------------------------------------------------
+  // Hero
+  // ------------------------------------------------------
+
+  &__hero {
+    margin-bottom: 24px;
+
+    text-align: center;
+  }
+
+  &__eyebrow {
+    display: inline-block;
+
+    margin-bottom: 8px;
+
+    color: $color-primary;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  &__title,
+  &__section-title {
     color: $color-primary;
     font-weight: 700;
     line-height: 1.4;
   }
 
-  h2 {
+  &__title {
     font-size: 22px;
   }
 
-  h3 {
-    font-size: 18px;
-  }
-
-  p {
+  &__intro {
     line-height: 1.7;
   }
+
+  // ------------------------------------------------------
+  // Layout
+  // ------------------------------------------------------
+
+  &__layout {
+    align-items: flex-start;
+  }
+
+  // ------------------------------------------------------
+  // Cards
+  // ------------------------------------------------------
+
+  &__card {
+    margin-right: 0;
+    margin-left: 0;
+
+    overflow: hidden;
+
+    border: $cart-card-border;
+    border-radius: $cart-card-radius;
+    background-color: $color-bg-surface;
+    box-shadow: $cart-card-shadow;
+  }
+
+  &__card-header {
+    padding-bottom: 4px;
+  }
+
+  &__section-title {
+    margin-bottom: 4px;
+
+    font-size: 22px;
+  }
+
+  &__section-intro {
+    margin-bottom: 0;
+
+    color: $text-muted;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  // ------------------------------------------------------
+  // Payment Methods
+  // ------------------------------------------------------
+
+  &__methods {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+
+    margin-top: 16px;
+  }
+
+  &__method {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 52px;
+    padding: 12px 16px;
+
+    border: 1px solid $color-bg-muted;
+    border-radius: 12px;
+    background-color: $color-bg-surface;
+
+    color: $color-secondary;
+
+    cursor: pointer;
+
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+
+    input {
+      display: none;
+    }
+
+    &:hover,
+    &.is-active {
+      border-color: $color-primary;
+      background-color: color.adjust($color-primary-light, $lightness: 34%);
+      color: $color-primary;
+
+      transform: translateY(-2px);
+    }
+  }
+
+  // ------------------------------------------------------
+  // Credit Card Form
+  // ------------------------------------------------------
+
+  &__form {
+    .row {
+      row-gap: 12px;
+    }
+  }
+
+  // ------------------------------------------------------
+  // Alternative Payment Notes
+  // ------------------------------------------------------
+
+  &__note {
+    margin-top: 4px;
+    padding: 16px;
+
+    border-radius: 12px;
+    background-color: $color-bg-muted;
+
+    color: $color-secondary;
+  }
+
+  &__note-title {
+    margin-bottom: 8px;
+
+    color: $color-primary;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  &__note-text {
+    margin-bottom: 8px;
+  }
+
+  &__note-hint {
+    margin-bottom: 0;
+
+    color: $text-muted;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  // ------------------------------------------------------
+  // Payment Summary
+  // ------------------------------------------------------
+
+  &__summary {
+    position: static;
+
+    margin-top: 24px;
+  }
+
+  // ------------------------------------------------------
+  // Bootstrap Form Configuration
+  // ------------------------------------------------------
 
   .form-label {
     margin-bottom: 6px;
@@ -48,6 +233,7 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 
     border-color: rgba($color-primary, 0.16);
     border-radius: 10px;
+
     color: $color-secondary;
     font-size: 15px;
 
@@ -95,98 +281,121 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 // Checkout Payment Methods
 // ======================================================
 
-.checkout-payment-page .checkout-payment-methods {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+// .checkout-payment__methods {
+//   display: grid;
+//   grid-template-columns: 1fr;
+//   gap: 12px;
 
-  margin-top: 16px;
-}
+//   margin-top: 16px;
+// }
 
-.checkout-payment-page .checkout-payment-method {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+// .checkout-payment__method {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 8px;
 
-  min-height: 52px;
-  padding: 12px 16px;
+//   min-height: 52px;
+//   padding: 12px 16px;
 
-  border: 1px solid $color-bg-muted;
-  border-radius: 12px;
-  background-color: $color-bg-surface;
-  color: $color-secondary;
+//   border: 1px solid $color-bg-muted;
+//   border-radius: 12px;
+//   background-color: $color-bg-surface;
+//   color: $color-secondary;
 
-  cursor: pointer;
+//   cursor: pointer;
 
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+//   transition:
+//     border-color 0.2s ease,
+//     background-color 0.2s ease,
+//     color 0.2s ease,
+//     transform 0.2s ease;
 
-  input {
-    display: none;
-  }
+//   input {
+//     display: none;
+//   }
 
-  &.active,
-  &:hover {
-    border-color: $color-primary;
-    background-color: color.adjust($color-primary-light, $lightness: 34%);
-    color: $color-primary;
+//   &.active,
+//   &:hover {
+//     border-color: $color-primary;
+//     background-color: color.adjust($color-primary-light, $lightness: 34%);
+//     color: $color-primary;
 
-    transform: translateY(-2px);
-  }
-}
+//     transform: translateY(-2px);
+//   }
+// }
 
 // ======================================================
 // Checkout Payment Form
 // ======================================================
 
-.checkout-payment-page .checkout-payment-form {
-  .row {
-    row-gap: 12px;
-  }
-}
+// .checkout-payment__form {
+//   .row {
+//     row-gap: 12px;
+//   }
+// }
 
 // ======================================================
 // Checkout Payment Note
 // ======================================================
 
-.checkout-payment-page .checkout-payment-note {
-  margin-top: 4px;
-  padding: 16px;
+// .checkout-payment__note {
+//   margin-top: 4px;
+//   padding: 16px;
 
-  border-radius: 12px;
-  background-color: $color-bg-muted;
-  color: $color-secondary;
+//   border-radius: 12px;
+//   background-color: $color-bg-muted;
+//   color: $color-secondary;
 
-  &__title {
-    margin-bottom: 8px;
+//   // checkout-payment-note__title → checkout-payment__note-title
+//   // &__title {
+//   //   margin-bottom: 8px;
 
-    color: $color-primary;
-    font-size: 18px;
-    font-weight: 600;
-  }
+//   //   color: $color-primary;
+//   //   font-size: 18px;
+//   //   font-weight: 600;
+//   // }
 
-  &__text {
-    margin-bottom: 8px;
-  }
+//   // checkout-payment-note__text → checkout-payment__note-text
+//   // &__text {
+//   //   margin-bottom: 8px;
+//   // }
 
-  &__hint {
-    margin-bottom: 0;
+//   // checkout-payment-note__hint → checkout-payment__note-hint
+//   // &__hint {
+//   //   margin-bottom: 0;
 
-    color: $text-muted;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-}
+//   //   color: $text-muted;
+//   //   font-size: 14px;
+//   //   line-height: 1.6;
+//   // }
+// }
+
+// .checkout-payment__note-title {
+//   margin-bottom: 8px;
+
+//   color: $color-primary;
+//   font-size: 18px;
+//   font-weight: 600;
+// }
+
+// .checkout-payment__note-text {
+//   margin-bottom: 8px;
+// }
+
+// .checkout-payment__note-hint {
+//   margin-bottom: 0;
+
+//   color: $text-muted;
+//   font-size: 14px;
+//   line-height: 1.6;
+// }
 
 // ======================================================
 // Fake Card Preview
 // ======================================================
 
-.checkout-payment-page .fake-card-preview {
+.fake-card-preview {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -196,12 +405,15 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
   padding: 20px;
 
   border-radius: 20px;
+
   background: linear-gradient(
     135deg,
     color.adjust($color-primary, $lightness: -8%),
     $color-primary-light
   );
+
   color: $text-on-primary;
+
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
 
   &__brand {
@@ -231,89 +443,124 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 // Checkout Payment Summary
 // ======================================================
 
-.checkout-payment-page .checkout-payment-summary {
-  position: static;
+// .checkout-payment__summary {
+//   position: static;
 
-  margin-top: 24px;
-}
+//   margin-top: 24px;
+// }
 
 // ======================================================
 // Checkout Payment Hero
 // ======================================================
 
-.checkout-payment-hero {
-  margin-bottom: 24px;
+// .checkout-payment__hero {
+//   margin-bottom: 24px;
 
-  text-align: center;
+//   text-align: center;
 
-  &__eyebrow {
-    display: inline-block;
+//   // checkout-payment-hero__eyebrow → checkout-payment__eyebrow
+//   // &__eyebrow {
+//   //   display: inline-block;
 
-    margin-bottom: 8px;
+//   //   margin-bottom: 8px;
 
-    color: $color-primary;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-}
+//   //   color: $color-primary;
+//   //   font-size: 14px;
+//   //   font-weight: 600;
+//   //   letter-spacing: 2px;
+//   //   text-transform: uppercase;
+//   // }
+// }
+
+// .checkout-payment__eyebrow {
+//   display: inline-block;
+
+//   margin-bottom: 8px;
+
+//   color: $color-primary;
+//   font-size: 14px;
+//   font-weight: 600;
+//   letter-spacing: 2px;
+//   text-transform: uppercase;
+// }
 
 // ======================================================
 // Checkout Payment Layout
 // ======================================================
 
-.checkout-payment-layout {
-  align-items: flex-start;
-}
+// .checkout-payment__layoutt {
+//   align-items: flex-start;
+// }
 
 // ======================================================
 // Checkout Payment Card
 // ======================================================
 
-.checkout-payment-card {
-  margin-right: 0;
-  margin-left: 0;
+// .checkout-payment__card {
+//   margin-right: 0;
+//   margin-left: 0;
 
-  border: $cart-card-border;
-  border-radius: $cart-card-radius;
-  background-color: $color-bg-surface;
-  box-shadow: $cart-card-shadow;
+//   border: $cart-card-border;
+//   border-radius: $cart-card-radius;
+//   background-color: $color-bg-surface;
+//   box-shadow: $cart-card-shadow;
 
-  overflow: hidden;
+//   overflow: hidden;
 
-  &__header {
-    padding-bottom: 4px;
+//   // checkout-payment-card__header → checkout-payment__card-header
+//   // &__header {
+//   //   padding-bottom: 4px;
 
-    h2,
-    h3 {
-      margin-bottom: 4px;
-    }
+//   //   h2,
+//   //   h3 {
+//   //     margin-bottom: 4px;
+//   //   }
 
-    p {
-      margin-bottom: 0;
+//   //   p {
+//   //     margin-bottom: 0;
 
-      color: $text-muted;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-  }
-}
+//   //     color: $text-muted;
+//   //     font-size: 14px;
+//   //     line-height: 1.7;
+//   //   }
+//   // }
+// }
+
+// .checkout-payment__card-header {
+//   padding-bottom: 4px;
+
+//   h2,
+//   h3 {
+//     margin-bottom: 4px;
+//   }
+
+//   p {
+//     margin-bottom: 0;
+
+//     color: $text-muted;
+//     font-size: 14px;
+//     line-height: 1.7;
+//   }
+// }
 
 // ======================================================
 // Pad
 // ======================================================
 
 @include respond($breakpoints, pad) {
-  .checkout-payment-page .checkout-payment-methods {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .checkout-payment-page {
+    &__hero {
+      padding: 24px;
+    }
   }
 
-  .checkout-payment-page .checkout-payment-methods {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .checkout-payment {
+    &__methods {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
-  .checkout-payment-page .fake-card-preview {
+  .fake-card-preview {
     min-height: 220px;
     padding: 24px;
 
@@ -333,20 +580,24 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 // ======================================================
 
 @include respond($breakpoints, desktop) {
-  .checkout-payment-page {
-    h2 {
+  .checkout-payment {
+    &__title,
+    &__section-title {
       font-size: 24px;
     }
 
-    h3 {
-      font-size: 20px;
+    &__summary {
+      position: sticky;
+      top: 96px;
+
+      margin-top: 0;
     }
   }
 
-  .checkout-payment-page .checkout-payment-summary {
-    position: sticky;
-    top: 96px;
+  // .checkout-payment .checkout-payment__summary {
+  //   position: sticky;
+  //   top: 96px;
 
-    margin-top: 0;
-  }
+  //   margin-top: 0;
+  // }
 }

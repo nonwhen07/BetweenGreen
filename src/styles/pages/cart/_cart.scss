@@ -1,204 +1,69 @@
-@use 'sass:color';
-
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
 
-$cart-card-radius: 14px;
-$cart-card-border: 1px solid rgba($color-primary, 0.1);
-$cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
-
 // ======================================================
-// Cart Page Base
+// Cart / Checkout Flow Container
 // ======================================================
 
+// TODO: Checkout flow 命名穩定後，評估 ui-container--cart 改為 ui-container--checkout-flow。
 .ui-container--cart {
   padding-top: 20px;
   padding-bottom: 32px;
 
   overflow-x: hidden;
-
-  // Typography
-  h2,
-  h3 {
-    color: $color-primary;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  h2 {
-    font-size: 22px;
-  }
-
-  h3 {
-    font-size: 18px;
-  }
-
-  p {
-    line-height: 1.7;
-  }
-
-  // Form
-  .form-label {
-    margin-bottom: 6px;
-
-    color: $color-primary;
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .form-control,
-  .form-select {
-    min-height: 48px;
-
-    border-color: rgba($color-primary, 0.16);
-    border-radius: 10px;
-    color: $color-secondary;
-    font-size: 15px;
-
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
-
-    &:focus {
-      border-color: rgba($color-primary, 0.48);
-      box-shadow: 0 0 0 0.2rem rgba($color-primary, 0.08);
-    }
-
-    &::placeholder {
-      color: rgba($color-secondary, 0.5);
-    }
-
-    &:disabled {
-      background-color: color.adjust($color-bg-muted, $lightness: 2%);
-      color: $text-muted;
-
-      cursor: not-allowed;
-    }
-  }
-
-  textarea.form-control {
-    min-height: 112px;
-
-    resize: vertical;
-  }
-
-  .is-invalid {
-    border-color: rgba($color-danger, 0.65);
-  }
-
-  .text-danger {
-    margin-top: 6px;
-    margin-bottom: 0;
-
-    font-size: 14px;
-    line-height: 1.5;
-  }
 }
 
 // ======================================================
-// Cart Main Layout
+// Cart Page
 // ======================================================
 
-.cart-main {
-  display: block;
-
+.cart-page {
   width: 100%;
+
+  &__hero {
+    padding: 16px 8px;
+
+    text-align: center;
+  }
+
+  &__main {
+    width: 100%;
+  }
+
+  &__error {
+    margin-bottom: $space-3;
+  }
 }
 
 // ======================================================
-// Cart Section
+// Cart / Checkout Flow Section
 // ======================================================
 
+// TODO: Checkout flow 共用範圍確定後，評估 ui-section--cart 改為 ui-section--checkout-flow。
 .ui-section--cart {
   padding: 12px;
 
-  // background-color: $color-bg-surface;
   background-color: $color-bg-main;
 
   opacity: 0;
 
   transform: translateY(20px);
+
   transition:
     opacity 0.6s ease,
     transform 0.6s ease;
 
-  &.active {
+  &.is-active {
     opacity: 1;
 
     transform: translateY(0);
   }
 
-  &-slide-up.active {
+  &-slide-up.is-active {
     animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+
     transition: none;
-  }
-}
-
-// ======================================================
-// Cart Hero
-// ======================================================
-
-.cart-hero {
-  padding: 16px 8px;
-
-  text-align: center;
-}
-
-// ======================================================
-// Cart Error State
-// ======================================================
-
-.ui-section--cartError {
-  background-color: transparent;
-
-  .cartError-main {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-
-    width: min(100%, 720px);
-    min-height: 220px;
-    margin-right: auto;
-    margin-left: auto;
-    padding: 24px 16px;
-
-    border: $cart-card-border;
-    border-radius: $cart-card-radius;
-    background-color: $color-bg-surface;
-    box-shadow: $cart-card-shadow;
-    color: $color-secondary;
-    text-align: center;
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      margin-bottom: 8px;
-
-      color: $color-primary;
-      font-weight: 700;
-      line-height: 1.4;
-    }
-
-    p {
-      max-width: 560px;
-      margin-bottom: 16px;
-
-      color: $text-muted;
-      line-height: 1.7;
-    }
-
-    .ui-btn {
-      margin-top: 4px;
-    }
-
-    .d-flex {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
   }
 }
 
@@ -225,22 +90,16 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
   .ui-container--cart {
     padding-top: 40px;
     padding-bottom: 56px;
-
-    h2 {
-      font-size: 24px;
-    }
-
-    h3 {
-      font-size: 20px;
-    }
   }
 
   .ui-section--cart {
     padding: 24px;
   }
 
-  .cart-hero {
-    padding: 24px;
+  .cart-page {
+    &__hero {
+      padding: 24px;
+    }
   }
 }
 

@@ -4,11 +4,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
 import CheckoutPayment from '@/components/front/Cart/CheckoutPayment';
+
 // services
 import { getOrder, payOrder } from '@/services/orderService';
+
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
+
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
@@ -50,6 +53,7 @@ const CheckoutPaymentPage = () => {
       setErrorMessage('');
     } catch (error) {
       const message = extractErrorMessage(error, setErrorMessage, '取得訂單付款資料失敗。');
+
       showError(message);
     } finally {
       stop();
@@ -100,6 +104,7 @@ const CheckoutPaymentPage = () => {
       });
     } catch (error) {
       const message = extractErrorMessage(error, setErrorMessage, '訂單付款失敗。');
+
       showError(message);
     } finally {
       stop();
@@ -114,7 +119,7 @@ const CheckoutPaymentPage = () => {
 
   if (!orderId) {
     return (
-      <div className="container ui-container py-5">
+      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
         <div className="cart-state-card cart-state-card--error">
           <h1 className="cart-state-card__title">找不到付款資料</h1>
 
@@ -132,7 +137,7 @@ const CheckoutPaymentPage = () => {
 
   if (errorMessage) {
     return (
-      <div className="container ui-container py-5">
+      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
         <div className="cart-state-card cart-state-card--error">
           <h1 className="cart-state-card__title">暫時無法取得訂單資料</h1>
 
@@ -154,7 +159,7 @@ const CheckoutPaymentPage = () => {
 
   if (!orderData) {
     return (
-      <div className="container ui-container py-5">
+      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
         <div className="cart-state-card cart-state-card--loading">
           <h1 className="cart-state-card__title">訂單資料載入中</h1>
 
@@ -166,7 +171,7 @@ const CheckoutPaymentPage = () => {
 
   if (orderData.is_paid) {
     return (
-      <div className="container ui-container py-5">
+      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
         <div className="cart-state-card cart-state-card--empty">
           <h1 className="cart-state-card__title">此訂單已付款</h1>
 
@@ -187,14 +192,14 @@ const CheckoutPaymentPage = () => {
   }
 
   return (
-    <div className="container ui-container ui-container--cart">
-      <div className="cart-hero">
+    <div className="checkout-payment-page container ui-container ui-container--cart">
+      <header className="checkout-payment-page__hero">
         <h1 className="page-title">確認付款</h1>
-      </div>
+      </header>
 
       <CartSteps currentStep={3} />
 
-      <section className="ui-section ui-section--cart active">
+      <section className="checkout-payment-page__content ui-section ui-section--cart active">
         {orderProducts.length === 0 ? (
           <div className="cart-state-card cart-state-card--empty">
             <h2 className="cart-state-card__title">訂單內容為空</h2>
