@@ -6,7 +6,7 @@ import { deleteCoupon } from '@/services/couponService';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { useCoupons } from '@/hooks/coupon/useCoupons';
-import { useCouponModal } from '@/hooks/useCouponModal';
+import { useCouponModal } from '@/hooks/coupon/useCouponModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';

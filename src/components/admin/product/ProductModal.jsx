@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FaStar } from 'react-icons/fa';
 
+// hooks
+import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+
 // constants
 import {
   CATEGORY_THEME_MAP,
@@ -81,6 +84,8 @@ const ProductModal = ({
   const unitPreviewText =
     Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === watchUnit)?.label || '';
 
+  useBodyScrollLock(isOpen);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -109,7 +114,6 @@ const ProductModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <h5 className="modal-title text-light fs-4">
-              {/* {modalMode === 'create' ? '新增產品' : '編輯 - ' + (watchTitle || '')} */}
               {modalMode === 'create'
                 ? '新增產品'
                 : `編輯 - ${watchTitle || ''}${watchTitleEn ? ` ${watchTitleEn}` : ''}`}

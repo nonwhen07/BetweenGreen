@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+// hooks
+import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+
 const ProductImportModal = ({
   isOpen,
   onClose,
@@ -16,6 +19,8 @@ const ProductImportModal = ({
   progress,
   results,
 }) => {
+  useBodyScrollLock(isOpen);
+
   useEffect(() => {
     if (!isOpen || isUpdating) return undefined;
 
@@ -24,7 +29,10 @@ const ProductImportModal = ({
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, isUpdating, onClose]);
 
   if (!isOpen) return null;
@@ -43,15 +51,10 @@ const ProductImportModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <div>
-              <h5
-                id="product-import-modal-title"
-                className="modal-title text-light fs-4"
-              >
+              <h5 id="product-import-modal-title" className="modal-title text-light fs-4">
                 JSON 批次更新商品
               </h5>
-              <small className="text-white-50">
-                Update existing products only
-              </small>
+              <small className="text-white-50">Update existing products only</small>
             </div>
 
             <button
@@ -65,15 +68,11 @@ const ProductImportModal = ({
 
           <div className="modal-body p-4">
             <div className="alert alert-warning" role="alert">
-              本功能會依商品 ID 覆寫既有商品資料。請先分析
-              JSON，確認沒有錯誤後再執行更新。
+              本功能會依商品 ID 覆寫既有商品資料。請先分析 JSON，確認沒有錯誤後再執行更新。
             </div>
 
             <div className="mb-3">
-              <label
-                htmlFor="product-import-json"
-                className="form-label fw-semibold"
-              >
+              <label htmlFor="product-import-json" className="form-label fw-semibold">
                 商品 JSON
               </label>
               <textarea
@@ -82,15 +81,11 @@ const ProductImportModal = ({
                 rows="12"
                 value={jsonText}
                 onChange={(event) => onJsonTextChange(event.target.value)}
-                placeholder={
-                  '{\n  "products": {\n    "商品 ID": { ...商品資料 }\n  }\n}'
-                }
+                placeholder={'{\n  "products": {\n    "商品 ID": { ...商品資料 }\n  }\n}'}
                 disabled={isUpdating}
                 spellCheck="false"
               />
-              {parseError && (
-                <div className="invalid-feedback">{parseError}</div>
-              )}
+              {parseError && <div className="invalid-feedback">{parseError}</div>}
             </div>
 
             <div className="d-flex flex-wrap gap-2 mb-4">
@@ -105,18 +100,14 @@ const ProductImportModal = ({
 
               {analysis && (
                 <div className="product-import-summary d-flex flex-wrap gap-2 align-items-center">
-                  <span className="badge text-bg-secondary">
-                    共 {analysis.summary.total} 筆
-                  </span>
+                  <span className="badge text-bg-secondary">共 {analysis.summary.total} 筆</span>
                   <span className="badge text-bg-primary">
                     待更新 {analysis.summary.changed} 筆
                   </span>
                   <span className="badge text-bg-light border">
                     無變更 {analysis.summary.unchanged} 筆
                   </span>
-                  <span className="badge text-bg-danger">
-                    錯誤 {analysis.summary.invalid} 筆
-                  </span>
+                  <span className="badge text-bg-danger">錯誤 {analysis.summary.invalid} 筆</span>
                 </div>
               )}
             </div>
@@ -165,9 +156,7 @@ const ProductImportModal = ({
                               </ul>
                             ) : (
                               <>
-                                <span className="text-success small">
-                                  格式正確
-                                </span>
+                                <span className="text-success small">格式正確</span>
                                 {entry.warnings.length > 0 && (
                                   <ul className="product-import-errors text-warning small mb-0 mt-1">
                                     {entry.warnings.map((message) => (
@@ -191,17 +180,11 @@ const ProductImportModal = ({
                       className="form-check-input"
                       type="checkbox"
                       checked={isConfirmed}
-                      onChange={(event) =>
-                        onConfirmChange(event.target.checked)
-                      }
+                      onChange={(event) => onConfirmChange(event.target.checked)}
                       disabled={isUpdating}
                     />
-                    <label
-                      className="form-check-label"
-                      htmlFor="confirm-product-import"
-                    >
-                      我已確認商品 ID 與預覽內容，執行{' '}
-                      {analysis.summary.changed} 筆更新。
+                    <label className="form-check-label" htmlFor="confirm-product-import">
+                      我已確認商品 ID 與預覽內容，執行 {analysis.summary.changed} 筆更新。
                     </label>
                   </div>
                 )}
@@ -216,12 +199,7 @@ const ProductImportModal = ({
                     {progress.current} / {progress.total}
                   </span>
                 </div>
-                <div
-                  className="progress"
-                  role="progressbar"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                >
+                <div className="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                   <div
                     className="progress-bar progress-bar-striped progress-bar-animated"
                     style={{
@@ -245,11 +223,7 @@ const ProductImportModal = ({
                         {result.title} <code>{result.id}</code>
                       </span>
                       <span
-                        className={
-                          result.status === 'success'
-                            ? 'text-success'
-                            : 'text-danger'
-                        }
+                        className={result.status === 'success' ? 'text-success' : 'text-danger'}
                       >
                         {result.message}
                       </span>

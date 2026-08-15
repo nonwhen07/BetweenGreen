@@ -6,7 +6,7 @@ import { deleteArticle } from '@/services/articleService';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { useArticles } from '@/hooks/article/useArticles';
-import { useArticleModal } from '@/hooks/useArticleModal';
+import { useArticleModal } from '@/hooks/article/useArticleModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';

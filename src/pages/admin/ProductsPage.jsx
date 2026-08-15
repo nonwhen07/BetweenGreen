@@ -9,7 +9,7 @@ import { usePagination } from '@/hooks/usePagination';
 
 import { useProducts } from '@/hooks/product/useProducts';
 import { useProductImport } from '@/hooks/product/useProductImport';
-import { useProductModal } from '@/hooks/useProductModal';
+import { useProductModal } from '@/hooks/product/useProductModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
@@ -79,12 +79,10 @@ const ProductsPage = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchKeyword =
-        !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
+      const matchKeyword = !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
 
       const matchCategory =
-        !selectedCategory ||
-        product.category?.split('-')[0] === selectedCategory;
+        !selectedCategory || product.category?.split('-')[0] === selectedCategory;
 
       return matchKeyword && matchCategory;
     });
@@ -133,11 +131,7 @@ const ProductsPage = () => {
       await fetchProducts();
       success('產品刪除成功！');
     } catch (error) {
-      const errorMessage = extractErrorMessage(
-        error,
-        null,
-        '刪除產品失敗，請稍後再試。',
-      );
+      const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
       showError(errorMessage);
     } finally {
       stop();
@@ -163,11 +157,7 @@ const ProductsPage = () => {
         // await fetchProducts({ page: 1 });
         await fetchProducts();
       } catch (error) {
-        const errorMessage = extractErrorMessage(
-          error,
-          null,
-          '取得產品列表失敗，請稍後再試。',
-        );
+        const errorMessage = extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。');
         showError(errorMessage);
       }
     };
@@ -203,11 +193,7 @@ const ProductsPage = () => {
             openProductImportModal={openImportModal}
           />
           <div className="m-4">
-            <BrandPagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={goToPage}
-            />
+            <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
           </div>
         </div>
       </div>
