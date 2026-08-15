@@ -229,7 +229,12 @@ export const CATEGORY_SPECIES_MAP = {
 
   CareCard: {
     code: 'CareCard',
-    label: '植物標籤卡',
+    label: '新手照護指南卡',
+  },
+
+  PlantMarker: {
+    code: 'PlantMarker',
+    label: '植物識別標籤',
   },
 
   // =========================
@@ -335,6 +340,7 @@ export const TYPE_SPECIES_RELATION_MAP = {
     'AquariumCoupon',
     'PlantJournal',
     'CareCard',
+    'PlantMarker',
   ],
 
   FlowerGift: [
@@ -627,6 +633,12 @@ export const PRODUCT_DISPLAY_TAGS_MAP = {
     label: '預購商品',
     badge: '預購',
     type: 'status',
+  },
+
+  CustomOrder: {
+    label: '客製訂購',
+    badge: '客製',
+    type: 'service',
   },
 };
 

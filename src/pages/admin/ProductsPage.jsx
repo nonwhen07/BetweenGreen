@@ -8,6 +8,7 @@ import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
 
 import { useProducts } from '@/hooks/product/useProducts';
+import { useProductImport } from '@/hooks/product/useProductImport';
 import { useProductModal } from '@/hooks/useProductModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
@@ -15,6 +16,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 // components
 import ProductsTable from '@/components/admin/product/ProductsTable';
 import ProductModal from '@/components/admin/product/ProductModal';
+import ProductImportModal from '@/components/admin/product/ProductImportModal';
 import DeleteModal from '@/components/admin/DeleteModal';
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminFilter from '@/components/admin/AdminFilter';
@@ -27,6 +29,25 @@ const ProductsPage = () => {
   const { start, stop } = useLoading();
   const { products, fetchProducts } = useProducts({
     isAdmin: true,
+  });
+  const {
+    isImportModalOpen,
+    jsonText: importJsonText,
+    analysis: importAnalysis,
+    parseError: importParseError,
+    isConfirmed: isImportConfirmed,
+    isUpdating: isImportUpdating,
+    progress: importProgress,
+    results: importResults,
+    openImportModal,
+    closeImportModal,
+    handleJsonTextChange,
+    analyzeImport,
+    setIsConfirmed: setIsImportConfirmed,
+    executeUpdate: executeImportUpdate,
+  } = useProductImport({
+    products,
+    onUpdated: fetchProducts,
   });
   const {
     isModalOpen: isProductModalOpen,
@@ -58,10 +79,12 @@ const ProductsPage = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchKeyword = !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
+      const matchKeyword =
+        !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
 
       const matchCategory =
-        !selectedCategory || product.category?.split('-')[0] === selectedCategory;
+        !selectedCategory ||
+        product.category?.split('-')[0] === selectedCategory;
 
       return matchKeyword && matchCategory;
     });
@@ -110,7 +133,11 @@ const ProductsPage = () => {
       await fetchProducts();
       success('產品刪除成功！');
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
+      const errorMessage = extractErrorMessage(
+        error,
+        null,
+        '刪除產品失敗，請稍後再試。',
+      );
       showError(errorMessage);
     } finally {
       stop();
@@ -136,7 +163,11 @@ const ProductsPage = () => {
         // await fetchProducts({ page: 1 });
         await fetchProducts();
       } catch (error) {
-        const errorMessage = extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。');
+        const errorMessage = extractErrorMessage(
+          error,
+          null,
+          '取得產品列表失敗，請稍後再試。',
+        );
         showError(errorMessage);
       }
     };
@@ -169,9 +200,14 @@ const ProductsPage = () => {
             openDeleteModal={openDeleteModal}
             productTotalCount={filteredProducts.length}
             selectedProductId={selectedProductId}
+            openProductImportModal={openImportModal}
           />
           <div className="m-4">
-            <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
+            <BrandPagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={goToPage}
+            />
           </div>
         </div>
       </div>
@@ -193,6 +229,22 @@ const ProductsPage = () => {
         register={register}
         watch={watch}
         errors={errors}
+      />
+
+      <ProductImportModal
+        isOpen={isImportModalOpen}
+        onClose={closeImportModal}
+        jsonText={importJsonText}
+        onJsonTextChange={handleJsonTextChange}
+        onAnalyze={analyzeImport}
+        analysis={importAnalysis}
+        parseError={importParseError}
+        isConfirmed={isImportConfirmed}
+        onConfirmChange={setIsImportConfirmed}
+        onExecuteUpdate={executeImportUpdate}
+        isUpdating={isImportUpdating}
+        progress={importProgress}
+        results={importResults}
       />
 
       <DeleteModal
