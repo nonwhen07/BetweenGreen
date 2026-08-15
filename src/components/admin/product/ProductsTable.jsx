@@ -35,8 +35,16 @@ const ProductsTable = ({
         <div className="admin-panel__actions d-flex flex-wrap gap-2">
           <button
             type="button"
+            className="btn btn-outline-success px-4"
+            onClick={() => openProductImportModal('create')}
+          >
+            JSON 批次新增
+          </button>
+
+          <button
+            type="button"
             className="btn btn-outline-primary px-4"
-            onClick={openProductImportModal}
+            onClick={() => openProductImportModal('update')}
           >
             JSON 批次更新
           </button>

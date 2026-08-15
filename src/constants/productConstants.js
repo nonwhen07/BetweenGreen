@@ -325,9 +325,22 @@ export const TYPE_SPECIES_RELATION_MAP = {
     'Herb',
   ],
 
-  Tool: ['WateringCan', 'Mister', 'MoistureMeter', 'Pruner', 'PlantBrush', 'PlantLamp'],
+  Tool: [
+    'WateringCan',
+    'Mister',
+    'MoistureMeter',
+    'Pruner',
+    'PlantBrush',
+    'PlantLamp',
+  ],
 
-  Pottery: ['CeramicPot', 'GlassVase', 'HangingPlanter', 'StonePlanter', 'SelfWateringPot'],
+  Pottery: [
+    'CeramicPot',
+    'GlassVase',
+    'HangingPlanter',
+    'StonePlanter',
+    'SelfWateringPot',
+  ],
 
   Compost: ['OrganicSoil', 'SoilMix', 'SlowReleaseFeed', 'LiquidFeed'],
 
@@ -808,9 +821,9 @@ export const PRODUCT_UNIT_MAP = {
 // ======================================================
 // SECONDARY_PERSONALITY_TAGS
 // ======================================================
-export const SECONDARY_PERSONALITY_TAGS = Object.keys(PRODUCT_PERSONALITY_MAP).filter(
-  (key) => !PRIMARY_PERSONALITY_TAGS.includes(key),
-);
+export const SECONDARY_PERSONALITY_TAGS = Object.keys(
+  PRODUCT_PERSONALITY_MAP,
+).filter((key) => !PRIMARY_PERSONALITY_TAGS.includes(key));
 
 // ======================================================
 // HELPERS

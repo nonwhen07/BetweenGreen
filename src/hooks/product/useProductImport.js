@@ -1,26 +1,28 @@
 import { useState } from 'react';
 
 // services
-import { updateProduct } from '@/services/productService';
+import { createProduct, updateProduct } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 // schemas
 import {
+  analyzeProductCreateImport,
   analyzeProductUpdateImport,
   parseProductImportJson,
 } from '@/schemas/productAdminSchema';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
-export const useProductImport = ({ products = [], onUpdated } = {}) => {
+export const useProductImport = ({ products = [], onCompleted } = {}) => {
   const { success, showError, warning } = useToast();
 
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importMode, setImportMode] = useState('update');
   const [jsonText, setJsonText] = useState('');
   const [analysis, setAnalysis] = useState(null);
   const [parseError, setParseError] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [results, setResults] = useState([]);
 
@@ -33,13 +35,14 @@ export const useProductImport = ({ products = [], onUpdated } = {}) => {
     setResults([]);
   };
 
-  const openImportModal = () => {
+  const openImportModal = (mode = 'update') => {
     resetImportState();
+    setImportMode(mode);
     setIsImportModalOpen(true);
   };
 
   const closeImportModal = () => {
-    if (isUpdating) return;
+    if (isProcessing) return;
 
     setIsImportModalOpen(false);
     resetImportState();
@@ -57,7 +60,10 @@ export const useProductImport = ({ products = [], onUpdated } = {}) => {
   const analyzeImport = () => {
     try {
       const source = parseProductImportJson(jsonText);
-      const nextAnalysis = analyzeProductUpdateImport(source, products);
+      const nextAnalysis =
+        importMode === 'create'
+          ? analyzeProductCreateImport(source, products)
+          : analyzeProductUpdateImport(source, products);
 
       setAnalysis(nextAnalysis);
       setParseError('');
@@ -74,41 +80,54 @@ export const useProductImport = ({ products = [], onUpdated } = {}) => {
     }
   };
 
-  const executeUpdate = async () => {
-    if (!analysis?.canUpdate || !isConfirmed || isUpdating) return;
+  const executeImport = async () => {
+    if (!analysis?.canExecute || !isConfirmed || isProcessing) return;
 
-    const updateEntries = analysis.entries.filter(
-      (entry) => entry.isValid && entry.hasChanges,
+    const executableEntries = analysis.entries.filter(
+      (entry) =>
+        entry.isValid && (importMode === 'create' || entry.hasChanges),
     );
 
-    setIsUpdating(true);
+    setIsProcessing(true);
     setResults([]);
-    setProgress({ current: 0, total: updateEntries.length });
+    setProgress({ current: 0, total: executableEntries.length });
 
     const completedResults = [];
 
     try {
-      for (const [index, entry] of updateEntries.entries()) {
+      for (const [index, entry] of executableEntries.entries()) {
         try {
-          await updateProduct(entry.id, entry.data);
+          const response =
+            importMode === 'create'
+              ? await createProduct(entry.data)
+              : await updateProduct(entry.id, entry.data);
+
+          const createdId =
+            response?.product_id || response?.product?.id || response?.id || '';
 
           completedResults.push({
-            id: entry.id,
+            key: entry.key,
+            id: importMode === 'create' ? createdId : entry.id,
             title: entry.title,
             status: 'success',
-            message: '更新成功',
+            message: importMode === 'create' ? '新增成功' : '更新成功',
           });
         } catch (error) {
           completedResults.push({
+            key: entry.key,
             id: entry.id,
             title: entry.title,
             status: 'error',
-            message: extractErrorMessage(error, null, '更新失敗'),
+            message: extractErrorMessage(
+              error,
+              null,
+              importMode === 'create' ? '新增失敗' : '更新失敗',
+            ),
           });
         }
 
         setResults([...completedResults]);
-        setProgress({ current: index + 1, total: updateEntries.length });
+        setProgress({ current: index + 1, total: executableEntries.length });
       }
 
       const successCount = completedResults.filter(
@@ -117,32 +136,37 @@ export const useProductImport = ({ products = [], onUpdated } = {}) => {
       const errorCount = completedResults.length - successCount;
 
       if (successCount > 0) {
-        await onUpdated?.();
+        await onCompleted?.();
       }
 
+      const actionLabel = importMode === 'create' ? '新增' : '更新';
+
       if (errorCount === 0) {
-        success(`JSON 批次更新完成，共 ${successCount} 筆商品`);
+        success(`JSON 批次${actionLabel}完成，共 ${successCount} 筆商品`);
       } else if (successCount > 0) {
         warning(
-          `批次更新部分完成：成功 ${successCount} 筆、失敗 ${errorCount} 筆`,
+          `批次${actionLabel}部分完成：成功 ${successCount} 筆、失敗 ${errorCount} 筆`,
         );
       } else {
-        showError(`JSON 批次更新失敗，共 ${errorCount} 筆`);
+        showError(`JSON 批次${actionLabel}失敗，共 ${errorCount} 筆`);
       }
     } catch (error) {
-      showError(extractErrorMessage(error, null, '批次更新後刷新商品列表失敗'));
+      showError(
+        extractErrorMessage(error, null, '批次處理後刷新商品列表失敗'),
+      );
     } finally {
-      setIsUpdating(false);
+      setIsProcessing(false);
     }
   };
 
   return {
     isImportModalOpen,
+    importMode,
     jsonText,
     analysis,
     parseError,
     isConfirmed,
-    isUpdating,
+    isProcessing,
     progress,
     results,
 
@@ -151,6 +175,6 @@ export const useProductImport = ({ products = [], onUpdated } = {}) => {
     handleJsonTextChange,
     analyzeImport,
     setIsConfirmed,
-    executeUpdate,
+    executeImport,
   };
 };

@@ -271,6 +271,10 @@ const extractProductMap = (source) => {
     throw new Error('JSON 最外層必須是物件');
   }
 
+  if (Array.isArray(source.products)) {
+    throw new Error('批次更新需要商品 ID；請使用 products ID 對應物件');
+  }
+
   if (isPlainObject(source.products)) {
     return source.products;
   }
@@ -282,6 +286,30 @@ const extractProductMap = (source) => {
   }
 
   return source;
+};
+
+const extractProductList = (source) => {
+  if (Array.isArray(source)) {
+    return source;
+  }
+
+  if (!isPlainObject(source)) {
+    throw new Error('JSON 最外層必須是物件或陣列');
+  }
+
+  if (Array.isArray(source.products)) {
+    return source.products;
+  }
+
+  if ('data' in source) {
+    throw new Error(
+      '這是單筆 API payload 格式；批次新增請使用 products 商品陣列',
+    );
+  }
+
+  throw new Error(
+    '批次新增不使用商品 ID；請使用 { "products": [商品資料] }',
+  );
 };
 
 const isSameValue = (left, right) => {
@@ -322,6 +350,7 @@ export const analyzeProductUpdateImport = (source, existingProducts = []) => {
 
     if (!isPlainObject(rawProduct)) {
       return {
+        key: `update-${id}`,
         id,
         title: '',
         data: null,
@@ -363,6 +392,7 @@ export const analyzeProductUpdateImport = (source, existingProducts = []) => {
       : [];
 
     return {
+      key: `update-${id}`,
       id,
       title: normalizedProduct.title || currentProduct?.title || '',
       data: normalizedProduct,
@@ -391,8 +421,145 @@ export const analyzeProductUpdateImport = (source, existingProducts = []) => {
   );
 
   return {
+    mode: 'update',
     entries,
     summary,
     canUpdate: summary.invalid === 0 && summary.changed > 0,
+    canExecute: summary.invalid === 0 && summary.changed > 0,
+  };
+};
+
+const CREATE_DUPLICATE_FIELDS = [{ key: 'titleEn', label: '英文標題' }];
+
+const normalizeDuplicateValue = (value) => {
+  if (typeof value !== 'string') return '';
+
+  return value.trim().toLowerCase();
+};
+
+export const analyzeProductCreateImport = (source, existingProducts = []) => {
+  const productList = extractProductList(source);
+
+  if (productList.length === 0) {
+    throw new Error('JSON 中沒有可新增的商品');
+  }
+
+  const existingValues = CREATE_DUPLICATE_FIELDS.reduce((result, field) => {
+    result[field.key] = new Set(
+      existingProducts
+        .map((product) => normalizeDuplicateValue(product[field.key]))
+        .filter(Boolean),
+    );
+
+    return result;
+  }, {});
+
+  const importValues = CREATE_DUPLICATE_FIELDS.reduce((result, field) => {
+    result[field.key] = new Set();
+    return result;
+  }, {});
+
+  const entries = productList.map((rawProduct, index) => {
+    const rowNumber = index + 1;
+    const key = `create-${rowNumber}`;
+    const errors = [];
+    const warnings = [];
+
+    if (!isPlainObject(rawProduct)) {
+      return {
+        key,
+        id: '',
+        rowNumber,
+        title: '',
+        data: null,
+        changedFields: [],
+        errors: ['商品資料必須是物件'],
+        warnings,
+        isValid: false,
+        hasChanges: true,
+      };
+    }
+
+    if ('id' in rawProduct) {
+      errors.push('批次新增不可包含 id，商品 ID 由 API 自動產生');
+    }
+
+    const unknownFields = Object.keys(rawProduct).filter(
+      (field) => field !== 'id' && !PRODUCT_ADMIN_FIELDS[field],
+    );
+
+    if (unknownFields.length > 0) {
+      errors.push(`包含未定義欄位：${unknownFields.join('、')}`);
+    }
+
+    const normalizedProduct = normalizeProduct(rawProduct);
+    const validation = validateProduct(normalizedProduct);
+    errors.push(...validation.errors);
+    warnings.push(...validation.warnings);
+
+    const existingMatches = [];
+    const importMatches = [];
+
+    CREATE_DUPLICATE_FIELDS.forEach(({ key: field, label }) => {
+      const value = normalizeDuplicateValue(normalizedProduct[field]);
+      if (!value) return;
+
+      if (existingValues[field].has(value)) {
+        existingMatches.push(label);
+      }
+
+      if (importValues[field].has(value)) {
+        importMatches.push(label);
+      }
+
+      importValues[field].add(value);
+    });
+
+    if (existingMatches.length > 0) {
+      errors.push(`疑似與既有商品重複：${existingMatches.join('、')}`);
+    }
+
+    if (importMatches.length > 0) {
+      errors.push(`JSON 內商品重複：${importMatches.join('、')}`);
+    }
+
+    return {
+      key,
+      id: '',
+      rowNumber,
+      title: normalizedProduct.title || '',
+      data: normalizedProduct,
+      changedFields: PRODUCT_ADMIN_FIELD_KEYS.filter(
+        (field) => normalizedProduct[field] !== undefined,
+      ),
+      errors,
+      warnings,
+      isValid: errors.length === 0,
+      hasChanges: true,
+    };
+  });
+
+  const summary = entries.reduce(
+    (result, entry) => {
+      result.total += 1;
+
+      if (entry.isValid) {
+        result.valid += 1;
+        result.creatable += 1;
+      } else {
+        result.invalid += 1;
+      }
+
+      return result;
+    },
+    { total: 0, valid: 0, invalid: 0, creatable: 0 },
+  );
+
+  return {
+    mode: 'create',
+    entries,
+    summary,
+    canCreate: summary.invalid === 0 && summary.creatable > 0,
+    canExecute: summary.invalid === 0 && summary.creatable > 0,
   };
 };

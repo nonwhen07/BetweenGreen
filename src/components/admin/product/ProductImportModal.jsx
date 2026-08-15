@@ -6,6 +6,7 @@ import useBodyScrollLock from '@/hooks/useBodyScrollLock';
 
 const ProductImportModal = ({
   isOpen,
+  mode,
   onClose,
   jsonText,
   onJsonTextChange,
@@ -14,30 +15,57 @@ const ProductImportModal = ({
   parseError,
   isConfirmed,
   onConfirmChange,
-  onExecuteUpdate,
-  isUpdating,
+  onExecute,
+  isProcessing,
   progress,
   results,
 }) => {
+  const isCreateMode = mode === 'create';
+
+  const content = isCreateMode
+    ? {
+        title: 'JSON 批次新增商品',
+        subtitle: 'Create new products only',
+        alert:
+          '本功能會逐筆建立新商品，商品 ID 由 API 自動產生。請先分析 JSON，確認沒有錯誤後再執行新增。',
+        placeholder:
+          '{\n  "products": [\n    {\n      "title": "商品名稱",\n      "titleEn": "Product Name"\n    }\n  ]\n}',
+        progress: '正在逐筆新增商品',
+        result: '新增結果',
+        execute: '執行批次新增',
+        processing: '新增中…',
+      }
+    : {
+        title: 'JSON 批次更新商品',
+        subtitle: 'Update existing products only',
+        alert:
+          '本功能會依商品 ID 覆寫既有商品資料。請先分析 JSON，確認沒有錯誤後再執行更新。',
+        placeholder:
+          '{\n  "products": {\n    "商品 ID": { ...商品資料 }\n  }\n}',
+        progress: '正在逐筆更新商品',
+        result: '更新結果',
+        execute: '執行批次更新',
+        processing: '更新中…',
+      };
+
   useBodyScrollLock(isOpen);
 
   useEffect(() => {
-    if (!isOpen || isUpdating) return undefined;
+    if (!isOpen || isProcessing) return undefined;
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') onClose();
     };
 
     window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, isUpdating, onClose]);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isProcessing, onClose]);
 
   if (!isOpen) return null;
 
-  const canExecute = Boolean(analysis?.canUpdate && isConfirmed && !isUpdating);
+  const canExecute = Boolean(
+    analysis?.canExecute && isConfirmed && !isProcessing,
+  );
 
   return (
     <div
@@ -51,10 +79,13 @@ const ProductImportModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <div>
-              <h5 id="product-import-modal-title" className="modal-title text-light fs-4">
-                JSON 批次更新商品
+              <h5
+                id="product-import-modal-title"
+                className="modal-title text-light fs-4"
+              >
+                {content.title}
               </h5>
-              <small className="text-white-50">Update existing products only</small>
+              <small className="text-white-50">{content.subtitle}</small>
             </div>
 
             <button
@@ -62,17 +93,20 @@ const ProductImportModal = ({
               onClick={onClose}
               className="btn-close btn-close-white"
               aria-label="關閉"
-              disabled={isUpdating}
+              disabled={isProcessing}
             />
           </div>
 
           <div className="modal-body p-4">
             <div className="alert alert-warning" role="alert">
-              本功能會依商品 ID 覆寫既有商品資料。請先分析 JSON，確認沒有錯誤後再執行更新。
+              {content.alert}
             </div>
 
             <div className="mb-3">
-              <label htmlFor="product-import-json" className="form-label fw-semibold">
+              <label
+                htmlFor="product-import-json"
+                className="form-label fw-semibold"
+              >
                 商品 JSON
               </label>
               <textarea
@@ -81,11 +115,13 @@ const ProductImportModal = ({
                 rows="12"
                 value={jsonText}
                 onChange={(event) => onJsonTextChange(event.target.value)}
-                placeholder={'{\n  "products": {\n    "商品 ID": { ...商品資料 }\n  }\n}'}
-                disabled={isUpdating}
+                placeholder={content.placeholder}
+                disabled={isProcessing}
                 spellCheck="false"
               />
-              {parseError && <div className="invalid-feedback">{parseError}</div>}
+              {parseError && (
+                <div className="invalid-feedback">{parseError}</div>
+              )}
             </div>
 
             <div className="d-flex flex-wrap gap-2 mb-4">
@@ -93,21 +129,33 @@ const ProductImportModal = ({
                 type="button"
                 className="btn btn-outline-primary"
                 onClick={onAnalyze}
-                disabled={!jsonText.trim() || isUpdating}
+                disabled={!jsonText.trim() || isProcessing}
               >
                 分析 JSON
               </button>
 
               {analysis && (
                 <div className="product-import-summary d-flex flex-wrap gap-2 align-items-center">
-                  <span className="badge text-bg-secondary">共 {analysis.summary.total} 筆</span>
-                  <span className="badge text-bg-primary">
-                    待更新 {analysis.summary.changed} 筆
+                  <span className="badge text-bg-secondary">
+                    共 {analysis.summary.total} 筆
                   </span>
-                  <span className="badge text-bg-light border">
-                    無變更 {analysis.summary.unchanged} 筆
+                  {isCreateMode ? (
+                    <span className="badge text-bg-success">
+                      待新增 {analysis.summary.creatable} 筆
+                    </span>
+                  ) : (
+                    <>
+                      <span className="badge text-bg-primary">
+                        待更新 {analysis.summary.changed} 筆
+                      </span>
+                      <span className="badge text-bg-light border">
+                        無變更 {analysis.summary.unchanged} 筆
+                      </span>
+                    </>
+                  )}
+                  <span className="badge text-bg-danger">
+                    錯誤 {analysis.summary.invalid} 筆
                   </span>
-                  <span className="badge text-bg-danger">錯誤 {analysis.summary.invalid} 筆</span>
                 </div>
               )}
             </div>
@@ -117,7 +165,7 @@ const ProductImportModal = ({
                 {analysis.summary.invalid > 0 && (
                   <div className="alert alert-danger" role="alert">
                     JSON 仍有 {analysis.summary.invalid}{' '}
-                    筆錯誤。第一版採全批阻擋，修正後請重新分析。
+                    筆錯誤。本功能採全批阻擋，修正後請重新分析。
                   </div>
                 )}
 
@@ -126,27 +174,33 @@ const ProductImportModal = ({
                     <thead>
                       <tr>
                         <th>商品</th>
-                        <th>ID</th>
-                        <th>變更</th>
+                        <th>{isCreateMode ? '順序' : 'ID'}</th>
+                        {!isCreateMode && <th>變更</th>}
                         <th>檢查結果</th>
                       </tr>
                     </thead>
                     <tbody>
                       {analysis.entries.map((entry) => (
-                        <tr key={entry.id}>
+                        <tr key={entry.key}>
                           <td>{entry.title || '未命名商品'}</td>
                           <td>
-                            <code>{entry.id}</code>
-                          </td>
-                          <td>
-                            {entry.hasChanges ? (
-                              <span className="badge text-bg-primary">
-                                {entry.changedFields.length} 個欄位
-                              </span>
+                            {isCreateMode ? (
+                              `第 ${entry.rowNumber} 筆`
                             ) : (
-                              <span className="text-muted small">無變更</span>
+                              <code>{entry.id}</code>
                             )}
                           </td>
+                          {!isCreateMode && (
+                            <td>
+                              {entry.hasChanges ? (
+                                <span className="badge text-bg-primary">
+                                  {entry.changedFields.length} 個欄位
+                                </span>
+                              ) : (
+                                <span className="text-muted small">無變更</span>
+                              )}
+                            </td>
+                          )}
                           <td>
                             {entry.errors.length > 0 ? (
                               <ul className="product-import-errors text-danger small mb-0">
@@ -156,7 +210,9 @@ const ProductImportModal = ({
                               </ul>
                             ) : (
                               <>
-                                <span className="text-success small">格式正確</span>
+                                <span className="text-success small">
+                                  格式正確
+                                </span>
                                 {entry.warnings.length > 0 && (
                                   <ul className="product-import-errors text-warning small mb-0 mt-1">
                                     {entry.warnings.map((message) => (
@@ -173,33 +229,45 @@ const ProductImportModal = ({
                   </table>
                 </div>
 
-                {analysis.canUpdate && (
+                {analysis.canExecute && (
                   <div className="form-check mb-4">
                     <input
                       id="confirm-product-import"
                       className="form-check-input"
                       type="checkbox"
                       checked={isConfirmed}
-                      onChange={(event) => onConfirmChange(event.target.checked)}
-                      disabled={isUpdating}
+                      onChange={(event) =>
+                        onConfirmChange(event.target.checked)
+                      }
+                      disabled={isProcessing}
                     />
-                    <label className="form-check-label" htmlFor="confirm-product-import">
-                      我已確認商品 ID 與預覽內容，執行 {analysis.summary.changed} 筆更新。
+                    <label
+                      className="form-check-label"
+                      htmlFor="confirm-product-import"
+                    >
+                      {isCreateMode
+                        ? `我已確認預覽內容，執行 ${analysis.summary.creatable} 筆新增。`
+                        : `我已確認商品 ID 與預覽內容，執行 ${analysis.summary.changed} 筆更新。`}
                     </label>
                   </div>
                 )}
               </>
             )}
 
-            {isUpdating && (
+            {isProcessing && (
               <div className="mb-4" aria-live="polite">
                 <div className="d-flex justify-content-between small mb-2">
-                  <span>正在逐筆更新商品</span>
+                  <span>{content.progress}</span>
                   <span>
                     {progress.current} / {progress.total}
                   </span>
                 </div>
-                <div className="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <div
+                  className="progress"
+                  role="progressbar"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
                   <div
                     className="progress-bar progress-bar-striped progress-bar-animated"
                     style={{
@@ -212,18 +280,23 @@ const ProductImportModal = ({
 
             {results.length > 0 && (
               <div className="product-import-results border rounded">
-                <h6 className="px-3 pt-3">更新結果</h6>
+                <h6 className="px-3 pt-3">{content.result}</h6>
                 <ul className="list-group list-group-flush">
                   {results.map((result) => (
                     <li
-                      key={result.id}
+                      key={result.key}
                       className="list-group-item d-flex justify-content-between gap-3"
                     >
                       <span>
-                        {result.title} <code>{result.id}</code>
+                        {result.title}{' '}
+                        {result.id && <code>{result.id}</code>}
                       </span>
                       <span
-                        className={result.status === 'success' ? 'text-success' : 'text-danger'}
+                        className={
+                          result.status === 'success'
+                            ? 'text-success'
+                            : 'text-danger'
+                        }
                       >
                         {result.message}
                       </span>
@@ -237,17 +310,17 @@ const ProductImportModal = ({
           <div className="modal-footer border-top bg-light">
             <button
               type="button"
-              className="btn btn-danger"
-              onClick={onExecuteUpdate}
+              className={isCreateMode ? 'btn btn-success' : 'btn btn-danger'}
+              onClick={onExecute}
               disabled={!canExecute}
             >
-              {isUpdating ? '更新中…' : '執行批次更新'}
+              {isProcessing ? content.processing : content.execute}
             </button>
             <button
               type="button"
               className="btn btn-secondary"
               onClick={onClose}
-              disabled={isUpdating}
+              disabled={isProcessing}
             >
               關閉
             </button>
@@ -260,22 +333,26 @@ const ProductImportModal = ({
 
 ProductImportModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
+  mode: PropTypes.oneOf(['create', 'update']).isRequired,
   onClose: PropTypes.func.isRequired,
   jsonText: PropTypes.string.isRequired,
   onJsonTextChange: PropTypes.func.isRequired,
   onAnalyze: PropTypes.func.isRequired,
   analysis: PropTypes.shape({
-    canUpdate: PropTypes.bool.isRequired,
+    canExecute: PropTypes.bool.isRequired,
     summary: PropTypes.shape({
       total: PropTypes.number.isRequired,
       valid: PropTypes.number.isRequired,
       invalid: PropTypes.number.isRequired,
-      changed: PropTypes.number.isRequired,
-      unchanged: PropTypes.number.isRequired,
+      changed: PropTypes.number,
+      unchanged: PropTypes.number,
+      creatable: PropTypes.number,
     }).isRequired,
     entries: PropTypes.arrayOf(
       PropTypes.shape({
+        key: PropTypes.string.isRequired,
         id: PropTypes.string.isRequired,
+        rowNumber: PropTypes.number,
         title: PropTypes.string,
         changedFields: PropTypes.arrayOf(PropTypes.string).isRequired,
         errors: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -287,15 +364,16 @@ ProductImportModal.propTypes = {
   parseError: PropTypes.string.isRequired,
   isConfirmed: PropTypes.bool.isRequired,
   onConfirmChange: PropTypes.func.isRequired,
-  onExecuteUpdate: PropTypes.func.isRequired,
-  isUpdating: PropTypes.bool.isRequired,
+  onExecute: PropTypes.func.isRequired,
+  isProcessing: PropTypes.bool.isRequired,
   progress: PropTypes.shape({
     current: PropTypes.number.isRequired,
     total: PropTypes.number.isRequired,
   }).isRequired,
   results: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      key: PropTypes.string.isRequired,
+      id: PropTypes.string,
       title: PropTypes.string,
       status: PropTypes.oneOf(['success', 'error']).isRequired,
       message: PropTypes.string.isRequired,

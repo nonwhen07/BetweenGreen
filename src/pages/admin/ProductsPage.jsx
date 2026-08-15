@@ -6,11 +6,10 @@ import { deleteProduct } from '@/services/productService';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
-
+import { useDeleteModal } from '@/hooks/useDeleteModal';
 import { useProducts } from '@/hooks/product/useProducts';
 import { useProductImport } from '@/hooks/product/useProductImport';
 import { useProductModal } from '@/hooks/product/useProductModal';
-import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
@@ -32,11 +31,12 @@ const ProductsPage = () => {
   });
   const {
     isImportModalOpen,
+    importMode,
     jsonText: importJsonText,
     analysis: importAnalysis,
     parseError: importParseError,
     isConfirmed: isImportConfirmed,
-    isUpdating: isImportUpdating,
+    isProcessing: isImportProcessing,
     progress: importProgress,
     results: importResults,
     openImportModal,
@@ -44,10 +44,10 @@ const ProductsPage = () => {
     handleJsonTextChange,
     analyzeImport,
     setIsConfirmed: setIsImportConfirmed,
-    executeUpdate: executeImportUpdate,
+    executeImport,
   } = useProductImport({
     products,
-    onUpdated: fetchProducts,
+    onCompleted: fetchProducts,
   });
   const {
     isModalOpen: isProductModalOpen,
@@ -219,6 +219,7 @@ const ProductsPage = () => {
 
       <ProductImportModal
         isOpen={isImportModalOpen}
+        mode={importMode}
         onClose={closeImportModal}
         jsonText={importJsonText}
         onJsonTextChange={handleJsonTextChange}
@@ -227,8 +228,8 @@ const ProductsPage = () => {
         parseError={importParseError}
         isConfirmed={isImportConfirmed}
         onConfirmChange={setIsImportConfirmed}
-        onExecuteUpdate={executeImportUpdate}
-        isUpdating={isImportUpdating}
+        onExecute={executeImport}
+        isProcessing={isImportProcessing}
         progress={importProgress}
         results={importResults}
       />
