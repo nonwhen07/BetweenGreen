@@ -48,6 +48,7 @@ export const useAuthInit = () => {
       }
     };
     initAuth();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, navigate]);
 };

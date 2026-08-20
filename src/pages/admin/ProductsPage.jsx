@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 // services
 import { deleteProduct } from '@/services/productService';
@@ -9,18 +10,19 @@ import { usePagination } from '@/hooks/usePagination';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 import { useProducts } from '@/hooks/product/useProducts';
 import { useProductImport } from '@/hooks/product/useProductImport';
+import { useProductHealth } from '@/hooks/product/useProductHealth';
 import { useProductModal } from '@/hooks/product/useProductModal';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
 import ProductsTable from '@/components/admin/product/ProductsTable';
+import ProductHealthToolbar from '@/components/admin/product/ProductHealthToolbar';
 import ProductModal from '@/components/admin/product/ProductModal';
 import ProductImportModal from '@/components/admin/product/ProductImportModal';
+import AdminActivityPlaceholder from '@/components/admin/AdminActivityPlaceholder';
 import DeleteModal from '@/components/admin/DeleteModal';
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminFilter from '@/components/admin/AdminFilter';
-// constants
-import { CATEGORY_THEME_MAP } from '@/constants/productConstants';
 
 const ProductsPage = () => {
   // hooks init
@@ -29,6 +31,14 @@ const ProductsPage = () => {
   const { products, fetchProducts } = useProducts({
     isAdmin: true,
   });
+  const { summary: healthSummary, byProductId, issueGroups } = useProductHealth(products);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const requestedHealthFilter = searchParams.get('health') || 'all';
+  const healthFilter = ['all', 'error', 'warning', 'healthy'].includes(requestedHealthFilter)
+    ? requestedHealthFilter
+    : 'all';
+  const issueFilter = searchParams.get('issue') || '';
   const {
     isImportModalOpen,
     importMode,
@@ -79,14 +89,50 @@ const ProductsPage = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchKeyword = !keyword || product.title.toLowerCase().includes(keyword.toLowerCase());
+      const productHealth = byProductId[product.id];
+      const matchKeyword =
+        !keyword ||
+        product.title?.toLowerCase().includes(keyword.toLowerCase()) ||
+        product.titleEn?.toLowerCase().includes(keyword.toLowerCase());
 
       const matchCategory =
         !selectedCategory || product.category?.split('-')[0] === selectedCategory;
 
-      return matchKeyword && matchCategory;
+      const matchHealth = healthFilter === 'all' || productHealth?.status === healthFilter;
+      const matchIssue =
+        !issueFilter || productHealth?.issues.some((issue) => issue.code === issueFilter);
+
+      return matchKeyword && matchCategory && matchHealth && matchIssue;
     });
-  }, [products, keyword, selectedCategory]);
+  }, [products, keyword, selectedCategory, byProductId, healthFilter, issueFilter]);
+
+  const handleHealthFilterChange = (nextHealthFilter) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    nextSearchParams.delete('issue');
+
+    if (nextHealthFilter === 'all') {
+      nextSearchParams.delete('health');
+    } else {
+      nextSearchParams.set('health', nextHealthFilter);
+    }
+
+    setSearchParams(nextSearchParams, { replace: true });
+  };
+
+  const handleIssueFilterChange = (nextIssueFilter) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    nextSearchParams.delete('health');
+
+    if (nextIssueFilter) {
+      nextSearchParams.set('issue', nextIssueFilter);
+    } else {
+      nextSearchParams.delete('issue');
+    }
+
+    setSearchParams(nextSearchParams, { replace: true });
+  };
 
   const [selectedProductId, setSelectedProductId] = useState(null);
   const handleOpenProductModal = (mode, product) => {
@@ -169,14 +215,30 @@ const ProductsPage = () => {
   // 監控 keyword/category 變化，重置分頁到第一頁
   useEffect(() => {
     resetPage();
-  }, [keyword, selectedCategory]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyword, selectedCategory, healthFilter, issueFilter]);
 
   return (
     <>
-      <div className="container py-1">
-        <h2 className="mb-1">商品列表</h2>
+      <div className="admin-products-page py-1">
+        <div className="admin-page-heading">
+          <div>
+            <h1 className="admin-page-heading__title">商品列表</h1>
+            <p className="admin-page-heading__description">管理商品資料、健康狀態與批次匯入</p>
+          </div>
+        </div>
 
-        <div className="admin-panel m-2">
+        <ProductHealthToolbar
+          summary={healthSummary}
+          issueGroups={issueGroups}
+          healthFilter={healthFilter}
+          issueFilter={issueFilter}
+          onHealthFilterChange={handleHealthFilterChange}
+          onIssueFilterChange={handleIssueFilterChange}
+        />
+
+        <div className="admin-panel">
           <AdminFilter
             keyword={keyword}
             setKeyword={setKeyword}
@@ -191,11 +253,18 @@ const ProductsPage = () => {
             productTotalCount={filteredProducts.length}
             selectedProductId={selectedProductId}
             openProductImportModal={openImportModal}
+            healthByProductId={byProductId}
           />
           <div className="m-4">
             <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
           </div>
         </div>
+
+        <AdminActivityPlaceholder
+          title="商品批次操作紀錄"
+          description="未來顯示全部、待確認與已確認的商品匯入結果"
+          showFilters
+        />
       </div>
 
       {/* Modals */}

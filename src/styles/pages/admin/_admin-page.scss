@@ -1,11 +1,38 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/admin/admin-variables' as *;
 
-// .admin-page {
-//   display: flex;
-//   flex-direction: column;
-//   gap: 20px;
-// }
+.admin-dashboard {
+  width: 100%;
+
+  &__stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  &__overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+    align-items: start;
+  }
+
+  .admin-stat {
+    min-height: 88px;
+    border-left: 4px solid transparent;
+
+    &--error {
+      border-left-color: #dc3545;
+    }
+
+    &--warning {
+      border-left-color: #ffc107;
+    }
+
+    &--healthy {
+      border-left-color: #198754;
+    }
+  }
+}
 
 .admin-scroll {
   display: flex;
@@ -32,5 +59,17 @@
 
   &:hover {
     transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .admin-dashboard {
+    &__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &__overview {
+      grid-template-columns: 1fr;
+    }
   }
 }
