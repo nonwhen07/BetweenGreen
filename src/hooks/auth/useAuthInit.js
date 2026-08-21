@@ -1,54 +1,72 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 // services
 import { checkAuth } from '@/services/authService';
 // features
-import { loginSuccess, logoutAction } from '@/features/auth/authSlice';
+import {
+  authCheckStarted,
+  loginSuccess,
+  logoutAction,
+} from '@/features/auth/authSlice';
 // hooks
 import { useToast } from '@/hooks/useToast';
 // utils
-import { getToken } from '@/utils/auth';
+import { clearToken, getToken } from '@/utils/auth';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useAuthInit = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { showError } = useToast();
 
   // 由於沒有回傳會員名稱和權限狀態的API，userSlice先製作後暫時不使用
 
   useEffect(() => {
+    let isActive = true;
+
     const initAuth = async () => {
+      dispatch(authCheckStarted());
+
       const token = getToken();
 
-      // 沒有 token 直接導向登入
+      // 沒有 token：完成初始化；導向登入由 AdminLayout guard 負責。
       if (!token) {
-        dispatch(logoutAction());
-        // navigate('/login'); // 註解掉，避免前台以檢查並 navigate('/login');
+        if (isActive) dispatch(logoutAction());
         return;
       }
 
       try {
         const res = await checkAuth();
 
-        if (res.success) {
-          dispatch(
-            loginSuccess({
-              token,
-            }),
-          );
+        if (!res.success) {
+          throw new Error(res.message || '登入狀態已失效');
         }
+
+        if (!isActive) return;
+
+        dispatch(
+          loginSuccess({
+            token,
+          }),
+        );
       } catch (error) {
+        if (!isActive) return;
+
+        clearToken();
         dispatch(logoutAction());
-        const errorMessage = extractErrorMessage(error, null, '請先登入，將導向登入頁面。');
+        const errorMessage = extractErrorMessage(
+          error,
+          null,
+          '登入狀態已失效，請重新登入。',
+        );
         showError(errorMessage);
-        navigate('/login');
       }
     };
+
     initAuth();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, navigate]);
+    return () => {
+      isActive = false;
+    };
+  }, [dispatch, showError]);
 };

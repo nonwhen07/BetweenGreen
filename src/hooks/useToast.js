@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { pushMessage } from '@/features/ui/toastSlice';
 
@@ -5,41 +6,53 @@ import { pushMessage } from '@/features/ui/toastSlice';
 export const useToast = () => {
   const dispatch = useDispatch();
 
-  const success = (text) => {
-    dispatch(
-      pushMessage({
-        text,
-        status: 'success',
-      }),
-    );
-  };
+  const success = useCallback(
+    (text) => {
+      dispatch(
+        pushMessage({
+          text,
+          status: 'success',
+        }),
+      );
+    },
+    [dispatch],
+  );
 
-  const showError = (text) => {
-    dispatch(
-      pushMessage({
-        text,
-        status: 'error',
-      }),
-    );
-  };
+  const showError = useCallback(
+    (text) => {
+      dispatch(
+        pushMessage({
+          text,
+          status: 'error',
+        }),
+      );
+    },
+    [dispatch],
+  );
 
-  const warning = (text) => {
-    dispatch(
-      pushMessage({
-        text,
-        status: 'warning',
-      }),
-    );
-  };
+  const warning = useCallback(
+    (text) => {
+      dispatch(
+        pushMessage({
+          text,
+          status: 'warning',
+        }),
+      );
+    },
+    [dispatch],
+  );
 
-  const info = (text) => {
-    dispatch(
-      pushMessage({
-        text,
-        status: 'info',
-      }),
-    );
-  };
+  const info = useCallback(
+    (text) => {
+      dispatch(
+        pushMessage({
+          text,
+          status: 'info',
+        }),
+      );
+    },
+    [dispatch],
+  );
 
   return {
     success,

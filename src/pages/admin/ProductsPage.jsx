@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
-import { useProducts } from '@/hooks/product/useProducts';
+import { useAdminProducts } from '@/hooks/product/useAdminProducts';
 import { useProductImport } from '@/hooks/product/useProductImport';
 import { useProductHealth } from '@/hooks/product/useProductHealth';
 import { useProductModal } from '@/hooks/product/useProductModal';
@@ -28,9 +28,7 @@ const ProductsPage = () => {
   // hooks init
   const { success, showError } = useToast();
   const { start, stop } = useLoading();
-  const { products, fetchProducts } = useProducts({
-    isAdmin: true,
-  });
+  const { products, fetchProducts, refreshProducts } = useAdminProducts();
   const { summary: healthSummary, byProductId, issueGroups } = useProductHealth(products);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -57,7 +55,7 @@ const ProductsPage = () => {
     executeImport,
   } = useProductImport({
     products,
-    onCompleted: fetchProducts,
+    onCompleted: refreshProducts,
   });
   const {
     isModalOpen: isProductModalOpen,
@@ -154,10 +152,20 @@ const ProductsPage = () => {
     return handleSubmitProduct(
       formData,
       async () => {
-        // await fetchProducts({ page: pageInfo.current_page || 1 });
-        await fetchProducts();
-        success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！');
-        stop();
+        try {
+          await refreshProducts();
+          success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！');
+        } catch (error) {
+          showError(
+            extractErrorMessage(
+              error,
+              null,
+              '商品已儲存，但重新載入商品列表失敗，請重新整理頁面。',
+            ),
+          );
+        } finally {
+          stop();
+        }
       },
       (errorMessage) => {
         showError(errorMessage);
@@ -174,7 +182,7 @@ const ProductsPage = () => {
       // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
       closeDeleteModal();
       // await fetchProducts({ page: pageInfo.current_page || 1 });
-      await fetchProducts();
+      await refreshProducts();
       success('產品刪除成功！');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
@@ -209,15 +217,12 @@ const ProductsPage = () => {
     };
 
     initProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchProducts, showError]);
 
   // 監控 keyword/category 變化，重置分頁到第一頁
   useEffect(() => {
     resetPage();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyword, selectedCategory, healthFilter, issueFilter]);
+  }, [keyword, selectedCategory, healthFilter, issueFilter, resetPage]);
 
   return (
     <>

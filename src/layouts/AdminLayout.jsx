@@ -1,17 +1,20 @@
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import AOS from 'aos';
 
 // hooks
 import { useAuthInit } from '@/hooks/auth/useAuthInit';
 
 // components
-// import PageLoader from '@/components/shared/PageLoader';
+import PageLoader from '@/components/shared/PageLoader';
 import AdminAside from '@/components/admin/AdminAside';
 import AdminHeader from '@/components/admin/AdminHeader';
 import GoTop from '@/components/shared/GoTop';
 
 const AdminLayout = () => {
+  const { isAuth, isInitialized } = useSelector((state) => state.auth);
+
   // Custom Hook = 可重用的「邏輯」，而不是 UI。
   // 判斷邏輯：① 有 useState / useEffect / useMemo / useCallback
   // ② 跟 UI 無關、③ 可能在別的頁面也會用、④ 讓 Component 太長，所以這段可以抽出去當 Custom Hook
@@ -22,6 +25,14 @@ const AdminLayout = () => {
   useEffect(() => {
     AOS.refresh();
   }, []);
+
+  if (!isInitialized) {
+    return <PageLoader show zIndex={2000} />;
+  }
+
+  if (!isAuth) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <>

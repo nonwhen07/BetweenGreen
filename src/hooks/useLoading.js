@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { startLoading, stopLoading } from '@/features/ui/loadingSlice';
 
@@ -5,8 +6,8 @@ import { startLoading, stopLoading } from '@/features/ui/loadingSlice';
 export const useLoading = () => {
   const dispatch = useDispatch();
 
-  const start = () => dispatch(startLoading());
-  const stop = () => dispatch(stopLoading());
+  const start = useCallback(() => dispatch(startLoading()), [dispatch]);
+  const stop = useCallback(() => dispatch(stopLoading()), [dispatch]);
 
   return {
     start,

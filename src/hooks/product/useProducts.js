@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+// import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 // services
 import { getAllProducts, getAllAdminProducts } from '@/services/productService';

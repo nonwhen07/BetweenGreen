@@ -1,19 +1,21 @@
 import { useEffect } from 'react';
 
 // hooks
-import { useProducts } from '@/hooks/product/useProducts';
+import { useAdminProducts } from '@/hooks/product/useAdminProducts';
+import { useToast } from '@/hooks/useToast';
 import { useProductHealth } from '@/hooks/product/useProductHealth';
 // components
 import AdminActivityPlaceholder from '@/components/admin/AdminActivityPlaceholder';
 import ProductHealthSummary from '@/components/admin/product/ProductHealthSummary';
 
 const DashboardPage = () => {
-  const { products, fetchProducts } = useProducts({ isAdmin: true });
+  const { products, fetchProducts } = useAdminProducts();
+  const { showError } = useToast();
   const { summary, issueGroups } = useProductHealth(products);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    fetchProducts().catch(showError);
+  }, [fetchProducts, showError]);
 
   return (
     <div className="admin-dashboard">
