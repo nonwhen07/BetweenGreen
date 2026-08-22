@@ -39,6 +39,119 @@
     gap: 8px;
   }
 
+  .admin-activity-panel__heading-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .admin-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .admin-activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid $admin-border;
+    border-left: 4px solid #198754;
+    border-radius: $admin-radius;
+    background: #fff;
+
+    &--partial {
+      border-left-color: #ffc107;
+    }
+
+    &--error {
+      border-left-color: #dc3545;
+    }
+
+    &.is-unreviewed {
+      background: #fffaf0;
+    }
+
+    &__main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    &__title-row,
+    &__meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &__meta {
+      margin-top: 6px;
+      color: $admin-text-light;
+      font-size: 13px;
+    }
+
+    &__details {
+      margin-top: 10px;
+
+      summary {
+        width: fit-content;
+        color: $admin-sidebar-active;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      ul {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 10px 0 0;
+        padding-left: 20px;
+      }
+
+      li span,
+      li small {
+        display: block;
+      }
+
+      li small {
+        color: #dc3545;
+      }
+    }
+  }
+
+  .admin-activity-status,
+  .admin-activity-review-state {
+    display: inline-flex;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .admin-activity-status {
+    color: #0f5132;
+    background: #d1e7dd;
+
+    &--partial {
+      color: #664d03;
+      background: #fff3cd;
+    }
+
+    &--error {
+      color: #842029;
+      background: #f8d7da;
+    }
+  }
+
+  .admin-activity-review-state {
+    color: #664d03;
+    background: #fff3cd;
+  }
+
   .admin-empty-state {
     padding: 32px 16px;
     text-align: center;
@@ -55,6 +168,17 @@
     .admin-section-heading {
       flex-direction: column;
     }
+
+    .admin-activity-panel__heading-actions {
+      justify-content: flex-start;
+    }
+
+    .admin-activity-item {
+      flex-direction: column;
+
+      > .btn {
+        align-self: flex-end;
+      }
+    }
   }
 }
-

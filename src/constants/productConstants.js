@@ -5,8 +5,7 @@ export const DEFAULT_PRODUCT = {
   imageUrl: '',
   title: '',
   titleEn: '', // 商品英文標題
-  // slug: '', // 商品轉址slug(替代id查詢)
-  category: '', // 商品種類
+  category: '', // 商品主種類 (先維持 THEME > TYPE > SPECIES，之後改成category：THEME + subCategory：TYPE > SPECIES)
   content: '', // 商品詳細內容（規格、材質、尺寸）
   unit: '',
   origin_price: '',
@@ -21,6 +20,12 @@ export const DEFAULT_PRODUCT = {
   personalityTags: '', // 商品人格標籤
   // 商業展示資訊  {/* display tag (負責處理熱銷、促銷庫存...商業處理標籤，後台欄位+實際運作邏輯 尚未開工) */}
   displayTags: '',
+
+  // slug: '', // 商品轉址slug(替代id查詢)
+  subCategory: '', // 商品副種類 (輔助category欄位，尚未動工)
+  createDate: '', // 日期種類 (輔助管理員檢視，尚未動工)
+  updateDate: '', // 日期種類 (輔助管理員檢視，尚未動工)
+  enabledDate: '', // 日期種類 (輔助管理員檢視，尚未動工)
 };
 
 // ======================================================
@@ -325,22 +330,9 @@ export const TYPE_SPECIES_RELATION_MAP = {
     'Herb',
   ],
 
-  Tool: [
-    'WateringCan',
-    'Mister',
-    'MoistureMeter',
-    'Pruner',
-    'PlantBrush',
-    'PlantLamp',
-  ],
+  Tool: ['WateringCan', 'Mister', 'MoistureMeter', 'Pruner', 'PlantBrush', 'PlantLamp'],
 
-  Pottery: [
-    'CeramicPot',
-    'GlassVase',
-    'HangingPlanter',
-    'StonePlanter',
-    'SelfWateringPot',
-  ],
+  Pottery: ['CeramicPot', 'GlassVase', 'HangingPlanter', 'StonePlanter', 'SelfWateringPot'],
 
   Compost: ['OrganicSoil', 'SoilMix', 'SlowReleaseFeed', 'LiquidFeed'],
 
@@ -821,9 +813,9 @@ export const PRODUCT_UNIT_MAP = {
 // ======================================================
 // SECONDARY_PERSONALITY_TAGS
 // ======================================================
-export const SECONDARY_PERSONALITY_TAGS = Object.keys(
-  PRODUCT_PERSONALITY_MAP,
-).filter((key) => !PRIMARY_PERSONALITY_TAGS.includes(key));
+export const SECONDARY_PERSONALITY_TAGS = Object.keys(PRODUCT_PERSONALITY_MAP).filter(
+  (key) => !PRIMARY_PERSONALITY_TAGS.includes(key),
+);
 
 // ======================================================
 // HELPERS

@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
+import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminProducts } from '@/hooks/product/useAdminProducts';
 import { useProductImport } from '@/hooks/product/useProductImport';
 import { useProductHealth } from '@/hooks/product/useProductHealth';
@@ -19,7 +20,7 @@ import ProductsTable from '@/components/admin/product/ProductsTable';
 import ProductHealthToolbar from '@/components/admin/product/ProductHealthToolbar';
 import ProductModal from '@/components/admin/product/ProductModal';
 import ProductImportModal from '@/components/admin/product/ProductImportModal';
-import AdminActivityPlaceholder from '@/components/admin/AdminActivityPlaceholder';
+import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminFilter from '@/components/admin/AdminFilter';
@@ -30,6 +31,8 @@ const ProductsPage = () => {
   const { start, stop } = useLoading();
   const { products, fetchProducts, refreshProducts } = useAdminProducts();
   const { summary: healthSummary, byProductId, issueGroups } = useProductHealth(products);
+  const { activities: productActivities, markActivityReviewed } =
+    useAdminActivities({ module: 'product' });
   const [searchParams, setSearchParams] = useSearchParams();
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
@@ -265,10 +268,16 @@ const ProductsPage = () => {
           </div>
         </div>
 
-        <AdminActivityPlaceholder
+        <AdminActivityPanel
+          sectionId="product-activity"
           title="商品批次操作紀錄"
-          description="未來顯示全部、待確認與已確認的商品匯入結果"
+          description="查看 JSON 批次新增與更新結果，並確認需要處理的異常"
+          activities={productActivities}
           showFilters
+          showDetails
+          onReviewedChange={(activityId, isReviewed) =>
+            markActivityReviewed(activityId, isReviewed).catch(showError)
+          }
         />
       </div>
 

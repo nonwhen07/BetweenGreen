@@ -3,6 +3,7 @@ import { useState } from 'react';
 // services
 import { createProduct, updateProduct } from '@/services/productService';
 // hooks
+import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useToast } from '@/hooks/useToast';
 // schemas
 import {
@@ -15,6 +16,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useProductImport = ({ products = [], onCompleted } = {}) => {
   const { success, showError, warning } = useToast();
+  const { addActivity } = useAdminActivities();
 
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [importMode, setImportMode] = useState('update');
@@ -134,6 +136,23 @@ export const useProductImport = ({ products = [], onCompleted } = {}) => {
         (item) => item.status === 'success',
       ).length;
       const errorCount = completedResults.length - successCount;
+      const activityStatus =
+        errorCount === 0 ? 'success' : successCount > 0 ? 'partial' : 'error';
+
+      try {
+        await addActivity({
+          module: 'product',
+          action: importMode === 'create' ? 'batch-create' : 'batch-update',
+          status: activityStatus,
+          totalCount: completedResults.length,
+          successCount,
+          errorCount,
+          isReviewed: errorCount === 0,
+          details: completedResults.filter((item) => item.status === 'error'),
+        });
+      } catch {
+        warning('批次操作已完成，但操作紀錄保存失敗');
+      }
 
       if (successCount > 0) {
         await onCompleted?.();

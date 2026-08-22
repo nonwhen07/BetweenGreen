@@ -1,17 +1,22 @@
 import { useEffect } from 'react';
 
 // hooks
+import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminProducts } from '@/hooks/product/useAdminProducts';
 import { useToast } from '@/hooks/useToast';
 import { useProductHealth } from '@/hooks/product/useProductHealth';
 // components
-import AdminActivityPlaceholder from '@/components/admin/AdminActivityPlaceholder';
+import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import ProductHealthSummary from '@/components/admin/product/ProductHealthSummary';
 
 const DashboardPage = () => {
   const { products, fetchProducts } = useAdminProducts();
   const { showError } = useToast();
   const { summary, issueGroups } = useProductHealth(products);
+  const { activities, markActivityReviewed } = useAdminActivities({
+    dashboard: true,
+    limit: 5,
+  });
 
   useEffect(() => {
     fetchProducts().catch(showError);
@@ -61,9 +66,14 @@ const DashboardPage = () => {
       <div className="admin-dashboard__overview">
         <ProductHealthSummary summary={summary} issueGroups={issueGroups} />
 
-        <AdminActivityPlaceholder
+        <AdminActivityPanel
           title="近期批次操作"
-          description="未來彙整商品、優惠券與文章的批次操作摘要"
+          description="顯示近期已完成操作，未確認異常會持續保留"
+          activities={activities}
+          viewAllHref="/admin/products#product-activity"
+          onReviewedChange={(activityId, isReviewed) =>
+            markActivityReviewed(activityId, isReviewed).catch(showError)
+          }
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import activityReducer from '@/features/activity/activitySlice';
 import authReducer from '@/features/auth/authSlice';
 import productReducer from '@/features/product/productSlice';
 // 由於沒有回傳會員名稱和權限狀態的API，userSlice先製作後暫時不使用
@@ -10,6 +11,7 @@ import loadingReducer from '@/features/ui/loadingSlice';
 
 export const store = configureStore({
   reducer: {
+    activity: activityReducer,
     auth: authReducer,
     product: productReducer,
     // user: userReducer, // 之後會從auth 拆分出 user資訊

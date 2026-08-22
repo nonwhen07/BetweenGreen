@@ -12,7 +12,7 @@ import '@/styles/admin.scss'; // 後台入口 Sass
 import App from '@/App.jsx';
 
 import { Provider } from 'react-redux';
-import { store } from '@/store/store';
+import { store } from '@/app/store.js';
 import Toast from '@/components/ToastList';
 import GlobalLoader from '@/components/shared/GlobalLoader';
 
