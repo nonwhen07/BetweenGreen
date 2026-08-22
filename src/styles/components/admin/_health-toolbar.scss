@@ -1,0 +1,61 @@
+.admin-health-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: 16px;
+  margin-bottom: 16px;
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  &__issue-filter {
+    align-self: end;
+  }
+}
+
+.admin-health-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 16px;
+  color: #495057;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  span {
+    font-size: 13px;
+  }
+
+  strong {
+    font-size: 22px;
+  }
+
+  &:hover,
+  &.is-active {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.12);
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .admin-health-toolbar {
+    grid-template-columns: 1fr;
+
+    &__stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &__issue-filter {
+      max-width: 360px;
+    }
+  }
+}
