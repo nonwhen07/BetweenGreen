@@ -114,6 +114,7 @@ const ProductModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <h5 className="modal-title text-light fs-4">
+              {/* {modalMode === 'create' ? '新增產品' : '編輯 - ' + (watchTitle || '')} */}
               {modalMode === 'create'
                 ? '新增產品'
                 : `編輯 - ${watchTitle || ''}${watchTitleEn ? ` ${watchTitleEn}` : ''}`}

@@ -9,7 +9,6 @@ import {
 } from '@/utils/productFormatter';
 // components
 import StarRating from '@/components/admin/StarRating';
-import ProductHealthBadge from '@/components/admin/product/ProductHealthBadge';
 
 const ProductsTable = ({
   products,
@@ -19,9 +18,10 @@ const ProductsTable = ({
   openDeleteModal,
   // productCount,
   productTotalCount,
+  exportProductCount,
   selectedProductId,
   openProductImportModal,
-  healthByProductId,
+  exportAllProducts,
 }) => {
   return (
     <>
@@ -35,6 +35,15 @@ const ProductsTable = ({
         </div>
 
         <div className="admin-panel__actions d-flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="btn btn-outline-secondary px-4"
+            onClick={exportAllProducts}
+            disabled={exportProductCount === 0}
+          >
+            匯出全部 JSON
+          </button>
+
           <button
             type="button"
             className="btn btn-outline-success px-4"
@@ -66,42 +75,40 @@ const ProductsTable = ({
       <div className="admin-panel__body">
         {productTotalCount === 0 ? (
           <div className="text-center py-5">
-            <p className="text-muted mb-2">目前沒有符合條件的商品</p>
+            <p className="text-muted mb-2">目前尚無商品資料</p>
             <small className="text-secondary">
-              請調整搜尋、分類或健康狀態篩選
+              點擊右上角「新增商品」開始建立第一筆商品
             </small>
           </div>
         ) : (
-          <div className="admin-table-wrapper">
-            <table className="table admin-table align-middle mb-0">
-              <thead>
-                <tr>
-                  <th width="28%">商品資訊</th>
-                  <th width="12%">價格資訊</th>
-                  <th width="18%">商品標籤</th>
-                  <th width="16%">健康狀態</th>
-                  <th width="10%">狀態</th>
-                  <th width="16%">操作</th>
-                </tr>
-              </thead>
+          <table className="table admin-table align-middle mb-0">
+            <thead>
+              <tr>
+                <th width="34%">商品資訊</th>
+                <th width="14%">價格資訊</th>
+                <th width="22%">商品標籤</th>
+                <th width="10%">狀態</th>
+                <th width="20%">操作</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                {products.map((product) => {
-                  const rawTags = product.personalityTags
-                    ? product.personalityTags.split('|')
-                    : [];
-                  const contentTags = rawTags.slice(0, 2);
-                  const extraTagCount = rawTags.length - 2;
+            <tbody>
+              {products.map((product) => {
+                const rawTags = product.personalityTags
+                  ? product.personalityTags.split('|')
+                  : [];
+                const contentTags = rawTags.slice(0, 2);
+                const extraTagCount = rawTags.length - 2;
 
-                  return (
-                    <tr
-                      key={product.id}
-                      className={
-                        selectedProductId === product.id
-                          ? 'table-active admin-table__row--active'
-                          : ''
-                      }
-                    >
+                return (
+                  <tr
+                    key={product.id}
+                    className={
+                      selectedProductId === product.id
+                        ? 'table-active admin-table__row--active'
+                        : ''
+                    }
+                  >
                     {/* 商品資訊 */}
                     <td>
                       <div className="admin-product-info">
@@ -167,12 +174,7 @@ const ProductsTable = ({
                       </div>
                     </td>
 
-                    {/* 健康狀態 */}
-                    <td>
-                      <ProductHealthBadge health={healthByProductId[product.id]} />
-                    </td>
-
-                    {/* 啟用狀態 */}
+                    {/* 狀態 */}
                     <td>
                       {product.is_enabled ? (
                         <span className="badge text-bg-success">啟用中</span>
@@ -201,12 +203,11 @@ const ProductsTable = ({
                         </button>
                       </div>
                     </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </div>
     </>
@@ -218,14 +219,10 @@ ProductsTable.propTypes = {
   openProductModal: PropTypes.func.isRequired,
   openDeleteModal: PropTypes.func.isRequired,
   productTotalCount: PropTypes.number.isRequired,
+  exportProductCount: PropTypes.number.isRequired,
   selectedProductId: PropTypes.string,
   openProductImportModal: PropTypes.func.isRequired,
-  healthByProductId: PropTypes.objectOf(
-    PropTypes.shape({
-      status: PropTypes.oneOf(['healthy', 'warning', 'error']).isRequired,
-      issues: PropTypes.arrayOf(PropTypes.object).isRequired,
-    }),
-  ).isRequired,
+  exportAllProducts: PropTypes.func.isRequired,
 };
 
 ProductsTable.defaultProps = {

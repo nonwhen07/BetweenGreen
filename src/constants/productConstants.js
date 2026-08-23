@@ -2,10 +2,14 @@
 // 六角API可彈性新增欄位（例如 rating）
 // 確保即使 API 回傳產品物件中沒有某些欄位，tempProduct 也不會報錯
 export const DEFAULT_PRODUCT = {
+  createdAt: null, // 系統建立時間（ISO 8601）；新增時寫入
+  updatedAt: null, // 系統最後更新時間（ISO 8601）；首次建立維持 null
   imageUrl: '',
   title: '',
   titleEn: '', // 商品英文標題
-  category: '', // 商品主種類 (先維持 THEME > TYPE > SPECIES，之後改成category：THEME + subCategory：TYPE > SPECIES)
+  category: '', // 商品主種類 (先維持 THEME > TYPE > SPECIES，之後改成category：THEME + subCategory：TYPE > SPECIES，這兩者合作處理商品種類)
+  // subCategory: '', // 商品副種類 (輔助category欄位，尚未動工)
+  // slug: '', // 商品轉址slug(替代id查詢，尚未動工)
   content: '', // 商品詳細內容（規格、材質、尺寸）
   unit: '',
   origin_price: '',
@@ -20,12 +24,6 @@ export const DEFAULT_PRODUCT = {
   personalityTags: '', // 商品人格標籤
   // 商業展示資訊  {/* display tag (負責處理熱銷、促銷庫存...商業處理標籤，後台欄位+實際運作邏輯 尚未開工) */}
   displayTags: '',
-
-  // slug: '', // 商品轉址slug(替代id查詢)
-  subCategory: '', // 商品副種類 (輔助category欄位，尚未動工)
-  createDate: '', // 日期種類 (輔助管理員檢視，尚未動工)
-  updateDate: '', // 日期種類 (輔助管理員檢視，尚未動工)
-  enabledDate: '', // 日期種類 (輔助管理員檢視，尚未動工)
 };
 
 // ======================================================

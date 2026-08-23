@@ -11,6 +11,22 @@ import {
 } from '@/constants/productConstants';
 
 export const PRODUCT_ADMIN_FIELDS = {
+  createdAt: {
+    label: '建立時間',
+    required: false,
+    type: 'dateTime',
+    defaultValue: null,
+    preserveExisting: true,
+    systemManaged: true,
+  },
+  updatedAt: {
+    label: '最後更新時間',
+    required: false,
+    type: 'dateTime',
+    defaultValue: null,
+    preserveExisting: true,
+    systemManaged: true,
+  },
   title: { label: '中文標題', required: true, type: 'string' },
   titleEn: { label: '英文標題', required: true, type: 'string' },
   category: { label: '商品分類', required: true, type: 'string' },
@@ -53,7 +69,7 @@ export const PRODUCT_IMPORT_PREVIEW_FIELDS = [
   'imagesUrl',
 ];
 
-const PRODUCT_ADMIN_FIELD_KEYS = Object.keys(PRODUCT_ADMIN_FIELDS);
+export const PRODUCT_ADMIN_FIELD_KEYS = Object.keys(PRODUCT_ADMIN_FIELDS);
 const PRODUCT_UNIT_VALUES = new Set(
   Object.values(PRODUCT_UNIT_MAP).map((item) => item.value),
 );
@@ -173,6 +189,13 @@ const validateProduct = (product) => {
 
     if (definition.type === 'enabled' && value !== 0 && value !== 1) {
       errors.push('is_enabled 必須是 0 或 1');
+    }
+
+    if (
+      definition.type === 'dateTime' &&
+      (typeof value !== 'string' || Number.isNaN(Date.parse(value)))
+    ) {
+      errors.push(`${field} 必須是有效的 ISO 日期時間字串或 null`);
     }
 
     if (definition.type === 'stringArray') {
@@ -312,7 +335,15 @@ const extractProductList = (source) => {
   );
 };
 
-const isSameValue = (left, right) => {
+const isSameValue = (left, right, field = '') => {
+  if (
+    PRODUCT_ADMIN_FIELDS[field]?.systemManaged &&
+    left == null &&
+    right == null
+  ) {
+    return true;
+  }
+
   return JSON.stringify(left) === JSON.stringify(right);
 };
 
@@ -387,7 +418,11 @@ export const analyzeProductUpdateImport = (source, existingProducts = []) => {
     const changedFields = currentProduct
       ? PRODUCT_ADMIN_FIELD_KEYS.filter(
           (field) =>
-            !isSameValue(currentProduct[field], normalizedProduct[field]),
+            !isSameValue(
+              currentProduct[field],
+              normalizedProduct[field],
+              field,
+            ),
         )
       : [];
 

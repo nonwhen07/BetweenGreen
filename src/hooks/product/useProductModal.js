@@ -31,6 +31,7 @@ export const useProductModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create');
   const [editProductId, setEditProductId] = useState(null);
+  const [editProductCreatedAt, setEditProductCreatedAt] = useState(null);
   const [categoryBuilder, setCategoryBuilder] = useState({
     theme: '',
     type: '',
@@ -53,8 +54,13 @@ export const useProductModal = () => {
     imagesUrl: Array.isArray(p.imagesUrl) && p.imagesUrl.length > 0 ? [...p.imagesUrl] : [''],
   });
   // API submit 前格式整理
-  const formatProductData = (product) => ({
+  const formatProductData = (product, mode) => ({
     ...product,
+    createdAt:
+      mode === 'create'
+        ? new Date().toISOString()
+        : editProductCreatedAt,
+    updatedAt: mode === 'create' ? null : new Date().toISOString(),
     origin_price: Number(product.origin_price),
     price: Number(product.price),
     is_enabled: product.is_enabled ? 1 : 0,
@@ -67,6 +73,7 @@ export const useProductModal = () => {
     // 更換成 Category、Tags(content)
     if (mode === 'create') {
       setEditProductId(null);
+      setEditProductCreatedAt(null);
       reset({ ...DEFAULT_PRODUCT }); // modal 開啟時讓 RHF 一起知道現在表單值。
       setCategoryBuilder({
         theme: '',
@@ -76,6 +83,7 @@ export const useProductModal = () => {
       setSelectedTags([]);
     } else {
       setEditProductId(product.id);
+      setEditProductCreatedAt(product.createdAt ?? null);
       const normalized = normalizeProduct(product);
       reset(normalized); // modal 開啟時讓 RHF 一起知道現在表單值。
 
@@ -102,6 +110,7 @@ export const useProductModal = () => {
   const closeProductModal = () => {
     setIsModalOpen(false);
     setEditProductId(null);
+    setEditProductCreatedAt(null);
     // modal 關閉時重置 RHF 表單
     reset({ ...DEFAULT_PRODUCT });
 
@@ -198,9 +207,9 @@ export const useProductModal = () => {
 
     try {
       if (modalMode === 'create') {
-        await createProduct(formatProductData(submitData));
+        await createProduct(formatProductData(submitData, 'create'));
       } else {
-        await updateProduct(submitData.id, formatProductData(submitData));
+        await updateProduct(submitData.id, formatProductData(submitData, 'update'));
       }
 
       closeProductModal();

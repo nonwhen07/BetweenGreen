@@ -12,12 +12,12 @@ import '@/styles/admin.scss'; // 後台入口 Sass
 import App from '@/App.jsx';
 
 import { Provider } from 'react-redux';
-import { store } from '@/app/store.js';
+import { appStore } from '@/store/store';
 import Toast from '@/components/ToastList';
 import GlobalLoader from '@/components/shared/GlobalLoader';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
+  <Provider store={appStore}>
     <Toast /> {/* 確保 Toast 能全局監聽 Redux 狀態 */}
     <App />
     <GlobalLoader />

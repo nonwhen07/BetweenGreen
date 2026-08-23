@@ -11,6 +11,7 @@ import { useDeleteModal } from '@/hooks/useDeleteModal';
 import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminProducts } from '@/hooks/product/useAdminProducts';
 import { useProductImport } from '@/hooks/product/useProductImport';
+import { useProductExport } from '@/hooks/product/useProductExport';
 import { useProductHealth } from '@/hooks/product/useProductHealth';
 import { useProductModal } from '@/hooks/product/useProductModal';
 // utils
@@ -30,6 +31,7 @@ const ProductsPage = () => {
   const { success, showError } = useToast();
   const { start, stop } = useLoading();
   const { products, fetchProducts, refreshProducts } = useAdminProducts();
+  const { exportAllProducts } = useProductExport(products);
   const { summary: healthSummary, byProductId, issueGroups } = useProductHealth(products);
   const { activities: productActivities, markActivityReviewed } =
     useAdminActivities({ module: 'product' });
@@ -259,9 +261,10 @@ const ProductsPage = () => {
             openProductModal={handleOpenProductModal}
             openDeleteModal={openDeleteModal}
             productTotalCount={filteredProducts.length}
+            exportProductCount={products.length}
             selectedProductId={selectedProductId}
             openProductImportModal={openImportModal}
-            healthByProductId={byProductId}
+            exportAllProducts={exportAllProducts}
           />
           <div className="m-4">
             <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />

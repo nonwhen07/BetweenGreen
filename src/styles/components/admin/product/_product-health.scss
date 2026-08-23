@@ -27,17 +27,6 @@
     }
   }
 
-  .admin-product-health {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-
-    small {
-      color: $admin-text-light;
-    }
-  }
-
   .admin-health-summary__list {
     display: flex;
     flex-direction: column;
@@ -68,4 +57,3 @@
     }
   }
 }
-

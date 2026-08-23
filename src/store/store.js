@@ -9,7 +9,7 @@ import cartReducer from '@/features/cart/cartSlice';
 import toastReducer from '@/features/ui/toastSlice';
 import loadingReducer from '@/features/ui/loadingSlice';
 
-export const store = configureStore({
+export const appStore = configureStore({
   reducer: {
     activity: activityReducer,
     auth: authReducer,

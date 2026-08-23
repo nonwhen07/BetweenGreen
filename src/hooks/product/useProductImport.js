@@ -95,14 +95,28 @@ export const useProductImport = ({ products = [], onCompleted } = {}) => {
     setProgress({ current: 0, total: executableEntries.length });
 
     const completedResults = [];
+    const operationTimestamp = new Date().toISOString();
+    const currentProductMap = new Map(
+      products.map((product) => [product.id, product]),
+    );
 
     try {
       for (const [index, entry] of executableEntries.entries()) {
         try {
+          const currentProduct = currentProductMap.get(entry.id);
+          const productData = {
+            ...entry.data,
+            createdAt:
+              importMode === 'create'
+                ? operationTimestamp
+                : currentProduct?.createdAt ?? entry.data.createdAt ?? null,
+            updatedAt:
+              importMode === 'create' ? null : operationTimestamp,
+          };
           const response =
             importMode === 'create'
-              ? await createProduct(entry.data)
-              : await updateProduct(entry.id, entry.data);
+              ? await createProduct(productData)
+              : await updateProduct(entry.id, productData);
 
           const createdId =
             response?.product_id || response?.product?.id || response?.id || '';
