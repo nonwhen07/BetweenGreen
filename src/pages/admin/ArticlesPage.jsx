@@ -103,16 +103,45 @@ const ArticlesPage = () => {
 
   return (
     <>
-      <div className="container py-1">
-        <h2 className="mb-0">Article列表</h2>
-        <ArticlesTable
-          articles={articles}
-          pageInfo={pageInfo}
-          handlePageChange={handlePageChange}
-          openArticleModal={openArticleModal}
-          openDeleteModal={openDeleteModal}
-          articleCount={articleCount}
-        />
+      <div className="admin-resource-page admin-resource-page--article py-1">
+        <div className="admin-page-heading">
+          <div>
+            <h1 className="admin-page-heading__title">文章列表</h1>
+            <p className="admin-page-heading__description">
+              管理文章內容、發布狀態與前台投放位置
+            </p>
+          </div>
+        </div>
+
+        <div className="admin-panel">
+          <div className="admin-panel__header">
+            <div>
+              <h4 className="mb-1">文章快速總覽</h4>
+              <p className="text-muted small mb-0">
+                本頁共 {articleCount} 筆文章資料
+              </p>
+            </div>
+
+            <div className="admin-panel__actions d-flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn btn-primary px-4"
+                onClick={() => openArticleModal('create')}
+              >
+                ＋ 新增文章
+              </button>
+            </div>
+          </div>
+
+          <ArticlesTable
+            articles={articles}
+            pageInfo={pageInfo}
+            handlePageChange={handlePageChange}
+            openArticleModal={openArticleModal}
+            openDeleteModal={openDeleteModal}
+            articleCount={articleCount}
+          />
+        </div>
       </div>
 
       {/* Modals */}

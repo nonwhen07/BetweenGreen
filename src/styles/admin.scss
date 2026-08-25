@@ -16,6 +16,7 @@
 // components
 @use '@/styles/components/admin/card';
 @use '@/styles/components/admin/stat-card';
+@use '@/styles/components/admin/resource';
 @use '@/styles/components/admin/table';
 @use '@/styles/components/admin/grid';
 @use '@/styles/components/admin/health-toolbar';
@@ -25,3 +26,4 @@
 // pages
 @use '@/styles/pages/admin/admin-page';
 @use '@/styles/pages/admin/products-page';
+@use '@/styles/pages/admin/orders-page';

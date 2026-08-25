@@ -101,17 +101,32 @@ const CouponsPage = () => {
 
   return (
     <>
-      <div className="container py-1">
-        <div className="admin-panel mt-4">
+      <div className="admin-resource-page admin-resource-page--coupon py-1">
+        <div className="admin-page-heading">
+          <div>
+            <h1 className="admin-page-heading__title">優惠券列表</h1>
+            <p className="admin-page-heading__description">
+              管理優惠券資料、啟用狀態與使用期限
+            </p>
+          </div>
+        </div>
+
+        <div className="admin-panel">
           <div className="admin-panel__header">
             <div>
               <h4 className="mb-1">優惠券快速總覽</h4>
-              <p className="text-muted small mb-0">目前共 {couponCount} 筆優惠券資料</p>
+              <p className="text-muted small mb-0">本頁共 {couponCount} 筆優惠券資料</p>
             </div>
 
-            <button className="btn btn-primary px-4" onClick={() => openCouponModal('create')}>
-              ＋ 新增優惠券
-            </button>
+            <div className="admin-panel__actions d-flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn btn-primary px-4"
+                onClick={() => openCouponModal('create')}
+              >
+                ＋ 新增優惠券
+              </button>
+            </div>
           </div>
           <CouponsTable
             coupons={coupons}

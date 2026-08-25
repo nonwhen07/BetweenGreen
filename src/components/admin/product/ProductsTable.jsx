@@ -111,15 +111,15 @@ const ProductsTable = ({
                   >
                     {/* 商品資訊 */}
                     <td>
-                      <div className="admin-product-info">
-                        <div className="admin-product-info__thumb">
+                      <div className="admin-resource-info">
+                        <div className="admin-resource-info__thumb">
                           <img
                             src={product.imageUrl || null}
                             alt={product.title}
                           />
                         </div>
 
-                        <div className="admin-product-info__content">
+                        <div className="admin-resource-info__content">
                           <h6>{product.title}</h6>
                           <p>
                             {formatCategoryPreview(product.category) ||

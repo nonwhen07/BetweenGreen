@@ -8,7 +8,7 @@ import {
 // utils
 import { getLabelByValue } from '@/utils/adminBuilderUtils';
 // components
-import Pagination from '@/components/Pagination';
+import BrandPagination from '@/components/shared/BrandPagination';
 
 const formatDate = (timestamp) => {
   if (!timestamp) return '未設定';
@@ -25,33 +25,24 @@ const ArticlesTable = ({
 }) => {
   return (
     <>
-      <div className="admin-panel mt-4">
-        <div className="admin-panel__header">
-          <div>
-            <h4 className="mb-1">文章快速總覽</h4>
-            <p className="text-muted small mb-0">目前共 {articleCount} 筆文章資料</p>
+      <div className="admin-panel__body">
+        {articleCount === 0 ? (
+          <div className="text-center py-5">
+            <p className="text-muted mb-2">目前尚無文章資料</p>
+            <small className="text-secondary">
+              點擊右上角「新增文章」開始建立第一篇內容
+            </small>
           </div>
-
-          <button className="btn btn-primary px-4" onClick={() => openArticleModal('create')}>
-            ＋ 新增文章
-          </button>
-        </div>
-
-        <div className="admin-panel__body">
-          {articleCount === 0 ? (
-            <div className="text-center py-5">
-              <p className="text-muted mb-2">目前尚無文章資料</p>
-              <small className="text-secondary">點擊右上角「新增文章」開始建立第一篇內容</small>
-            </div>
-          ) : (
+        ) : (
+          <div className="admin-table-wrapper">
             <table className="table admin-table align-middle mb-0">
               <thead>
                 <tr>
-                  <th width="32%">文章資訊</th>
-                  <th width="18%">分類 / 對象</th>
-                  <th width="20%">標籤 / 權重</th>
-                  <th width="16%">上下架</th>
-                  <th width="8%">狀態</th>
+                  <th width="28%">文章資訊</th>
+                  <th width="15%">分類 / 對象</th>
+                  <th width="17%">標籤 / 權重</th>
+                  <th width="15%">上下架</th>
+                  <th width="9%">狀態</th>
                   <th width="16%">操作</th>
                 </tr>
               </thead>
@@ -64,8 +55,8 @@ const ArticlesTable = ({
                   return (
                     <tr key={article.id}>
                       <td>
-                        <div className="admin-product-info">
-                          <div className="admin-product-info__thumb">
+                        <div className="admin-resource-info">
+                          <div className="admin-resource-info__thumb">
                             {article.image ? (
                               <img src={article.image} alt={article.title} />
                             ) : (
@@ -73,7 +64,7 @@ const ArticlesTable = ({
                             )}
                           </div>
 
-                          <div className="admin-product-info__content">
+                          <div className="admin-resource-info__content">
                             <h6>{article.title}</h6>
                             {/* <p>{article.description || '尚未填寫文章摘要'}</p> */}
                             <p>{article.bannerText || '尚未填寫文章摘要'}</p>
@@ -165,15 +156,20 @@ const ArticlesTable = ({
                 })}
               </tbody>
             </table>
-          )}
-        </div>
-
-        {articleCount > 0 && (
-          <div className="admin-panel__footer d-flex justify-content-center">
-            <Pagination pageInfo={pageInfo} handlePageChange={handlePageChange} />
           </div>
         )}
       </div>
+
+      {articleCount > 0 && (
+        <div className="admin-panel__footer d-flex justify-content-center">
+          <BrandPagination
+            currentPage={pageInfo.current_page || 1}
+            totalPages={pageInfo.total_pages || 1}
+            onPageChange={handlePageChange}
+            ariaLabel="文章分頁導覽"
+          />
+        </div>
+      )}
     </>
   );
 };

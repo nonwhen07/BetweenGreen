@@ -32,6 +32,35 @@
   }
 }
 
+.admin-table {
+  thead th {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6c757d;
+    background: #fff;
+    border-bottom: 1px solid $admin-border;
+    padding: 0.95rem 0.9rem;
+  }
+
+  tbody tr {
+    height: 96px;
+    transition: background-color 0.2s ease;
+  }
+
+  tbody tr:hover {
+    background: #fafafa;
+  }
+
+  td {
+    padding: 0.95rem 0.9rem;
+    vertical-align: middle;
+  }
+
+  &__actions .btn {
+    min-width: 58px;
+  }
+}
+
 // 用法
 // <div className="admin-card">
 //   <div className="admin-card__header">產品列表</div>

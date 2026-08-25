@@ -1,6 +1,6 @@
 // 前台視角暫時不搬遷使用，需要一點時間去排整全部前台scss，暫時維持在_variables.scss引用
 
-// breakpoints 視覺分段點-mobile/pad/desktop/desktop-xl
+// breakpoints引用 (mobile-first)
 $breakpoints: (
   mobile: 0,
   pad: 576px,
@@ -8,7 +8,7 @@ $breakpoints: (
   desktop-xl: 1296px,
 );
 
-// 後台統一引用
+// 後台breakpoints引用 (目前後台只先做 tablet-first，未來可精簡畫面擴充成mobile-first)
 $admin-breakpoints: (
   mobile: 0,
   tablet: 768px,

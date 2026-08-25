@@ -1,0 +1,14 @@
+.admin-orders-page {
+  .admin-table {
+    table-layout: fixed;
+  }
+}
+
+.admin-order-id,
+.admin-order-email {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
