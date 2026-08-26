@@ -124,14 +124,6 @@ export const DEFAULT_ARTICLE = {
   displayZone: 'garden-tips',
 };
 
-export const DEFAULT_COUPON = {
-  title: '',
-  code: '',
-  percent: 100,
-  due_date: '',
-  is_enabled: 1,
-};
-
 /* =========================================================
   通用型工具(晚點集中抽出去管理，這不一定後台專用)
 ========================================================= */

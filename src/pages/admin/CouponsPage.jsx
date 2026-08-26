@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 
+// constants
+import { COUPON_PER_PAGE } from '@/constants/couponConstants';
 // services
 import { deleteCoupon } from '@/services/couponService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
-import { useCoupons } from '@/hooks/coupon/useCoupons';
+import { usePagination } from '@/hooks/usePagination';
+import { useAdminCoupons } from '@/hooks/coupon/useAdminCoupons';
 import { useCouponModal } from '@/hooks/coupon/useCouponModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
@@ -20,7 +23,13 @@ const CouponsPage = () => {
   // hooks init
   const { success, showError } = useToast();
   const { start, stop } = useLoading();
-  const { coupons, pageInfo, fetchCoupons } = useCoupons();
+  const {
+    coupons,
+    fetchCoupons,
+    refreshCoupons,
+    saveCouponToStore,
+    removeCouponFromStore,
+  } = useAdminCoupons();
 
   const {
     isModalOpen: isCouponModalOpen,
@@ -42,12 +51,28 @@ const CouponsPage = () => {
     closeDeleteModal,
   } = useDeleteModal();
 
+  const {
+    page,
+    totalPages,
+    currentItems: currentPageCoupons,
+    goToPage,
+    resetPage,
+  } = usePagination({
+    items: coupons,
+    perPage: COUPON_PER_PAGE,
+  });
+
   // derived values
-  const couponCount = coupons?.length || 0;
+  const couponCount = currentPageCoupons.length;
+  const couponTotalCount = coupons.length;
+  const pageInfo = {
+    current_page: page,
+    total_pages: totalPages,
+  };
 
   // Page actions（CRUD / pagination）
   const handlePageChange = (page = 1) => {
-    fetchCoupons({ page });
+    goToPage(page);
   };
   const handleUpdateCoupon = handleSubmit((formData) => {
     // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
@@ -55,10 +80,29 @@ const CouponsPage = () => {
 
     return handleSubmitCoupon(
       formData,
-      async () => {
-        await fetchCoupons({ page: pageInfo.current_page || 1 });
-        success(modalMode === 'create' ? '優惠券新增成功！' : '優惠券更新成功！');
-        stop();
+      async ({ coupon, mode }) => {
+        try {
+          if (coupon.id) {
+            saveCouponToStore(coupon);
+          } else {
+            // Hex API 若未回傳新增 ID，重抓一次以取得後端產生的完整資料。
+            await refreshCoupons();
+          }
+
+          if (mode === 'create') resetPage();
+
+          success(mode === 'create' ? '優惠券新增成功！' : '優惠券更新成功！');
+        } catch (error) {
+          showError(
+            extractErrorMessage(
+              error,
+              null,
+              '優惠券已儲存，但同步 Store 失敗，請重新整理頁面。',
+            ),
+          );
+        } finally {
+          stop();
+        }
       },
       (errorMessage) => {
         showError(errorMessage);
@@ -74,7 +118,7 @@ const CouponsPage = () => {
       await deleteCoupon(deleteTarget.id);
       // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
       closeDeleteModal();
-      await fetchCoupons({ page: pageInfo.current_page || 1 });
+      removeCouponFromStore(deleteTarget.id);
       success('優惠券刪除成功！');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '刪除優惠券失敗，請稍後再試。');
@@ -88,7 +132,7 @@ const CouponsPage = () => {
   useEffect(() => {
     const initCoupons = async () => {
       try {
-        await fetchCoupons({ page: 1 });
+        await fetchCoupons();
       } catch (error) {
         const errorMessage = extractErrorMessage(error, null, '取得優惠券列表失敗，請稍後再試。');
         showError(errorMessage);
@@ -96,8 +140,7 @@ const CouponsPage = () => {
     };
 
     initCoupons();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchCoupons, showError]);
 
   return (
     <>
@@ -115,7 +158,9 @@ const CouponsPage = () => {
           <div className="admin-panel__header">
             <div>
               <h4 className="mb-1">優惠券快速總覽</h4>
-              <p className="text-muted small mb-0">本頁共 {couponCount} 筆優惠券資料</p>
+              <p className="text-muted small mb-0">
+                目前共 {couponTotalCount} 筆，本頁顯示 {couponCount} 筆
+              </p>
             </div>
 
             <div className="admin-panel__actions d-flex flex-wrap gap-2">
@@ -129,7 +174,7 @@ const CouponsPage = () => {
             </div>
           </div>
           <CouponsTable
-            coupons={coupons}
+            coupons={currentPageCoupons}
             pageInfo={pageInfo}
             handlePageChange={handlePageChange}
             openCouponModal={openCouponModal}

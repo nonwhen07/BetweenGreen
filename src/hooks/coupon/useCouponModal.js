@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 // constants
-import { formatDateInputToUnix, formatUnixToDateInput } from '@/utils/adminBuilderUtils';
-import { DEFAULT_COUPON } from '@/utils/adminBuilderUtils';
+import { DEFAULT_COUPON } from '@/constants/couponConstants';
 // services
 import { createCoupon, updateCoupon } from '@/services/couponService';
-// hooks
-// import { useToast } from '@/hooks/useToast';
+// schemas
+import { validateCouponAdminData } from '@/schemas/couponAdminSchema';
 // utils
+import {
+  formatCouponForApi,
+  formatCouponForForm,
+} from '@/utils/couponFormatter';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useCouponModal = () => {
@@ -27,15 +30,13 @@ export const useCouponModal = () => {
     mode: 'onBlur',
   });
 
-  // const { warning } = useToast();
-
   // state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create');
   const [editCouponId, setEditCouponId] = useState(null);
 
   // modal lifecycle
-  const openCouponModal = async (mode, coupon = null) => {
+  const openCouponModal = (mode, coupon = null) => {
     setModalMode(mode);
 
     if (mode === 'create') {
@@ -48,11 +49,7 @@ export const useCouponModal = () => {
 
       // 列表 API 回傳的資料 = 編輯需要的完整資料，所以不用再額外查詢 GET 單筆資料
       // 本質上就是： 「拿列表那筆資料 → 做表單格式轉換 → 塞進 RHF」
-      reset({
-        ...DEFAULT_COUPON,
-        ...coupon,
-        due_date: formatUnixToDateInput(coupon.due_date),
-      });
+      reset(formatCouponForForm(coupon));
     }
 
     setIsModalOpen(true);
@@ -69,25 +66,37 @@ export const useCouponModal = () => {
 
   // submit action
   const handleSubmitCoupon = async (formData, onSuccess, onError) => {
-    const submitData = {
-      ...formData,
-      id: editCouponId,
-      percent: Number(formData.percent),
-      due_date: formatDateInputToUnix(formData.due_date),
-      is_enabled: formData.is_enabled ? 1 : 0,
-
-      // RHF這邊自動帶入客製欄位(假設有新增的話)，以 article作為範例： Category / viewerScope / priorityLevel
-    };
+    const submitData = formatCouponForApi(formData);
+    const { errors: schemaErrors } = validateCouponAdminData(submitData);
 
     try {
-      if (modalMode === 'create') {
-        await createCoupon(submitData);
-      } else {
-        await updateCoupon(submitData.id, submitData);
+      if (schemaErrors.length > 0) {
+        throw new Error(schemaErrors[0]);
       }
 
+      let response;
+
+      if (modalMode === 'create') {
+        response = await createCoupon(submitData);
+      } else {
+        response = await updateCoupon(editCouponId, submitData);
+      }
+
+      const savedCoupon = {
+        ...submitData,
+        id:
+          editCouponId ||
+          response?.id ||
+          response?.data?.id ||
+          null,
+      };
+
       closeCouponModal();
-      onSuccess?.();
+      await onSuccess?.({
+        coupon: savedCoupon,
+        mode: modalMode,
+        response,
+      });
       return true;
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '更新優惠券失敗，請稍後再試。');

@@ -1,5 +1,14 @@
 import axiosAPI from '@/api/axiosAPI';
 
+const normalizeCouponList = (source) => {
+  if (Array.isArray(source)) return source;
+
+  return Object.entries(source || {}).map(([id, coupon]) => ({
+    ...coupon,
+    id: coupon?.id || id,
+  }));
+};
+
 /**
  * =====================================
  * Coupon Service
@@ -34,6 +43,37 @@ export const getAdminCoupons = async (page = 1) => {
   return {
     data: data.coupons,
     pagination: data.pagination,
+  };
+};
+
+// Coupon API 沒有 /All endpoint；第一次載入時逐頁取得，交由 Store 快取與前端分頁。
+export const getAllAdminCoupons = async () => {
+  const firstPage = await getAdminCoupons(1);
+  const totalPages = Number(firstPage.pagination?.total_pages) || 1;
+
+  if (totalPages <= 1) return firstPage;
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, index) =>
+      getAdminCoupons(index + 2),
+    ),
+  );
+
+  const allCoupons = [
+    ...normalizeCouponList(firstPage.data),
+    ...remainingPages.flatMap((page) => normalizeCouponList(page.data)),
+  ];
+
+  const couponMap = new Map(
+    allCoupons.map((coupon, index) => [
+      coupon.id || `__missing-id-${index}`,
+      coupon,
+    ]),
+  );
+
+  return {
+    data: [...couponMap.values()],
+    pagination: firstPage.pagination,
   };
 };
 

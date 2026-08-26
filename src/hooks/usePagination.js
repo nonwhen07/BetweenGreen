@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const DEFAULT_PER_PAGE = 12;
 
@@ -10,12 +10,21 @@ export const usePagination = ({ items = [], perPage = DEFAULT_PER_PAGE } = {}) =
     return Math.max(1, Math.ceil(items.length / perPage));
   }, [items.length, perPage]);
 
+  const safePage = Math.min(page, totalPages);
+
   // current page items
   const currentItems = useMemo(() => {
-    const start = (page - 1) * perPage;
+    const start = (safePage - 1) * perPage;
 
     return items.slice(start, start + perPage);
-  }, [items, page, perPage]);
+  }, [items, perPage, safePage]);
+
+  // 刪除目前頁最後一筆資料時，自動退回仍存在的最後一頁。
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
 
   // go page
   const goToPage = useCallback(
@@ -31,7 +40,7 @@ export const usePagination = ({ items = [], perPage = DEFAULT_PER_PAGE } = {}) =
   }, []);
 
   return {
-    page,
+    page: safePage,
     // setPage,
 
     totalPages,

@@ -1,4 +1,4 @@
-import { formatUnixToDateInput } from '@/utils/adminBuilderUtils';
+import { formatCouponDueDate } from '@/utils/couponFormatter';
 // components
 import BrandPagination from '@/components/shared/BrandPagination';
 
@@ -45,7 +45,7 @@ const CouponsTable = ({
 
                     <td className="text-nowrap">{coupon.percent}%</td>
 
-                    <td className="text-nowrap">{formatUnixToDateInput(coupon.due_date)}</td>
+                  <td className="text-nowrap">{formatCouponDueDate(coupon.due_date)}</td>
 
                     <td className="text-nowrap">
                       {coupon.is_enabled ? (
