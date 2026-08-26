@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 // constants
 import { COUPON_PER_PAGE } from '@/constants/couponConstants';
@@ -8,7 +9,9 @@ import { deleteCoupon } from '@/services/couponService';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
+import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminCoupons } from '@/hooks/coupon/useAdminCoupons';
+import { useCouponHealth } from '@/hooks/coupon/useCouponHealth';
 import { useCouponModal } from '@/hooks/coupon/useCouponModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
@@ -16,12 +19,14 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 
 // components
 import CouponsTable from '@/components/admin/coupon/CouponsTable';
+import CouponHealthToolbar from '@/components/admin/coupon/CouponHealthToolbar';
 import CouponModal from '@/components/admin/coupon/CouponModal';
+import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 
 const CouponsPage = () => {
   // hooks init
-  const { success, showError } = useToast();
+  const { success, showError, warning } = useToast();
   const { start, stop } = useLoading();
   const {
     coupons,
@@ -30,6 +35,19 @@ const CouponsPage = () => {
     saveCouponToStore,
     removeCouponFromStore,
   } = useAdminCoupons();
+  const { summary: healthSummary, byCouponId, issueGroups } =
+    useCouponHealth(coupons);
+  const { activities: couponActivities, addActivity, markActivityReviewed } =
+    useAdminActivities({ module: 'coupon' });
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const requestedHealthFilter = searchParams.get('health') || 'all';
+  const healthFilter = ['all', 'error', 'warning', 'healthy'].includes(
+    requestedHealthFilter,
+  )
+    ? requestedHealthFilter
+    : 'all';
+  const issueFilter = searchParams.get('issue') || '';
 
   const {
     isModalOpen: isCouponModalOpen,
@@ -51,6 +69,19 @@ const CouponsPage = () => {
     closeDeleteModal,
   } = useDeleteModal();
 
+  const filteredCoupons = useMemo(() => {
+    return coupons.filter((coupon) => {
+      const couponHealth = byCouponId[coupon.id];
+      const matchHealth =
+        healthFilter === 'all' || couponHealth?.status === healthFilter;
+      const matchIssue =
+        !issueFilter ||
+        couponHealth?.issues.some((issue) => issue.code === issueFilter);
+
+      return matchHealth && matchIssue;
+    });
+  }, [byCouponId, coupons, healthFilter, issueFilter]);
+
   const {
     page,
     totalPages,
@@ -58,13 +89,13 @@ const CouponsPage = () => {
     goToPage,
     resetPage,
   } = usePagination({
-    items: coupons,
+    items: filteredCoupons,
     perPage: COUPON_PER_PAGE,
   });
 
   // derived values
   const couponCount = currentPageCoupons.length;
-  const couponTotalCount = coupons.length;
+  const couponTotalCount = filteredCoupons.length;
   const pageInfo = {
     current_page: page,
     total_pages: totalPages,
@@ -74,6 +105,58 @@ const CouponsPage = () => {
   const handlePageChange = (page = 1) => {
     goToPage(page);
   };
+  const handleHealthFilterChange = (nextHealthFilter) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    nextSearchParams.delete('issue');
+
+    if (nextHealthFilter === 'all') {
+      nextSearchParams.delete('health');
+    } else {
+      nextSearchParams.set('health', nextHealthFilter);
+    }
+
+    setSearchParams(nextSearchParams, { replace: true });
+  };
+  const handleIssueFilterChange = (nextIssueFilter) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    nextSearchParams.delete('health');
+
+    if (nextIssueFilter) {
+      nextSearchParams.set('issue', nextIssueFilter);
+    } else {
+      nextSearchParams.delete('issue');
+    }
+
+    setSearchParams(nextSearchParams, { replace: true });
+  };
+  const recordCouponActivity = async ({ action, status, coupon, message }) => {
+    const isSuccess = status === 'success';
+
+    try {
+      await addActivity({
+        module: 'coupon',
+        action,
+        status,
+        totalCount: 1,
+        successCount: isSuccess ? 1 : 0,
+        errorCount: isSuccess ? 0 : 1,
+        isReviewed: isSuccess,
+        details: isSuccess
+          ? []
+          : [
+              {
+                id: coupon?.id || '',
+                title: coupon?.title || '未命名優惠券',
+                message,
+              },
+            ],
+      });
+    } catch {
+      warning('優惠券操作結果未能保存至操作紀錄');
+    }
+  };
   const handleUpdateCoupon = handleSubmit((formData) => {
     // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
     start();
@@ -81,6 +164,8 @@ const CouponsPage = () => {
     return handleSubmitCoupon(
       formData,
       async ({ coupon, mode }) => {
+        const action = mode === 'create' ? 'create' : 'update';
+
         try {
           if (coupon.id) {
             saveCouponToStore(coupon);
@@ -90,8 +175,6 @@ const CouponsPage = () => {
           }
 
           if (mode === 'create') resetPage();
-
-          success(mode === 'create' ? '優惠券新增成功！' : '優惠券更新成功！');
         } catch (error) {
           showError(
             extractErrorMessage(
@@ -100,13 +183,25 @@ const CouponsPage = () => {
               '優惠券已儲存，但同步 Store 失敗，請重新整理頁面。',
             ),
           );
-        } finally {
-          stop();
         }
+
+        await recordCouponActivity({
+          action,
+          status: 'success',
+          coupon,
+        });
+        success(mode === 'create' ? '優惠券新增成功！' : '優惠券更新成功！');
+        stop();
       },
       (errorMessage) => {
         showError(errorMessage);
         stop();
+        recordCouponActivity({
+          action: modalMode === 'create' ? 'create' : 'update',
+          status: 'error',
+          coupon: formData,
+          message: errorMessage,
+        });
       },
     );
   });
@@ -119,10 +214,21 @@ const CouponsPage = () => {
       // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
       closeDeleteModal();
       removeCouponFromStore(deleteTarget.id);
+      await recordCouponActivity({
+        action: 'delete',
+        status: 'success',
+        coupon: deleteTarget,
+      });
       success('優惠券刪除成功！');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '刪除優惠券失敗，請稍後再試。');
       showError(errorMessage);
+      await recordCouponActivity({
+        action: 'delete',
+        status: 'error',
+        coupon: deleteTarget,
+        message: errorMessage,
+      });
     } finally {
       stop();
     }
@@ -142,6 +248,10 @@ const CouponsPage = () => {
     initCoupons();
   }, [fetchCoupons, showError]);
 
+  useEffect(() => {
+    resetPage();
+  }, [healthFilter, issueFilter, resetPage]);
+
   return (
     <>
       <div className="admin-resource-page admin-resource-page--coupon py-1">
@@ -154,12 +264,21 @@ const CouponsPage = () => {
           </div>
         </div>
 
+        <CouponHealthToolbar
+          summary={healthSummary}
+          issueGroups={issueGroups}
+          healthFilter={healthFilter}
+          issueFilter={issueFilter}
+          onHealthFilterChange={handleHealthFilterChange}
+          onIssueFilterChange={handleIssueFilterChange}
+        />
+
         <div className="admin-panel">
           <div className="admin-panel__header">
             <div>
               <h4 className="mb-1">優惠券快速總覽</h4>
               <p className="text-muted small mb-0">
-                目前共 {couponTotalCount} 筆，本頁顯示 {couponCount} 筆
+                篩選結果共 {couponTotalCount} 筆，本頁顯示 {couponCount} 筆
               </p>
             </div>
 
@@ -180,8 +299,21 @@ const CouponsPage = () => {
             openCouponModal={openCouponModal}
             openDeleteModal={openDeleteModal}
             couponCount={couponCount}
+            hasCoupons={coupons.length > 0}
           />
         </div>
+
+        <AdminActivityPanel
+          sectionId="coupon-activity"
+          title="優惠券操作紀錄"
+          description="查看新增、編輯與刪除結果，並確認需要處理的失敗操作"
+          activities={couponActivities}
+          showFilters
+          showDetails
+          onReviewedChange={(activityId, isReviewed) =>
+            markActivityReviewed(activityId, isReviewed).catch(showError)
+          }
+        />
       </div>
 
       {/* Modals */}

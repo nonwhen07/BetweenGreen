@@ -38,7 +38,6 @@ const ProductHealthToolbar = ({
   );
 };
 
-// TODO(Coupon)：建立 CouponHealthToolbar，將優惠券 summary 映射為 filters。
 // TODO(Article)：建立 ArticleHealthToolbar，將文章 summary 映射為 filters。
 
 ProductHealthToolbar.propTypes = {

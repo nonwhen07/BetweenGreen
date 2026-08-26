@@ -15,6 +15,9 @@ const MODULE_LABEL_MAP = {
 };
 
 const ACTION_LABEL_MAP = {
+  create: '新增',
+  update: '編輯',
+  delete: '刪除',
   'batch-create': '批次新增',
   'batch-update': '批次更新',
 };
@@ -108,7 +111,7 @@ const AdminActivityPanel = ({
       {visibleActivities.length === 0 ? (
         <div className="admin-empty-state">
           <p className="mb-1">尚未開始記錄</p>
-          <small>下一次批次新增或更新後，操作結果會顯示於此。</small>
+          <small>下一次完成模組操作後，結果會顯示於此。</small>
         </div>
       ) : (
         <div className="admin-activity-list">

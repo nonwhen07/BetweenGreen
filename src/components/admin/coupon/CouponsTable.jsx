@@ -9,15 +9,20 @@ const CouponsTable = ({
   openCouponModal,
   openDeleteModal,
   couponCount,
+  hasCoupons,
 }) => {
   return (
     <>
       <div className="admin-panel__body">
         {couponCount === 0 ? (
           <div className="admin-empty-state admin-empty-state--panel">
-            <p className="text-muted mb-2">目前尚無優惠券資料</p>
+            <p className="text-muted mb-2">
+              {hasCoupons ? '目前沒有符合篩選條件的優惠券' : '目前尚無優惠券資料'}
+            </p>
             <small className="text-secondary">
-              點擊右上角「新增優惠券」開始建立第一筆資料
+              {hasCoupons
+                ? '請切換健康狀態或問題類型後再查看'
+                : '點擊右上角「新增優惠券」開始建立第一筆資料'}
             </small>
           </div>
         ) : (
