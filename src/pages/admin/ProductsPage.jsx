@@ -231,7 +231,7 @@ const ProductsPage = () => {
 
   return (
     <>
-      <div className="admin-products-page py-1">
+      <div className="admin-resource-page admin-resource-page--product admin-products-page py-1">
         <div className="admin-page-heading">
           <div>
             <h1 className="admin-page-heading__title">商品列表</h1>
@@ -266,9 +266,16 @@ const ProductsPage = () => {
             openProductImportModal={openImportModal}
             exportAllProducts={exportAllProducts}
           />
-          <div className="m-4">
-            <BrandPagination currentPage={page} totalPages={totalPages} onPageChange={goToPage} />
-          </div>
+          {totalPages > 1 && (
+            <div className="admin-panel__footer d-flex justify-content-center">
+              <BrandPagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                ariaLabel="商品分頁導覽"
+              />
+            </div>
+          )}
         </div>
 
         <AdminActivityPanel

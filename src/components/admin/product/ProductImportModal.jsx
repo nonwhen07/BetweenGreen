@@ -69,7 +69,7 @@ const ProductImportModal = ({
 
   return (
     <div
-      className="modal show d-block product-import-modal"
+      className="modal show d-block admin-modal product-import-modal"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
       role="dialog"
       aria-modal="true"

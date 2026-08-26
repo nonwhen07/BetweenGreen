@@ -1,7 +1,8 @@
+@use 'sass:map';
+@use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/admin/admin-variables' as *;
 
 .admin {
-  .admin-page-heading,
   .admin-section-heading {
     display: flex;
     justify-content: space-between;
@@ -9,16 +10,6 @@
     gap: 16px;
   }
 
-  .admin-page-heading {
-    margin-bottom: 20px;
-  }
-
-  .admin-page-heading__title {
-    margin-bottom: 4px;
-    font-size: 28px;
-  }
-
-  .admin-page-heading__description,
   .admin-section-heading__description {
     margin-bottom: 0;
     color: $admin-text-light;
@@ -152,19 +143,10 @@
     background: #fff3cd;
   }
 
-  .admin-empty-state {
-    padding: 32px 16px;
-    text-align: center;
-    color: $admin-text-light;
-    border: 1px dashed $admin-border;
-    border-radius: $admin-radius;
-    background: #f8f9fa;
-  }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: (map.get($admin-breakpoints, laptop) - 0.02px)) {
   .admin {
-    .admin-page-heading,
     .admin-section-heading {
       flex-direction: column;
     }

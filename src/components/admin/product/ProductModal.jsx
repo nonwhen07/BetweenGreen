@@ -107,13 +107,16 @@ const ProductModal = ({
   return (
     <div
       id="productModal"
-      className="modal show d-block"
+      className="modal show d-block admin-modal"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-modal-title"
     >
-      <div className="modal-dialog modal-dialog-centered modal-xl">
+      <div className="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
-            <h5 className="modal-title text-light fs-4">
+            <h5 id="product-modal-title" className="modal-title text-light fs-4">
               {/* {modalMode === 'create' ? '新增產品' : '編輯 - ' + (watchTitle || '')} */}
               {modalMode === 'create'
                 ? '新增產品'
@@ -123,7 +126,7 @@ const ProductModal = ({
               type="button"
               onClick={onClose}
               className="btn-close btn-close-white"
-              aria-label="Close"
+              aria-label="關閉"
             ></button>
           </div>
           <div className="modal-body p-4">

@@ -7,6 +7,9 @@
 //   ARTICLE_Coupon_MAP,
 // } from '@/constants/adminBuilderMaps';
 
+// hooks
+import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+
 const CouponModal = ({
   isOpen,
   onClose,
@@ -22,25 +25,30 @@ const CouponModal = ({
 
   // const tagPreviewText = selectedTags.join(' | ');
 
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   return (
     <div
       id="couponModal"
-      className="modal show d-block"
+      className="modal show d-block admin-modal"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="coupon-modal-title"
     >
-      <div className="modal-dialog modal-dialog-centered modal-md">
+      <div className="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
-            <h5 className="modal-title text-light fs-4">
+            <h5 id="coupon-modal-title" className="modal-title text-light fs-4">
               {modalMode === 'create' ? '新增優惠券' : `編輯 - ${watchTitle || ''}`}
             </h5>
             <button
               type="button"
               onClick={onClose}
               className="btn-close btn-close-white"
-              aria-label="Close"
+              aria-label="關閉"
             ></button>
           </div>
 

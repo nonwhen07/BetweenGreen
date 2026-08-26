@@ -1,3 +1,6 @@
+@use 'sass:map';
+@use '@/styles/helpers/breakpoints' as *;
+
 .admin-health-toolbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
@@ -46,7 +49,7 @@
   }
 }
 
-@media (max-width: 1199.98px) {
+@media (max-width: (map.get($admin-breakpoints, desktop) - 0.02px)) {
   .admin-health-toolbar {
     grid-template-columns: 1fr;
 

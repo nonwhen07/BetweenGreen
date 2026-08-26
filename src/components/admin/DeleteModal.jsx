@@ -1,3 +1,6 @@
+// hooks
+import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+
 const DeleteModal = ({
   isOpen,
   onClose,
@@ -6,22 +9,29 @@ const DeleteModal = ({
   itemType = '資料',
   confirmText = '確認刪除',
 }) => {
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   return (
     <div
-      className="modal show d-block"
+      className="modal show d-block admin-modal"
       tabIndex="-1"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-modal-title"
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content border-0 shadow">
           <div className="modal-header">
-            <h5 className="modal-title text-danger fw-semibold">刪除確認</h5>
+            <h5 id="delete-modal-title" className="modal-title text-danger fw-semibold">
+              刪除確認
+            </h5>
             <button
               type="button"
               className="btn-close"
-              aria-label="Close"
+              aria-label="關閉"
               onClick={onClose}
             ></button>
           </div>

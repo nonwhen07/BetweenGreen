@@ -27,7 +27,7 @@ const ArticlesTable = ({
     <>
       <div className="admin-panel__body">
         {articleCount === 0 ? (
-          <div className="text-center py-5">
+          <div className="admin-empty-state admin-empty-state--panel">
             <p className="text-muted mb-2">目前尚無文章資料</p>
             <small className="text-secondary">
               點擊右上角「新增文章」開始建立第一篇內容
@@ -160,7 +160,7 @@ const ArticlesTable = ({
         )}
       </div>
 
-      {articleCount > 0 && (
+      {(pageInfo.total_pages || 1) > 1 && (
         <div className="admin-panel__footer d-flex justify-content-center">
           <BrandPagination
             currentPage={pageInfo.current_page || 1}
