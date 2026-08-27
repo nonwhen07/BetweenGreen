@@ -11,7 +11,9 @@ import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
 import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminCoupons } from '@/hooks/coupon/useAdminCoupons';
+import { useCouponExport } from '@/hooks/coupon/useCouponExport';
 import { useCouponHealth } from '@/hooks/coupon/useCouponHealth';
+import { useCouponImport } from '@/hooks/coupon/useCouponImport';
 import { useCouponModal } from '@/hooks/coupon/useCouponModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 // utils
@@ -20,6 +22,7 @@ import { extractErrorMessage } from '@/utils/errorHandler';
 // components
 import CouponsTable from '@/components/admin/coupon/CouponsTable';
 import CouponHealthToolbar from '@/components/admin/coupon/CouponHealthToolbar';
+import CouponImportModal from '@/components/admin/coupon/CouponImportModal';
 import CouponModal from '@/components/admin/coupon/CouponModal';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
@@ -39,6 +42,7 @@ const CouponsPage = () => {
     useCouponHealth(coupons);
   const { activities: couponActivities, addActivity, markActivityReviewed } =
     useAdminActivities({ module: 'coupon' });
+  const { exportAllCoupons } = useCouponExport(coupons);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
@@ -48,6 +52,27 @@ const CouponsPage = () => {
     ? requestedHealthFilter
     : 'all';
   const issueFilter = searchParams.get('issue') || '';
+
+  const {
+    isImportModalOpen,
+    importMode,
+    jsonText: importJsonText,
+    analysis: importAnalysis,
+    parseError: importParseError,
+    isConfirmed: isImportConfirmed,
+    isProcessing: isImportProcessing,
+    progress: importProgress,
+    results: importResults,
+    openImportModal,
+    closeImportModal,
+    handleJsonTextChange,
+    analyzeImport,
+    setIsConfirmed: setIsImportConfirmed,
+    executeImport,
+  } = useCouponImport({
+    coupons,
+    onCompleted: refreshCoupons,
+  });
 
   const {
     isModalOpen: isCouponModalOpen,
@@ -285,6 +310,32 @@ const CouponsPage = () => {
             <div className="admin-panel__actions d-flex flex-wrap gap-2">
               <button
                 type="button"
+                className="btn btn-outline-secondary px-4"
+                onClick={exportAllCoupons}
+                disabled={coupons.length === 0}
+              >
+                匯出全部 JSON
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-outline-success px-4"
+                onClick={() => openImportModal('create')}
+              >
+                JSON 批次新增
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-outline-primary px-4"
+                onClick={() => openImportModal('update')}
+                disabled={coupons.length === 0}
+              >
+                JSON 批次更新
+              </button>
+
+              <button
+                type="button"
                 className="btn btn-primary px-4"
                 onClick={() => openCouponModal('create')}
               >
@@ -306,7 +357,7 @@ const CouponsPage = () => {
         <AdminActivityPanel
           sectionId="coupon-activity"
           title="優惠券操作紀錄"
-          description="查看新增、編輯與刪除結果，並確認需要處理的失敗操作"
+          description="查看單筆 CRUD 與 JSON 批次結果，並確認需要處理的失敗操作"
           activities={couponActivities}
           showFilters
           showDetails
@@ -325,6 +376,23 @@ const CouponsPage = () => {
         register={register}
         watch={watch}
         errors={errors}
+      />
+
+      <CouponImportModal
+        isOpen={isImportModalOpen}
+        mode={importMode}
+        onClose={closeImportModal}
+        jsonText={importJsonText}
+        onJsonTextChange={handleJsonTextChange}
+        onAnalyze={analyzeImport}
+        analysis={importAnalysis}
+        parseError={importParseError}
+        isConfirmed={isImportConfirmed}
+        onConfirmChange={setIsImportConfirmed}
+        onExecute={executeImport}
+        isProcessing={isImportProcessing}
+        progress={importProgress}
+        results={importResults}
       />
 
       <DeleteModal

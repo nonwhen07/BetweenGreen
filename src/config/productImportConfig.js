@@ -1,5 +1,5 @@
 // utils
-import { formatCategoryPreview } from '@/utils/productFormatter';
+import { formatCategoryPreview } from '@/utils/product/productFormatter';
 
 import { createProduct } from '@/services/productService';
 

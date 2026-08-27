@@ -8,10 +8,7 @@ import { createCoupon, updateCoupon } from '@/services/couponService';
 // schemas
 import { validateCouponAdminData } from '@/schemas/couponAdminSchema';
 // utils
-import {
-  formatCouponForApi,
-  formatCouponForForm,
-} from '@/utils/couponFormatter';
+import { formatCouponForApi, formatCouponForForm } from '@/utils/coupon/couponFormatter';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useCouponModal = () => {
@@ -84,11 +81,7 @@ export const useCouponModal = () => {
 
       const savedCoupon = {
         ...submitData,
-        id:
-          editCouponId ||
-          response?.id ||
-          response?.data?.id ||
-          null,
+        id: editCouponId || response?.id || response?.data?.id || null,
       };
 
       closeCouponModal();

@@ -5,8 +5,8 @@ import taiwanDistricts from '@/data/taiwanDistricts.json';
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
-// import { formatCategoryShortPreview, getProductUnitLabel } from '@/utils/productFormatter';
-// import { formatCategoryShortPreview, getProductUnitShortLabel } from '@/utils/productFormatter';
+// import { formatCategoryShortPreview, getProductUnitLabel } from '@/utils/product/productFormatter';
+// import { formatCategoryShortPreview, getProductUnitShortLabel } from '@/utils/product/productFormatter';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 // components

@@ -1,4 +1,4 @@
-import { formatCouponDueDate } from '@/utils/couponFormatter';
+import { formatCouponDueDate } from '@/utils/coupon/couponFormatter';
 // components
 import BrandPagination from '@/components/shared/BrandPagination';
 
@@ -50,7 +50,7 @@ const CouponsTable = ({
 
                     <td className="text-nowrap">{coupon.percent}%</td>
 
-                  <td className="text-nowrap">{formatCouponDueDate(coupon.due_date)}</td>
+                    <td className="text-nowrap">{formatCouponDueDate(coupon.due_date)}</td>
 
                     <td className="text-nowrap">
                       {coupon.is_enabled ? (

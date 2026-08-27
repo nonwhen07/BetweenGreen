@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react';
 
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
-import { formatCategoryPreview, getProductUnitShortLabel } from '@/utils/productFormatter';
+import { formatCategoryPreview, getProductUnitShortLabel } from '@/utils/product/productFormatter';
 
 // components
 import BtnLoader from '@/components/BtnLoader';

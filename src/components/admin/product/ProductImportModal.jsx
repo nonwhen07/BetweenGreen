@@ -69,7 +69,7 @@ const ProductImportModal = ({
 
   return (
     <div
-      className="modal show d-block admin-modal product-import-modal"
+      className="modal show d-block admin-modal admin-json-import-modal product-import-modal"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
       role="dialog"
       aria-modal="true"
@@ -135,7 +135,7 @@ const ProductImportModal = ({
               </button>
 
               {analysis && (
-                <div className="product-import-summary d-flex flex-wrap gap-2 align-items-center">
+                <div className="admin-json-import-summary d-flex flex-wrap gap-2 align-items-center">
                   <span className="badge text-bg-secondary">
                     共 {analysis.summary.total} 筆
                   </span>
@@ -169,7 +169,7 @@ const ProductImportModal = ({
                   </div>
                 )}
 
-                <div className="product-import-preview table-responsive border rounded mb-4">
+                <div className="admin-json-import-preview table-responsive border rounded mb-4">
                   <table className="table table-sm align-middle mb-0">
                     <thead>
                       <tr>
@@ -203,7 +203,7 @@ const ProductImportModal = ({
                           )}
                           <td>
                             {entry.errors.length > 0 ? (
-                              <ul className="product-import-errors text-danger small mb-0">
+                              <ul className="admin-json-import-errors text-danger small mb-0">
                                 {entry.errors.map((message) => (
                                   <li key={message}>{message}</li>
                                 ))}
@@ -214,7 +214,7 @@ const ProductImportModal = ({
                                   格式正確
                                 </span>
                                 {entry.warnings.length > 0 && (
-                                  <ul className="product-import-errors text-warning small mb-0 mt-1">
+                                  <ul className="admin-json-import-errors text-warning small mb-0 mt-1">
                                     {entry.warnings.map((message) => (
                                       <li key={message}>{message}</li>
                                     ))}
@@ -279,7 +279,7 @@ const ProductImportModal = ({
             )}
 
             {results.length > 0 && (
-              <div className="product-import-results border rounded">
+              <div className="admin-json-import-results border rounded">
                 <h6 className="px-3 pt-3">{content.result}</h6>
                 <ul className="list-group list-group-flush">
                   {results.map((result) => (

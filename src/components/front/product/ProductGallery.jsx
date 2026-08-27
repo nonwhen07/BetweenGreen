@@ -13,7 +13,7 @@ import 'swiper/css/thumbs';
 import NO_IMAGE from '@/assets/images/no-image.png';
 
 // utils
-import { buildProductGalleryImages } from '@/utils/productGallery';
+import { buildProductGalleryImages } from '@/utils/product/productGallery';
 
 const ProductGallery = ({ currentProduct }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);

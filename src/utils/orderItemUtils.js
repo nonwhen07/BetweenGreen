@@ -1,4 +1,4 @@
-import { getProductUnitShortLabel } from '@/utils/productFormatter';
+import { getProductUnitShortLabel } from '@/utils/product/productFormatter';
 
 const getSafeNumber = (value) => {
   const number = Number(value);

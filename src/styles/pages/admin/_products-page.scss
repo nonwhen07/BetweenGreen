@@ -6,52 +6,6 @@
   }
 }
 
-.product-import-modal {
-  .modal-body {
-    background: #fff;
-  }
-
-  textarea {
-    min-height: 240px;
-    resize: vertical;
-    font-size: 0.875rem;
-    line-height: 1.55;
-  }
-}
-
-.product-import-summary {
-  min-height: 38px;
-}
-
-.product-import-preview {
-  max-height: 360px;
-  overflow: auto;
-
-  thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-
-  th {
-    white-space: nowrap;
-    background: #f8f9fa;
-  }
-
-  code {
-    word-break: break-all;
-  }
-}
-
-.product-import-errors {
-  padding-left: 1.1rem;
-}
-
-.product-import-results {
-  max-height: 280px;
-  overflow: auto;
-}
-
 .admin-products-page > .admin-activity-panel {
   margin-top: 16px;
 }

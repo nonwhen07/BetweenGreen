@@ -5,7 +5,7 @@ import { downloadJsonFile } from '@/utils/downloadJsonFile';
 import {
   buildProductExportFilename,
   buildProductUpdateExport,
-} from '@/utils/productExporter';
+} from '@/utils/product/productExporter';
 
 export const useProductExport = (products = []) => {
   const { success, showError } = useToast();
@@ -18,10 +18,7 @@ export const useProductExport = (products = []) => {
 
     try {
       const now = new Date();
-      const exportData = buildProductUpdateExport(
-        products,
-        now.toISOString(),
-      );
+      const exportData = buildProductUpdateExport(products, now.toISOString());
 
       downloadJsonFile(exportData, buildProductExportFilename(now));
       success(`已匯出 ${products.length} 筆商品資料`);
