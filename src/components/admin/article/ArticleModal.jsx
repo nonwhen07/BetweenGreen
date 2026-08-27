@@ -4,11 +4,11 @@
 // constants
 import {
   ARTICLE_CATEGORY_MAP,
-  ARTICLE_VIEWER_SCOPE_MAP,
-  ARTICLE_TAG_MAP,
-  ARTICLE_PRIORITY_MAP,
   ARTICLE_DISPLAY_ZONE_MAP,
-} from '@/constants/adminBuilderMaps';
+  ARTICLE_PRIORITY_MAP,
+  ARTICLE_TAG_MAP,
+  ARTICLE_VIEWER_SCOPE_MAP,
+} from '@/constants/articleConstants';
 
 // hooks
 import useBodyScrollLock from '@/hooks/useBodyScrollLock';
@@ -66,7 +66,10 @@ const ArticleModal = ({
                   文章標題
                 </label>
                 <input
-                  {...register('title', { required: '請輸入文章標題' })}
+                  {...register('title', {
+                    required: '請輸入文章標題',
+                    maxLength: { value: 60, message: '文章標題不得超過 60 字' },
+                  })}
                   id="title"
                   type="text"
                   className="form-control"
@@ -138,7 +141,7 @@ const ArticleModal = ({
                   建立日期
                 </label>
                 <input
-                  {...register('create_at')}
+                  {...register('create_at', { required: '請設定建立日期' })}
                   id="create_at"
                   type="date"
                   className="form-control"
@@ -166,12 +169,18 @@ const ArticleModal = ({
                   短公告文字（Banner）
                 </label>
                 <input
-                  {...register('bannerText')}
+                  {...register('bannerText', {
+                    required: '請輸入卡片短文',
+                    maxLength: { value: 100, message: '卡片短文不得超過 100 字' },
+                  })}
                   id="bannerText"
                   type="text"
                   className="form-control"
                   placeholder="可供首頁公告條、輪播卡片簡述使用"
                 />
+                {errors.bannerText && (
+                  <small className="text-danger">{errors.bannerText.message}</small>
+                )}
               </div>
             </div>
 
@@ -261,12 +270,15 @@ const ArticleModal = ({
                 文章摘要
               </label>
               <textarea
-                {...register('description')}
+                {...register('description', { required: '請輸入文章摘要' })}
                 id="description"
                 rows={3}
                 className="form-control"
                 placeholder="請輸入文章摘要"
               ></textarea>
+              {errors.description && (
+                <small className="text-danger">{errors.description.message}</small>
+              )}
             </div>
 
             {/* 第六列：內容 */}
@@ -275,12 +287,15 @@ const ArticleModal = ({
                 文章內容
               </label>
               <textarea
-                {...register('content')}
+                {...register('content', { required: '請輸入文章內容' })}
                 id="content"
                 rows={6}
                 className="form-control"
                 placeholder="請輸入文章內容"
               ></textarea>
+              {errors.content && (
+                <small className="text-danger">{errors.content.message}</small>
+              )}
             </div>
 
             {/* 第八列：圖片 */}

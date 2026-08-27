@@ -1,19 +1,15 @@
 // constants
 import {
   ARTICLE_CATEGORY_MAP,
-  ARTICLE_VIEWER_SCOPE_MAP,
-  ARTICLE_TAG_MAP,
   ARTICLE_PRIORITY_MAP,
-} from '@/constants/adminBuilderMaps';
+  ARTICLE_TAG_MAP,
+  ARTICLE_VIEWER_SCOPE_MAP,
+} from '@/constants/articleConstants';
 // utils
 import { getLabelByValue } from '@/utils/adminBuilderUtils';
+import { formatArticleDate } from '@/utils/articleFormatter';
 // components
 import BrandPagination from '@/components/shared/BrandPagination';
-
-const formatDate = (timestamp) => {
-  if (!timestamp) return '未設定';
-  return new Date(timestamp * 1000).toLocaleDateString();
-};
 
 const ArticlesTable = ({
   articles,
@@ -22,15 +18,20 @@ const ArticlesTable = ({
   openArticleModal,
   openDeleteModal,
   articleCount,
+  hasArticles,
 }) => {
   return (
     <>
       <div className="admin-panel__body">
         {articleCount === 0 ? (
           <div className="admin-empty-state admin-empty-state--panel">
-            <p className="text-muted mb-2">目前尚無文章資料</p>
+            <p className="text-muted mb-2">
+              {hasArticles ? '目前沒有符合篩選條件的文章' : '目前尚無文章資料'}
+            </p>
             <small className="text-secondary">
-              點擊右上角「新增文章」開始建立第一篇內容
+              {hasArticles
+                ? '請切換健康狀態或問題類型後再查看'
+                : '可使用「JSON 批次新增」匯入首批 Garden Tips'}
             </small>
           </div>
         ) : (
@@ -117,9 +118,9 @@ const ArticlesTable = ({
 
                       <td>
                         <div className="small">
-                          <div>開始：{formatDate(article.publishStart)}</div>
+                          <div>開始：{formatArticleDate(article.publishStart)}</div>
                           <div className="text-muted mt-1">
-                            結束：{formatDate(article.publishEnd)}
+                            結束：{formatArticleDate(article.publishEnd)}
                           </div>
                         </div>
                       </td>

@@ -38,8 +38,6 @@ const ProductHealthToolbar = ({
   );
 };
 
-// TODO(Article)：建立 ArticleHealthToolbar，將文章 summary 映射為 filters。
-
 ProductHealthToolbar.propTypes = {
   summary: PropTypes.shape({
     total: PropTypes.number.isRequired,

@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
  * 本元件只接收已整理好的 filter/count 與 issue groups，不知道 Product、
  * Coupon 或 Article 的健康規則；各模組應建立自己的 adapter 負責轉換資料。
  *
- * TODO(Article)：新增 components/admin/article/ArticleHealthToolbar.jsx。
  */
 const AdminHealthToolbar = ({
   ariaLabel,
