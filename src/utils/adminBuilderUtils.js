@@ -104,26 +104,6 @@ export const parseEncodeMetaString = (metaString = '') => {
 /* =========================================================
   DEFAULT 預設資料
 ========================================================= */
-export const DEFAULT_ARTICLE = {
-  title: '',
-  author: '',
-  description: '',
-  content: '',
-  image: '',
-  tag: [],
-  create_at: Math.floor(Date.now() / 1000),
-  isPublic: false,
-
-  // 客製化欄位
-  articleCategory: 'notice',
-  publishStart: '',
-  publishEnd: '',
-  viewerScope: 'public',
-  priorityLevel: '1',
-  bannerText: '',
-  displayZone: 'garden-tips',
-};
-
 /* =========================================================
   通用型工具(晚點集中抽出去管理，這不一定後台專用)
 ========================================================= */

@@ -1,5 +1,14 @@
 import axiosAPI from '@/api/axiosAPI';
 
+const normalizeArticleList = (source) => {
+  if (Array.isArray(source)) return source;
+
+  return Object.entries(source || {}).map(([id, article]) => ({
+    ...article,
+    id: article?.id || id,
+  }));
+};
+
 /**
  * =====================================
  * Article Service
@@ -19,6 +28,30 @@ export const getArticles = async (page = 1) => {
   return {
     data: data.articles,
     pagination: data.pagination,
+  };
+};
+
+export const getAllArticles = async () => {
+  const firstPage = await getArticles(1);
+  const totalPages = Number(firstPage.pagination?.total_pages) || 1;
+  if (totalPages <= 1) {
+    return { ...firstPage, data: normalizeArticleList(firstPage.data) };
+  }
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, index) => getArticles(index + 2)),
+  );
+  const allArticles = [
+    ...normalizeArticleList(firstPage.data),
+    ...remainingPages.flatMap((page) => normalizeArticleList(page.data)),
+  ];
+
+  return {
+    data: [...new Map(allArticles.map((article, index) => [
+      article.id || `__missing-id-${index}`,
+      article,
+    ])).values()],
+    pagination: firstPage.pagination,
   };
 };
 
@@ -44,6 +77,33 @@ export const getAdminArticles = async (page = 1) => {
   return {
     data: data.articles,
     pagination: data.pagination,
+  };
+};
+
+// Article API 沒有 /All endpoint；第一次載入依 pagination 取得完整集合。
+export const getAllAdminArticles = async () => {
+  const firstPage = await getAdminArticles(1);
+  const totalPages = Number(firstPage.pagination?.total_pages) || 1;
+  if (totalPages <= 1) {
+    return { ...firstPage, data: normalizeArticleList(firstPage.data) };
+  }
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, index) =>
+      getAdminArticles(index + 2),
+    ),
+  );
+  const allArticles = [
+    ...normalizeArticleList(firstPage.data),
+    ...remainingPages.flatMap((page) => normalizeArticleList(page.data)),
+  ];
+
+  return {
+    data: [...new Map(allArticles.map((article, index) => [
+      article.id || `__missing-id-${index}`,
+      article,
+    ])).values()],
+    pagination: firstPage.pagination,
   };
 };
 

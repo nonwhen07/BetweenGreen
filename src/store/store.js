@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import activityReducer from '@/features/activity/activitySlice';
+import articleReducer from '@/features/article/articleSlice';
 import authReducer from '@/features/auth/authSlice';
 import couponReducer from '@/features/coupon/couponSlice';
 import productReducer from '@/features/product/productSlice';
@@ -13,6 +14,7 @@ import loadingReducer from '@/features/ui/loadingSlice';
 export const appStore = configureStore({
   reducer: {
     activity: activityReducer,
+    article: articleReducer,
     auth: authReducer,
     coupon: couponReducer,
     product: productReducer,

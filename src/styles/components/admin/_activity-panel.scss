@@ -3,6 +3,10 @@
 @use '@/styles/helpers/admin/admin-variables' as *;
 
 .admin {
+  .admin-resource-page > .admin-activity-panel {
+    margin-top: 16px;
+  }
+
   .admin-section-heading {
     display: flex;
     justify-content: space-between;

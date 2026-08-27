@@ -2,23 +2,25 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 // constants
+import { DEFAULT_ARTICLE } from '@/constants/articleConstants';
+// services
 import {
-  formatDateInputToUnix,
-  formatUnixToDateInput,
-  formatOptionalDateToUnix,
-} from '@/utils/adminBuilderUtils';
-import { DEFAULT_ARTICLE } from '@/utils/adminBuilderUtils';
-// services
-// import { createArticle, updateArticle } from '@/services/articleService';
-// services
-import { createArticle, updateArticle, getAdminArticle } from '@/services/articleService';
+  createArticle,
+  getAdminArticle,
+  updateArticle,
+} from '@/services/articleService';
 // hooks
 import { useToast } from '@/hooks/useToast';
+// schemas
+import { validateArticleAdminData } from '@/schemas/articleAdminSchema';
 // utils
+import {
+  formatArticleForApi,
+  formatArticleForForm,
+} from '@/utils/articleFormatter';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useArticleModal = () => {
-  // RHF init
   const {
     register,
     handleSubmit,
@@ -27,75 +29,59 @@ export const useArticleModal = () => {
     watch,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      ...DEFAULT_ARTICLE,
-      create_at: formatUnixToDateInput(DEFAULT_ARTICLE.create_at),
-    },
+    defaultValues: formatArticleForForm(DEFAULT_ARTICLE),
     mode: 'onBlur',
   });
+  const { warning, showError } = useToast();
 
-  const { warning } = useToast();
-
-  // state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create');
   const [editArticleId, setEditArticleId] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
 
-  // helper：資料正規化
-  const normalizeArticle = (article = {}) => ({
-    ...DEFAULT_ARTICLE,
-    ...article,
-    create_at: formatUnixToDateInput(article.create_at),
-    // 客製欄位
-    publishStart: formatUnixToDateInput(article.publishStart),
-    publishEnd: formatUnixToDateInput(article.publishEnd),
-  });
-
-  // modal lifecycle
   const openArticleModal = async (mode, article = null) => {
     setModalMode(mode);
 
     if (mode === 'create') {
       setEditArticleId(null);
-      reset({
+      reset(formatArticleForForm({
         ...DEFAULT_ARTICLE,
-        create_at: formatUnixToDateInput(DEFAULT_ARTICLE.create_at),
-      });
+        create_at: Math.floor(Date.now() / 1000),
+      }));
       setSelectedTags([]);
-    } else {
-      setEditArticleId(article.id);
-
-      // 關鍵：重新打單篇完整資料
-      const res = await getAdminArticle(article.id);
-      const fullArticle = res.data;
-
-      // const normalized = normalizeArticle(article);
-      const normalized = normalizeArticle(fullArticle);
-      reset(normalized);
-
-      setSelectedTags(Array.isArray(normalized.tag) ? normalized.tag : []);
-      setValue('tag', Array.isArray(normalized.tag) ? normalized.tag : []);
+      setIsModalOpen(true);
+      return true;
     }
 
-    setIsModalOpen(true);
+    if (!article?.id) return false;
+
+    try {
+      const response = await getAdminArticle(article.id);
+      const normalized = formatArticleForForm(response.data);
+
+      setEditArticleId(article.id);
+      reset(normalized);
+      setSelectedTags(normalized.tag);
+      setValue('tag', normalized.tag);
+      setIsModalOpen(true);
+      return true;
+    } catch (error) {
+      showError(
+        extractErrorMessage(error, null, '取得完整文章內容失敗，請稍後再試。'),
+      );
+      return false;
+    }
   };
 
   const closeArticleModal = () => {
     setIsModalOpen(false);
     setEditArticleId(null);
-
-    reset({
-      ...DEFAULT_ARTICLE,
-      create_at: formatUnixToDateInput(DEFAULT_ARTICLE.create_at),
-    });
-
+    reset(formatArticleForForm(DEFAULT_ARTICLE));
     setSelectedTags([]);
   };
 
-  // tag handler
   const handleTagToggle = (tagValue) => {
-    let updatedTags = [];
+    let updatedTags;
 
     if (selectedTags.includes(tagValue)) {
       updatedTags = selectedTags.filter((tag) => tag !== tagValue);
@@ -109,55 +95,53 @@ export const useArticleModal = () => {
 
     setSelectedTags(updatedTags);
     setValue('tag', updatedTags);
-    // setValue('content', updatedTags.join(' | ')); // 給 modal 預覽摘要用
   };
 
-  // submit action
   const handleSubmitArticle = async (formData, onSuccess, onError) => {
-    const submitData = {
-      ...formData,
-      id: editArticleId,
-      create_at: formatDateInputToUnix(formData.create_at),
-      tag: selectedTags,
-      // RHF自動帶入客製欄位：
-      // articleCategory / viewerScope / priorityLevel
-      // 日期欄位需手動轉unix
-      publishStart: formatOptionalDateToUnix(formData.publishStart),
-      publishEnd: formatOptionalDateToUnix(formData.publishEnd),
-    };
+    const submitData = formatArticleForApi(formData, selectedTags);
+    const validation = validateArticleAdminData(submitData);
 
     try {
-      if (modalMode === 'create') {
-        await createArticle(submitData);
-      } else {
-        await updateArticle(submitData.id, submitData);
+      if (validation.errors.length > 0) {
+        throw new Error(validation.errors[0]);
       }
 
+      const response = modalMode === 'create'
+        ? await createArticle(submitData)
+        : await updateArticle(editArticleId, submitData);
+      const savedArticle = {
+        ...submitData,
+        id:
+          editArticleId ||
+          response?.article_id ||
+          response?.article?.id ||
+          response?.id ||
+          null,
+      };
+      const completedMode = modalMode;
+
       closeArticleModal();
-      onSuccess?.();
+      await onSuccess?.({ article: savedArticle, mode: completedMode, response });
       return true;
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '更新文章失敗，請稍後再試。');
+      const errorMessage = extractErrorMessage(
+        error,
+        null,
+        '更新文章失敗，請稍後再試。',
+      );
       onError?.(errorMessage);
       return false;
     }
   };
 
   return {
-    // modal lifecycle
     isModalOpen,
     modalMode,
     openArticleModal,
     closeArticleModal,
-
-    // tag states
     selectedTags,
     handleTagToggle,
-
-    // submit
     handleSubmitArticle,
-
-    // RHF tools
     register,
     handleSubmit,
     watch,
