@@ -17,7 +17,7 @@ const OrdersTable = ({
     return (
       <div className="admin-empty-state admin-empty-state--panel">
         <p className="text-muted mb-2">
-          {hasOrders ? '目前這一頁沒有訂單資料' : '目前尚無訂單資料'}
+          {hasOrders ? '目前沒有符合篩選條件的訂單' : '目前尚無訂單資料'}
         </p>
         <small className="text-secondary">
           顧客完成結帳後，訂單資料會顯示在此處
@@ -109,4 +109,3 @@ OrdersTable.propTypes = {
 };
 
 export default OrdersTable;
-

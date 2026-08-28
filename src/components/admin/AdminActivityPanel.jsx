@@ -12,6 +12,7 @@ const MODULE_LABEL_MAP = {
   product: '商品',
   coupon: '優惠券',
   article: '文章',
+  order: '訂單',
 };
 
 const ACTION_LABEL_MAP = {

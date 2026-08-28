@@ -5,10 +5,7 @@ import PropTypes from 'prop-types';
 import useBodyScrollLock from '@/hooks/useBodyScrollLock';
 // utils
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
-import {
-  formatOrderCurrency,
-  formatOrderDateTime,
-} from '@/utils/orderFormatter';
+import { formatOrderCurrency, formatOrderDateTime } from '@/utils/orderFormatter';
 
 const OrderModal = ({
   isOpen,
@@ -22,10 +19,7 @@ const OrderModal = ({
 }) => {
   useBodyScrollLock(isOpen);
 
-  const items = useMemo(
-    () => normalizeOrderItems(order?.products),
-    [order?.products],
-  );
+  const items = useMemo(() => normalizeOrderItems(order?.products), [order?.products]);
 
   useEffect(() => {
     if (!isOpen || isSaving) return undefined;
@@ -78,9 +72,7 @@ const OrderModal = ({
               </div>
               <div>
                 <span className="text-muted small d-block mb-1">訂單總額</span>
-                <strong className="text-primary">
-                  NT$ {formatOrderCurrency(order?.total)}
-                </strong>
+                <strong className="text-primary">NT$ {formatOrderCurrency(order?.total)}</strong>
               </div>
             </div>
 
@@ -109,9 +101,7 @@ const OrderModal = ({
             <section className="admin-order-detail__section mb-4">
               <h6 className="admin-order-detail__section-title">商品明細</h6>
               {items.length === 0 ? (
-                <div className="admin-empty-state">
-                  目前無法顯示這筆訂單的商品資料
-                </div>
+                <div className="admin-empty-state">目前無法顯示這筆訂單的商品資料</div>
               ) : (
                 <div className="admin-table-wrapper border rounded">
                   <table className="table admin-order-detail__items-table align-middle mb-0">
@@ -129,11 +119,9 @@ const OrderModal = ({
                           <td>
                             <div className="admin-order-item">
                               {item.imageUrl ? (
-                                <img src={item.imageUrl} alt="" />
+                                <img src={item.imageUrl} alt={`${item.title}圖片`} />
                               ) : (
-                                <div className="admin-order-item__placeholder">
-                                  無圖片
-                                </div>
+                                <div className="admin-order-item__placeholder">無圖片</div>
                               )}
                               <span>{item.title}</span>
                             </div>
