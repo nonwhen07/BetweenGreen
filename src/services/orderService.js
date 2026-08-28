@@ -1,5 +1,7 @@
 import axiosAPI from '@/api/axiosAPI';
 
+import { normalizeOrderList } from '@/utils/orderFormatter';
+
 /**
  * =====================================
  * Order Service
@@ -59,6 +61,38 @@ export const getAdminOrders = async (page = 1) => {
   return {
     data: data.orders,
     pagination: data.pagination,
+  };
+};
+
+// Order API 沒有 /All endpoint；第一次載入時依 pagination 取得完整集合。
+export const getAllAdminOrders = async () => {
+  const firstPage = await getAdminOrders(1);
+  const totalPages = Number(firstPage.pagination?.total_pages) || 1;
+
+  if (totalPages <= 1) {
+    return { ...firstPage, data: normalizeOrderList(firstPage.data) };
+  }
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, index) =>
+      getAdminOrders(index + 2),
+    ),
+  );
+  const allOrders = [
+    ...normalizeOrderList(firstPage.data),
+    ...remainingPages.flatMap((page) => normalizeOrderList(page.data)),
+  ];
+
+  return {
+    data: [
+      ...new Map(
+        allOrders.map((order, index) => [
+          order.id || `__missing-id-${index}`,
+          order,
+        ]),
+      ).values(),
+    ],
+    pagination: firstPage.pagination,
   };
 };
 
