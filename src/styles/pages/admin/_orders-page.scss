@@ -99,6 +99,13 @@
     object-fit: cover;
   }
 
+  &__content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   &__placeholder {
     display: grid;
     place-items: center;

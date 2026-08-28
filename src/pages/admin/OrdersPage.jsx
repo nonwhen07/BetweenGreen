@@ -14,6 +14,7 @@ import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminOrders } from '@/hooks/order/useAdminOrders';
 import { useOrderHealth } from '@/hooks/order/useOrderHealth';
 import { useOrderModal } from '@/hooks/order/useOrderModal';
+import { useOrderProductLookup } from '@/hooks/order/useOrderProductLookup';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
@@ -28,6 +29,7 @@ const OrdersPage = () => {
   const { success, showError, warning } = useToast();
   const { start, stop } = useLoading();
   const { orders, fetchOrders, saveOrderPaymentToStore, removeOrderFromStore } = useAdminOrders();
+  const { productLookup, productCatalogStatus, ensureProductCatalog } = useOrderProductLookup();
   const { summary: healthSummary, results: healthResults, issueGroups } = useOrderHealth(orders);
   const {
     activities: orderActivities,
@@ -196,6 +198,12 @@ const OrdersPage = () => {
   }, [fetchOrders, showError]);
 
   useEffect(() => {
+    ensureProductCatalog().catch(() => {
+      warning('商品圖片資料載入失敗，訂單內容仍可正常查看');
+    });
+  }, [ensureProductCatalog, warning]);
+
+  useEffect(() => {
     resetPage();
   }, [healthFilter, issueFilter, resetPage]);
 
@@ -267,6 +275,8 @@ const OrdersPage = () => {
       <OrderModal
         isOpen={isOrderModalOpen}
         order={selectedOrder}
+        productLookup={productLookup}
+        isProductCatalogReady={productCatalogStatus === 'success'}
         isPaid={isPaid}
         hasPaymentChanged={hasPaymentChanged}
         isSaving={isSavingOrder}

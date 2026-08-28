@@ -5,11 +5,16 @@ import PropTypes from 'prop-types';
 import useBodyScrollLock from '@/hooks/useBodyScrollLock';
 // utils
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
-import { formatOrderCurrency, formatOrderDateTime } from '@/utils/orderFormatter';
+import {
+  formatOrderCurrency,
+  formatOrderDateTime,
+} from '@/utils/orderFormatter';
 
 const OrderModal = ({
   isOpen,
   order,
+  productLookup,
+  isProductCatalogReady,
   isPaid,
   hasPaymentChanged,
   isSaving,
@@ -19,7 +24,10 @@ const OrderModal = ({
 }) => {
   useBodyScrollLock(isOpen);
 
-  const items = useMemo(() => normalizeOrderItems(order?.products), [order?.products]);
+  const items = useMemo(
+    () => normalizeOrderItems(order?.products, productLookup),
+    [order?.products, productLookup],
+  );
 
   useEffect(() => {
     if (!isOpen || isSaving) return undefined;
@@ -72,7 +80,9 @@ const OrderModal = ({
               </div>
               <div>
                 <span className="text-muted small d-block mb-1">訂單總額</span>
-                <strong className="text-primary">NT$ {formatOrderCurrency(order?.total)}</strong>
+                <strong className="text-primary">
+                  NT$ {formatOrderCurrency(order?.total)}
+                </strong>
               </div>
             </div>
 
@@ -101,7 +111,9 @@ const OrderModal = ({
             <section className="admin-order-detail__section mb-4">
               <h6 className="admin-order-detail__section-title">商品明細</h6>
               {items.length === 0 ? (
-                <div className="admin-empty-state">目前無法顯示這筆訂單的商品資料</div>
+                <div className="admin-empty-state">
+                  目前無法顯示這筆訂單的商品資料
+                </div>
               ) : (
                 <div className="admin-table-wrapper border rounded">
                   <table className="table admin-order-detail__items-table align-middle mb-0">
@@ -119,11 +131,36 @@ const OrderModal = ({
                           <td>
                             <div className="admin-order-item">
                               {item.imageUrl ? (
-                                <img src={item.imageUrl} alt={`${item.title}圖片`} />
+                                <img
+                                  src={item.imageUrl}
+                                  alt=""
+                                  title={
+                                    item.usesCatalogImage
+                                      ? '圖片來自目前商品資料'
+                                      : undefined
+                                  }
+                                />
                               ) : (
-                                <div className="admin-order-item__placeholder">無圖片</div>
+                                <div className="admin-order-item__placeholder">
+                                  無圖片
+                                </div>
                               )}
-                              <span>{item.title}</span>
+                              <span className="admin-order-item__content">
+                                <span>{item.title}</span>
+                                {item.usesCatalogImage && (
+                                  <small className="text-muted">目前商品圖</small>
+                                )}
+                                {item.catalogStatus === 'disabled' && (
+                                  <small className="text-warning">商品目前已停用</small>
+                                )}
+                                {isProductCatalogReady &&
+                                  item.productId &&
+                                  item.catalogStatus === 'missing' && (
+                                    <small className="text-muted">
+                                      商品資料已不存在
+                                    </small>
+                                  )}
+                              </span>
                             </div>
                           </td>
                           <td className="text-end text-nowrap">
@@ -199,6 +236,8 @@ const OrderModal = ({
 OrderModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   order: PropTypes.object,
+  productLookup: PropTypes.instanceOf(Map).isRequired,
+  isProductCatalogReady: PropTypes.bool.isRequired,
   isPaid: PropTypes.bool.isRequired,
   hasPaymentChanged: PropTypes.bool.isRequired,
   isSaving: PropTypes.bool.isRequired,
