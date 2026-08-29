@@ -161,6 +161,34 @@ export const countOverdueUnpaidOrders = (orders = [], now = Date.now()) => {
   return orders.filter((order) => getOrderUnpaidAge(order, now)?.level === 'overdue').length;
 };
 
+export const analyzeOrderUnpaidAging = (orders = [], now = Date.now()) => {
+  const byOrderId = {};
+  const summary = {
+    total: 0,
+    recent: 0,
+    review: 0,
+    overdue: 0,
+    unknown: 0,
+  };
+
+  orders.forEach((order) => {
+    if (order?.is_paid !== false) return;
+
+    summary.total += 1;
+    const unpaidAge = getOrderUnpaidAge(order, now);
+    if (!unpaidAge) {
+      summary.unknown += 1;
+      return;
+    }
+
+    summary[unpaidAge.level] += 1;
+
+    if (order.id) byOrderId[order.id] = unpaidAge;
+  });
+
+  return { summary, byOrderId };
+};
+
 export const analyzeOrderQuarter = (orders = [], quarterKey, now = Date.now()) => {
   const period = getOrderQuarterPeriod(quarterKey);
   const quarterOrders = period ? filterOrdersByExportPeriod(orders, period) : [];

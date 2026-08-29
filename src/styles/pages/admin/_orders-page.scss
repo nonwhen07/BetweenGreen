@@ -14,7 +14,7 @@
   &__fields {
     display: grid;
     grid-template-columns:
-      minmax(260px, 1fr) repeat(2, minmax(170px, 220px)) auto;
+      minmax(240px, 1fr) repeat(3, minmax(160px, 200px)) auto;
     gap: 12px;
     align-items: end;
   }
