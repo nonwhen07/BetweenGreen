@@ -19,6 +19,7 @@ import { useOrderProductLookup } from '@/hooks/order/useOrderProductLookup';
 import { useOrderQuarterlyAnalytics } from '@/hooks/order/useOrderQuarterlyAnalytics';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
+import { filterOrdersBySearch, getOrderDateRangeError } from '@/utils/orderFilter';
 // components
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
@@ -27,6 +28,7 @@ import OrderModal from '@/components/admin/order/OrderModal';
 import OrderExportModal from '@/components/admin/order/OrderExportModal';
 import OrderHealthToolbar from '@/components/admin/order/OrderHealthToolbar';
 import OrderQuarterlyReport from '@/components/admin/order/OrderQuarterlyReport';
+import OrderSearchToolbar from '@/components/admin/order/OrderSearchToolbar';
 import OrdersTable from '@/components/admin/order/OrdersTable';
 
 const OrdersPage = () => {
@@ -55,7 +57,11 @@ const OrdersPage = () => {
     setIsConfirmed: setIsExportConfirmed,
     executeExport: executeOrderExport,
   } = useOrderExport({ orders, refreshOrders });
-  const { summary: healthSummary, results: healthResults, issueGroups } = useOrderHealth(orders);
+  const {
+    summary: healthSummary,
+    byOrderId: healthByOrderId,
+    issueGroups,
+  } = useOrderHealth(orders);
   const {
     activities: orderActivities,
     addActivity,
@@ -91,10 +97,19 @@ const OrdersPage = () => {
     ? requestedHealthFilter
     : 'all';
   const issueFilter = searchParams.get('issue') || '';
+  const keyword = searchParams.get('q') || '';
+  const dateFrom = searchParams.get('from') || '';
+  const dateTo = searchParams.get('to') || '';
+  const dateRangeError = getOrderDateRangeError(dateFrom, dateTo);
 
   const filteredOrders = useMemo(() => {
-    return orders.filter((order, index) => {
-      const orderHealth = healthResults[index];
+    const searchFilteredOrders = filterOrdersBySearch(orders, {
+      keyword,
+      dateFrom,
+      dateTo,
+    });
+    return searchFilteredOrders.filter((order) => {
+      const orderHealth = healthByOrderId[order.id];
       const matchHealth =
         healthFilter === 'all' ||
         (healthFilter === 'paid' && order.is_paid === true) ||
@@ -105,7 +120,7 @@ const OrdersPage = () => {
 
       return matchHealth && matchIssue;
     });
-  }, [healthFilter, healthResults, issueFilter, orders]);
+  }, [dateFrom, dateTo, healthByOrderId, healthFilter, issueFilter, keyword, orders]);
 
   const {
     page,
@@ -132,6 +147,24 @@ const OrdersPage = () => {
     if (nextIssueFilter) nextSearchParams.set('issue', nextIssueFilter);
     else nextSearchParams.delete('issue');
 
+    setSearchParams(nextSearchParams, { replace: true });
+  };
+
+  const handleSearchParamChange = (key, value) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    const normalizedValue = key === 'q' ? value : value.trim();
+
+    if (normalizedValue) nextSearchParams.set(key, normalizedValue);
+    else nextSearchParams.delete(key);
+
+    setSearchParams(nextSearchParams, { replace: true });
+  };
+
+  const handleResetSearch = () => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.delete('q');
+    nextSearchParams.delete('from');
+    nextSearchParams.delete('to');
     setSearchParams(nextSearchParams, { replace: true });
   };
 
@@ -283,7 +316,7 @@ const OrdersPage = () => {
 
   useEffect(() => {
     resetPage();
-  }, [healthFilter, issueFilter, resetPage]);
+  }, [dateFrom, dateTo, healthFilter, issueFilter, keyword, resetPage]);
 
   return (
     <>
@@ -304,6 +337,19 @@ const OrdersPage = () => {
           issueFilter={issueFilter}
           onHealthFilterChange={handleHealthFilterChange}
           onIssueFilterChange={handleIssueFilterChange}
+        />
+
+        <OrderSearchToolbar
+          keyword={keyword}
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          dateRangeError={dateRangeError}
+          resultCount={filteredOrders.length}
+          totalCount={orders.length}
+          onKeywordChange={(value) => handleSearchParamChange('q', value)}
+          onDateFromChange={(value) => handleSearchParamChange('from', value)}
+          onDateToChange={(value) => handleSearchParamChange('to', value)}
+          onReset={handleResetSearch}
         />
 
         <OrderQuarterlyReport
