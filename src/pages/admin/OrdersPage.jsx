@@ -16,6 +16,7 @@ import { useOrderExport } from '@/hooks/order/useOrderExport';
 import { useOrderHealth } from '@/hooks/order/useOrderHealth';
 import { useOrderModal } from '@/hooks/order/useOrderModal';
 import { useOrderProductLookup } from '@/hooks/order/useOrderProductLookup';
+import { useOrderQuarterlyAnalytics } from '@/hooks/order/useOrderQuarterlyAnalytics';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
@@ -25,6 +26,7 @@ import DeleteModal from '@/components/admin/DeleteModal';
 import OrderModal from '@/components/admin/order/OrderModal';
 import OrderExportModal from '@/components/admin/order/OrderExportModal';
 import OrderHealthToolbar from '@/components/admin/order/OrderHealthToolbar';
+import OrderQuarterlyReport from '@/components/admin/order/OrderQuarterlyReport';
 import OrdersTable from '@/components/admin/order/OrdersTable';
 
 const OrdersPage = () => {
@@ -76,6 +78,12 @@ const OrdersPage = () => {
     closeDeleteModal,
   } = useDeleteModal();
   const [isSavingOrder, setIsSavingOrder] = useState(false);
+  const {
+    analytics: quarterlyAnalytics,
+    quarterOptions,
+    selectedQuarter,
+    allOverdueUnpaidCount,
+  } = useOrderQuarterlyAnalytics(orders, searchParams.get('quarter') || '');
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
   const validHealthFilters = ['all', 'error', 'warning', 'healthy', 'paid', 'unpaid'];
@@ -124,6 +132,12 @@ const OrdersPage = () => {
     if (nextIssueFilter) nextSearchParams.set('issue', nextIssueFilter);
     else nextSearchParams.delete('issue');
 
+    setSearchParams(nextSearchParams, { replace: true });
+  };
+
+  const handleQuarterChange = (nextQuarter) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set('quarter', nextQuarter);
     setSearchParams(nextSearchParams, { replace: true });
   };
 
@@ -290,6 +304,14 @@ const OrdersPage = () => {
           issueFilter={issueFilter}
           onHealthFilterChange={handleHealthFilterChange}
           onIssueFilterChange={handleIssueFilterChange}
+        />
+
+        <OrderQuarterlyReport
+          analytics={quarterlyAnalytics}
+          quarterOptions={quarterOptions}
+          selectedQuarter={selectedQuarter}
+          allOverdueUnpaidCount={allOverdueUnpaidCount}
+          onQuarterChange={handleQuarterChange}
         />
 
         <div className="admin-panel">

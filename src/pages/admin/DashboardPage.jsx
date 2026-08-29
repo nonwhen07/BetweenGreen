@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/useToast';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DashboardIssueSummary from '@/components/admin/dashboard/DashboardIssueSummary';
 import DashboardModuleCard from '@/components/admin/dashboard/DashboardModuleCard';
+import DashboardOrderQuarterSummary from '@/components/admin/dashboard/DashboardOrderQuarterSummary';
 
 const DASHBOARD_MODULE_CONFIG = [
   {
@@ -119,6 +120,12 @@ const DashboardPage = () => {
           );
         })}
       </section>
+
+      <DashboardOrderQuarterSummary
+        orders={modules.order.orders}
+        status={modules.order.status}
+        error={modules.order.error}
+      />
 
       <div className="admin-dashboard__overview">
         <DashboardIssueSummary modules={issueModules} />
