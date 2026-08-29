@@ -19,6 +19,7 @@ const ACTION_LABEL_MAP = {
   create: '新增',
   update: '編輯',
   delete: '刪除',
+  export: '匯出',
   'batch-create': '批次新增',
   'batch-update': '批次更新',
 };

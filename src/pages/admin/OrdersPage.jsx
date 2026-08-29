@@ -12,6 +12,7 @@ import { usePagination } from '@/hooks/usePagination';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
 import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminOrders } from '@/hooks/order/useAdminOrders';
+import { useOrderExport } from '@/hooks/order/useOrderExport';
 import { useOrderHealth } from '@/hooks/order/useOrderHealth';
 import { useOrderModal } from '@/hooks/order/useOrderModal';
 import { useOrderProductLookup } from '@/hooks/order/useOrderProductLookup';
@@ -22,14 +23,36 @@ import BrandPagination from '@/components/shared/BrandPagination';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import OrderModal from '@/components/admin/order/OrderModal';
+import OrderExportModal from '@/components/admin/order/OrderExportModal';
 import OrderHealthToolbar from '@/components/admin/order/OrderHealthToolbar';
 import OrdersTable from '@/components/admin/order/OrdersTable';
 
 const OrdersPage = () => {
   const { success, showError, warning } = useToast();
   const { start, stop } = useLoading();
-  const { orders, fetchOrders, saveOrderPaymentToStore, removeOrderFromStore } = useAdminOrders();
+  const { orders, fetchOrders, refreshOrders, saveOrderPaymentToStore, removeOrderFromStore } =
+    useAdminOrders();
   const { productLookup, productCatalogStatus, ensureProductCatalog } = useOrderProductLookup();
+  const {
+    isOpen: isOrderExportModalOpen,
+    periodType: exportPeriodType,
+    month: exportMonth,
+    year: exportYear,
+    quarter: exportQuarter,
+    period: exportPeriod,
+    previewCount: exportPreviewCount,
+    isConfirmed: isExportConfirmed,
+    isProcessing: isExportProcessing,
+    canExport,
+    openExportModal,
+    closeExportModal,
+    changePeriodType: changeExportPeriodType,
+    changeMonth: changeExportMonth,
+    changeYear: changeExportYear,
+    changeQuarter: changeExportQuarter,
+    setIsConfirmed: setIsExportConfirmed,
+    executeExport: executeOrderExport,
+  } = useOrderExport({ orders, refreshOrders });
   const { summary: healthSummary, results: healthResults, issueGroups } = useOrderHealth(orders);
   const {
     activities: orderActivities,
@@ -104,7 +127,14 @@ const OrdersPage = () => {
     setSearchParams(nextSearchParams, { replace: true });
   };
 
-  const recordOrderActivity = async ({ action, status, order, message }) => {
+  const recordOrderActivity = async ({
+    action,
+    status,
+    order,
+    message,
+    totalCount = 1,
+    activityTitle,
+  }) => {
     const isSuccess = status === 'success';
 
     try {
@@ -112,16 +142,16 @@ const OrdersPage = () => {
         module: 'order',
         action,
         status,
-        totalCount: 1,
-        successCount: isSuccess ? 1 : 0,
-        errorCount: isSuccess ? 0 : 1,
+        totalCount,
+        successCount: isSuccess ? totalCount : 0,
+        errorCount: isSuccess ? 0 : totalCount,
         isReviewed: isSuccess,
         details: isSuccess
           ? []
           : [
               {
                 id: order?.id || '',
-                title: order?.id ? `#${order.id}` : '未知訂單',
+                title: activityTitle || (order?.id ? `#${order.id}` : '未知訂單'),
                 message,
               },
             ],
@@ -191,6 +221,40 @@ const OrdersPage = () => {
     }
   };
 
+  const handleExportOrders = async () => {
+    if (!canExport) return;
+
+    start();
+
+    try {
+      const result = await executeOrderExport();
+      if (!result) return;
+
+      if (result.status === 'empty') {
+        warning(`${result.period.label}沒有可匯出的訂單資料`);
+        return;
+      }
+
+      await recordOrderActivity({
+        action: 'export',
+        status: 'success',
+        totalCount: result.total,
+      });
+      success(`已匯出 ${result.period.label}，共 ${result.total} 筆訂單資料`);
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error, null, '匯出訂單 JSON 失敗，請稍後再試。');
+      showError(errorMessage);
+      await recordOrderActivity({
+        action: 'export',
+        status: 'error',
+        message: errorMessage,
+        activityTitle: exportPeriod ? `${exportPeriod.label}訂單匯出` : '訂單匯出',
+      });
+    } finally {
+      stop();
+    }
+  };
+
   useEffect(() => {
     fetchOrders().catch((error) => {
       showError(extractErrorMessage(error, null, '取得訂單列表失敗，請稍後再試。'));
@@ -236,6 +300,16 @@ const OrdersPage = () => {
                 篩選結果共 {filteredOrders.length} 筆，本頁顯示 {currentPageOrders.length} 筆
               </p>
             </div>
+
+            <div className="admin-panel__actions d-flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn btn-outline-secondary px-4"
+                onClick={openExportModal}
+              >
+                匯出訂單 JSON
+              </button>
+            </div>
           </div>
 
           <div className="admin-panel__body">
@@ -262,7 +336,7 @@ const OrdersPage = () => {
         <AdminActivityPanel
           sectionId="order-activity"
           title="訂單操作紀錄"
-          description="查看付款狀態更新與刪除結果，並確認需要處理的失敗操作"
+          description="查看付款狀態更新、刪除與 JSON 匯出結果"
           activities={orderActivities}
           showFilters
           showDetails
@@ -271,6 +345,26 @@ const OrdersPage = () => {
           }
         />
       </div>
+
+      <OrderExportModal
+        isOpen={isOrderExportModalOpen}
+        periodType={exportPeriodType}
+        month={exportMonth}
+        year={exportYear}
+        quarter={exportQuarter}
+        period={exportPeriod}
+        previewCount={exportPreviewCount}
+        isConfirmed={isExportConfirmed}
+        isProcessing={isExportProcessing}
+        canExport={canExport}
+        onPeriodTypeChange={changeExportPeriodType}
+        onMonthChange={changeExportMonth}
+        onYearChange={changeExportYear}
+        onQuarterChange={changeExportQuarter}
+        onConfirmChange={setIsExportConfirmed}
+        onClose={closeExportModal}
+        onExport={handleExportOrders}
+      />
 
       <OrderModal
         isOpen={isOrderModalOpen}

@@ -115,10 +115,44 @@
   }
 }
 
+.admin-order-export-modal {
+  .modal-body {
+    background: #fff;
+  }
+
+  &__period-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__selection {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  &__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem;
+    border: 1px solid $admin-border;
+    border-radius: $admin-radius;
+    background: #f8f9fa;
+  }
+}
+
 @media (max-width: (map.get($admin-breakpoints, tablet) - 0.02px)) {
   .admin-order-detail {
     &__summary,
     &__customer {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .admin-order-export-modal {
+    &__selection {
       grid-template-columns: 1fr;
     }
   }
