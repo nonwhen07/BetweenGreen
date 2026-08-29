@@ -8,6 +8,102 @@
   }
 }
 
+.admin-order-analytics {
+  margin-bottom: 16px;
+
+  &__quarter-select {
+    width: min(240px, 100%);
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  &-stat {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid $admin-border;
+    border-top: 3px solid $admin-border;
+    border-radius: $admin-radius;
+    background: #f8f9fa;
+
+    span,
+    strong {
+      display: block;
+    }
+
+    span {
+      color: $admin-text-light;
+      font-size: 12px;
+    }
+
+    strong {
+      margin-top: 6px;
+      font-size: 17px;
+    }
+
+    &.is-primary {
+      border-top-color: $admin-sidebar-active;
+    }
+
+    &.is-warning {
+      border-top-color: #ffc107;
+    }
+  }
+
+  &__rankings {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    > section {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid $admin-border;
+      border-radius: $admin-radius;
+    }
+
+    h3 {
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+  }
+}
+
+.admin-order-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding-left: 28px;
+
+  li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 10px;
+    align-items: center;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    small {
+      color: $admin-text-light;
+    }
+  }
+}
+
+@media (max-width: (map.get($admin-breakpoints, desktop) - 0.02px)) {
+  .admin-order-analytics__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .admin-order-id,
 .admin-order-email {
   display: block;
@@ -144,6 +240,13 @@
 }
 
 @media (max-width: (map.get($admin-breakpoints, tablet) - 0.02px)) {
+  .admin-order-analytics {
+    &__stats,
+    &__rankings {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .admin-order-detail {
     &__summary,
     &__customer {

@@ -1,4 +1,5 @@
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
+import { getOrderUnpaidAge } from '@/utils/orderAnalytics';
 
 export const ORDER_HEALTH_STATUS = {
   HEALTHY: 'healthy',
@@ -31,8 +32,12 @@ export const ORDER_HEALTH_ISSUE_MAP = {
     label: '付款狀態異常',
     severity: ORDER_HEALTH_STATUS.ERROR,
   },
-  UNPAID: {
-    label: '訂單尚未付款',
+  UNPAID_REVIEW: {
+    label: '未付款訂單建議確認',
+    severity: ORDER_HEALTH_STATUS.WARNING,
+  },
+  UNPAID_OVERDUE: {
+    label: '未付款訂單已達 7 天',
     severity: ORDER_HEALTH_STATUS.WARNING,
   },
 };
@@ -94,7 +99,7 @@ const getItemIssues = (products) => {
   return messages;
 };
 
-const analyzeSingleOrder = (order, index) => {
+const analyzeSingleOrder = (order, index, now) => {
   const issues = [];
 
   if (!isNonEmptyString(order.id)) {
@@ -132,7 +137,21 @@ const analyzeSingleOrder = (order, index) => {
   if (typeof order.is_paid !== 'boolean') {
     addIssue(issues, 'INVALID_PAID_STATUS', 'is_paid 必須是 boolean');
   } else if (!order.is_paid) {
-    addIssue(issues, 'UNPAID', '訂單目前尚未付款');
+    const unpaidAge = getOrderUnpaidAge(order, now);
+
+    if (unpaidAge?.level === 'overdue') {
+      addIssue(
+        issues,
+        'UNPAID_OVERDUE',
+        `訂單已未付款 ${unpaidAge.ageDays} 天，建議優先聯繫確認`,
+      );
+    } else if (unpaidAge?.level === 'review') {
+      addIssue(
+        issues,
+        'UNPAID_REVIEW',
+        `訂單已未付款 ${unpaidAge.ageDays} 天，建議確認付款意願`,
+      );
+    }
   }
 
   const errorCount = issues.filter(
@@ -157,7 +176,7 @@ const analyzeSingleOrder = (order, index) => {
   };
 };
 
-export const analyzeOrderHealth = (orders = []) => {
+export const analyzeOrderHealth = (orders = [], now = Date.now()) => {
   const byOrderId = {};
   const results = [];
   const issueGroupMap = new Map();
@@ -171,7 +190,7 @@ export const analyzeOrderHealth = (orders = []) => {
   };
 
   orders.forEach((order, index) => {
-    const result = analyzeSingleOrder(order, index);
+    const result = analyzeSingleOrder(order, index, now);
     byOrderId[result.orderKey] = result;
     results.push(result);
     summary[result.status] += 1;
@@ -204,4 +223,3 @@ export const analyzeOrderHealth = (orders = []) => {
 
   return { summary, byOrderId, results, issueGroups };
 };
-
