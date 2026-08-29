@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 // constants
-import { ORDER_PER_PAGE } from '@/constants/orderConstants';
+import { ORDER_PER_PAGE, ORDER_UNPAID_AGE_FILTERS } from '@/constants/orderConstants';
 // services
 import { deleteOrder, updateOrder } from '@/services/orderService';
 // hooks
@@ -17,6 +17,7 @@ import { useOrderHealth } from '@/hooks/order/useOrderHealth';
 import { useOrderModal } from '@/hooks/order/useOrderModal';
 import { useOrderProductLookup } from '@/hooks/order/useOrderProductLookup';
 import { useOrderQuarterlyAnalytics } from '@/hooks/order/useOrderQuarterlyAnalytics';
+import { useOrderUnpaidAging } from '@/hooks/order/useOrderUnpaidAging';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 import { filterOrdersBySearch, getOrderDateRangeError } from '@/utils/orderFilter';
@@ -90,6 +91,7 @@ const OrdersPage = () => {
     selectedQuarter,
     allOverdueUnpaidCount,
   } = useOrderQuarterlyAnalytics(orders, searchParams.get('quarter') || '');
+  const { summary: agingSummary, byOrderId: agingByOrderId } = useOrderUnpaidAging(orders);
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
   const validHealthFilters = ['all', 'error', 'warning', 'healthy', 'paid', 'unpaid'];
@@ -100,6 +102,9 @@ const OrdersPage = () => {
   const keyword = searchParams.get('q') || '';
   const dateFrom = searchParams.get('from') || '';
   const dateTo = searchParams.get('to') || '';
+  const requestedAgingFilter = searchParams.get('aging') || '';
+  const validAgingFilters = Object.values(ORDER_UNPAID_AGE_FILTERS);
+  const agingFilter = validAgingFilters.includes(requestedAgingFilter) ? requestedAgingFilter : '';
   const dateRangeError = getOrderDateRangeError(dateFrom, dateTo);
 
   const filteredOrders = useMemo(() => {
@@ -117,10 +122,21 @@ const OrdersPage = () => {
         orderHealth?.status === healthFilter;
       const matchIssue =
         !issueFilter || orderHealth?.issues.some((issue) => issue.code === issueFilter);
+      const matchAging = !agingFilter || agingByOrderId[order.id]?.level === agingFilter;
 
-      return matchHealth && matchIssue;
+      return matchHealth && matchIssue && matchAging;
     });
-  }, [dateFrom, dateTo, healthByOrderId, healthFilter, issueFilter, keyword, orders]);
+  }, [
+    agingByOrderId,
+    agingFilter,
+    dateFrom,
+    dateTo,
+    healthByOrderId,
+    healthFilter,
+    issueFilter,
+    keyword,
+    orders,
+  ]);
 
   const {
     page,
@@ -133,6 +149,7 @@ const OrdersPage = () => {
   const handleHealthFilterChange = (nextHealthFilter) => {
     const nextSearchParams = new URLSearchParams(searchParams);
     nextSearchParams.delete('issue');
+    nextSearchParams.delete('aging');
 
     if (nextHealthFilter === 'all') nextSearchParams.delete('health');
     else nextSearchParams.set('health', nextHealthFilter);
@@ -143,9 +160,21 @@ const OrdersPage = () => {
   const handleIssueFilterChange = (nextIssueFilter) => {
     const nextSearchParams = new URLSearchParams(searchParams);
     nextSearchParams.delete('health');
+    nextSearchParams.delete('aging');
 
     if (nextIssueFilter) nextSearchParams.set('issue', nextIssueFilter);
     else nextSearchParams.delete('issue');
+
+    setSearchParams(nextSearchParams, { replace: true });
+  };
+
+  const handleAgingFilterChange = (nextAgingFilter) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.delete('health');
+    nextSearchParams.delete('issue');
+
+    if (nextAgingFilter) nextSearchParams.set('aging', nextAgingFilter);
+    else nextSearchParams.delete('aging');
 
     setSearchParams(nextSearchParams, { replace: true });
   };
@@ -316,7 +345,7 @@ const OrdersPage = () => {
 
   useEffect(() => {
     resetPage();
-  }, [dateFrom, dateTo, healthFilter, issueFilter, keyword, resetPage]);
+  }, [agingFilter, dateFrom, dateTo, healthFilter, issueFilter, keyword, resetPage]);
 
   return (
     <>
@@ -335,6 +364,7 @@ const OrdersPage = () => {
           issueGroups={issueGroups}
           healthFilter={healthFilter}
           issueFilter={issueFilter}
+          isAgingFilterActive={Boolean(agingFilter)}
           onHealthFilterChange={handleHealthFilterChange}
           onIssueFilterChange={handleIssueFilterChange}
         />
@@ -343,12 +373,15 @@ const OrdersPage = () => {
           keyword={keyword}
           dateFrom={dateFrom}
           dateTo={dateTo}
+          agingFilter={agingFilter}
+          agingSummary={agingSummary}
           dateRangeError={dateRangeError}
           resultCount={filteredOrders.length}
           totalCount={orders.length}
           onKeywordChange={(value) => handleSearchParamChange('q', value)}
           onDateFromChange={(value) => handleSearchParamChange('from', value)}
           onDateToChange={(value) => handleSearchParamChange('to', value)}
+          onAgingFilterChange={handleAgingFilterChange}
           onReset={handleResetSearch}
         />
 

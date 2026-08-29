@@ -16,6 +16,7 @@ const OrderHealthToolbar = ({
   issueGroups,
   healthFilter,
   issueFilter,
+  isAgingFilterActive,
   onHealthFilterChange,
   onIssueFilterChange,
 }) => {
@@ -29,7 +30,7 @@ const OrderHealthToolbar = ({
     <AdminHealthToolbar
       ariaLabel="訂單健康與付款狀態篩選"
       filters={filters}
-      activeFilter={healthFilter}
+      activeFilter={isAgingFilterActive ? '' : healthFilter}
       issueFilter={issueFilter}
       issueGroups={issueGroups}
       issueSelectId="order-health-issue"
@@ -64,9 +65,9 @@ OrderHealthToolbar.propTypes = {
     'unpaid',
   ]).isRequired,
   issueFilter: PropTypes.string.isRequired,
+  isAgingFilterActive: PropTypes.bool.isRequired,
   onHealthFilterChange: PropTypes.func.isRequired,
   onIssueFilterChange: PropTypes.func.isRequired,
 };
 
 export default OrderHealthToolbar;
-

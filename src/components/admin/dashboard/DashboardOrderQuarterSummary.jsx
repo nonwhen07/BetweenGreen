@@ -50,7 +50,16 @@ const DashboardOrderQuarterSummary = ({ orders, status, error }) => {
           </div>
           <div className={allOverdueUnpaidCount > 0 ? 'is-warning' : ''}>
             <span>全部逾期未付款</span>
-            <strong>{isLoading ? '—' : `${allOverdueUnpaidCount} 筆`}</strong>
+            {isLoading ? (
+              <strong>—</strong>
+            ) : (
+              <Link
+                className="admin-dashboard-order-quarter__aging-link"
+                to="/admin/orders?aging=overdue"
+              >
+                {allOverdueUnpaidCount} 筆
+              </Link>
+            )}
           </div>
         </div>
       )}
