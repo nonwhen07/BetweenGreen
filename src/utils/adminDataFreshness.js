@@ -43,3 +43,36 @@ export const getAdminDataFreshness = (lastFetchedAt, now = Date.now()) => {
     updatedAtLabel: updatedAtFormatter.format(new Date(timestamp)),
   };
 };
+
+export const getAdminDataFreshnessNextDelay = (lastFetchedAt, now = Date.now()) => {
+  const timestamp = Number(lastFetchedAt);
+
+  if (!Number.isFinite(timestamp) || timestamp <= 0) return null;
+
+  const { state } = getAdminDataFreshness(timestamp, now);
+  let nextThresholdMinutes = null;
+
+  if (state === ADMIN_FRESHNESS_STATES.FRESH) {
+    nextThresholdMinutes = ADMIN_FRESHNESS_RECOMMEND_MINUTES;
+  } else if (state === ADMIN_FRESHNESS_STATES.RECOMMEND) {
+    nextThresholdMinutes = ADMIN_FRESHNESS_STALE_MINUTES;
+  }
+
+  if (nextThresholdMinutes === null) return null;
+
+  const nextThresholdAt = timestamp + nextThresholdMinutes * 60000;
+  return Math.max(0, nextThresholdAt - now);
+};
+
+export const getAdminModuleRefreshMode = ({ status, lastFetchedAt }, now = Date.now()) => {
+  if (status === 'loading') return null;
+  if (!lastFetchedAt || status === 'idle') return 'initial';
+
+  const freshness = getAdminDataFreshness(lastFetchedAt, now);
+
+  if (status === 'error' || freshness.state === ADMIN_FRESHNESS_STATES.STALE) {
+    return 'background';
+  }
+
+  return null;
+};

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 // hooks
 import { useToast } from '@/hooks/useToast';
 // utils
-import { getAdminDataFreshness } from '@/utils/adminDataFreshness';
+import { getAdminDataFreshness, getAdminDataFreshnessNextDelay } from '@/utils/adminDataFreshness';
 
 export const useAdminDataFreshness = ({
   resourceLabel,
@@ -16,17 +16,41 @@ export const useAdminDataFreshness = ({
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const timerId = window.setInterval(() => setNow(Date.now()), 60000);
-    return () => window.clearInterval(timerId);
-  }, []);
-
-  useEffect(() => {
     setNow(Date.now());
   }, [lastFetchedAt]);
 
   const freshness = useMemo(() => getAdminDataFreshness(lastFetchedAt, now), [lastFetchedAt, now]);
+  const nextCheckDelay = useMemo(
+    () => getAdminDataFreshnessNextDelay(lastFetchedAt, now),
+    [lastFetchedAt, now],
+  );
   const isRefreshing = status === 'loading';
   const hasRefreshError = status === 'error';
+
+  // 一次只安排下一個門檻；進入 stale 後不再建立計時器。
+  useEffect(() => {
+    if (nextCheckDelay === null) return undefined;
+
+    const timerId = window.setTimeout(() => setNow(Date.now()), Math.max(100, nextCheckDelay + 50));
+
+    return () => window.clearTimeout(timerId);
+  }, [nextCheckDelay]);
+
+  // 回到視窗時只重算顯示狀態，不自動呼叫任何 API。
+  useEffect(() => {
+    const recalculateFreshness = () => setNow(Date.now());
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') recalculateFreshness();
+    };
+
+    window.addEventListener('focus', recalculateFreshness);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('focus', recalculateFreshness);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   const refreshCurrentData = useCallback(async () => {
     if (isInteractionLocked || isRefreshing) return;

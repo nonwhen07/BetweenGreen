@@ -6,6 +6,56 @@
 .admin-dashboard {
   width: 100%;
 
+  &-freshness {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin: -8px 0 16px;
+    padding: 10px 12px;
+    border: 1px solid $admin-border;
+    border-radius: $admin-radius;
+    background: #fff;
+
+    &__content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+
+      p {
+        margin: 2px 0 0;
+        color: $admin-text-light;
+        font-size: 12px;
+      }
+    }
+
+    &__indicator {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #198754;
+      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.14);
+    }
+
+    &.is-recommend &__indicator,
+    &.is-refreshing &__indicator {
+      background: #f0ad4e;
+      box-shadow: 0 0 0 3px rgba(240, 173, 78, 0.16);
+    }
+
+    &.is-stale &__indicator,
+    &.is-error &__indicator {
+      background: #dc3545;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.14);
+    }
+
+    .btn {
+      flex: 0 0 auto;
+    }
+  }
+
   &__modules {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -186,6 +236,42 @@
       border-radius: $admin-radius;
       font-size: 13px;
     }
+
+    &__freshness {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px 8px;
+      margin-top: auto;
+      padding-top: 12px;
+      color: $admin-text-light;
+      border-top: 1px solid $admin-border;
+      font-size: 12px;
+
+      > span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #adb5bd;
+      }
+
+      small {
+        color: #adb5bd;
+      }
+
+      &.is-fresh > span {
+        background: #198754;
+      }
+
+      &.is-recommend > span {
+        background: #f0ad4e;
+      }
+
+      &.is-stale > span,
+      &.is-error > span {
+        background: #dc3545;
+      }
+    }
   }
 
   &-metric {
@@ -312,6 +398,15 @@
 
 @media (max-width: (map.get($admin-breakpoints, tablet) - 0.02px)) {
   .admin-dashboard {
+    &-freshness {
+      align-items: flex-start;
+      flex-direction: column;
+
+      .btn {
+        width: 100%;
+      }
+    }
+
     &__modules {
       grid-template-columns: 1fr;
     }

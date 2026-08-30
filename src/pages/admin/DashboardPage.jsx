@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/useToast';
 // components
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DashboardIssueSummary from '@/components/admin/dashboard/DashboardIssueSummary';
+import DashboardFreshnessSummary from '@/components/admin/dashboard/DashboardFreshnessSummary';
 import DashboardModuleCard from '@/components/admin/dashboard/DashboardModuleCard';
 import DashboardOrderQuarterSummary from '@/components/admin/dashboard/DashboardOrderQuarterSummary';
 
@@ -58,8 +59,13 @@ const DASHBOARD_MODULE_CONFIG = [
 ];
 
 const DashboardPage = () => {
-  const { loadDashboard, modules } = useAdminDashboardData();
-  const { showError, warning } = useToast();
+  const {
+    freshnessSummary,
+    loadDashboard,
+    moduleFreshness,
+    modules,
+  } = useAdminDashboardData();
+  const { info, showError, success, warning } = useToast();
   const { activities, markActivityReviewed } = useAdminActivities({
     dashboard: true,
     limit: 5,
@@ -68,7 +74,7 @@ const DashboardPage = () => {
   useEffect(() => {
     let isActive = true;
 
-    loadDashboard().then((failures) => {
+    loadDashboard().then(({ failures }) => {
       if (isActive && failures.length > 0) {
         const failedLabels = failures.map((failure) => failure.label).join('、');
         warning(`${failedLabels}讀取失敗，其餘資料仍可使用`);
@@ -80,16 +86,39 @@ const DashboardPage = () => {
     };
   }, [loadDashboard, warning]);
 
-  const issueModules = DASHBOARD_MODULE_CONFIG.map((config) => ({
-    key: config.key,
-    label: config.title,
-    href: config.href,
-    status: modules[config.key].status,
-    issueGroups:
-      modules[config.key].status === 'success'
-        ? modules[config.key].health.issueGroups
+  const handleRefreshDashboard = async () => {
+    const { attemptedModules, failures, refreshedModules } =
+      await loadDashboard();
+
+    if (failures.length > 0) {
+      const failedLabels = failures.map((failure) => failure.label).join('、');
+      warning(`${failedLabels}更新失敗，原有資料仍保留`);
+    }
+
+    if (refreshedModules.length > 0) {
+      const refreshedLabels = refreshedModules
+        .map((module) => module.label)
+        .join('、');
+      success(`${refreshedLabels}已更新`);
+    } else if (attemptedModules.length === 0) {
+      info('目前沒有需要更新的模組');
+    }
+  };
+
+  const issueModules = DASHBOARD_MODULE_CONFIG.map((config) => {
+    const moduleData = modules[config.key];
+    const hasCachedData = Boolean(moduleData.lastFetchedAt);
+
+    return {
+      key: config.key,
+      label: config.title,
+      href: config.href,
+      status: hasCachedData ? 'success' : moduleData.status,
+      issueGroups: hasCachedData
+        ? moduleData.health.issueGroups
         : [],
-  }));
+    };
+  });
 
   return (
     <div className="admin-dashboard">
@@ -101,6 +130,11 @@ const DashboardPage = () => {
           </p>
         </div>
       </div>
+
+      <DashboardFreshnessSummary
+        {...freshnessSummary}
+        onRefresh={handleRefreshDashboard}
+      />
 
       <section className="admin-dashboard__modules" aria-label="後台模組摘要">
         {DASHBOARD_MODULE_CONFIG.map((config) => {
@@ -114,6 +148,8 @@ const DashboardPage = () => {
               href={config.href}
               status={moduleData.status}
               error={moduleData.error}
+              lastFetchedAt={moduleData.lastFetchedAt}
+              freshness={moduleFreshness[config.key]}
               summary={moduleData.health.summary}
               metrics={config.metrics}
             />
@@ -125,6 +161,7 @@ const DashboardPage = () => {
         orders={modules.order.orders}
         status={modules.order.status}
         error={modules.order.error}
+        hasCachedData={Boolean(modules.order.lastFetchedAt)}
       />
 
       <div className="admin-dashboard__overview">

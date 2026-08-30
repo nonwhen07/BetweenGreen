@@ -4,13 +4,20 @@ import { Link } from 'react-router-dom';
 import { useOrderQuarterlyAnalytics } from '@/hooks/order/useOrderQuarterlyAnalytics';
 import { formatOrderCurrency } from '@/utils/orderFormatter';
 
-const DashboardOrderQuarterSummary = ({ orders, status, error }) => {
+const DashboardOrderQuarterSummary = ({
+  orders,
+  status,
+  error,
+  hasCachedData,
+}) => {
   const {
     analytics,
     currentQuarterKey,
     allOverdueUnpaidCount,
   } = useOrderQuarterlyAnalytics(orders);
-  const isLoading = status === 'idle' || status === 'loading';
+  const isInitialLoading =
+    (status === 'idle' || status === 'loading') && !hasCachedData;
+  const hasBlockingError = status === 'error' && !hasCachedData;
   const summary = analytics.summary;
 
   return (
@@ -28,7 +35,7 @@ const DashboardOrderQuarterSummary = ({ orders, status, error }) => {
         </Link>
       </div>
 
-      {status === 'error' ? (
+      {hasBlockingError ? (
         <div className="admin-dashboard-order-quarter__state text-danger" role="status">
           訂單資料讀取失敗：{error || '請稍後再試'}
         </div>
@@ -36,21 +43,29 @@ const DashboardOrderQuarterSummary = ({ orders, status, error }) => {
         <div className="admin-dashboard-order-quarter__stats">
           <div>
             <span>已付款營收</span>
-            <strong>{isLoading ? '—' : `NT$ ${formatOrderCurrency(summary.paidRevenue)}`}</strong>
+            <strong>
+              {isInitialLoading
+                ? '—'
+                : `NT$ ${formatOrderCurrency(summary.paidRevenue)}`}
+            </strong>
           </div>
           <div>
             <span>本季訂單</span>
-            <strong>{isLoading ? '—' : `${summary.orderCount} 筆`}</strong>
+            <strong>
+              {isInitialLoading ? '—' : `${summary.orderCount} 筆`}
+            </strong>
           </div>
           <div>
             <span>平均已付款客單價</span>
             <strong>
-              {isLoading ? '—' : `NT$ ${formatOrderCurrency(summary.averagePaidOrderValue)}`}
+              {isInitialLoading
+                ? '—'
+                : `NT$ ${formatOrderCurrency(summary.averagePaidOrderValue)}`}
             </strong>
           </div>
           <div className={allOverdueUnpaidCount > 0 ? 'is-warning' : ''}>
             <span>全部逾期未付款</span>
-            {isLoading ? (
+            {isInitialLoading ? (
               <strong>—</strong>
             ) : (
               <Link
@@ -71,10 +86,12 @@ DashboardOrderQuarterSummary.propTypes = {
   orders: PropTypes.arrayOf(PropTypes.object).isRequired,
   status: PropTypes.string.isRequired,
   error: PropTypes.string,
+  hasCachedData: PropTypes.bool,
 };
 
 DashboardOrderQuarterSummary.defaultProps = {
   error: '',
+  hasCachedData: false,
 };
 
 export default DashboardOrderQuarterSummary;
