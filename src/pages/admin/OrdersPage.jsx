@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
+import { useAdminDataFreshness } from '@/hooks/useAdminDataFreshness';
 import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminOrders } from '@/hooks/order/useAdminOrders';
 import { useOrderExport } from '@/hooks/order/useOrderExport';
@@ -31,12 +32,20 @@ import OrderHealthToolbar from '@/components/admin/order/OrderHealthToolbar';
 import OrderQuarterlyReport from '@/components/admin/order/OrderQuarterlyReport';
 import OrderSearchToolbar from '@/components/admin/order/OrderSearchToolbar';
 import OrdersTable from '@/components/admin/order/OrdersTable';
+import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 
 const OrdersPage = () => {
   const { success, showError, warning } = useToast();
   const { start, stop } = useLoading();
-  const { orders, fetchOrders, refreshOrders, saveOrderPaymentToStore, removeOrderFromStore } =
-    useAdminOrders();
+  const {
+    orders,
+    status: orderStatus,
+    lastFetchedAt: orderLastFetchedAt,
+    fetchOrders,
+    refreshOrders,
+    saveOrderPaymentToStore,
+    removeOrderFromStore,
+  } = useAdminOrders();
   const { productLookup, productCatalogStatus, ensureProductCatalog } = useOrderProductLookup();
   const {
     isOpen: isOrderExportModalOpen,
@@ -84,6 +93,13 @@ const OrdersPage = () => {
     openDeleteModal,
     closeDeleteModal,
   } = useDeleteModal();
+  const orderFreshness = useAdminDataFreshness({
+    resourceLabel: '訂單',
+    lastFetchedAt: orderLastFetchedAt,
+    status: orderStatus,
+    refreshData: refreshOrders,
+    isInteractionLocked: isOrderModalOpen || isOrderExportModalOpen || isDeleteModalOpen,
+  });
   const [isSavingOrder, setIsSavingOrder] = useState(false);
   const {
     analytics: quarterlyAnalytics,
@@ -358,6 +374,8 @@ const OrdersPage = () => {
             </p>
           </div>
         </div>
+
+        <AdminDataFreshness {...orderFreshness} onRefresh={orderFreshness.refreshCurrentData} />
 
         <OrderHealthToolbar
           summary={healthSummary}

@@ -16,6 +16,7 @@ import { useCouponHealth } from '@/hooks/coupon/useCouponHealth';
 import { useCouponImport } from '@/hooks/coupon/useCouponImport';
 import { useCouponModal } from '@/hooks/coupon/useCouponModal';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
+import { useAdminDataFreshness } from '@/hooks/useAdminDataFreshness';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 
@@ -26,6 +27,7 @@ import CouponImportModal from '@/components/admin/coupon/CouponImportModal';
 import CouponModal from '@/components/admin/coupon/CouponModal';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
+import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 
 const CouponsPage = () => {
   // hooks init
@@ -33,6 +35,8 @@ const CouponsPage = () => {
   const { start, stop } = useLoading();
   const {
     coupons,
+    status: couponStatus,
+    lastFetchedAt: couponLastFetchedAt,
     fetchCoupons,
     refreshCoupons,
     saveCouponToStore,
@@ -93,6 +97,14 @@ const CouponsPage = () => {
     openDeleteModal,
     closeDeleteModal,
   } = useDeleteModal();
+  const couponFreshness = useAdminDataFreshness({
+    resourceLabel: '優惠券',
+    lastFetchedAt: couponLastFetchedAt,
+    status: couponStatus,
+    refreshData: refreshCoupons,
+    isInteractionLocked:
+      isCouponModalOpen || isImportModalOpen || isDeleteModalOpen,
+  });
 
   const filteredCoupons = useMemo(() => {
     return coupons.filter((coupon) => {
@@ -288,6 +300,11 @@ const CouponsPage = () => {
             </p>
           </div>
         </div>
+
+        <AdminDataFreshness
+          {...couponFreshness}
+          onRefresh={couponFreshness.refreshCurrentData}
+        />
 
         <CouponHealthToolbar
           summary={healthSummary}

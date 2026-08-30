@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
+import { useAdminDataFreshness } from '@/hooks/useAdminDataFreshness';
 import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminArticles } from '@/hooks/article/useAdminArticles';
 import { useArticleExport } from '@/hooks/article/useArticleExport';
@@ -25,12 +26,15 @@ import ArticleImportModal from '@/components/admin/article/ArticleImportModal';
 import ArticleModal from '@/components/admin/article/ArticleModal';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
+import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 
 const ArticlesPage = () => {
   const { success, showError, warning } = useToast();
   const { start, stop } = useLoading();
   const {
     articles,
+    status: articleStatus,
+    lastFetchedAt: articleLastFetchedAt,
     fetchArticles,
     refreshArticles,
     saveArticleToStore,
@@ -88,6 +92,14 @@ const ArticlesPage = () => {
     openDeleteModal,
     closeDeleteModal,
   } = useDeleteModal();
+  const articleFreshness = useAdminDataFreshness({
+    resourceLabel: '文章',
+    lastFetchedAt: articleLastFetchedAt,
+    status: articleStatus,
+    refreshData: refreshArticles,
+    isInteractionLocked:
+      isArticleModalOpen || isImportModalOpen || isDeleteModalOpen,
+  });
 
   const filteredArticles = useMemo(() => {
     return articles.filter((article) => {
@@ -232,6 +244,11 @@ const ArticlesPage = () => {
             </p>
           </div>
         </div>
+
+        <AdminDataFreshness
+          {...articleFreshness}
+          onRefresh={articleFreshness.refreshCurrentData}
+        />
 
         <ArticleHealthToolbar
           summary={healthSummary}

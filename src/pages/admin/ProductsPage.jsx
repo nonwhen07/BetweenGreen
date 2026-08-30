@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { usePagination } from '@/hooks/usePagination';
 import { useDeleteModal } from '@/hooks/useDeleteModal';
+import { useAdminDataFreshness } from '@/hooks/useAdminDataFreshness';
 import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminProducts } from '@/hooks/product/useAdminProducts';
 import { useProductImport } from '@/hooks/product/useProductImport';
@@ -25,12 +26,19 @@ import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminFilter from '@/components/admin/AdminFilter';
+import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 
 const ProductsPage = () => {
   // hooks init
   const { success, showError } = useToast();
   const { start, stop } = useLoading();
-  const { products, fetchProducts, refreshProducts } = useAdminProducts();
+  const {
+    products,
+    status: productStatus,
+    lastFetchedAt: productLastFetchedAt,
+    fetchProducts,
+    refreshProducts,
+  } = useAdminProducts();
   const { exportAllProducts } = useProductExport(products);
   const { summary: healthSummary, byProductId, issueGroups } = useProductHealth(products);
   const { activities: productActivities, markActivityReviewed } =
@@ -149,6 +157,14 @@ const ProductsPage = () => {
     openDeleteModal,
     closeDeleteModal,
   } = useDeleteModal();
+  const productFreshness = useAdminDataFreshness({
+    resourceLabel: '商品',
+    lastFetchedAt: productLastFetchedAt,
+    status: productStatus,
+    refreshData: refreshProducts,
+    isInteractionLocked:
+      isProductModalOpen || isImportModalOpen || isDeleteModalOpen,
+  });
 
   const handleUpdateProduct = handleSubmit((formData) => {
     // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
@@ -238,6 +254,11 @@ const ProductsPage = () => {
             <p className="admin-page-heading__description">管理商品資料、健康狀態與批次匯入</p>
           </div>
         </div>
+
+        <AdminDataFreshness
+          {...productFreshness}
+          onRefresh={productFreshness.refreshCurrentData}
+        />
 
         <ProductHealthToolbar
           summary={healthSummary}
