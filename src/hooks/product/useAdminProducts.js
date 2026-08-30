@@ -24,8 +24,8 @@ export const useAdminProducts = () => {
   }, [dispatch]);
 
   // CRUD／批次匯入完成：強制向 API 重新取得一次。
-  const refreshProducts = useCallback(() => {
-    return dispatch(fetchAdminProducts()).unwrap();
+  const refreshProducts = useCallback(({ background = false } = {}) => {
+    return dispatch(fetchAdminProducts({ background })).unwrap();
   }, [dispatch]);
 
   return {

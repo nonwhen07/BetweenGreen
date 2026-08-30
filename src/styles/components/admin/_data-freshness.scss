@@ -1,0 +1,69 @@
+@use 'sass:map';
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin-data-freshness {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  margin: -8px 0 16px;
+  padding: 8px 12px;
+  color: $admin-text-light;
+  border: 1px solid $admin-border;
+  border-radius: $admin-radius;
+  background: #fff;
+
+  &__status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  &__indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #adb5bd;
+    box-shadow: 0 0 0 3px rgba(173, 181, 189, 0.16);
+  }
+
+  &__time {
+    color: #adb5bd;
+  }
+
+  &__button {
+    flex: 0 0 auto;
+  }
+
+  &--fresh &__indicator {
+    background: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.14);
+  }
+
+  &--recommend &__indicator {
+    background: #f0ad4e;
+    box-shadow: 0 0 0 3px rgba(240, 173, 78, 0.16);
+  }
+
+  &--stale &__indicator,
+  &--error &__indicator {
+    background: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.14);
+  }
+}
+
+@media (max-width: (map.get($admin-breakpoints, tablet) - 0.02px)) {
+  .admin-data-freshness {
+    align-items: flex-start;
+    flex-direction: column;
+
+    &__button {
+      width: 100%;
+    }
+  }
+}

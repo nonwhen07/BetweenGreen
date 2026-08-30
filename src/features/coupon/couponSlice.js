@@ -26,8 +26,8 @@ const normalizeCouponList = (source) => {
 
 export const fetchAdminCoupons = createAsyncThunk(
   'coupon/fetchAdminCoupons',
-  async (_, { dispatch, rejectWithValue }) => {
-    dispatch(startLoading());
+  async ({ background = false } = {}, { dispatch, rejectWithValue }) => {
+    if (!background) dispatch(startLoading());
 
     try {
       const response = await getAllAdminCoupons();
@@ -38,7 +38,7 @@ export const fetchAdminCoupons = createAsyncThunk(
         extractErrorMessage(error, null, '取得優惠券列表失敗，請稍後再試。'),
       );
     } finally {
-      dispatch(stopLoading());
+      if (!background) dispatch(stopLoading());
     }
   },
 );

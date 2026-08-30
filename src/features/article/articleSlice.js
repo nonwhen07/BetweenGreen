@@ -25,8 +25,8 @@ const normalizeArticleList = (source) => {
 
 export const fetchAdminArticles = createAsyncThunk(
   'article/fetchAdminArticles',
-  async (_, { dispatch, rejectWithValue }) => {
-    dispatch(startLoading());
+  async ({ background = false } = {}, { dispatch, rejectWithValue }) => {
+    if (!background) dispatch(startLoading());
 
     try {
       const response = await getAllAdminArticles();
@@ -36,7 +36,7 @@ export const fetchAdminArticles = createAsyncThunk(
         extractErrorMessage(error, null, '取得文章列表失敗，請稍後再試。'),
       );
     } finally {
-      dispatch(stopLoading());
+      if (!background) dispatch(stopLoading());
     }
   },
 );

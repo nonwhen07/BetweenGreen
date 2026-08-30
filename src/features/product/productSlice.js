@@ -26,8 +26,8 @@ const normalizeProducts = (source) => {
 
 export const fetchAdminProducts = createAsyncThunk(
   'product/fetchAdminProducts',
-  async (_, { dispatch, rejectWithValue }) => {
-    dispatch(startLoading());
+  async ({ background = false } = {}, { dispatch, rejectWithValue }) => {
+    if (!background) dispatch(startLoading());
 
     try {
       const response = await getAllAdminProducts();
@@ -38,7 +38,7 @@ export const fetchAdminProducts = createAsyncThunk(
         extractErrorMessage(error, null, '取得產品列表失敗，請稍後再試。'),
       );
     } finally {
-      dispatch(stopLoading());
+      if (!background) dispatch(stopLoading());
     }
   },
 );

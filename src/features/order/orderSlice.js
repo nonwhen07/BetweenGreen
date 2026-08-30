@@ -18,8 +18,8 @@ const initialState = {
 
 export const fetchAdminOrders = createAsyncThunk(
   'order/fetchAdminOrders',
-  async (_, { dispatch, rejectWithValue }) => {
-    dispatch(startLoading());
+  async ({ background = false } = {}, { dispatch, rejectWithValue }) => {
+    if (!background) dispatch(startLoading());
 
     try {
       const response = await getAllAdminOrders();
@@ -29,7 +29,7 @@ export const fetchAdminOrders = createAsyncThunk(
         extractErrorMessage(error, null, '取得訂單列表失敗，請稍後再試。'),
       );
     } finally {
-      dispatch(stopLoading());
+      if (!background) dispatch(stopLoading());
     }
   },
 );
@@ -96,4 +96,3 @@ export const selectAdminOrdersLastFetchedAt = (state) =>
   state.order.lastFetchedAt;
 
 export default orderSlice.reducer;
-

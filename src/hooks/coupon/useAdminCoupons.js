@@ -24,8 +24,8 @@ export const useAdminCoupons = () => {
     return dispatch(ensureAdminCoupons());
   }, [dispatch]);
 
-  const refreshCoupons = useCallback(() => {
-    return dispatch(fetchAdminCoupons()).unwrap();
+  const refreshCoupons = useCallback(({ background = false } = {}) => {
+    return dispatch(fetchAdminCoupons({ background })).unwrap();
   }, [dispatch]);
 
   const saveCouponToStore = useCallback(

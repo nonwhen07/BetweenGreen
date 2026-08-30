@@ -25,7 +25,8 @@ export const useAdminOrders = () => {
     [dispatch],
   );
   const refreshOrders = useCallback(
-    () => dispatch(fetchAdminOrders()).unwrap(),
+    ({ background = false } = {}) =>
+      dispatch(fetchAdminOrders({ background })).unwrap(),
     [dispatch],
   );
   const saveOrderPaymentToStore = useCallback(
@@ -49,4 +50,3 @@ export const useAdminOrders = () => {
     removeOrderFromStore,
   };
 };
-

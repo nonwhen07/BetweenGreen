@@ -25,7 +25,8 @@ export const useAdminArticles = () => {
     [dispatch],
   );
   const refreshArticles = useCallback(
-    () => dispatch(fetchAdminArticles()).unwrap(),
+    ({ background = false } = {}) =>
+      dispatch(fetchAdminArticles({ background })).unwrap(),
     [dispatch],
   );
   const saveArticleToStore = useCallback(
