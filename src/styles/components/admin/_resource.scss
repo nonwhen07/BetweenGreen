@@ -1,4 +1,4 @@
-@use 'sass:map';
+@use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/admin/admin-variables' as *;
 
@@ -8,7 +8,7 @@
 
 .admin-page-heading {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
   gap: 16px;
   margin-bottom: 20px;
@@ -45,6 +45,8 @@
   }
 
   &__content {
+    min-width: 0;
+
     h6 {
       margin-bottom: 4px;
       font-weight: 700;
@@ -84,7 +86,10 @@
   background: #f8f9fa;
 
   &--panel {
+    display: grid;
+    min-height: 160px;
     padding: 3rem 1rem;
+    place-content: center;
     border: 0;
     border-radius: 0;
     background: #fff;
@@ -104,8 +109,9 @@
     border-bottom: 1px solid #e9ecef;
 
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
 
   &__body {
@@ -113,39 +119,51 @@
   }
 
   &__actions {
-    justify-content: flex-end;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+
+    .btn {
+      flex: 1 1 160px;
+    }
   }
 
   &__footer {
+    overflow-x: auto;
     padding: 1rem 1.5rem;
     border-top: 1px solid #e9ecef;
     background: #fcfcfc;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+
+    .brand-pagination {
+      min-width: max-content;
+      margin-inline: auto;
+    }
   }
 }
 
-// Page Heading 在 Pad 寬度以下改為直向；後台仍維持 desktop-first 覆寫順序。
-@media (max-width: (map.get($admin-breakpoints, content-stack) - 0.02px)) {
+@include respond($admin-breakpoints, content-stack) {
   .admin-page-heading {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
   }
-}
 
-// 後台目前以 desktop 為基準，tablet 以下才往下覆寫排版。
-@media (max-width: (map.get($admin-breakpoints, pad) - 0.02px)) {
   .admin-panel {
     &__header {
-      align-items: flex-start;
-      gap: 1rem;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
     }
 
     &__actions {
-      width: 100%;
+      width: auto;
+      justify-content: flex-end;
 
       .btn {
-        flex: 1 1 auto;
+        flex: 0 0 auto;
       }
     }
   }
