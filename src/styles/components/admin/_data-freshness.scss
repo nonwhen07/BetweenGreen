@@ -57,7 +57,7 @@
   }
 }
 
-@media (max-width: (map.get($admin-breakpoints, tablet) - 0.02px)) {
+@media (max-width: (map.get($admin-breakpoints, pad) - 0.02px)) {
   .admin-data-freshness {
     align-items: flex-start;
     flex-direction: column;

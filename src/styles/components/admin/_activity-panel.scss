@@ -149,7 +149,7 @@
 
 }
 
-@media (max-width: (map.get($admin-breakpoints, laptop) - 0.02px)) {
+@media (max-width: (map.get($admin-breakpoints, content-stack) - 0.02px)) {
   .admin {
     .admin-section-heading {
       flex-direction: column;

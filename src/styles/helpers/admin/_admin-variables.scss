@@ -13,3 +13,9 @@ $admin-border: #dee2e6;
 
 $admin-radius: 8px;
 $admin-spacing: 16px;
+
+// Layout layering
+$admin-z-backdrop: 1030;
+$admin-z-header: 1035;
+$admin-z-sidebar: 1040;
+$admin-z-dropdown: 1050;

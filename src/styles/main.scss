@@ -6,46 +6,46 @@
 // @use '@/styles/base/base'; // 已合併到 base.scss，保留作為參考(小專案無須拆分)
 @use '@/styles/base/base';
 
-@use '@/layout/layout';
-@use '@/layout/header';
-@use '@/layout/footer';
-@use '@/layout/theme';
+@use '@/styles/layout/layout';
+@use '@/styles/layout/header';
+@use '@/styles/layout/footer';
+@use '@/styles/layout/theme';
 
-@use '@/components/hero';
-@use '@/components/buttons';
-@use '@/components/spinners';
-@use '@/components/page-loader';
-@use '@/components/product-image';
-@use '@/components/card';
-@use '@/components/toast';
-@use '@/components/sidebar';
-@use '@/components/pagination';
+@use '@/styles/components/hero';
+@use '@/styles/components/buttons';
+@use '@/styles/components/spinners';
+@use '@/styles/components/page-loader';
+@use '@/styles/components/product-image';
+@use '@/styles/components/card';
+@use '@/styles/components/toast';
+@use '@/styles/components/sidebar';
+@use '@/styles/components/pagination';
 
 // product
-@use '@/pages/products-grid';
+@use '@/styles/pages/products-grid';
 // @use '@/pages/product-swiper';
-@use '@/pages/product-detail';
-@use '@/components/product/product-gallery';
-@use '@/components/product/product-info';
-@use '@/components/product/product-detail-tabs';
-@use '@/components/product/related-products';
+@use '@/styles/pages/product-detail';
+@use '@/styles/components/product/product-gallery';
+@use '@/styles/components/product/product-info';
+@use '@/styles/components/product/product-detail-tabs';
+@use '@/styles/components/product/related-products';
 
 // @use '@/pages/index';
-@use '@/pages/home';
-@use '@/pages/about';
-@use '@/pages/products';
+@use '@/styles/pages/home';
+@use '@/styles/pages/about';
+@use '@/styles/pages/products';
 // @use '@/pages/products-grid';
 // @use '@/pages/product-swiper';
 // @use '@/pages/product-detail';
 
 // cartpages';
 // @use '@/pages/cart';
-@use '@/pages/cart/cart';
-@use '@/pages/cart/steps';
-@use '@/pages/cart/states';
-@use '@/pages/cart/order-items';
-@use '@/pages/cart/order-summary';
-@use '@/pages/cart/checkout-form';
-@use '@/pages/cart/checkout-payment';
-@use '@/pages/cart/checkout-success';
-@use '@/pages/cart/customer-orders';
+@use '@/styles/pages/cart/cart';
+@use '@/styles/pages/cart/steps';
+@use '@/styles/pages/cart/states';
+@use '@/styles/pages/cart/order-items';
+@use '@/styles/pages/cart/order-summary';
+@use '@/styles/pages/cart/checkout-form';
+@use '@/styles/pages/cart/checkout-payment';
+@use '@/styles/pages/cart/checkout-success';
+@use '@/styles/pages/cart/customer-orders';

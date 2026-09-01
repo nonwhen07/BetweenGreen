@@ -8,11 +8,11 @@ $breakpoints: (
   desktop-xl: 1296px,
 );
 
-// 後台breakpoints引用 (目前後台只先做 tablet-first，未來可精簡畫面擴充成mobile-first)
+// 後台 breakpoints：依版面行為命名，與前台裝置導向的 breakpoints 分開維護。
+// 目前只實作 Pad <-> Desktop；pad 以下僅保留基本安全網。
 $admin-breakpoints: (
-  mobile: 0,
-  tablet: 768px,
-  laptop: 1024px,
-  desktop: 1280px,
+  pad: 768px,
+  content-stack: 1024px,
+  nav-overlay: 1280px,
   wide: 1440px,
 );

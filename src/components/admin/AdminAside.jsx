@@ -1,17 +1,14 @@
-import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import {
   Activity,
   Box,
-  Users,
   ShoppingBag,
   BookOpen,
   AlertCircle,
-  ThumbsUp,
-  Menu,
+  X,
   Home,
-  Calendar,
 } from 'react-feather';
 
 const menu = [
@@ -55,52 +52,48 @@ const menu = [
   },
 ];
 
-const AdminAside = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
+const AdminAside = ({ id, isOpen, onClose }) => {
   return (
-    <>
-      <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
-        {/* Header */}
-        <div className="admin-sidebar__brand">
-          <span>植間生活後台</span>
-          <button onClick={() => setCollapsed(!collapsed)}>
-            <Menu size={18} />
-          </button>
-        </div>
-        {/* Menu */}
-        <nav className="admin-sidebar__menu">
-          {/* {menu.map((menuItem) => {
-          const Icon = menuItem.icon;
-          return (
-            <NavLink
-              key={menuItem.path}
-              to={menuItem.path}
-              end={menuItem.end}
-              title={menuItem.title}
-              aria-label={menuItem.title}
-              className={({ isActive }) => `nav-link ${isActive ? 'active text-warning' : ''}`}
-            >
-              <Icon className="me-2" size={18} />
-              {menuItem.name}
-            </NavLink>
-          );
-        })} */}
-          {menu.map((item) => (
-            <NavLink
-              key={item.name}
-              to={item.path}
-              end={item.end}
-              className={({ isActive }) => `admin-sidebar__item ${isActive ? 'active' : ''}`}
-            >
-              <span className="icon">{item.icon}</span>
-              <span className="text">{item.name}</span>
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
-    </>
+    <aside id={id} className={`admin-sidebar ${isOpen ? 'is-open' : ''}`}>
+      {/* Header */}
+      <div className="admin-sidebar__brand">
+        <span>植間生活後台</span>
+        <button
+          type="button"
+          className="admin-sidebar__close"
+          aria-label="關閉後台導覽"
+          onClick={onClose}
+        >
+          <X size={20} />
+        </button>
+      </div>
+      {/* Menu */}
+      <nav className="admin-sidebar__menu">
+        {menu.map((item) => (
+          <NavLink
+            key={item.name}
+            to={item.path}
+            end={item.end}
+            title={item.title}
+            aria-label={item.title}
+            onClick={onClose}
+            className={({ isActive }) =>
+              `admin-sidebar__item ${isActive ? 'active' : ''}`
+            }
+          >
+            <span className="icon">{item.icon}</span>
+            <span className="text">{item.name}</span>
+          </NavLink>
+        ))}
+      </nav>
+    </aside>
   );
+};
+
+AdminAside.propTypes = {
+  id: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default AdminAside;

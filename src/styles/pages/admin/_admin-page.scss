@@ -375,7 +375,7 @@
   }
 }
 
-@media (max-width: (map.get($admin-breakpoints, desktop) - 0.02px)) {
+@media (max-width: (map.get($admin-breakpoints, nav-overlay) - 0.02px)) {
   .admin-dashboard {
     &__modules {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -396,7 +396,7 @@
   }
 }
 
-@media (max-width: (map.get($admin-breakpoints, tablet) - 0.02px)) {
+@media (max-width: (map.get($admin-breakpoints, pad) - 0.02px)) {
   .admin-dashboard {
     &-freshness {
       align-items: flex-start;

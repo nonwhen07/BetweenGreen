@@ -4,13 +4,14 @@ import { logout } from '@/services/authService';
 import { clearToken } from '@/utils/auth';
 import { logoutAction } from '@/features/auth/authSlice';
 import { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import { FaAlignJustify, FaUser, FaSignOutAlt } from 'react-icons/fa';
 // import { toast } from '@/utils/toast';
 
 import { useToast } from '@/hooks/useToast';
 
-const AdminHeader = ({ onToggleSidebar }) => {
+const AdminHeader = ({ title, isSidebarOpen, onToggleSidebar }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -56,12 +57,19 @@ const AdminHeader = ({ onToggleSidebar }) => {
 
       {/* 左側 */}
       <div className="admin-header__left">
-        <button className="admin-header__toggle" onClick={onToggleSidebar}>
+        <button
+          type="button"
+          className="admin-header__toggle"
+          aria-label={isSidebarOpen ? '關閉後台導覽' : '開啟後台導覽'}
+          aria-controls="admin-sidebar"
+          aria-expanded={isSidebarOpen}
+          onClick={onToggleSidebar}
+        >
           <FaAlignJustify size={18} />
         </button>
 
         {/* Breadcrumb / Title */}
-        <div className="admin-header__title">Dashboard</div>
+        <div className="admin-header__title">{title}</div>
       </div>
       {/* 右側 */}
       <div className="admin-header__right" ref={dropdownRef}>
@@ -86,6 +94,12 @@ const AdminHeader = ({ onToggleSidebar }) => {
       </div>
     </header>
   );
+};
+
+AdminHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  isSidebarOpen: PropTypes.bool.isRequired,
+  onToggleSidebar: PropTypes.func.isRequired,
 };
 
 export default AdminHeader;

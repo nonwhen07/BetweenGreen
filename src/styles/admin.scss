@@ -4,6 +4,8 @@
 @use '@/styles/helpers/breakpoints';
 @use '@/styles/helpers/custom-text' as *;
 
+// base/reset 由 main.scss 統一載入一次；此入口只組合後台專屬樣式。
+
 // layout
 @use '@/styles/layout/admin/admin-layout';
 @use '@/styles/layout/admin/admin-header';

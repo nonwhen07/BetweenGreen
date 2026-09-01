@@ -49,7 +49,7 @@
   }
 }
 
-@media (max-width: (map.get($admin-breakpoints, desktop) - 0.02px)) {
+@media (max-width: (map.get($admin-breakpoints, nav-overlay) - 0.02px)) {
   .admin-health-toolbar {
     grid-template-columns: 1fr;
 
