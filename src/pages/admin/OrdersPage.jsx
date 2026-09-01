@@ -420,7 +420,7 @@ const OrdersPage = () => {
               </p>
             </div>
 
-            <div className="admin-panel__actions d-flex flex-wrap gap-2">
+            <div className="admin-panel__actions">
               <button
                 type="button"
                 className="btn btn-outline-secondary px-4"
@@ -441,7 +441,7 @@ const OrdersPage = () => {
           </div>
 
           {totalPages > 1 && (
-            <div className="admin-panel__footer d-flex justify-content-center">
+            <div className="admin-panel__footer">
               <BrandPagination
                 currentPage={page}
                 totalPages={totalPages}

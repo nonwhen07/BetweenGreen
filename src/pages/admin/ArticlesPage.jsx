@@ -27,6 +27,7 @@ import ArticleModal from '@/components/admin/article/ArticleModal';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
+import BrandPagination from '@/components/shared/BrandPagination';
 
 const ArticlesPage = () => {
   const { success, showError, warning } = useToast();
@@ -40,17 +41,17 @@ const ArticlesPage = () => {
     saveArticleToStore,
     removeArticleFromStore,
   } = useAdminArticles();
-  const { summary: healthSummary, byArticleId, issueGroups } =
-    useArticleHealth(articles);
-  const { activities: articleActivities, addActivity, markActivityReviewed } =
-    useAdminActivities({ module: 'article' });
+  const { summary: healthSummary, byArticleId, issueGroups } = useArticleHealth(articles);
+  const {
+    activities: articleActivities,
+    addActivity,
+    markActivityReviewed,
+  } = useAdminActivities({ module: 'article' });
   const { exportAllArticles } = useArticleExport(articles);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
-  const healthFilter = ['all', 'error', 'warning', 'healthy'].includes(
-    requestedHealthFilter,
-  )
+  const healthFilter = ['all', 'error', 'warning', 'healthy'].includes(requestedHealthFilter)
     ? requestedHealthFilter
     : 'all';
   const issueFilter = searchParams.get('issue') || '';
@@ -97,18 +98,15 @@ const ArticlesPage = () => {
     lastFetchedAt: articleLastFetchedAt,
     status: articleStatus,
     refreshData: refreshArticles,
-    isInteractionLocked:
-      isArticleModalOpen || isImportModalOpen || isDeleteModalOpen,
+    isInteractionLocked: isArticleModalOpen || isImportModalOpen || isDeleteModalOpen,
   });
 
   const filteredArticles = useMemo(() => {
     return articles.filter((article) => {
       const articleHealth = byArticleId[article.id];
-      const matchHealth =
-        healthFilter === 'all' || articleHealth?.status === healthFilter;
+      const matchHealth = healthFilter === 'all' || articleHealth?.status === healthFilter;
       const matchIssue =
-        !issueFilter ||
-        articleHealth?.issues.some((issue) => issue.code === issueFilter);
+        !issueFilter || articleHealth?.issues.some((issue) => issue.code === issueFilter);
       return matchHealth && matchIssue;
     });
   }, [articles, byArticleId, healthFilter, issueFilter]);
@@ -148,11 +146,15 @@ const ArticlesPage = () => {
         successCount: isSuccess ? 1 : 0,
         errorCount: isSuccess ? 0 : 1,
         isReviewed: isSuccess,
-        details: isSuccess ? [] : [{
-          id: article?.id || '',
-          title: article?.title || '未命名文章',
-          message,
-        }],
+        details: isSuccess
+          ? []
+          : [
+              {
+                id: article?.id || '',
+                title: article?.title || '未命名文章',
+                message,
+              },
+            ],
       });
     } catch {
       warning('文章操作結果未能保存至操作紀錄');
@@ -170,11 +172,9 @@ const ArticlesPage = () => {
           else await refreshArticles();
           if (mode === 'create') resetPage();
         } catch (error) {
-          showError(extractErrorMessage(
-            error,
-            null,
-            '文章已儲存，但同步 Store 失敗，請重新整理頁面。',
-          ));
+          showError(
+            extractErrorMessage(error, null, '文章已儲存，但同步 Store 失敗，請重新整理頁面。'),
+          );
         }
 
         await recordArticleActivity({ action, status: 'success', article });
@@ -203,18 +203,19 @@ const ArticlesPage = () => {
       closeDeleteModal();
       removeArticleFromStore(deleteTarget.id);
       await recordArticleActivity({
-        action: 'delete', status: 'success', article: deleteTarget,
+        action: 'delete',
+        status: 'success',
+        article: deleteTarget,
       });
       success('文章刪除成功！');
     } catch (error) {
-      const errorMessage = extractErrorMessage(
-        error,
-        null,
-        '刪除文章失敗，請稍後再試。',
-      );
+      const errorMessage = extractErrorMessage(error, null, '刪除文章失敗，請稍後再試。');
       showError(errorMessage);
       await recordArticleActivity({
-        action: 'delete', status: 'error', article: deleteTarget, message: errorMessage,
+        action: 'delete',
+        status: 'error',
+        article: deleteTarget,
+        message: errorMessage,
       });
     } finally {
       stop();
@@ -231,24 +232,17 @@ const ArticlesPage = () => {
     resetPage();
   }, [healthFilter, issueFilter, resetPage]);
 
-  const pageInfo = { current_page: page, total_pages: totalPages };
-
   return (
     <>
       <div className="admin-resource-page admin-resource-page--article py-1">
         <div className="admin-page-heading">
           <div>
             <h1 className="admin-page-heading__title">文章列表</h1>
-            <p className="admin-page-heading__description">
-              管理文章內容、發布狀態與前台投放位置
-            </p>
+            <p className="admin-page-heading__description">管理文章內容、發布狀態與前台投放位置</p>
           </div>
         </div>
 
-        <AdminDataFreshness
-          {...articleFreshness}
-          onRefresh={articleFreshness.refreshCurrentData}
-        />
+        <AdminDataFreshness {...articleFreshness} onRefresh={articleFreshness.refreshCurrentData} />
 
         <ArticleHealthToolbar
           summary={healthSummary}
@@ -268,7 +262,7 @@ const ArticlesPage = () => {
               </p>
             </div>
 
-            <div className="admin-panel__actions d-flex flex-wrap gap-2">
+            <div className="admin-panel__actions">
               <button
                 type="button"
                 className="btn btn-outline-secondary px-4"
@@ -302,15 +296,26 @@ const ArticlesPage = () => {
             </div>
           </div>
 
-          <ArticlesTable
-            articles={currentPageArticles}
-            pageInfo={pageInfo}
-            handlePageChange={goToPage}
-            openArticleModal={openArticleModal}
-            openDeleteModal={openDeleteModal}
-            articleCount={currentPageArticles.length}
-            hasArticles={articles.length > 0}
-          />
+          <div className="admin-panel__body">
+            <ArticlesTable
+              articles={currentPageArticles}
+              openArticleModal={openArticleModal}
+              openDeleteModal={openDeleteModal}
+              articleCount={currentPageArticles.length}
+              hasArticles={articles.length > 0}
+            />
+          </div>
+
+          {totalPages > 1 && (
+            <div className="admin-panel__footer">
+              <BrandPagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                ariaLabel="文章分頁導覽"
+              />
+            </div>
+          )}
         </div>
 
         <AdminActivityPanel

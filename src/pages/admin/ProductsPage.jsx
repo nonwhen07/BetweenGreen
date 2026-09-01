@@ -41,8 +41,9 @@ const ProductsPage = () => {
   } = useAdminProducts();
   const { exportAllProducts } = useProductExport(products);
   const { summary: healthSummary, byProductId, issueGroups } = useProductHealth(products);
-  const { activities: productActivities, markActivityReviewed } =
-    useAdminActivities({ module: 'product' });
+  const { activities: productActivities, markActivityReviewed } = useAdminActivities({
+    module: 'product',
+  });
   const [searchParams, setSearchParams] = useSearchParams();
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
@@ -162,8 +163,7 @@ const ProductsPage = () => {
     lastFetchedAt: productLastFetchedAt,
     status: productStatus,
     refreshData: refreshProducts,
-    isInteractionLocked:
-      isProductModalOpen || isImportModalOpen || isDeleteModalOpen,
+    isInteractionLocked: isProductModalOpen || isImportModalOpen || isDeleteModalOpen,
   });
 
   const handleUpdateProduct = handleSubmit((formData) => {
@@ -202,7 +202,6 @@ const ProductsPage = () => {
       await deleteProduct(deleteTarget.id);
       // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
       closeDeleteModal();
-      // await fetchProducts({ page: pageInfo.current_page || 1 });
       await refreshProducts();
       success('產品刪除成功！');
     } catch (error) {
@@ -255,10 +254,7 @@ const ProductsPage = () => {
           </div>
         </div>
 
-        <AdminDataFreshness
-          {...productFreshness}
-          onRefresh={productFreshness.refreshCurrentData}
-        />
+        <AdminDataFreshness {...productFreshness} onRefresh={productFreshness.refreshCurrentData} />
 
         <ProductHealthToolbar
           summary={healthSummary}
@@ -269,26 +265,69 @@ const ProductsPage = () => {
           onIssueFilterChange={handleIssueFilterChange}
         />
 
-        <div className="admin-panel">
-          <AdminFilter
-            keyword={keyword}
-            setKeyword={setKeyword}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
+        <AdminFilter
+          keyword={keyword}
+          setKeyword={setKeyword}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
 
-          <ProductsTable
-            products={currentPageProducts}
-            openProductModal={handleOpenProductModal}
-            openDeleteModal={openDeleteModal}
-            productTotalCount={filteredProducts.length}
-            exportProductCount={products.length}
-            selectedProductId={selectedProductId}
-            openProductImportModal={openImportModal}
-            exportAllProducts={exportAllProducts}
-          />
+        <div className="admin-panel">
+          <div className="admin-panel__header">
+            <div>
+              <h4 className="mb-1">商品快速總覽</h4>
+              <p className="text-muted small mb-0">
+                篩選結果共 {filteredProducts.length} 筆，本頁顯示 {currentPageProducts.length} 筆
+              </p>
+            </div>
+
+            <div className="admin-panel__actions">
+              <button
+                type="button"
+                className="btn btn-outline-secondary px-4"
+                onClick={exportAllProducts}
+                disabled={products.length === 0}
+              >
+                匯出全部 JSON
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-success px-4"
+                onClick={() => openImportModal('create')}
+              >
+                JSON 批次新增
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-primary px-4"
+                onClick={() => openImportModal('update')}
+                disabled={products.length === 0}
+              >
+                JSON 批次更新
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary px-4"
+                onClick={() => handleOpenProductModal('create')}
+              >
+                ＋ 新增商品
+              </button>
+            </div>
+          </div>
+
+          <div className="admin-panel__body">
+            <ProductsTable
+              products={currentPageProducts}
+              openProductModal={handleOpenProductModal}
+              openDeleteModal={openDeleteModal}
+              productTotalCount={filteredProducts.length}
+              hasProducts={products.length > 0}
+              selectedProductId={selectedProductId}
+            />
+          </div>
+
           {totalPages > 1 && (
-            <div className="admin-panel__footer d-flex justify-content-center">
+            <div className="admin-panel__footer">
               <BrandPagination
                 currentPage={page}
                 totalPages={totalPages}

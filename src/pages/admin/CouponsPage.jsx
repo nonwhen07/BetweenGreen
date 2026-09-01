@@ -28,6 +28,7 @@ import CouponModal from '@/components/admin/coupon/CouponModal';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
+import BrandPagination from '@/components/shared/BrandPagination';
 
 const CouponsPage = () => {
   // hooks init
@@ -42,17 +43,17 @@ const CouponsPage = () => {
     saveCouponToStore,
     removeCouponFromStore,
   } = useAdminCoupons();
-  const { summary: healthSummary, byCouponId, issueGroups } =
-    useCouponHealth(coupons);
-  const { activities: couponActivities, addActivity, markActivityReviewed } =
-    useAdminActivities({ module: 'coupon' });
+  const { summary: healthSummary, byCouponId, issueGroups } = useCouponHealth(coupons);
+  const {
+    activities: couponActivities,
+    addActivity,
+    markActivityReviewed,
+  } = useAdminActivities({ module: 'coupon' });
   const { exportAllCoupons } = useCouponExport(coupons);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
-  const healthFilter = ['all', 'error', 'warning', 'healthy'].includes(
-    requestedHealthFilter,
-  )
+  const healthFilter = ['all', 'error', 'warning', 'healthy'].includes(requestedHealthFilter)
     ? requestedHealthFilter
     : 'all';
   const issueFilter = searchParams.get('issue') || '';
@@ -102,18 +103,15 @@ const CouponsPage = () => {
     lastFetchedAt: couponLastFetchedAt,
     status: couponStatus,
     refreshData: refreshCoupons,
-    isInteractionLocked:
-      isCouponModalOpen || isImportModalOpen || isDeleteModalOpen,
+    isInteractionLocked: isCouponModalOpen || isImportModalOpen || isDeleteModalOpen,
   });
 
   const filteredCoupons = useMemo(() => {
     return coupons.filter((coupon) => {
       const couponHealth = byCouponId[coupon.id];
-      const matchHealth =
-        healthFilter === 'all' || couponHealth?.status === healthFilter;
+      const matchHealth = healthFilter === 'all' || couponHealth?.status === healthFilter;
       const matchIssue =
-        !issueFilter ||
-        couponHealth?.issues.some((issue) => issue.code === issueFilter);
+        !issueFilter || couponHealth?.issues.some((issue) => issue.code === issueFilter);
 
       return matchHealth && matchIssue;
     });
@@ -133,15 +131,7 @@ const CouponsPage = () => {
   // derived values
   const couponCount = currentPageCoupons.length;
   const couponTotalCount = filteredCoupons.length;
-  const pageInfo = {
-    current_page: page,
-    total_pages: totalPages,
-  };
-
   // Page actions（CRUD / pagination）
-  const handlePageChange = (page = 1) => {
-    goToPage(page);
-  };
   const handleHealthFilterChange = (nextHealthFilter) => {
     const nextSearchParams = new URLSearchParams(searchParams);
 
@@ -214,11 +204,7 @@ const CouponsPage = () => {
           if (mode === 'create') resetPage();
         } catch (error) {
           showError(
-            extractErrorMessage(
-              error,
-              null,
-              '優惠券已儲存，但同步 Store 失敗，請重新整理頁面。',
-            ),
+            extractErrorMessage(error, null, '優惠券已儲存，但同步 Store 失敗，請重新整理頁面。'),
           );
         }
 
@@ -295,16 +281,11 @@ const CouponsPage = () => {
         <div className="admin-page-heading">
           <div>
             <h1 className="admin-page-heading__title">優惠券列表</h1>
-            <p className="admin-page-heading__description">
-              管理優惠券資料、啟用狀態與使用期限
-            </p>
+            <p className="admin-page-heading__description">管理優惠券資料、啟用狀態與使用期限</p>
           </div>
         </div>
 
-        <AdminDataFreshness
-          {...couponFreshness}
-          onRefresh={couponFreshness.refreshCurrentData}
-        />
+        <AdminDataFreshness {...couponFreshness} onRefresh={couponFreshness.refreshCurrentData} />
 
         <CouponHealthToolbar
           summary={healthSummary}
@@ -324,7 +305,7 @@ const CouponsPage = () => {
               </p>
             </div>
 
-            <div className="admin-panel__actions d-flex flex-wrap gap-2">
+            <div className="admin-panel__actions">
               <button
                 type="button"
                 className="btn btn-outline-secondary px-4"
@@ -360,15 +341,26 @@ const CouponsPage = () => {
               </button>
             </div>
           </div>
-          <CouponsTable
-            coupons={currentPageCoupons}
-            pageInfo={pageInfo}
-            handlePageChange={handlePageChange}
-            openCouponModal={openCouponModal}
-            openDeleteModal={openDeleteModal}
-            couponCount={couponCount}
-            hasCoupons={coupons.length > 0}
-          />
+          <div className="admin-panel__body">
+            <CouponsTable
+              coupons={currentPageCoupons}
+              openCouponModal={openCouponModal}
+              openDeleteModal={openDeleteModal}
+              couponCount={couponCount}
+              hasCoupons={coupons.length > 0}
+            />
+          </div>
+
+          {totalPages > 1 && (
+            <div className="admin-panel__footer">
+              <BrandPagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                ariaLabel="優惠券分頁導覽"
+              />
+            </div>
+          )}
         </div>
 
         <AdminActivityPanel
