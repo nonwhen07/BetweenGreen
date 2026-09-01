@@ -17,8 +17,6 @@ function ProductImage({ src, alt, size = 'medium' /*, showWatermark = true */ })
           e.target.src = noImage;
         }}
       />
-
-      {/* {isFallback && showWatermark && <span className="product-image__watermark">No Image</span>} */}
     </div>
   );
 }

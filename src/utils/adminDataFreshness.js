@@ -13,6 +13,12 @@ const updatedAtFormatter = new Intl.DateTimeFormat('zh-TW', {
   hour12: false,
 });
 
+export const getAdminFreshnessReferenceNow = (lastFetchedAt, clockNow) => {
+  const timestamp = Number(lastFetchedAt);
+
+  return Number.isFinite(timestamp) && timestamp > 0 ? Math.max(clockNow, timestamp) : clockNow;
+};
+
 export const getAdminDataFreshness = (lastFetchedAt, now = Date.now()) => {
   const timestamp = Number(lastFetchedAt);
 

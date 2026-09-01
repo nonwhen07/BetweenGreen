@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 // hooks
 import { useAdminActivities } from '@/hooks/activity/useAdminActivities';
 import { useAdminDashboardData } from '@/hooks/dashboard/useAdminDashboardData';
+import { useLoading } from '@/hooks/useLoading';
 import { useToast } from '@/hooks/useToast';
 // components
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
@@ -65,6 +66,7 @@ const DashboardPage = () => {
     moduleFreshness,
     modules,
   } = useAdminDashboardData();
+  const { start, stop } = useLoading();
   const { info, showError, success, warning } = useToast();
   const { activities, markActivityReviewed } = useAdminActivities({
     dashboard: true,
@@ -87,21 +89,31 @@ const DashboardPage = () => {
   }, [loadDashboard, warning]);
 
   const handleRefreshDashboard = async () => {
-    const { attemptedModules, failures, refreshedModules } =
-      await loadDashboard();
+    start();
 
-    if (failures.length > 0) {
-      const failedLabels = failures.map((failure) => failure.label).join('、');
-      warning(`${failedLabels}更新失敗，原有資料仍保留`);
-    }
+    try {
+      const { attemptedModules, failures, refreshedModules } =
+        await loadDashboard();
 
-    if (refreshedModules.length > 0) {
-      const refreshedLabels = refreshedModules
-        .map((module) => module.label)
-        .join('、');
-      success(`${refreshedLabels}已更新`);
-    } else if (attemptedModules.length === 0) {
-      info('目前沒有需要更新的模組');
+      if (failures.length > 0) {
+        const failedLabels = failures
+          .map((failure) => failure.label)
+          .join('、');
+        warning(`${failedLabels}更新失敗，原有資料仍保留`);
+      }
+
+      if (refreshedModules.length > 0) {
+        const refreshedLabels = refreshedModules
+          .map((module) => module.label)
+          .join('、');
+        success(`${refreshedLabels}已更新`);
+      } else if (attemptedModules.length === 0) {
+        info('目前沒有需要更新的模組');
+      }
+    } catch {
+      showError('更新後台模組失敗，請稍後再試。');
+    } finally {
+      stop();
     }
   };
 

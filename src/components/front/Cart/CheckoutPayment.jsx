@@ -90,7 +90,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
       </div>
 
       <form onSubmit={handlePaymentSubmit}>
-        <div className="row cart-checkout checkout-payment__layout mx-0">
+        <div className="checkout-payment__layout row mx-0">
           <div className="col-lg-7">
             <div className="checkout-payment__card card p-3 mb-3">
               <div className="checkout-payment__card-header">

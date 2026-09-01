@@ -3,7 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 // hooks
 import { useToast } from '@/hooks/useToast';
 // utils
-import { getAdminDataFreshness, getAdminDataFreshnessNextDelay } from '@/utils/adminDataFreshness';
+import {
+  getAdminDataFreshness,
+  getAdminDataFreshnessNextDelay,
+  getAdminFreshnessReferenceNow,
+} from '@/utils/adminDataFreshness';
 
 export const useAdminDataFreshness = ({
   resourceLabel,
@@ -15,14 +19,15 @@ export const useAdminDataFreshness = ({
   const { success, showError } = useToast();
   const [now, setNow] = useState(() => Date.now());
 
-  useEffect(() => {
-    setNow(Date.now());
-  }, [lastFetchedAt]);
+  const referenceNow = getAdminFreshnessReferenceNow(lastFetchedAt, now);
 
-  const freshness = useMemo(() => getAdminDataFreshness(lastFetchedAt, now), [lastFetchedAt, now]);
+  const freshness = useMemo(
+    () => getAdminDataFreshness(lastFetchedAt, referenceNow),
+    [lastFetchedAt, referenceNow],
+  );
   const nextCheckDelay = useMemo(
-    () => getAdminDataFreshnessNextDelay(lastFetchedAt, now),
-    [lastFetchedAt, now],
+    () => getAdminDataFreshnessNextDelay(lastFetchedAt, referenceNow),
+    [lastFetchedAt, referenceNow],
   );
   const isRefreshing = status === 'loading';
   const hasRefreshError = status === 'error';

@@ -199,7 +199,7 @@ const CheckoutPaymentPage = () => {
 
       <CartSteps currentStep={3} />
 
-      <section className="checkout-payment-page__content ui-section ui-section--cart active">
+      <section className="checkout-payment-page__content ui-section ui-section--cart is-active">
         {orderProducts.length === 0 ? (
           <div className="cart-state-card cart-state-card--empty">
             <h2 className="cart-state-card__title">訂單內容為空</h2>

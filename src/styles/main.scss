@@ -1,57 +1,51 @@
-// // @use "bootstrap/scss/bootstrap" as *;
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/variables' as *;
+@use '@/styles/helpers/custom-text' as *;
 
-// // @use './helpers/variables';
-@use './helpers/variables' as *;
-@use './helpers/mixins';
-@use './helpers/custom-text' as *;
+// 多人協作reset 由框架組維護，base 由設計組維護
+// @use '@/styles/base/base'; // 已合併到 base.scss，保留作為參考(小專案無須拆分)
+@use '@/styles/base/base';
 
-// // 多人協作reset 由框架組維護，base 由設計組維護
-// // @use './base/reset'; // 已合併到 base.scss，保留作為參考(小專案無須拆分)
-@use './base/base';
+@use '@/layout/layout';
+@use '@/layout/header';
+@use '@/layout/footer';
+@use '@/layout/theme';
 
-@use './layout/layout';
-@use './layout/header';
-@use './layout/footer';
-@use './layout/theme';
-
-@use './components/hero';
-@use './components/buttons';
-@use './components/spinners';
-@use './components/page-loader';
-@use './components/product-image';
-@use './components/card';
-@use './components/toast';
-@use './components/sidebar';
-@use './components/pagination';
+@use '@/components/hero';
+@use '@/components/buttons';
+@use '@/components/spinners';
+@use '@/components/page-loader';
+@use '@/components/product-image';
+@use '@/components/card';
+@use '@/components/toast';
+@use '@/components/sidebar';
+@use '@/components/pagination';
 
 // product
-@use './pages/products-grid';
-// @use './pages/product-swiper';
-@use './pages/product-detail';
-@use './components/product/product-gallery';
-@use './components/product/product-info';
-@use './components/product/product-detail-tabs';
-@use './components/product/related-products';
+@use '@/pages/products-grid';
+// @use '@/pages/product-swiper';
+@use '@/pages/product-detail';
+@use '@/components/product/product-gallery';
+@use '@/components/product/product-info';
+@use '@/components/product/product-detail-tabs';
+@use '@/components/product/related-products';
 
-// @use './pages/index';
-@use './pages/home';
-@use './pages/about';
-@use './pages/products';
-// @use './pages/products-grid';
-// @use './pages/product-swiper';
-// @use './pages/product-detail';
+// @use '@/pages/index';
+@use '@/pages/home';
+@use '@/pages/about';
+@use '@/pages/products';
+// @use '@/pages/products-grid';
+// @use '@/pages/product-swiper';
+// @use '@/pages/product-detail';
 
-//cart';
-// @use './pages/cart';
-@use './pages/cart/cart';
-@use './pages/cart/steps';
-@use './pages/cart/states';
-@use './pages/cart/order-items';
-@use './pages/cart/order-summary';
-@use './pages/cart/checkout-form';
-@use './pages/cart/checkout-payment';
-@use './pages/cart/checkout-success';
-@use './pages/cart/customer-orders';
-
-// @use './pages/cart/states';
-// @use './pages/cart/states';
+// cartpages';
+// @use '@/pages/cart';
+@use '@/pages/cart/cart';
+@use '@/pages/cart/steps';
+@use '@/pages/cart/states';
+@use '@/pages/cart/order-items';
+@use '@/pages/cart/order-summary';
+@use '@/pages/cart/checkout-form';
+@use '@/pages/cart/checkout-payment';
+@use '@/pages/cart/checkout-success';
+@use '@/pages/cart/customer-orders';

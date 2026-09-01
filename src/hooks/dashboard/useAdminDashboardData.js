@@ -12,6 +12,7 @@ import { useProductHealth } from '@/hooks/product/useProductHealth';
 import {
   getAdminDataFreshness,
   getAdminDataFreshnessNextDelay,
+  getAdminFreshnessReferenceNow,
   getAdminModuleRefreshMode,
 } from '@/utils/adminDataFreshness';
 
@@ -56,15 +57,21 @@ export const useAdminDashboardData = () => {
 
   const moduleFreshness = useMemo(() => {
     return DASHBOARD_MODULES.reduce((result, module) => {
-      result[module.key] = getAdminDataFreshness(modules[module.key].lastFetchedAt, dashboardNow);
+      const lastFetchedAt = modules[module.key].lastFetchedAt;
+      const referenceNow = getAdminFreshnessReferenceNow(lastFetchedAt, dashboardNow);
+
+      result[module.key] = getAdminDataFreshness(lastFetchedAt, referenceNow);
       return result;
     }, {});
   }, [dashboardNow, modules]);
 
   const nextCheckDelay = useMemo(() => {
-    const delays = DASHBOARD_MODULES.map((module) =>
-      getAdminDataFreshnessNextDelay(modules[module.key].lastFetchedAt, dashboardNow),
-    ).filter((delay) => delay !== null);
+    const delays = DASHBOARD_MODULES.map((module) => {
+      const lastFetchedAt = modules[module.key].lastFetchedAt;
+      const referenceNow = getAdminFreshnessReferenceNow(lastFetchedAt, dashboardNow);
+
+      return getAdminDataFreshnessNextDelay(lastFetchedAt, referenceNow);
+    }).filter((delay) => delay !== null);
 
     return delays.length > 0 ? Math.min(...delays) : null;
   }, [dashboardNow, modules]);
@@ -96,15 +103,6 @@ export const useAdminDashboardData = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
-
-  useEffect(() => {
-    setDashboardNow(Date.now());
-  }, [
-    articleData.lastFetchedAt,
-    couponData.lastFetchedAt,
-    orderData.lastFetchedAt,
-    productData.lastFetchedAt,
-  ]);
 
   const loadDashboard = useCallback(async () => {
     const currentState = store.getState();
