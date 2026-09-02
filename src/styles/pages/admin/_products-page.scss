@@ -1,8 +1,81 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
 .admin-products-page {
   width: 100%;
+}
 
-  .admin-table {
-    min-width: 1080px;
+.admin-product-filter {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid $admin-border;
+  border-radius: $admin-radius;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(33, 37, 41, 0.04);
+
+  &__field {
+    min-width: 0;
+  }
+
+  .form-label {
+    margin-bottom: 6px;
+  }
+}
+
+.admin-products-table-wrapper {
+  &:focus-visible {
+    outline: 2px solid rgba($admin-sidebar-active, 0.55);
+    outline-offset: -2px;
+  }
+}
+
+.admin-products-table {
+  min-width: 1080px;
+  table-layout: fixed;
+
+  &__info {
+    width: 34%;
+  }
+
+  &__price {
+    width: 14%;
+  }
+
+  &__tags {
+    width: 22%;
+  }
+
+  &__status {
+    width: 10%;
+  }
+
+  &__actions {
+    width: 20%;
+  }
+
+  .admin-resource-info__content {
+    h6,
+    p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  th:last-child,
+  td:last-child {
+    white-space: nowrap;
+  }
+}
+
+@include respond($admin-breakpoints, pad) {
+  .admin-product-filter {
+    grid-template-columns: minmax(0, 2fr) minmax(200px, 1fr);
+    align-items: end;
   }
 }
 

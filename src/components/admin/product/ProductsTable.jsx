@@ -31,15 +31,21 @@ const ProductsTable = ({
   }
 
   return (
-    <div className="admin-table-wrapper">
-      <table className="table admin-table align-middle mb-0">
+    <div
+      className="admin-table-wrapper admin-products-table-wrapper"
+      role="region"
+      aria-label="商品資料表，可水平捲動"
+      tabIndex={0}
+    >
+      <table className="table admin-table admin-products-table align-middle mb-0">
+        <caption className="visually-hidden">商品資訊、價格、標籤、啟用狀態與管理操作</caption>
         <thead>
           <tr>
-            <th width="34%">商品資訊</th>
-            <th width="14%">價格資訊</th>
-            <th width="22%">商品標籤</th>
-            <th width="10%">狀態</th>
-            <th width="20%">操作</th>
+            <th className="admin-products-table__info">商品資訊</th>
+            <th className="admin-products-table__price">價格資訊</th>
+            <th className="admin-products-table__tags">商品標籤</th>
+            <th className="admin-products-table__status">狀態</th>
+            <th className="admin-products-table__actions">操作</th>
           </tr>
         </thead>
 
