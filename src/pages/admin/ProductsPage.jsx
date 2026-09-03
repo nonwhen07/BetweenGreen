@@ -43,6 +43,7 @@ const ProductsPage = () => {
   const { summary: healthSummary, byProductId, issueGroups } = useProductHealth(products);
   const { activities: productActivities, markActivityReviewed } = useAdminActivities({
     module: 'product',
+    reviewedLimit: 5,
   });
   const [searchParams, setSearchParams] = useSearchParams();
 

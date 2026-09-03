@@ -76,7 +76,7 @@ const OrdersPage = () => {
     activities: orderActivities,
     addActivity,
     markActivityReviewed,
-  } = useAdminActivities({ module: 'order' });
+  } = useAdminActivities({ module: 'order', reviewedLimit: 5 });
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     isOpen: isOrderModalOpen,

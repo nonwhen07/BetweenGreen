@@ -48,7 +48,7 @@ const CouponsPage = () => {
     activities: couponActivities,
     addActivity,
     markActivityReviewed,
-  } = useAdminActivities({ module: 'coupon' });
+  } = useAdminActivities({ module: 'coupon', reviewedLimit: 5 });
   const { exportAllCoupons } = useCouponExport(coupons);
   const [searchParams, setSearchParams] = useSearchParams();
 

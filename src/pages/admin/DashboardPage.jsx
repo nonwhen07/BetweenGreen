@@ -60,17 +60,12 @@ const DASHBOARD_MODULE_CONFIG = [
 ];
 
 const DashboardPage = () => {
-  const {
-    freshnessSummary,
-    loadDashboard,
-    moduleFreshness,
-    modules,
-  } = useAdminDashboardData();
+  const { freshnessSummary, loadDashboard, moduleFreshness, modules } = useAdminDashboardData();
   const { start, stop } = useLoading();
   const { info, showError, success, warning } = useToast();
   const { activities, markActivityReviewed } = useAdminActivities({
     dashboard: true,
-    limit: 5,
+    reviewedLimit: 5,
   });
 
   useEffect(() => {
@@ -92,20 +87,15 @@ const DashboardPage = () => {
     start();
 
     try {
-      const { attemptedModules, failures, refreshedModules } =
-        await loadDashboard();
+      const { attemptedModules, failures, refreshedModules } = await loadDashboard();
 
       if (failures.length > 0) {
-        const failedLabels = failures
-          .map((failure) => failure.label)
-          .join('、');
+        const failedLabels = failures.map((failure) => failure.label).join('、');
         warning(`${failedLabels}更新失敗，原有資料仍保留`);
       }
 
       if (refreshedModules.length > 0) {
-        const refreshedLabels = refreshedModules
-          .map((module) => module.label)
-          .join('、');
+        const refreshedLabels = refreshedModules.map((module) => module.label).join('、');
         success(`${refreshedLabels}已更新`);
       } else if (attemptedModules.length === 0) {
         info('目前沒有需要更新的模組');
@@ -126,9 +116,7 @@ const DashboardPage = () => {
       label: config.title,
       href: config.href,
       status: hasCachedData ? 'success' : moduleData.status,
-      issueGroups: hasCachedData
-        ? moduleData.health.issueGroups
-        : [],
+      issueGroups: hasCachedData ? moduleData.health.issueGroups : [],
     };
   });
 
@@ -143,10 +131,7 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <DashboardFreshnessSummary
-        {...freshnessSummary}
-        onRefresh={handleRefreshDashboard}
-      />
+      <DashboardFreshnessSummary {...freshnessSummary} onRefresh={handleRefreshDashboard} />
 
       <section className="admin-dashboard__modules" aria-label="後台模組摘要">
         {DASHBOARD_MODULE_CONFIG.map((config) => {

@@ -16,7 +16,7 @@ const DASHBOARD_REVIEWED_DAYS = 14;
 export const useAdminActivities = ({
   module = 'all',
   dashboard = false,
-  limit = null,
+  reviewedLimit = null,
 } = {}) => {
   const dispatch = useDispatch();
   const storedActivities = useSelector(selectAdminActivities);
@@ -28,8 +28,7 @@ export const useAdminActivities = ({
   }, [dispatch]);
 
   const activities = useMemo(() => {
-    const reviewedCutoff =
-      Date.now() - DASHBOARD_REVIEWED_DAYS * 24 * 60 * 60 * 1000;
+    const reviewedCutoff = Date.now() - DASHBOARD_REVIEWED_DAYS * 24 * 60 * 60 * 1000;
 
     const filteredActivities = storedActivities
       .filter((activity) => module === 'all' || activity.module === module)
@@ -43,14 +42,27 @@ export const useAdminActivities = ({
           return left.isReviewed ? 1 : -1;
         }
 
-        return (
-          new Date(right.createdAt).getTime() -
-          new Date(left.createdAt).getTime()
-        );
+        return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
       });
 
-    return limit ? filteredActivities.slice(0, limit) : filteredActivities;
-  }, [dashboard, limit, module, storedActivities]);
+    if (reviewedLimit === null) return filteredActivities;
+
+    const visibleReviewedIds = new Set(
+      filteredActivities
+        .filter((activity) => activity.isReviewed)
+        .sort(
+          (left, right) =>
+            new Date(right.reviewedAt || right.createdAt).getTime() -
+            new Date(left.reviewedAt || left.createdAt).getTime(),
+        )
+        .slice(0, reviewedLimit)
+        .map((activity) => activity.id),
+    );
+
+    return filteredActivities.filter(
+      (activity) => !activity.isReviewed || visibleReviewedIds.has(activity.id),
+    );
+  }, [dashboard, module, reviewedLimit, storedActivities]);
 
   const addActivity = useCallback(
     (activityData) => dispatch(recordAdminActivity(activityData)).unwrap(),
@@ -59,9 +71,7 @@ export const useAdminActivities = ({
 
   const markActivityReviewed = useCallback(
     (activityId, isReviewed = true) =>
-      dispatch(
-        setAdminActivityReviewed({ activityId, isReviewed }),
-      ).unwrap(),
+      dispatch(setAdminActivityReviewed({ activityId, isReviewed })).unwrap(),
     [dispatch],
   );
 

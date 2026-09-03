@@ -1,0 +1,54 @@
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin-coupons-table-wrapper {
+  &:focus-visible {
+    outline: 2px solid rgba($admin-sidebar-active, 0.55);
+    outline-offset: -2px;
+  }
+}
+
+.admin-coupons-table {
+  min-width: 900px;
+  table-layout: fixed;
+
+  tbody tr {
+    height: 64px;
+  }
+
+  &__title {
+    width: 28%;
+  }
+
+  &__code {
+    width: 14%;
+  }
+
+  &__discount {
+    width: 10%;
+  }
+
+  &__due-date {
+    width: 16%;
+  }
+
+  &__status {
+    width: 12%;
+  }
+
+  &__actions {
+    width: 20%;
+  }
+
+  &__title-text {
+    display: block;
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th:not(:first-child),
+  td:not(:first-child) {
+    white-space: nowrap;
+  }
+}

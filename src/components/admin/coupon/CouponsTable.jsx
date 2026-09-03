@@ -17,23 +17,35 @@ const CouponsTable = ({ coupons, openCouponModal, openDeleteModal, couponCount, 
   }
 
   return (
-    <div className="admin-table-wrapper">
-      <table className="table admin-table align-middle mb-0">
+    <div
+      className="admin-table-wrapper admin-coupons-table-wrapper"
+      role="region"
+      aria-label="優惠券資料表，可水平捲動"
+      tabIndex={0}
+    >
+      <table className="table admin-table admin-coupons-table align-middle mb-0">
+        <caption className="visually-hidden">
+          優惠券名稱、優惠碼、折扣、到期日、啟用狀態與管理操作
+        </caption>
         <thead>
           <tr>
-            <th width="34%">名稱</th>
-            <th width="12%">優惠碼</th>
-            <th width="12%">折扣</th>
-            <th width="12%">到期日</th>
-            <th width="10%">狀態</th>
-            <th width="20%">操作</th>
+            <th className="admin-coupons-table__title">名稱</th>
+            <th className="admin-coupons-table__code">優惠碼</th>
+            <th className="admin-coupons-table__discount">折扣</th>
+            <th className="admin-coupons-table__due-date">到期日</th>
+            <th className="admin-coupons-table__status">狀態</th>
+            <th className="admin-coupons-table__actions">操作</th>
           </tr>
         </thead>
 
         <tbody>
           {coupons.map((coupon) => (
             <tr key={coupon.id}>
-              <td>{coupon.title}</td>
+              <td>
+                <span className="admin-coupons-table__title-text" title={coupon.title}>
+                  {coupon.title}
+                </span>
+              </td>
 
               <td>
                 <code>{coupon.code}</code>

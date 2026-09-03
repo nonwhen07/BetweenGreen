@@ -46,7 +46,7 @@ const ArticlesPage = () => {
     activities: articleActivities,
     addActivity,
     markActivityReviewed,
-  } = useAdminActivities({ module: 'article' });
+  } = useAdminActivities({ module: 'article', reviewedLimit: 5 });
   const { exportAllArticles } = useArticleExport(articles);
   const [searchParams, setSearchParams] = useSearchParams();
 
