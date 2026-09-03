@@ -70,13 +70,21 @@ export const getAdminDataFreshnessNextDelay = (lastFetchedAt, now = Date.now()) 
   return Math.max(0, nextThresholdAt - now);
 };
 
-export const getAdminModuleRefreshMode = ({ status, lastFetchedAt }, now = Date.now()) => {
+export const getAdminModuleRefreshMode = (
+  { status, lastFetchedAt },
+  now = Date.now(),
+  includeRecommend = false,
+) => {
   if (status === 'loading') return null;
   if (!lastFetchedAt || status === 'idle') return 'initial';
 
   const freshness = getAdminDataFreshness(lastFetchedAt, now);
 
-  if (status === 'error' || freshness.state === ADMIN_FRESHNESS_STATES.STALE) {
+  if (
+    status === 'error' ||
+    (includeRecommend && freshness.state === ADMIN_FRESHNESS_STATES.RECOMMEND) ||
+    freshness.state === ADMIN_FRESHNESS_STATES.STALE
+  ) {
     return 'background';
   }
 

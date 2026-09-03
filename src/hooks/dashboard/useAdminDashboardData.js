@@ -104,96 +104,104 @@ export const useAdminDashboardData = () => {
     };
   }, []);
 
-  const loadDashboard = useCallback(async () => {
-    const currentState = store.getState();
-    const loaders = [
-      {
-        ...DASHBOARD_MODULES[0],
-        slice: currentState.product,
-        ensure: productData.fetchProducts,
-        refresh: productData.refreshProducts,
-      },
-      {
-        ...DASHBOARD_MODULES[1],
-        slice: currentState.coupon,
-        ensure: couponData.fetchCoupons,
-        refresh: couponData.refreshCoupons,
-      },
-      {
-        ...DASHBOARD_MODULES[2],
-        slice: currentState.article,
-        ensure: articleData.fetchArticles,
-        refresh: articleData.refreshArticles,
-      },
-      {
-        ...DASHBOARD_MODULES[3],
-        slice: currentState.order,
-        ensure: orderData.fetchOrders,
-        refresh: orderData.refreshOrders,
-      },
-    ];
+  const loadDashboard = useCallback(
+    async ({ includeRecommended = false } = {}) => {
+      const currentState = store.getState();
+      const refreshReferenceNow = Date.now();
+      const loaders = [
+        {
+          ...DASHBOARD_MODULES[0],
+          slice: currentState.product,
+          ensure: productData.fetchProducts,
+          refresh: productData.refreshProducts,
+        },
+        {
+          ...DASHBOARD_MODULES[1],
+          slice: currentState.coupon,
+          ensure: couponData.fetchCoupons,
+          refresh: couponData.refreshCoupons,
+        },
+        {
+          ...DASHBOARD_MODULES[2],
+          slice: currentState.article,
+          ensure: articleData.fetchArticles,
+          refresh: articleData.refreshArticles,
+        },
+        {
+          ...DASHBOARD_MODULES[3],
+          slice: currentState.order,
+          ensure: orderData.fetchOrders,
+          refresh: orderData.refreshOrders,
+        },
+      ];
 
-    const pendingLoaders = loaders.reduce((result, module) => {
-      const refreshMode = getAdminModuleRefreshMode(module.slice);
+      const pendingLoaders = loaders.reduce((result, module) => {
+        const refreshMode = getAdminModuleRefreshMode(
+          module.slice,
+          refreshReferenceNow,
+          includeRecommended,
+        );
 
-      if (refreshMode === 'initial') {
-        result.push({ ...module, load: module.ensure, mode: 'initial' });
-      } else if (refreshMode === 'background') {
-        result.push({
-          ...module,
-          load: () => module.refresh({ background: true }),
-          mode: 'background',
-        });
-      }
+        if (refreshMode === 'initial') {
+          result.push({ ...module, load: module.ensure, mode: 'initial' });
+        } else if (refreshMode === 'background') {
+          result.push({
+            ...module,
+            load: () => module.refresh({ background: true }),
+            mode: 'background',
+          });
+        }
 
-      return result;
-    }, []);
+        return result;
+      }, []);
 
-    const results = await Promise.allSettled(pendingLoaders.map((module) => module.load()));
-    const failures = [];
-    const refreshedModules = [];
+      const results = await Promise.allSettled(pendingLoaders.map((module) => module.load()));
+      const failures = [];
+      const refreshedModules = [];
 
-    results.forEach((result, index) => {
-      const module = pendingLoaders[index];
+      results.forEach((result, index) => {
+        const module = pendingLoaders[index];
 
-      if (result.status === 'rejected') {
-        failures.push({
-          key: module.key,
-          label: module.label,
-          mode: module.mode,
-          reason: result.reason,
-        });
-      } else {
-        refreshedModules.push({
-          key: module.key,
-          label: module.label,
-          mode: module.mode,
-        });
-      }
-    });
+        if (result.status === 'rejected') {
+          failures.push({
+            key: module.key,
+            label: module.label,
+            mode: module.mode,
+            reason: result.reason,
+          });
+        } else {
+          refreshedModules.push({
+            key: module.key,
+            label: module.label,
+            mode: module.mode,
+          });
+        }
+      });
 
-    setDashboardNow(Date.now());
+      setDashboardNow(Date.now());
 
-    return {
-      attemptedModules: pendingLoaders.map(({ key, label, mode }) => ({
-        key,
-        label,
-        mode,
-      })),
-      failures,
-      refreshedModules,
-    };
-  }, [
-    articleData.fetchArticles,
-    articleData.refreshArticles,
-    couponData.fetchCoupons,
-    couponData.refreshCoupons,
-    orderData.fetchOrders,
-    orderData.refreshOrders,
-    productData.fetchProducts,
-    productData.refreshProducts,
-    store,
-  ]);
+      return {
+        attemptedModules: pendingLoaders.map(({ key, label, mode }) => ({
+          key,
+          label,
+          mode,
+        })),
+        failures,
+        refreshedModules,
+      };
+    },
+    [
+      articleData.fetchArticles,
+      articleData.refreshArticles,
+      couponData.fetchCoupons,
+      couponData.refreshCoupons,
+      orderData.fetchOrders,
+      orderData.refreshOrders,
+      productData.fetchProducts,
+      productData.refreshProducts,
+      store,
+    ],
+  );
 
   const freshnessSummary = useMemo(() => {
     return DASHBOARD_MODULES.reduce(
@@ -201,6 +209,7 @@ export const useAdminDashboardData = () => {
         const moduleData = modules[module.key];
         const freshness = moduleFreshness[module.key];
         const hasCachedData = Boolean(moduleData.lastFetchedAt);
+        const refreshMode = getAdminModuleRefreshMode(moduleData, dashboardNow, true);
 
         if (freshness.state === 'stale') summary.staleCount += 1;
         if (freshness.state === 'recommend') summary.recommendCount += 1;
@@ -209,12 +218,7 @@ export const useAdminDashboardData = () => {
         if (!hasCachedData && moduleData.status === 'error') {
           summary.unavailableCount += 1;
         }
-        if (
-          moduleData.status !== 'loading' &&
-          (!hasCachedData || moduleData.status === 'error' || freshness.state === 'stale')
-        ) {
-          summary.refreshableCount += 1;
-        }
+        if (refreshMode !== null) summary.refreshableCount += 1;
 
         return summary;
       },
@@ -227,7 +231,7 @@ export const useAdminDashboardData = () => {
         refreshableCount: 0,
       },
     );
-  }, [moduleFreshness, modules]);
+  }, [dashboardNow, moduleFreshness, modules]);
 
   return {
     freshnessSummary,

@@ -1,0 +1,69 @@
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin-articles-table-wrapper {
+  &:focus-visible {
+    outline: 2px solid rgba($admin-sidebar-active, 0.55);
+    outline-offset: -2px;
+  }
+}
+
+.admin-articles-table {
+  min-width: 1080px;
+  table-layout: fixed;
+
+  &__info {
+    width: 32%;
+  }
+
+  &__classification {
+    width: 14%;
+  }
+
+  &__tags {
+    width: 18%;
+  }
+
+  &__schedule {
+    width: 15%;
+  }
+
+  &__status {
+    width: 8%;
+  }
+
+  &__actions {
+    width: 13%;
+  }
+
+  .admin-resource-info__content {
+    h6,
+    p,
+    small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__classification-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  &__classification-list .badge,
+  &__tag-list .badge {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__schedule-text,
+  th:last-child,
+  td:last-child {
+    white-space: nowrap;
+  }
+}

@@ -87,7 +87,9 @@ const DashboardPage = () => {
     start();
 
     try {
-      const { attemptedModules, failures, refreshedModules } = await loadDashboard();
+      const { attemptedModules, failures, refreshedModules } = await loadDashboard({
+        includeRecommended: true,
+      });
 
       if (failures.length > 0) {
         const failedLabels = failures.map((failure) => failure.label).join('、');

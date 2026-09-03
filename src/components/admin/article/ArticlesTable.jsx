@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 // constants
 import {
   ARTICLE_CATEGORY_MAP,
@@ -31,16 +33,24 @@ const ArticlesTable = ({
   }
 
   return (
-    <div className="admin-table-wrapper">
-      <table className="table admin-table align-middle mb-0">
+    <div
+      className="admin-table-wrapper admin-articles-table-wrapper"
+      role="region"
+      aria-label="文章資料表，可水平捲動"
+      tabIndex={0}
+    >
+      <table className="table admin-table admin-articles-table align-middle mb-0">
+        <caption className="visually-hidden">
+          文章資訊、分類與對象、標籤與權重、發布日期、公開狀態與管理操作
+        </caption>
         <thead>
           <tr>
-            <th width="28%">文章資訊</th>
-            <th width="15%">分類 / 對象</th>
-            <th width="17%">標籤 / 權重</th>
-            <th width="15%">上下架</th>
-            <th width="9%">狀態</th>
-            <th width="16%">操作</th>
+            <th className="admin-articles-table__info">文章資訊</th>
+            <th className="admin-articles-table__classification">分類 / 對象</th>
+            <th className="admin-articles-table__tags">標籤 / 權重</th>
+            <th className="admin-articles-table__schedule">上下架</th>
+            <th className="admin-articles-table__status">狀態</th>
+            <th className="admin-articles-table__actions">操作</th>
           </tr>
         </thead>
 
@@ -62,16 +72,17 @@ const ArticlesTable = ({
                     </div>
 
                     <div className="admin-resource-info__content">
-                      <h6>{article.title}</h6>
-                      {/* <p>{article.description || '尚未填寫文章摘要'}</p> */}
-                      <p>{article.bannerText || '尚未填寫文章摘要'}</p>
+                      <h6 title={article.title}>{article.title}</h6>
+                      <p title={article.bannerText || '尚未填寫文章摘要'}>
+                        {article.bannerText || '尚未填寫文章摘要'}
+                      </p>
                       <small className="text-muted">{article.author || '未填作者'}</small>
                     </div>
                   </div>
                 </td>
 
                 <td>
-                  <div className="d-flex flex-column gap-1">
+                  <div className="admin-articles-table__classification-list">
                     <span className="badge text-bg-light border">
                       {getLabelByValue(ARTICLE_CATEGORY_MAP, article.articleCategory, '未分類')}
                     </span>
@@ -82,11 +93,11 @@ const ArticlesTable = ({
                 </td>
 
                 <td>
-                  <div className="admin-tags__list mb-2">
+                  <div className="admin-tags__list admin-articles-table__tag-list mb-2">
                     {previewTags.length > 0 ? (
                       <>
                         {previewTags.map((tag) => (
-                          <span key={tag} className="badge text-bg-light border me-1">
+                          <span key={tag} className="badge text-bg-light border">
                             {getLabelByValue(ARTICLE_TAG_MAP, tag, tag)}
                           </span>
                         ))}
@@ -105,7 +116,7 @@ const ArticlesTable = ({
                 </td>
 
                 <td>
-                  <div className="small">
+                  <div className="admin-articles-table__schedule-text small">
                     <div>開始：{formatArticleDate(article.publishStart)}</div>
                     <div className="text-muted mt-1">
                       結束：{formatArticleDate(article.publishEnd)}
@@ -147,6 +158,14 @@ const ArticlesTable = ({
       </table>
     </div>
   );
+};
+
+ArticlesTable.propTypes = {
+  articles: PropTypes.arrayOf(PropTypes.object).isRequired,
+  openArticleModal: PropTypes.func.isRequired,
+  openDeleteModal: PropTypes.func.isRequired,
+  articleCount: PropTypes.number.isRequired,
+  hasArticles: PropTypes.bool.isRequired,
 };
 
 export default ArticlesTable;
