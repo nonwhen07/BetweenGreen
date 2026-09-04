@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   analyzeOrderQuarter,
@@ -11,7 +11,7 @@ export const useOrderQuarterlyAnalytics = (
   orders = [],
   requestedQuarter = '',
 ) => {
-  const referenceTime = useMemo(() => Date.now(), []);
+  const [referenceTime] = useState(Date.now);
   const quarterOptions = useMemo(
     () => getOrderQuarterOptions(orders, referenceTime),
     [orders, referenceTime],

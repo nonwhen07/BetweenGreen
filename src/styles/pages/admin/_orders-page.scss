@@ -1,10 +1,52 @@
-@use 'sass:map';
+@use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/admin/admin-variables' as *;
 
-.admin-orders-page {
-  .admin-table {
-    table-layout: fixed;
+.admin-orders-table-wrapper {
+  &:focus-visible {
+    outline: 2px solid rgba($admin-sidebar-active, 0.55);
+    outline-offset: -2px;
+  }
+}
+
+.admin-orders-table {
+  min-width: 900px;
+  table-layout: fixed;
+
+  &__info {
+    width: 30%;
+  }
+
+  &__customer {
+    width: 23%;
+  }
+
+  &__total {
+    width: 14%;
+  }
+
+  &__status {
+    width: 13%;
+  }
+
+  &__actions {
+    width: 20%;
+  }
+
+  &__customer-name,
+  &__info-cell,
+  &__customer-cell {
+    min-width: 0;
+  }
+
+  &__customer-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__actions-cell {
+    white-space: nowrap;
   }
 }
 
@@ -13,14 +55,14 @@
 
   &__fields {
     display: grid;
-    grid-template-columns:
-      minmax(240px, 1fr) repeat(3, minmax(160px, 200px)) auto;
+    grid-template-columns: 1fr;
     gap: 12px;
     align-items: end;
   }
 
   &__status {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     gap: 12px;
     margin-top: 10px;
@@ -37,7 +79,7 @@
 
   &__stats {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 10px;
     margin-bottom: 20px;
   }
@@ -76,7 +118,7 @@
 
   &__rankings {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
 
     > section {
@@ -118,22 +160,6 @@
   }
 }
 
-@media (max-width: (map.get($admin-breakpoints, nav-overlay) - 0.02px)) {
-  .admin-order-search {
-    &__fields {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    &__keyword {
-      grid-column: 1 / -1;
-    }
-  }
-
-  .admin-order-analytics__stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 .admin-order-id,
 .admin-order-email {
   display: block;
@@ -146,7 +172,7 @@
 .admin-order-detail {
   &__summary {
     display: grid;
-    grid-template-columns: minmax(0, 1.8fr) repeat(2, minmax(160px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
     padding: 1rem;
     border: 1px solid $admin-border;
@@ -167,7 +193,7 @@
 
   &__customer {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 0.75rem 1.5rem;
 
     div {
@@ -254,7 +280,7 @@
 
   &__selection {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
@@ -269,38 +295,59 @@
   }
 }
 
-@media (max-width: (map.get($admin-breakpoints, pad) - 0.02px)) {
+@include respond($admin-breakpoints, pad) {
   .admin-order-search {
     &__fields {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     &__keyword {
-      grid-column: auto;
+      grid-column: 1 / -1;
     }
 
     &__status {
-      flex-direction: column;
+      flex-direction: row;
     }
   }
 
   .admin-order-analytics {
-    &__stats,
+    &__stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     &__rankings {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   .admin-order-detail {
-    &__summary,
+    &__summary {
+      grid-template-columns: minmax(0, 1.8fr) repeat(2, minmax(160px, 1fr));
+    }
+
     &__customer {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   .admin-order-export-modal {
     &__selection {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
+}
+
+@include respond($admin-breakpoints, nav-overlay) {
+  .admin-order-search__fields {
+    grid-template-columns:
+      minmax(240px, 1fr) repeat(3, minmax(160px, 200px)) auto;
+  }
+
+  .admin-order-search__keyword {
+    grid-column: auto;
+  }
+
+  .admin-order-analytics__stats {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }

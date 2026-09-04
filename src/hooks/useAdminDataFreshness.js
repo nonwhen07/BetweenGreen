@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 // hooks
+import { useLoading } from '@/hooks/useLoading';
 import { useToast } from '@/hooks/useToast';
 // utils
 import {
@@ -17,6 +18,7 @@ export const useAdminDataFreshness = ({
   isInteractionLocked = false,
 }) => {
   const { success, showError } = useToast();
+  const { start, stop } = useLoading();
   const [now, setNow] = useState(() => Date.now());
 
   const referenceNow = getAdminFreshnessReferenceNow(lastFetchedAt, now);
@@ -60,13 +62,26 @@ export const useAdminDataFreshness = ({
   const refreshCurrentData = useCallback(async () => {
     if (isInteractionLocked || isRefreshing) return;
 
+    start();
+
     try {
       await refreshData({ background: true });
       success(`${resourceLabel}資料已更新`);
     } catch {
       showError(`${resourceLabel}資料更新失敗，畫面仍保留上次成功載入的內容。`);
+    } finally {
+      stop();
     }
-  }, [isInteractionLocked, isRefreshing, refreshData, resourceLabel, showError, success]);
+  }, [
+    isInteractionLocked,
+    isRefreshing,
+    refreshData,
+    resourceLabel,
+    showError,
+    start,
+    stop,
+    success,
+  ]);
 
   return {
     ...freshness,

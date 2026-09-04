@@ -27,22 +27,30 @@ const OrdersTable = ({
   }
 
   return (
-    <div className="admin-table-wrapper">
-      <table className="table admin-table align-middle mb-0">
+    <div
+      className="admin-table-wrapper admin-orders-table-wrapper"
+      role="region"
+      aria-label="訂單資料表，可水平捲動"
+      tabIndex="0"
+    >
+      <table className="table admin-table admin-orders-table align-middle mb-0">
+        <caption className="visually-hidden">
+          訂單編號與日期、顧客、訂單金額、付款狀態與管理操作
+        </caption>
         <thead>
           <tr>
-            <th width="30%">訂單資訊</th>
-            <th width="23%">顧客</th>
-            <th width="13%">訂單金額</th>
-            <th width="12%">付款狀態</th>
-            <th width="22%">操作</th>
+            <th className="admin-orders-table__info">訂單資訊</th>
+            <th className="admin-orders-table__customer">顧客</th>
+            <th className="admin-orders-table__total">訂單金額</th>
+            <th className="admin-orders-table__status">付款狀態</th>
+            <th className="admin-orders-table__actions">操作</th>
           </tr>
         </thead>
 
         <tbody>
           {orders.map((order) => (
             <tr key={order.id}>
-              <td>
+              <td className="admin-orders-table__info-cell">
                 <code className="admin-order-id" title={order.id}>
                   {order.id}
                 </code>
@@ -51,8 +59,11 @@ const OrdersTable = ({
                 </small>
               </td>
 
-              <td>
-                <span className="fw-semibold d-block">
+              <td className="admin-orders-table__customer-cell">
+                <span
+                  className="admin-orders-table__customer-name fw-semibold d-block"
+                  title={getOrderCustomerName(order)}
+                >
                   {getOrderCustomerName(order)}
                 </span>
                 <span
@@ -63,11 +74,11 @@ const OrdersTable = ({
                 </span>
               </td>
 
-              <td className="text-nowrap">
+              <td className="admin-orders-table__total-cell text-nowrap">
                 NT$ {formatOrderCurrency(order.total)}
               </td>
 
-              <td className="text-nowrap">
+              <td className="admin-orders-table__status-cell text-nowrap">
                 {order.is_paid ? (
                   <span className="badge text-bg-success">已付款</span>
                 ) : (
@@ -75,7 +86,7 @@ const OrdersTable = ({
                 )}
               </td>
 
-              <td>
+              <td className="admin-orders-table__actions-cell">
                 <div className="btn-group admin-table__actions">
                   <button
                     type="button"
