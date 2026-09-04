@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // hooks
-import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 // utils
 import { ORDER_EXPORT_PERIOD_TYPES } from '@/utils/orderExporter';
 
@@ -31,28 +30,23 @@ const OrderExportModal = ({
   onClose,
   onExport,
 }) => {
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen || isProcessing) return undefined;
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isProcessing, onClose]);
+  const { modalRef, handleBackdropMouseDown } = useAdminModalLifecycle({
+    isOpen,
+    onClose,
+    isDismissDisabled: isProcessing,
+  });
 
   if (!isOpen) return null;
 
   return (
     <div
       className="modal show d-block admin-modal admin-order-export-modal"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      ref={modalRef}
+      tabIndex="-1"
       role="dialog"
       aria-modal="true"
       aria-labelledby="order-export-modal-title"
+      onMouseDown={handleBackdropMouseDown}
     >
       <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">

@@ -1,5 +1,4 @@
-// import { useState } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 // constants
 import {
@@ -11,7 +10,7 @@ import {
 } from '@/constants/articleConstants';
 
 // hooks
-import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 
 const ArticleModal = ({
   isOpen,
@@ -31,7 +30,10 @@ const ArticleModal = ({
   // const watchContent = watch('content');
   const tagPreviewText = selectedTags.join(' | ');
 
-  useBodyScrollLock(isOpen);
+  const { modalRef, handleBackdropMouseDown } = useAdminModalLifecycle({
+    isOpen,
+    onClose,
+  });
 
   if (!isOpen) return null;
 
@@ -39,10 +41,12 @@ const ArticleModal = ({
     <div
       id="articleModal"
       className="modal show d-block admin-modal"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      ref={modalRef}
+      tabIndex="-1"
       role="dialog"
       aria-modal="true"
       aria-labelledby="article-modal-title"
+      onMouseDown={handleBackdropMouseDown}
     >
       <div className="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">
@@ -328,6 +332,18 @@ const ArticleModal = ({
       </div>
     </div>
   );
+};
+
+ArticleModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  modalMode: PropTypes.oneOf(['create', 'edit']).isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleTagToggle: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
+  watch: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
 };
 
 export default ArticleModal;

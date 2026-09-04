@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FaStar } from 'react-icons/fa';
 
 // hooks
-import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 
 // constants
 import {
@@ -84,23 +84,10 @@ const ProductModal = ({
   const unitPreviewText =
     Object.values(PRODUCT_UNIT_MAP).find((item) => item.value === watchUnit)?.label || '';
 
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+  const { modalRef, handleBackdropMouseDown } = useAdminModalLifecycle({
+    isOpen,
+    onClose,
+  });
 
   if (!isOpen) return null;
 
@@ -108,10 +95,12 @@ const ProductModal = ({
     <div
       id="productModal"
       className="modal show d-block admin-modal"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      ref={modalRef}
+      tabIndex="-1"
       role="dialog"
       aria-modal="true"
       aria-labelledby="product-modal-title"
+      onMouseDown={handleBackdropMouseDown}
     >
       <div className="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">

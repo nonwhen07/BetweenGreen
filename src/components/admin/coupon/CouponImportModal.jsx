@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // hooks
-import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 
 const CouponImportModal = ({
   isOpen,
@@ -47,18 +46,11 @@ const CouponImportModal = ({
         processing: '更新中…',
       };
 
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen || isProcessing) return undefined;
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isProcessing, onClose]);
+  const { modalRef, handleBackdropMouseDown } = useAdminModalLifecycle({
+    isOpen,
+    onClose,
+    isDismissDisabled: isProcessing,
+  });
 
   if (!isOpen) return null;
 
@@ -69,10 +61,12 @@ const CouponImportModal = ({
   return (
     <div
       className="modal show d-block admin-modal admin-json-import-modal coupon-import-modal"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      ref={modalRef}
+      tabIndex="-1"
       role="dialog"
       aria-modal="true"
       aria-labelledby="coupon-import-modal-title"
+      onMouseDown={handleBackdropMouseDown}
     >
       <div className="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">
@@ -168,8 +162,14 @@ const CouponImportModal = ({
                   </div>
                 )}
 
-                <div className="admin-json-import-preview table-responsive border rounded mb-4">
+                <div
+                  className="admin-json-import-preview table-responsive border rounded mb-4"
+                  role="region"
+                  aria-label="優惠券 JSON 分析預覽，可水平捲動"
+                  tabIndex="0"
+                >
                   <table className="table table-sm align-middle mb-0">
+                    <caption className="visually-hidden">優惠券 JSON 分析預覽</caption>
                     <thead>
                       <tr>
                         <th>優惠券</th>

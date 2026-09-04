@@ -16,13 +16,12 @@
 }
 
 .admin-json-import-preview {
-  max-height: 360px;
-  overflow: auto;
+  max-height: none;
+  overflow-x: auto;
+  overflow-y: hidden;
 
   thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    position: static;
   }
 
   th {
@@ -40,6 +39,6 @@
 }
 
 .admin-json-import-results {
-  max-height: 280px;
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
 }

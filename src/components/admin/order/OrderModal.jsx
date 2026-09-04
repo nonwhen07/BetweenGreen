@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 // hooks
-import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 // utils
 import { normalizeOrderItems } from '@/utils/orderItemUtils';
 import {
@@ -22,33 +22,28 @@ const OrderModal = ({
   onClose,
   onConfirm,
 }) => {
-  useBodyScrollLock(isOpen);
+  const { modalRef, handleBackdropMouseDown } = useAdminModalLifecycle({
+    isOpen,
+    onClose,
+    isDismissDisabled: isSaving,
+  });
 
   const items = useMemo(
     () => normalizeOrderItems(order?.products, productLookup),
     [order?.products, productLookup],
   );
 
-  useEffect(() => {
-    if (!isOpen || isSaving) return undefined;
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isSaving, onClose]);
-
   if (!isOpen) return null;
 
   return (
     <div
       className="modal show d-block admin-modal admin-order-modal"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      ref={modalRef}
+      tabIndex="-1"
       role="dialog"
       aria-modal="true"
       aria-labelledby="order-modal-title"
+      onMouseDown={handleBackdropMouseDown}
     >
       <div className="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">
@@ -115,8 +110,14 @@ const OrderModal = ({
                   目前無法顯示這筆訂單的商品資料
                 </div>
               ) : (
-                <div className="admin-table-wrapper border rounded">
+                <div
+                  className="admin-table-wrapper admin-order-detail__items-wrapper border rounded"
+                  role="region"
+                  aria-label="訂單商品明細，可水平捲動"
+                  tabIndex="0"
+                >
                   <table className="table admin-order-detail__items-table align-middle mb-0">
+                    <caption className="visually-hidden">訂單商品、單價、數量與小計</caption>
                     <thead>
                       <tr>
                         <th>商品</th>

@@ -1,5 +1,7 @@
+import PropTypes from 'prop-types';
+
 // hooks
-import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 
 const DeleteModal = ({
   isOpen,
@@ -9,18 +11,22 @@ const DeleteModal = ({
   itemType = '資料',
   confirmText = '確認刪除',
 }) => {
-  useBodyScrollLock(isOpen);
+  const { modalRef, handleBackdropMouseDown } = useAdminModalLifecycle({
+    isOpen,
+    onClose,
+  });
 
   if (!isOpen) return null;
 
   return (
     <div
       className="modal show d-block admin-modal"
+      ref={modalRef}
       tabIndex="-1"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="delete-modal-title"
+      onMouseDown={handleBackdropMouseDown}
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content border-0 shadow">
@@ -59,4 +65,14 @@ const DeleteModal = ({
     </div>
   );
 };
+
+DeleteModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  itemName: PropTypes.string,
+  itemType: PropTypes.string,
+  confirmText: PropTypes.string,
+};
+
 export default DeleteModal;

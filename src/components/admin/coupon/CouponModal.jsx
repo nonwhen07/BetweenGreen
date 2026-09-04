@@ -1,5 +1,4 @@
-// import { useState } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 // 先基本款CRUD，後面再設定優惠碼種類與項目用途，這邊是照抄命名constants
 // constants
@@ -8,7 +7,7 @@
 // } from '@/constants/adminBuilderMaps';
 
 // hooks
-import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 
 const CouponModal = ({
   isOpen,
@@ -25,7 +24,10 @@ const CouponModal = ({
 
   // const tagPreviewText = selectedTags.join(' | ');
 
-  useBodyScrollLock(isOpen);
+  const { modalRef, handleBackdropMouseDown } = useAdminModalLifecycle({
+    isOpen,
+    onClose,
+  });
 
   if (!isOpen) return null;
 
@@ -33,10 +35,12 @@ const CouponModal = ({
     <div
       id="couponModal"
       className="modal show d-block admin-modal"
-      style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+      ref={modalRef}
+      tabIndex="-1"
       role="dialog"
       aria-modal="true"
       aria-labelledby="coupon-modal-title"
+      onMouseDown={handleBackdropMouseDown}
     >
       <div className="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable">
         <div className="modal-content border-0 shadow">
@@ -187,6 +191,16 @@ const CouponModal = ({
       </div>
     </div>
   );
+};
+
+CouponModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  modalMode: PropTypes.oneOf(['create', 'edit']).isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
+  watch: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
 };
 
 export default CouponModal;
