@@ -1,16 +1,28 @@
 @use '@/styles/helpers/variables' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/mixins' as *;
 
 .ui-fullpage-loader {
   position: fixed;
   inset: 0;
+  box-sizing: border-box;
 
   background: rgba($text-muted, 0.3);
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 24vh;
+  padding-top: clamp(120px, 24dvh, 240px);
 
   backdrop-filter: blur(2px);
+}
+
+@include respond($breakpoints, desktop) {
+  .ui-fullpage-loader {
+    align-items: center;
+    padding-top: 0;
+  }
 }
 
 #ribbon {

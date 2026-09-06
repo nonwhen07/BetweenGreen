@@ -73,19 +73,26 @@ const AdminHeader = ({ title, isSidebarOpen, onToggleSidebar }) => {
       </div>
       {/* 右側 */}
       <div className="admin-header__right" ref={dropdownRef}>
-        <button className="admin-header__user" onClick={() => setOpen(!open)}>
+        <button
+          type="button"
+          className="admin-header__user"
+          aria-haspopup="menu"
+          aria-controls="admin-account-menu"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
           <FaUser size={18} />
           <span>{'Admin'}</span>
         </button>
 
         {open && (
-          <div className="admin-header__dropdown">
+          <div id="admin-account-menu" className="admin-header__dropdown">
             {/* 可以加更多額外資訊 */}
             <div className="dropdown-item">
               👤 {isAuth ? <span>Admin已登入</span> : <span>未登入</span>}
             </div>
             <div className="dropdown-divider" />
-            <button className="dropdown-item logout" onClick={handleLogout}>
+            <button type="button" className="dropdown-item logout" onClick={handleLogout}>
               <FaSignOutAlt size={18} />
               登出
             </button>

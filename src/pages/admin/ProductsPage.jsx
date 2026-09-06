@@ -27,6 +27,7 @@ import DeleteModal from '@/components/admin/DeleteModal';
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminFilter from '@/components/admin/AdminFilter';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
+import AdminCollapsibleSection from '@/components/admin/AdminCollapsibleSection';
 
 const ProductsPage = () => {
   // hooks init
@@ -257,21 +258,31 @@ const ProductsPage = () => {
 
         <AdminDataFreshness {...productFreshness} onRefresh={productFreshness.refreshCurrentData} />
 
-        <ProductHealthToolbar
-          summary={healthSummary}
-          issueGroups={issueGroups}
-          healthFilter={healthFilter}
-          issueFilter={issueFilter}
-          onHealthFilterChange={handleHealthFilterChange}
-          onIssueFilterChange={handleIssueFilterChange}
-        />
+        <AdminCollapsibleSection
+          sectionId="product-health-filter"
+          title="商品健康與篩選"
+          summary={`顯示 ${filteredProducts.length}／${products.length} 筆${
+            keyword || selectedCategory || healthFilter !== 'all' || issueFilter
+              ? '，已套用篩選'
+              : '，未套用篩選'
+          }`}
+        >
+          <ProductHealthToolbar
+            summary={healthSummary}
+            issueGroups={issueGroups}
+            healthFilter={healthFilter}
+            issueFilter={issueFilter}
+            onHealthFilterChange={handleHealthFilterChange}
+            onIssueFilterChange={handleIssueFilterChange}
+          />
 
-        <AdminFilter
-          keyword={keyword}
-          setKeyword={setKeyword}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
+          <AdminFilter
+            keyword={keyword}
+            setKeyword={setKeyword}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        </AdminCollapsibleSection>
 
         <div className="admin-panel">
           <div className="admin-panel__header">

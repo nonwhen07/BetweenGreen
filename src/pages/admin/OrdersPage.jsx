@@ -33,6 +33,7 @@ import OrderQuarterlyReport from '@/components/admin/order/OrderQuarterlyReport'
 import OrderSearchToolbar from '@/components/admin/order/OrderSearchToolbar';
 import OrdersTable from '@/components/admin/order/OrdersTable';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
+import AdminCollapsibleSection from '@/components/admin/AdminCollapsibleSection';
 
 const OrdersPage = () => {
   const { success, showError, warning } = useToast();
@@ -377,39 +378,62 @@ const OrdersPage = () => {
 
         <AdminDataFreshness {...orderFreshness} onRefresh={orderFreshness.refreshCurrentData} />
 
-        <OrderHealthToolbar
-          summary={healthSummary}
-          issueGroups={issueGroups}
-          healthFilter={healthFilter}
-          issueFilter={issueFilter}
-          isAgingFilterActive={Boolean(agingFilter)}
-          onHealthFilterChange={handleHealthFilterChange}
-          onIssueFilterChange={handleIssueFilterChange}
-        />
+        <AdminCollapsibleSection
+          sectionId="order-health-filter"
+          title="訂單健康與篩選"
+          summary={`顯示 ${filteredOrders.length}／${orders.length} 筆${
+            keyword ||
+            dateFrom ||
+            dateTo ||
+            agingFilter ||
+            healthFilter !== 'all' ||
+            issueFilter
+              ? '，已套用篩選'
+              : '，未套用篩選'
+          }`}
+        >
+          <OrderHealthToolbar
+            summary={healthSummary}
+            issueGroups={issueGroups}
+            healthFilter={healthFilter}
+            issueFilter={issueFilter}
+            isAgingFilterActive={Boolean(agingFilter)}
+            onHealthFilterChange={handleHealthFilterChange}
+            onIssueFilterChange={handleIssueFilterChange}
+          />
 
-        <OrderSearchToolbar
-          keyword={keyword}
-          dateFrom={dateFrom}
-          dateTo={dateTo}
-          agingFilter={agingFilter}
-          agingSummary={agingSummary}
-          dateRangeError={dateRangeError}
-          resultCount={filteredOrders.length}
-          totalCount={orders.length}
-          onKeywordChange={(value) => handleSearchParamChange('q', value)}
-          onDateFromChange={(value) => handleSearchParamChange('from', value)}
-          onDateToChange={(value) => handleSearchParamChange('to', value)}
-          onAgingFilterChange={handleAgingFilterChange}
-          onReset={handleResetSearch}
-        />
+          <OrderSearchToolbar
+            keyword={keyword}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            agingFilter={agingFilter}
+            agingSummary={agingSummary}
+            dateRangeError={dateRangeError}
+            resultCount={filteredOrders.length}
+            totalCount={orders.length}
+            onKeywordChange={(value) => handleSearchParamChange('q', value)}
+            onDateFromChange={(value) => handleSearchParamChange('from', value)}
+            onDateToChange={(value) => handleSearchParamChange('to', value)}
+            onAgingFilterChange={handleAgingFilterChange}
+            onReset={handleResetSearch}
+          />
+        </AdminCollapsibleSection>
 
-        <OrderQuarterlyReport
-          analytics={quarterlyAnalytics}
-          quarterOptions={quarterOptions}
-          selectedQuarter={selectedQuarter}
-          allOverdueUnpaidCount={allOverdueUnpaidCount}
-          onQuarterChange={handleQuarterChange}
-        />
+        <AdminCollapsibleSection
+          sectionId="order-quarterly-analytics"
+          title="季度訂單分析"
+          summary={`${quarterlyAnalytics.period?.label || selectedQuarter}：${
+            quarterlyAnalytics.summary.orderCount
+          } 筆訂單，付款率 ${quarterlyAnalytics.summary.paymentRate}%`}
+        >
+          <OrderQuarterlyReport
+            analytics={quarterlyAnalytics}
+            quarterOptions={quarterOptions}
+            selectedQuarter={selectedQuarter}
+            allOverdueUnpaidCount={allOverdueUnpaidCount}
+            onQuarterChange={handleQuarterChange}
+          />
+        </AdminCollapsibleSection>
 
         <div className="admin-panel">
           <div className="admin-panel__header">

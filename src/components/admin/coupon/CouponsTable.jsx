@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import { formatCouponDueDate } from '@/utils/coupon/couponFormatter';
 
 const CouponsTable = ({ coupons, openCouponModal, openDeleteModal, couponCount, hasCoupons }) => {
@@ -88,6 +90,14 @@ const CouponsTable = ({ coupons, openCouponModal, openDeleteModal, couponCount, 
       </table>
     </div>
   );
+};
+
+CouponsTable.propTypes = {
+  coupons: PropTypes.arrayOf(PropTypes.object).isRequired,
+  openCouponModal: PropTypes.func.isRequired,
+  openDeleteModal: PropTypes.func.isRequired,
+  couponCount: PropTypes.number.isRequired,
+  hasCoupons: PropTypes.bool.isRequired,
 };
 
 export default CouponsTable;

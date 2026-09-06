@@ -12,6 +12,8 @@ import {
 } from '@/features/activity/activitySlice';
 
 const DASHBOARD_REVIEWED_DAYS = 14;
+const DASHBOARD_REVIEWED_CUTOFF =
+  Date.now() - DASHBOARD_REVIEWED_DAYS * 24 * 60 * 60 * 1000;
 
 export const useAdminActivities = ({
   module = 'all',
@@ -28,14 +30,12 @@ export const useAdminActivities = ({
   }, [dispatch]);
 
   const activities = useMemo(() => {
-    const reviewedCutoff = Date.now() - DASHBOARD_REVIEWED_DAYS * 24 * 60 * 60 * 1000;
-
     const filteredActivities = storedActivities
       .filter((activity) => module === 'all' || activity.module === module)
       .filter((activity) => {
         if (!dashboard || !activity.isReviewed) return true;
 
-        return new Date(activity.createdAt).getTime() >= reviewedCutoff;
+        return new Date(activity.createdAt).getTime() >= DASHBOARD_REVIEWED_CUTOFF;
       })
       .sort((left, right) => {
         if (dashboard && left.isReviewed !== right.isReviewed) {

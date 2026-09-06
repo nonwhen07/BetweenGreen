@@ -1,0 +1,91 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/admin/admin-variables' as *;
+
+.admin-collapsible-section {
+  &__toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    color: $admin-text;
+    text-align: left;
+    background: #fff;
+    border: 1px solid $admin-border;
+    border-radius: $admin-radius;
+    box-shadow: 0 2px 6px rgba(33, 37, 41, 0.04);
+
+    &:hover {
+      border-color: rgba($admin-sidebar-active, 0.55);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba($admin-sidebar-active, 0.55);
+      outline-offset: 2px;
+    }
+  }
+
+  &__heading {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+
+    strong,
+    small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    strong {
+      font-size: 1rem;
+    }
+
+    small {
+      color: #6c757d;
+      font-size: 0.8125rem;
+    }
+  }
+
+  &__chevron {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translate(-2px, -2px);
+    transition: transform 0.2s ease;
+
+    &.is-expanded {
+      transform: rotate(225deg) translate(-2px, -2px);
+    }
+  }
+
+  &__action {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+    color: $admin-sidebar-active;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+}
+
+@include respond($admin-breakpoints, nav-overlay) {
+  .admin-collapsible-section {
+    &__toggle {
+      display: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-collapsible-section__chevron {
+    transition: none;
+  }
+}

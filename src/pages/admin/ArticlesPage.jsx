@@ -28,6 +28,7 @@ import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 import BrandPagination from '@/components/shared/BrandPagination';
+import AdminCollapsibleSection from '@/components/admin/AdminCollapsibleSection';
 
 const ArticlesPage = () => {
   const { success, showError, warning } = useToast();
@@ -244,14 +245,22 @@ const ArticlesPage = () => {
 
         <AdminDataFreshness {...articleFreshness} onRefresh={articleFreshness.refreshCurrentData} />
 
-        <ArticleHealthToolbar
-          summary={healthSummary}
-          issueGroups={issueGroups}
-          healthFilter={healthFilter}
-          issueFilter={issueFilter}
-          onHealthFilterChange={handleHealthFilterChange}
-          onIssueFilterChange={handleIssueFilterChange}
-        />
+        <AdminCollapsibleSection
+          sectionId="article-health-filter"
+          title="文章健康篩選"
+          summary={`顯示 ${filteredArticles.length}／${articles.length} 筆${
+            healthFilter !== 'all' || issueFilter ? '，已套用篩選' : '，未套用篩選'
+          }`}
+        >
+          <ArticleHealthToolbar
+            summary={healthSummary}
+            issueGroups={issueGroups}
+            healthFilter={healthFilter}
+            issueFilter={issueFilter}
+            onHealthFilterChange={handleHealthFilterChange}
+            onIssueFilterChange={handleIssueFilterChange}
+          />
+        </AdminCollapsibleSection>
 
         <div className="admin-panel">
           <div className="admin-panel__header">

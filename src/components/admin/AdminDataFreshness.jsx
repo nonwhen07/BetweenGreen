@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const STATE_LABELS = {
   empty: '等待載入',
   fresh: '資料最新',
@@ -44,6 +46,16 @@ const AdminDataFreshness = ({
       </button>
     </section>
   );
+};
+
+AdminDataFreshness.propTypes = {
+  state: PropTypes.oneOf(['empty', 'fresh', 'recommend', 'stale']).isRequired,
+  relativeLabel: PropTypes.string.isRequired,
+  updatedAtLabel: PropTypes.string.isRequired,
+  hasRefreshError: PropTypes.bool.isRequired,
+  isInteractionLocked: PropTypes.bool.isRequired,
+  isRefreshing: PropTypes.bool.isRequired,
+  onRefresh: PropTypes.func.isRequired,
 };
 
 export default AdminDataFreshness;

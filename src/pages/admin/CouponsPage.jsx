@@ -29,6 +29,7 @@ import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 import BrandPagination from '@/components/shared/BrandPagination';
+import AdminCollapsibleSection from '@/components/admin/AdminCollapsibleSection';
 
 const CouponsPage = () => {
   // hooks init
@@ -287,14 +288,22 @@ const CouponsPage = () => {
 
         <AdminDataFreshness {...couponFreshness} onRefresh={couponFreshness.refreshCurrentData} />
 
-        <CouponHealthToolbar
-          summary={healthSummary}
-          issueGroups={issueGroups}
-          healthFilter={healthFilter}
-          issueFilter={issueFilter}
-          onHealthFilterChange={handleHealthFilterChange}
-          onIssueFilterChange={handleIssueFilterChange}
-        />
+        <AdminCollapsibleSection
+          sectionId="coupon-health-filter"
+          title="優惠券健康篩選"
+          summary={`顯示 ${filteredCoupons.length}／${coupons.length} 筆${
+            healthFilter !== 'all' || issueFilter ? '，已套用篩選' : '，未套用篩選'
+          }`}
+        >
+          <CouponHealthToolbar
+            summary={healthSummary}
+            issueGroups={issueGroups}
+            healthFilter={healthFilter}
+            issueFilter={issueFilter}
+            onHealthFilterChange={handleHealthFilterChange}
+            onIssueFilterChange={handleIssueFilterChange}
+          />
+        </AdminCollapsibleSection>
 
         <div className="admin-panel">
           <div className="admin-panel__header">
