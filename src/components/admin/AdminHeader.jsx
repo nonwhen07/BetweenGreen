@@ -21,18 +21,25 @@ const AdminHeader = ({ title, isSidebarOpen, onToggleSidebar }) => {
   const navigate = useNavigate();
 
   const isAuth = useSelector((state) => state.auth.isAuth);
-  const { success, showError } = useToast();
+  const { success, warning } = useToast();
 
   const handleLogout = async () => {
     try {
-      await logout();
+      const response = await logout();
+
+      if (!response.success) {
+        throw new Error(response.message || '伺服器未完成登出');
+      }
+
+      success('登出成功，即將跳轉到登入頁面。');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      warning('伺服器登出未完成，但已清除本機登入狀態。');
+    } finally {
+      // 本機登出不可依賴伺服器回應，避免 API 失敗後仍留在登入狀態。
       clearToken();
       dispatch(logoutAction());
-      success('登出成功，即將跳轉到登入面。');
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout failed:', err);
-      showError('登出失敗，請重新嘗試。');
+      navigate('/login', { replace: true });
     }
   };
   //  點外部關閉 dropdown

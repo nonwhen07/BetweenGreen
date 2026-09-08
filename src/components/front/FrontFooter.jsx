@@ -10,28 +10,33 @@ import { logout } from '@/services/authService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 // utils
-import { extractErrorMessage } from '@/utils/errorHandler';
+import { clearToken } from '@/utils/auth';
 
 const FrontFooter = () => {
   // 初始化
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuth = useSelector((state) => state.auth.isAuth);
-  const { success, showError } = useToast();
+  const { success, warning } = useToast();
 
   // 登出
   const handleLogout = async () => {
     try {
-      await logout();
+      const response = await logout();
 
-      document.cookie = 'bg-user-data=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if (!response.success) {
+        throw new Error(response.message || '伺服器未完成登出');
+      }
 
-      dispatch(logoutAction());
       success('已成功登出，將跳轉到前台首頁。');
-      navigate('/');
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '登出失敗，請稍後再試。');
-      showError(errorMessage);
+      console.error('Logout failed:', error);
+      warning('伺服器登出未完成，但已清除本機登入狀態。');
+    } finally {
+      // 即使伺服器無回應，仍保證前端立即退出登入狀態。
+      clearToken();
+      dispatch(logoutAction());
+      navigate('/', { replace: true });
     }
   };
 

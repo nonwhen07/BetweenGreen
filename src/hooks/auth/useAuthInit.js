@@ -6,6 +6,7 @@ import { checkAuth } from '@/services/authService';
 // features
 import {
   authCheckStarted,
+  authCheckUnavailable,
   loginSuccess,
   logoutAction,
 } from '@/features/auth/authSlice';
@@ -15,9 +16,16 @@ import { useToast } from '@/hooks/useToast';
 import { clearToken, getToken } from '@/utils/auth';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
+const AUTH_REJECTION_STATUS_CODES = new Set([400, 401, 403]);
+const AUTH_EXPIRED_MESSAGE = '登入狀態已失效，請重新登入。';
+const AUTH_UNAVAILABLE_MESSAGE = '暫時無法驗證登入狀態，請重新整理後再試。';
+
+const isAuthRejectionError = (error) =>
+  AUTH_REJECTION_STATUS_CODES.has(error?.response?.status);
+
 export const useAuthInit = () => {
   const dispatch = useDispatch();
-  const { showError } = useToast();
+  const { showError, warning } = useToast();
 
   // 由於沒有回傳會員名稱和權限狀態的API，userSlice先製作後暫時不使用
 
@@ -39,7 +47,11 @@ export const useAuthInit = () => {
         const res = await checkAuth();
 
         if (!res.success) {
-          throw new Error(res.message || '登入狀態已失效');
+          // HTTP 200 但 API 明確拒絕 token，也屬於確定失效。
+          clearToken();
+          dispatch(logoutAction());
+          showError(res.message || AUTH_EXPIRED_MESSAGE);
+          return;
         }
 
         if (!isActive) return;
@@ -52,14 +64,18 @@ export const useAuthInit = () => {
       } catch (error) {
         if (!isActive) return;
 
-        clearToken();
-        dispatch(logoutAction());
-        const errorMessage = extractErrorMessage(
-          error,
-          null,
-          '登入狀態已失效，請重新登入。',
-        );
-        showError(errorMessage);
+        if (isAuthRejectionError(error)) {
+          clearToken();
+          dispatch(logoutAction());
+          showError(extractErrorMessage(error, null, AUTH_EXPIRED_MESSAGE));
+          return;
+        }
+
+        // timeout、離線、429 與 5xx 等情況無法證明 token 失效：
+        // 阻擋後台但保留 Cookie，讓使用者恢復連線後重新整理即可再驗證。
+        console.error('Auth check unavailable:', error);
+        dispatch(authCheckUnavailable(AUTH_UNAVAILABLE_MESSAGE));
+        warning(AUTH_UNAVAILABLE_MESSAGE);
       }
     };
 
@@ -68,5 +84,5 @@ export const useAuthInit = () => {
     return () => {
       isActive = false;
     };
-  }, [dispatch, showError]);
+  }, [dispatch, showError, warning]);
 };

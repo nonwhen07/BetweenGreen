@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/useToast';
 // components
 import Logo from '@/components/shared/Logo';
 // utils
-import { extractErrorMessage } from '@/utils/errorHandler';
+import { clearToken } from '@/utils/auth';
 
 // Header-routes
 const routes = [
@@ -86,7 +86,7 @@ const FrontHeader = () => {
   const heroPagePaths = ['/', '/home', '/about-us', '/products'];
   const isHeroPage = heroPagePaths.includes(location.pathname);
 
-  const { success, showError } = useToast();
+  const { success, warning } = useToast();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollState, setScrollState] = useState('top');
@@ -99,17 +99,20 @@ const FrontHeader = () => {
   //加入登出
   const handleLogout = async () => {
     try {
-      await logout(); // 呼叫 API
+      const response = await logout();
 
-      // 清 cookie
-      document.cookie = 'bg-user-data=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if (!response.success) {
+        throw new Error(response.message || '伺服器未完成登出');
+      }
 
-      dispatch(logoutAction()); // 清 Redux
       success('已成功登出，將跳轉到前台首頁。');
-      navigate('/');
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '登出失敗，請稍後再試。');
-      showError(errorMessage);
+      console.error('Logout failed:', error);
+      warning('伺服器登出未完成，但已清除本機登入狀態。');
+    } finally {
+      clearToken();
+      dispatch(logoutAction());
+      navigate('/', { replace: true });
     }
   };
 
