@@ -46,23 +46,20 @@ const LoginPage = () => {
       const { token, expired } = res;
       document.cookie = `bg-user-data=${token}; path=/; expires=${new Date(expired).toUTCString()}`;
 
-      success('登入成功，將導向後台首頁');
       dispatch(
         loginSuccess({
           token,
           user: res.user || null,
         }),
       );
-      // 延遲導航 0.5 秒，UIUX更好一點點
-      setTimeout(() => {
-        navigate('/admin');
-      }, 500);
+      success('登入成功，將導向後台首頁');
+      navigate('/admin', { replace: true });
     } catch (err) {
       // 如果其他page沒有const [errorMessage, setErrorMessage] = useState('');，
       // 去顯示錯誤訊息或其他資訊可以改填 extractErrorMessage(error, undefined, '登出失敗');
       // 或 extractErrorMessage(error, null);
       // ex： const message = extractErrorMessage(error, null, '登出失敗，請重新嘗試。');
-      const errorMessage = extractErrorMessage(err, setErrorMessage, '登出失敗，請重新嘗試。');
+      const errorMessage = extractErrorMessage(err, setErrorMessage, '登入失敗，請重新嘗試。');
 
       showError(errorMessage);
     } finally {

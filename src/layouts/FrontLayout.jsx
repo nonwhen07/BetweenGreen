@@ -3,7 +3,6 @@ import { useLocation, Outlet } from 'react-router-dom';
 import AOS from 'aos';
 
 // hooks
-import { useAuthInit } from '@/hooks/auth/useAuthInit';
 import { useCartInit } from '@/hooks/cart/useCartInit';
 
 // components
@@ -13,8 +12,7 @@ import ScrollToTop from '@/components/shared/ScrollToTop';
 import GoTop from '@/components/shared/GoTop';
 
 const FrontLayout = () => {
-  // 初始化 Auth、Cart 狀態
-  useAuthInit();
+  // 初始化 Cart 狀態；Auth 由 App 統一初始化。
   useCartInit();
 
   const location = useLocation();

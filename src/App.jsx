@@ -3,8 +3,11 @@ import { RouterProvider } from 'react-router-dom';
 import router from '@/router/index';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { useAuthInit } from '@/hooks/auth/useAuthInit';
 
 const App = () => {
+  useAuthInit();
+
   useEffect(() => {
     AOS.init({
       duration: 1000, // 動畫持續時間
