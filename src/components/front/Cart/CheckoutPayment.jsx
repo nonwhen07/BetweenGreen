@@ -4,7 +4,7 @@ import { CreditCard, Landmark, PackageCheck, Smartphone } from 'lucide-react';
 
 // utils
 import { calculateCartTotal, formatCardNumber } from '@/utils/cartUtils';
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 // constants
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 // components

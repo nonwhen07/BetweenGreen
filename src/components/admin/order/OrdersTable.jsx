@@ -5,23 +5,16 @@ import {
   formatOrderCurrency,
   formatOrderDateTime,
   getOrderCustomerName,
-} from '@/utils/orderFormatter';
+} from '@/utils/order/orderFormatter';
 
-const OrdersTable = ({
-  orders,
-  hasOrders,
-  openOrderModal,
-  openDeleteModal,
-}) => {
+const OrdersTable = ({ orders, hasOrders, openOrderModal, openDeleteModal }) => {
   if (orders.length === 0) {
     return (
       <div className="admin-empty-state admin-empty-state--panel">
         <p className="text-muted mb-2">
           {hasOrders ? '目前沒有符合篩選條件的訂單' : '目前尚無訂單資料'}
         </p>
-        <small className="text-secondary">
-          顧客完成結帳後，訂單資料會顯示在此處
-        </small>
+        <small className="text-secondary">顧客完成結帳後，訂單資料會顯示在此處</small>
       </div>
     );
   }

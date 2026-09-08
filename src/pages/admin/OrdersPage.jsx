@@ -21,7 +21,7 @@ import { useOrderQuarterlyAnalytics } from '@/hooks/order/useOrderQuarterlyAnaly
 import { useOrderUnpaidAging } from '@/hooks/order/useOrderUnpaidAging';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
-import { filterOrdersBySearch, getOrderDateRangeError } from '@/utils/orderFilter';
+import { filterOrdersBySearch, getOrderDateRangeError } from '@/utils/order/orderFilter';
 // components
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
@@ -382,12 +382,7 @@ const OrdersPage = () => {
           sectionId="order-health-filter"
           title="訂單健康與篩選"
           summary={`顯示 ${filteredOrders.length}／${orders.length} 筆${
-            keyword ||
-            dateFrom ||
-            dateTo ||
-            agingFilter ||
-            healthFilter !== 'all' ||
-            issueFilter
+            keyword || dateFrom || dateTo || agingFilter || healthFilter !== 'all' || issueFilter
               ? '，已套用篩選'
               : '，未套用篩選'
           }`}

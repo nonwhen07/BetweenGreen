@@ -12,7 +12,7 @@ import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 // utils
 import { calculateCartFinalTotal, calculateCartTotal } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 
 // hooks
 import { useToast } from '@/hooks/useToast';

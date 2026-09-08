@@ -2,21 +2,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { useOrderQuarterlyAnalytics } from '@/hooks/order/useOrderQuarterlyAnalytics';
-import { formatOrderCurrency } from '@/utils/orderFormatter';
+import { formatOrderCurrency } from '@/utils/order/orderFormatter';
 
-const DashboardOrderQuarterSummary = ({
-  orders,
-  status,
-  error,
-  hasCachedData,
-}) => {
-  const {
-    analytics,
-    currentQuarterKey,
-    allOverdueUnpaidCount,
-  } = useOrderQuarterlyAnalytics(orders);
-  const isInitialLoading =
-    (status === 'idle' || status === 'loading') && !hasCachedData;
+const DashboardOrderQuarterSummary = ({ orders, status, error, hasCachedData }) => {
+  const { analytics, currentQuarterKey, allOverdueUnpaidCount } =
+    useOrderQuarterlyAnalytics(orders);
+  const isInitialLoading = (status === 'idle' || status === 'loading') && !hasCachedData;
   const hasBlockingError = status === 'error' && !hasCachedData;
   const summary = analytics.summary;
 
@@ -44,23 +35,17 @@ const DashboardOrderQuarterSummary = ({
           <div>
             <span>已付款營收</span>
             <strong>
-              {isInitialLoading
-                ? '—'
-                : `NT$ ${formatOrderCurrency(summary.paidRevenue)}`}
+              {isInitialLoading ? '—' : `NT$ ${formatOrderCurrency(summary.paidRevenue)}`}
             </strong>
           </div>
           <div>
             <span>本季訂單</span>
-            <strong>
-              {isInitialLoading ? '—' : `${summary.orderCount} 筆`}
-            </strong>
+            <strong>{isInitialLoading ? '—' : `${summary.orderCount} 筆`}</strong>
           </div>
           <div>
             <span>平均已付款客單價</span>
             <strong>
-              {isInitialLoading
-                ? '—'
-                : `NT$ ${formatOrderCurrency(summary.averagePaidOrderValue)}`}
+              {isInitialLoading ? '—' : `NT$ ${formatOrderCurrency(summary.averagePaidOrderValue)}`}
             </strong>
           </div>
           <div className={allOverdueUnpaidCount > 0 ? 'is-warning' : ''}>

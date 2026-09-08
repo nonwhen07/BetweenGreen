@@ -7,7 +7,7 @@ import { logoutAction } from '@/features/auth/authSlice';
 import { startLoading, stopLoading } from '@/features/ui/loadingSlice';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
-import { normalizeOrderList } from '@/utils/orderFormatter';
+import { normalizeOrderList } from '@/utils/order/orderFormatter';
 
 const initialState = {
   orders: [],
@@ -25,9 +25,7 @@ export const fetchAdminOrders = createAsyncThunk(
       const response = await getAllAdminOrders();
       return normalizeOrderList(response.data);
     } catch (error) {
-      return rejectWithValue(
-        extractErrorMessage(error, null, '取得訂單列表失敗，請稍後再試。'),
-      );
+      return rejectWithValue(extractErrorMessage(error, null, '取得訂單列表失敗，請稍後再試。'));
     } finally {
       if (!background) dispatch(stopLoading());
     }
@@ -83,16 +81,11 @@ const orderSlice = createSlice({
   },
 });
 
-export const {
-  clearAdminOrders,
-  removeAdminOrder,
-  updateAdminOrderPayment,
-} = orderSlice.actions;
+export const { clearAdminOrders, removeAdminOrder, updateAdminOrderPayment } = orderSlice.actions;
 
 export const selectAdminOrders = (state) => state.order.orders;
 export const selectAdminOrdersStatus = (state) => state.order.status;
 export const selectAdminOrdersError = (state) => state.order.error;
-export const selectAdminOrdersLastFetchedAt = (state) =>
-  state.order.lastFetchedAt;
+export const selectAdminOrdersLastFetchedAt = (state) => state.order.lastFetchedAt;
 
 export default orderSlice.reducer;

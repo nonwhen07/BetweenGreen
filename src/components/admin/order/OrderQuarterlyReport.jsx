@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { formatOrderCurrency } from '@/utils/orderFormatter';
+import { formatOrderCurrency } from '@/utils/order/orderFormatter';
 
 const OrderQuarterlyReport = ({
   analytics,
@@ -17,8 +17,7 @@ const OrderQuarterlyReport = ({
         <div>
           <h2 className="admin-section-heading__title">季度訂單分析</h2>
           <p className="admin-section-heading__description">
-            營收與排行只計算已付款訂單；未付款提醒仍包含在
-            訂單健康檢查中
+            營收與排行只計算已付款訂單；未付款提醒仍包含在 訂單健康檢查中
           </p>
         </div>
 

@@ -5,21 +5,16 @@ import {
   countOverdueUnpaidOrders,
   getCurrentOrderQuarterKey,
   getOrderQuarterOptions,
-} from '@/utils/orderAnalytics';
+} from '@/utils/order/orderAnalytics';
 
-export const useOrderQuarterlyAnalytics = (
-  orders = [],
-  requestedQuarter = '',
-) => {
+export const useOrderQuarterlyAnalytics = (orders = [], requestedQuarter = '') => {
   const [referenceTime] = useState(Date.now);
   const quarterOptions = useMemo(
     () => getOrderQuarterOptions(orders, referenceTime),
     [orders, referenceTime],
   );
   const currentQuarterKey = getCurrentOrderQuarterKey(referenceTime);
-  const selectedQuarter = quarterOptions.some(
-    (option) => option.value === requestedQuarter,
-  )
+  const selectedQuarter = quarterOptions.some((option) => option.value === requestedQuarter)
     ? requestedQuarter
     : currentQuarterKey;
   const analytics = useMemo(

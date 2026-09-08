@@ -9,7 +9,7 @@ import {
   getOrderExportPeriod,
   getTaipeiCalendarSelection,
   ORDER_EXPORT_PERIOD_TYPES,
-} from '@/utils/orderExporter';
+} from '@/utils/order/orderExporter';
 
 export const useOrderExport = ({ orders, refreshOrders }) => {
   const defaultSelection = useMemo(() => getTaipeiCalendarSelection(), []);
@@ -75,11 +75,7 @@ export const useOrderExport = ({ orders, refreshOrders }) => {
       }
 
       const exportedAt = new Date().toISOString();
-      const exportData = buildOrderArchiveExport(
-        exportOrders,
-        period,
-        exportedAt,
-      );
+      const exportData = buildOrderArchiveExport(exportOrders, period, exportedAt);
 
       downloadJsonFile(exportData, buildOrderExportFilename(period));
       setIsConfirmed(false);

@@ -1,5 +1,5 @@
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
-import { getOrderUnpaidAge } from '@/utils/orderAnalytics';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
+import { getOrderUnpaidAge } from '@/utils/order/orderAnalytics';
 
 export const ORDER_HEALTH_STATUS = {
   HEALTHY: 'healthy',
@@ -42,8 +42,7 @@ export const ORDER_HEALTH_ISSUE_MAP = {
   },
 };
 
-const isNonEmptyString = (value) =>
-  typeof value === 'string' && value.trim().length > 0;
+const isNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
 
 const addIssue = (issues, code, message) => {
   const definition = ORDER_HEALTH_ISSUE_MAP[code];
@@ -108,11 +107,7 @@ const analyzeSingleOrder = (order, index, now) => {
 
   const customerMissingFields = getCustomerMissingFields(order.user);
   if (customerMissingFields.length > 0) {
-    addIssue(
-      issues,
-      'INVALID_CUSTOMER',
-      `缺少：${customerMissingFields.join('、')}`,
-    );
+    addIssue(issues, 'INVALID_CUSTOMER', `缺少：${customerMissingFields.join('、')}`);
   }
 
   const itemIssues = getItemIssues(order.products);
@@ -127,11 +122,7 @@ const analyzeSingleOrder = (order, index, now) => {
 
   const createAt = Number(order.create_at);
   if (!Number.isInteger(createAt) || createAt <= 0) {
-    addIssue(
-      issues,
-      'INVALID_DATE',
-      'create_at 必須是有效的 Unix timestamp',
-    );
+    addIssue(issues, 'INVALID_DATE', 'create_at 必須是有效的 Unix timestamp');
   }
 
   if (typeof order.is_paid !== 'boolean') {
@@ -140,23 +131,13 @@ const analyzeSingleOrder = (order, index, now) => {
     const unpaidAge = getOrderUnpaidAge(order, now);
 
     if (unpaidAge?.level === 'overdue') {
-      addIssue(
-        issues,
-        'UNPAID_OVERDUE',
-        `訂單已未付款 ${unpaidAge.ageDays} 天，建議優先聯繫確認`,
-      );
+      addIssue(issues, 'UNPAID_OVERDUE', `訂單已未付款 ${unpaidAge.ageDays} 天，建議優先聯繫確認`);
     } else if (unpaidAge?.level === 'review') {
-      addIssue(
-        issues,
-        'UNPAID_REVIEW',
-        `訂單已未付款 ${unpaidAge.ageDays} 天，建議確認付款意願`,
-      );
+      addIssue(issues, 'UNPAID_REVIEW', `訂單已未付款 ${unpaidAge.ageDays} 天，建議確認付款意願`);
     }
   }
 
-  const errorCount = issues.filter(
-    (issue) => issue.severity === ORDER_HEALTH_STATUS.ERROR,
-  ).length;
+  const errorCount = issues.filter((issue) => issue.severity === ORDER_HEALTH_STATUS.ERROR).length;
   const warningCount = issues.filter(
     (issue) => issue.severity === ORDER_HEALTH_STATUS.WARNING,
   ).length;

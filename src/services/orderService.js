@@ -1,6 +1,6 @@
 import axiosAPI from '@/api/axiosAPI';
 
-import { normalizeOrderList } from '@/utils/orderFormatter';
+import { normalizeOrderList } from '@/utils/order/orderFormatter';
 
 /**
  * =====================================
@@ -74,9 +74,7 @@ export const getAllAdminOrders = async () => {
   }
 
   const remainingPages = await Promise.all(
-    Array.from({ length: totalPages - 1 }, (_, index) =>
-      getAdminOrders(index + 2),
-    ),
+    Array.from({ length: totalPages - 1 }, (_, index) => getAdminOrders(index + 2)),
   );
   const allOrders = [
     ...normalizeOrderList(firstPage.data),
@@ -86,10 +84,7 @@ export const getAllAdminOrders = async () => {
   return {
     data: [
       ...new Map(
-        allOrders.map((order, index) => [
-          order.id || `__missing-id-${index}`,
-          order,
-        ]),
+        allOrders.map((order, index) => [order.id || `__missing-id-${index}`, order]),
       ).values(),
     ],
     pagination: firstPage.pagination,

@@ -14,7 +14,7 @@ import { useLoading } from '@/hooks/useLoading';
 
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 
 const CheckoutPaymentPage = () => {
   const { orderId } = useParams();

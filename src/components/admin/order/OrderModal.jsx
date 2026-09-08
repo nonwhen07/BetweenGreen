@@ -4,11 +4,8 @@ import PropTypes from 'prop-types';
 // hooks
 import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 // utils
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
-import {
-  formatOrderCurrency,
-  formatOrderDateTime,
-} from '@/utils/orderFormatter';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
+import { formatOrderCurrency, formatOrderDateTime } from '@/utils/order/orderFormatter';
 
 const OrderModal = ({
   isOpen,
@@ -75,9 +72,7 @@ const OrderModal = ({
               </div>
               <div>
                 <span className="text-muted small d-block mb-1">訂單總額</span>
-                <strong className="text-primary">
-                  NT$ {formatOrderCurrency(order?.total)}
-                </strong>
+                <strong className="text-primary">NT$ {formatOrderCurrency(order?.total)}</strong>
               </div>
             </div>
 
@@ -106,9 +101,7 @@ const OrderModal = ({
             <section className="admin-order-detail__section mb-4">
               <h6 className="admin-order-detail__section-title">商品明細</h6>
               {items.length === 0 ? (
-                <div className="admin-empty-state">
-                  目前無法顯示這筆訂單的商品資料
-                </div>
+                <div className="admin-empty-state">目前無法顯示這筆訂單的商品資料</div>
               ) : (
                 <div
                   className="admin-table-wrapper admin-order-detail__items-wrapper border rounded"
@@ -135,16 +128,10 @@ const OrderModal = ({
                                 <img
                                   src={item.imageUrl}
                                   alt=""
-                                  title={
-                                    item.usesCatalogImage
-                                      ? '圖片來自目前商品資料'
-                                      : undefined
-                                  }
+                                  title={item.usesCatalogImage ? '圖片來自目前商品資料' : undefined}
                                 />
                               ) : (
-                                <div className="admin-order-item__placeholder">
-                                  無圖片
-                                </div>
+                                <div className="admin-order-item__placeholder">無圖片</div>
                               )}
                               <span className="admin-order-item__content">
                                 <span>{item.title}</span>
@@ -157,9 +144,7 @@ const OrderModal = ({
                                 {isProductCatalogReady &&
                                   item.productId &&
                                   item.catalogStatus === 'missing' && (
-                                    <small className="text-muted">
-                                      商品資料已不存在
-                                    </small>
+                                    <small className="text-muted">商品資料已不存在</small>
                                   )}
                               </span>
                             </div>

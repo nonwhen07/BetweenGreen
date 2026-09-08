@@ -10,7 +10,7 @@ import { getOrders } from '@/services/orderService';
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 // utils
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 
 const normalizeOrders = (orders) => {

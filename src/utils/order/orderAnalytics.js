@@ -3,13 +3,13 @@ import {
   ORDER_UNPAID_OVERDUE_DAYS,
   ORDER_UNPAID_REVIEW_DAYS,
 } from '@/constants/orderConstants';
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 import {
   filterOrdersByExportPeriod,
   getOrderExportPeriod,
   getTaipeiCalendarSelection,
   ORDER_EXPORT_PERIOD_TYPES,
-} from '@/utils/orderExporter';
+} from '@/utils/order/orderExporter';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -198,12 +198,8 @@ export const analyzeOrderQuarter = (orders = [], quarterKey, now = Date.now()) =
     0,
   );
   const customerAnalytics = aggregateCustomers(paidOrders);
-  const {
-    customerCount,
-    repeatCustomerCount,
-    repeatCustomerRate,
-    topCustomers,
-  } = customerAnalytics;
+  const { customerCount, repeatCustomerCount, repeatCustomerRate, topCustomers } =
+    customerAnalytics;
 
   return {
     period,

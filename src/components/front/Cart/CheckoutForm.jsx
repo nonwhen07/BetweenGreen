@@ -4,7 +4,7 @@ import taiwanDistricts from '@/data/taiwanDistricts.json';
 
 // utils
 import { calculateCartTotal } from '@/utils/cartUtils';
-import { normalizeOrderItems } from '@/utils/orderItemUtils';
+import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 // import { formatCategoryShortPreview, getProductUnitLabel } from '@/utils/product/productFormatter';
 // import { formatCategoryShortPreview, getProductUnitShortLabel } from '@/utils/product/productFormatter';
 // constants

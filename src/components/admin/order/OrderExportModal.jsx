@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 // hooks
 import useAdminModalLifecycle from '@/hooks/useAdminModalLifecycle';
 // utils
-import { ORDER_EXPORT_PERIOD_TYPES } from '@/utils/orderExporter';
+import { ORDER_EXPORT_PERIOD_TYPES } from '@/utils/order/orderExporter';
 
 const PERIOD_TYPE_OPTIONS = [
   { value: ORDER_EXPORT_PERIOD_TYPES.MONTH, label: '月份' },
@@ -52,15 +52,10 @@ const OrderExportModal = ({
         <div className="modal-content border-0 shadow">
           <div className="modal-header bg-primary border-bottom">
             <div>
-              <h5
-                id="order-export-modal-title"
-                className="modal-title text-light fs-4"
-              >
+              <h5 id="order-export-modal-title" className="modal-title text-light fs-4">
                 匯出訂單 JSON
               </h5>
-              <small className="text-white-50">
-                依月份、季度或年度下載歷史訂單
-              </small>
+              <small className="text-white-50">依月份、季度或年度下載歷史訂單</small>
             </div>
 
             <button
@@ -84,9 +79,7 @@ const OrderExportModal = ({
                   <label
                     key={option.value}
                     className={`btn ${
-                      periodType === option.value
-                        ? 'btn-primary'
-                        : 'btn-outline-primary'
+                      periodType === option.value ? 'btn-primary' : 'btn-outline-primary'
                     }`}
                   >
                     <input
@@ -95,9 +88,7 @@ const OrderExportModal = ({
                       name="order-export-period-type"
                       value={option.value}
                       checked={periodType === option.value}
-                      onChange={(event) =>
-                        onPeriodTypeChange(event.target.value)
-                      }
+                      onChange={(event) => onPeriodTypeChange(event.target.value)}
                     />
                     {option.label}
                   </label>
@@ -162,17 +153,12 @@ const OrderExportModal = ({
               )}
             </div>
 
-            <div
-              className="admin-order-export-modal__summary mb-4"
-              aria-live="polite"
-            >
+            <div className="admin-order-export-modal__summary mb-4" aria-live="polite">
               {period ? (
                 <>
                   <strong>{period.label}</strong>
                   <span>目前 Store 估計 {previewCount} 筆訂單</span>
-                  <small>
-                    按下匯出後會重新取得全部訂單，再以 Asia/Taipei 時區確認最終筆數。
-                  </small>
+                  <small>按下匯出後會重新取得全部訂單，再以 Asia/Taipei 時區確認最終筆數。</small>
                 </>
               ) : (
                 <span className="text-danger">請輸入有效的匯出期間</span>
@@ -220,8 +206,7 @@ const OrderExportModal = ({
 
 OrderExportModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  periodType: PropTypes.oneOf(Object.values(ORDER_EXPORT_PERIOD_TYPES))
-    .isRequired,
+  periodType: PropTypes.oneOf(Object.values(ORDER_EXPORT_PERIOD_TYPES)).isRequired,
   month: PropTypes.string.isRequired,
   year: PropTypes.string.isRequired,
   quarter: PropTypes.string.isRequired,
