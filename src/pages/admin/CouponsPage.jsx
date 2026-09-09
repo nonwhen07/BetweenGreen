@@ -29,7 +29,6 @@ import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 import BrandPagination from '@/components/shared/BrandPagination';
-import AdminCollapsibleSection from '@/components/admin/AdminCollapsibleSection';
 
 const CouponsPage = () => {
   // hooks init
@@ -185,49 +184,50 @@ const CouponsPage = () => {
       warning('優惠券操作結果未能保存至操作紀錄');
     }
   };
-  const handleUpdateCoupon = handleSubmit((formData) => {
-    // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
+  const handleUpdateCoupon = handleSubmit(async (formData) => {
     start();
+    const attemptedMode = modalMode;
 
-    return handleSubmitCoupon(
-      formData,
-      async ({ coupon, mode }) => {
-        const action = mode === 'create' ? 'create' : 'update';
+    try {
+      const { coupon, mode } = await handleSubmitCoupon(formData);
+      const action = mode === 'create' ? 'create' : 'update';
+      let isStoreSynchronized = true;
 
-        try {
-          if (coupon.id) {
-            saveCouponToStore(coupon);
-          } else {
-            // Hex API 若未回傳新增 ID，重抓一次以取得後端產生的完整資料。
-            await refreshCoupons();
-          }
-
-          if (mode === 'create') resetPage();
-        } catch (error) {
-          showError(
-            extractErrorMessage(error, null, '優惠券已儲存，但同步 Store 失敗，請重新整理頁面。'),
-          );
+      try {
+        if (coupon.id) {
+          saveCouponToStore(coupon);
+        } else {
+          // Hex API 若未回傳新增 ID，重抓一次以取得後端產生的完整資料。
+          await refreshCoupons();
         }
 
-        await recordCouponActivity({
-          action,
-          status: 'success',
-          coupon,
-        });
+        if (mode === 'create') resetPage();
+      } catch (error) {
+        isStoreSynchronized = false;
+        showError(
+          extractErrorMessage(error, null, '優惠券已儲存，但同步 Store 失敗，請重新整理頁面。'),
+        );
+      }
+
+      await recordCouponActivity({ action, status: 'success', coupon });
+      if (isStoreSynchronized) {
         success(mode === 'create' ? '優惠券新增成功！' : '優惠券更新成功！');
-        stop();
-      },
-      (errorMessage) => {
-        showError(errorMessage);
-        stop();
-        recordCouponActivity({
-          action: modalMode === 'create' ? 'create' : 'update',
-          status: 'error',
-          coupon: formData,
-          message: errorMessage,
-        });
-      },
-    );
+      }
+    } catch (error) {
+      const errorMessage = error?.response
+        ? extractErrorMessage(error, null, '更新優惠券失敗，請稍後再試。')
+        : error?.message || '更新優惠券失敗，請稍後再試。';
+
+      showError(errorMessage);
+      await recordCouponActivity({
+        action: attemptedMode === 'create' ? 'create' : 'update',
+        status: 'error',
+        coupon: formData,
+        message: errorMessage,
+      });
+    } finally {
+      stop();
+    }
   });
   const handleDeleteCoupon = async () => {
     if (!deleteTarget?.id) return;
@@ -288,22 +288,14 @@ const CouponsPage = () => {
 
         <AdminDataFreshness {...couponFreshness} onRefresh={couponFreshness.refreshCurrentData} />
 
-        <AdminCollapsibleSection
-          sectionId="coupon-health-filter"
-          title="優惠券健康篩選"
-          summary={`顯示 ${filteredCoupons.length}／${coupons.length} 筆${
-            healthFilter !== 'all' || issueFilter ? '，已套用篩選' : '，未套用篩選'
-          }`}
-        >
-          <CouponHealthToolbar
-            summary={healthSummary}
-            issueGroups={issueGroups}
-            healthFilter={healthFilter}
-            issueFilter={issueFilter}
-            onHealthFilterChange={handleHealthFilterChange}
-            onIssueFilterChange={handleIssueFilterChange}
-          />
-        </AdminCollapsibleSection>
+        <CouponHealthToolbar
+          summary={healthSummary}
+          issueGroups={issueGroups}
+          healthFilter={healthFilter}
+          issueFilter={issueFilter}
+          onHealthFilterChange={handleHealthFilterChange}
+          onIssueFilterChange={handleIssueFilterChange}
+        />
 
         <div className="admin-panel">
           <div className="admin-panel__header">

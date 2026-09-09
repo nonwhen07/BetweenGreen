@@ -27,7 +27,6 @@ import DeleteModal from '@/components/admin/DeleteModal';
 import BrandPagination from '@/components/shared/BrandPagination';
 import AdminFilter from '@/components/admin/AdminFilter';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
-import AdminCollapsibleSection from '@/components/admin/AdminCollapsibleSection';
 
 const ProductsPage = () => {
   // hooks init
@@ -168,33 +167,31 @@ const ProductsPage = () => {
     isInteractionLocked: isProductModalOpen || isImportModalOpen || isDeleteModalOpen,
   });
 
-  const handleUpdateProduct = handleSubmit((formData) => {
-    // submit 真正發生在點按鈕那瞬間 start() 會先觸發，然後才是 handleSubmitProduct 的邏輯
+  const handleUpdateProduct = handleSubmit(async (formData) => {
     start();
 
-    return handleSubmitProduct(
-      formData,
-      async () => {
-        try {
-          await refreshProducts();
-          success(modalMode === 'create' ? '產品新增成功！' : '產品更新成功！');
-        } catch (error) {
-          showError(
-            extractErrorMessage(
-              error,
-              null,
-              '商品已儲存，但重新載入商品列表失敗，請重新整理頁面。',
-            ),
-          );
-        } finally {
-          stop();
-        }
-      },
-      (errorMessage) => {
-        showError(errorMessage);
-        stop();
-      },
-    );
+    try {
+      const { mode } = await handleSubmitProduct(formData);
+
+      try {
+        await refreshProducts();
+      } catch (error) {
+        showError(
+          extractErrorMessage(
+            error,
+            null,
+            '商品已儲存，但重新載入商品列表失敗，請重新整理頁面。',
+          ),
+        );
+        return;
+      }
+
+      success(mode === 'create' ? '產品新增成功！' : '產品更新成功！');
+    } catch (error) {
+      showError(extractErrorMessage(error, null, '更新產品失敗，請稍後再試。'));
+    } finally {
+      stop();
+    }
   });
   const handleDeleteProduct = async () => {
     if (!deleteTarget?.id) return;
@@ -202,9 +199,21 @@ const ProductsPage = () => {
 
     try {
       await deleteProduct(deleteTarget.id);
-      // close 要提早，確保無論成功或失敗都會關閉刪除確認視窗
       closeDeleteModal();
-      await refreshProducts();
+
+      try {
+        await refreshProducts();
+      } catch (error) {
+        showError(
+          extractErrorMessage(
+            error,
+            null,
+            '商品已刪除，但重新載入商品列表失敗，請重新整理頁面。',
+          ),
+        );
+        return;
+      }
+
       success('產品刪除成功！');
     } catch (error) {
       const errorMessage = extractErrorMessage(error, null, '刪除產品失敗，請稍後再試。');
@@ -258,31 +267,21 @@ const ProductsPage = () => {
 
         <AdminDataFreshness {...productFreshness} onRefresh={productFreshness.refreshCurrentData} />
 
-        <AdminCollapsibleSection
-          sectionId="product-health-filter"
-          title="商品健康與篩選"
-          summary={`顯示 ${filteredProducts.length}／${products.length} 筆${
-            keyword || selectedCategory || healthFilter !== 'all' || issueFilter
-              ? '，已套用篩選'
-              : '，未套用篩選'
-          }`}
-        >
-          <ProductHealthToolbar
-            summary={healthSummary}
-            issueGroups={issueGroups}
-            healthFilter={healthFilter}
-            issueFilter={issueFilter}
-            onHealthFilterChange={handleHealthFilterChange}
-            onIssueFilterChange={handleIssueFilterChange}
-          />
+        <ProductHealthToolbar
+          summary={healthSummary}
+          issueGroups={issueGroups}
+          healthFilter={healthFilter}
+          issueFilter={issueFilter}
+          onHealthFilterChange={handleHealthFilterChange}
+          onIssueFilterChange={handleIssueFilterChange}
+        />
 
-          <AdminFilter
-            keyword={keyword}
-            setKeyword={setKeyword}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-        </AdminCollapsibleSection>
+        <AdminFilter
+          keyword={keyword}
+          setKeyword={setKeyword}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
 
         <div className="admin-panel">
           <div className="admin-panel__header">

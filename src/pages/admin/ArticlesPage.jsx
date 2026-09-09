@@ -28,7 +28,6 @@ import AdminActivityPanel from '@/components/admin/AdminActivityPanel';
 import DeleteModal from '@/components/admin/DeleteModal';
 import AdminDataFreshness from '@/components/admin/AdminDataFreshness';
 import BrandPagination from '@/components/shared/BrandPagination';
-import AdminCollapsibleSection from '@/components/admin/AdminCollapsibleSection';
 
 const ArticlesPage = () => {
   const { success, showError, warning } = useToast();
@@ -162,37 +161,45 @@ const ArticlesPage = () => {
     }
   };
 
-  const handleUpdateArticle = handleSubmit((formData) => {
+  const handleUpdateArticle = handleSubmit(async (formData) => {
     start();
-    return handleSubmitArticle(
-      formData,
-      async ({ article, mode }) => {
-        const action = mode === 'create' ? 'create' : 'update';
-        try {
-          if (article.id) saveArticleToStore(article);
-          else await refreshArticles();
-          if (mode === 'create') resetPage();
-        } catch (error) {
-          showError(
-            extractErrorMessage(error, null, '文章已儲存，但同步 Store 失敗，請重新整理頁面。'),
-          );
-        }
+    const attemptedMode = modalMode;
 
-        await recordArticleActivity({ action, status: 'success', article });
+    try {
+      const { article, mode } = await handleSubmitArticle(formData);
+      const action = mode === 'create' ? 'create' : 'update';
+      let isStoreSynchronized = true;
+
+      try {
+        if (article.id) saveArticleToStore(article);
+        else await refreshArticles();
+        if (mode === 'create') resetPage();
+      } catch (error) {
+        isStoreSynchronized = false;
+        showError(
+          extractErrorMessage(error, null, '文章已儲存，但同步 Store 失敗，請重新整理頁面。'),
+        );
+      }
+
+      await recordArticleActivity({ action, status: 'success', article });
+      if (isStoreSynchronized) {
         success(mode === 'create' ? '文章新增成功！' : '文章更新成功！');
-        stop();
-      },
-      (errorMessage) => {
-        showError(errorMessage);
-        stop();
-        recordArticleActivity({
-          action: modalMode === 'create' ? 'create' : 'update',
-          status: 'error',
-          article: formData,
-          message: errorMessage,
-        });
-      },
-    );
+      }
+    } catch (error) {
+      const errorMessage = error?.response
+        ? extractErrorMessage(error, null, '更新文章失敗，請稍後再試。')
+        : error?.message || '更新文章失敗，請稍後再試。';
+
+      showError(errorMessage);
+      await recordArticleActivity({
+        action: attemptedMode === 'create' ? 'create' : 'update',
+        status: 'error',
+        article: formData,
+        message: errorMessage,
+      });
+    } finally {
+      stop();
+    }
   });
 
   const handleDeleteArticle = async () => {
@@ -245,22 +252,14 @@ const ArticlesPage = () => {
 
         <AdminDataFreshness {...articleFreshness} onRefresh={articleFreshness.refreshCurrentData} />
 
-        <AdminCollapsibleSection
-          sectionId="article-health-filter"
-          title="文章健康篩選"
-          summary={`顯示 ${filteredArticles.length}／${articles.length} 筆${
-            healthFilter !== 'all' || issueFilter ? '，已套用篩選' : '，未套用篩選'
-          }`}
-        >
-          <ArticleHealthToolbar
-            summary={healthSummary}
-            issueGroups={issueGroups}
-            healthFilter={healthFilter}
-            issueFilter={issueFilter}
-            onHealthFilterChange={handleHealthFilterChange}
-            onIssueFilterChange={handleIssueFilterChange}
-          />
-        </AdminCollapsibleSection>
+        <ArticleHealthToolbar
+          summary={healthSummary}
+          issueGroups={issueGroups}
+          healthFilter={healthFilter}
+          issueFilter={issueFilter}
+          onHealthFilterChange={handleHealthFilterChange}
+          onIssueFilterChange={handleIssueFilterChange}
+        />
 
         <div className="admin-panel">
           <div className="admin-panel__header">

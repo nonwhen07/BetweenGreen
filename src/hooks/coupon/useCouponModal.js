@@ -9,7 +9,6 @@ import { createCoupon, updateCoupon } from '@/services/couponService';
 import { validateCouponAdminData } from '@/schemas/couponAdminSchema';
 // utils
 import { formatCouponForApi, formatCouponForForm } from '@/utils/coupon/couponFormatter';
-import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useCouponModal = () => {
   // RHF init
@@ -62,40 +61,35 @@ export const useCouponModal = () => {
   };
 
   // submit action
-  const handleSubmitCoupon = async (formData, onSuccess, onError) => {
+  const handleSubmitCoupon = async (formData) => {
     const submitData = formatCouponForApi(formData);
     const { errors: schemaErrors } = validateCouponAdminData(submitData);
 
-    try {
-      if (schemaErrors.length > 0) {
-        throw new Error(schemaErrors[0]);
-      }
-
-      let response;
-
-      if (modalMode === 'create') {
-        response = await createCoupon(submitData);
-      } else {
-        response = await updateCoupon(editCouponId, submitData);
-      }
-
-      const savedCoupon = {
-        ...submitData,
-        id: editCouponId || response?.id || response?.data?.id || null,
-      };
-
-      closeCouponModal();
-      await onSuccess?.({
-        coupon: savedCoupon,
-        mode: modalMode,
-        response,
-      });
-      return true;
-    } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '更新優惠券失敗，請稍後再試。');
-      onError?.(errorMessage);
-      return false;
+    if (schemaErrors.length > 0) {
+      throw new Error(schemaErrors[0]);
     }
+
+    const completedMode = modalMode;
+    let response;
+
+    if (completedMode === 'create') {
+      response = await createCoupon(submitData);
+    } else {
+      response = await updateCoupon(editCouponId, submitData);
+    }
+
+    const savedCoupon = {
+      ...submitData,
+      id: editCouponId || response?.id || response?.data?.id || null,
+    };
+
+    closeCouponModal();
+
+    return {
+      coupon: savedCoupon,
+      mode: completedMode,
+      response,
+    };
   };
 
   return {

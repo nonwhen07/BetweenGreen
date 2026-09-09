@@ -7,8 +7,6 @@ import { DEFAULT_PRODUCT } from '@/constants/productConstants';
 import { createProduct, updateProduct } from '@/services/productService';
 // hooks
 import { useToast } from '@/hooks/useToast';
-// utils
-import { extractErrorMessage } from '@/utils/errorHandler';
 
 export const useProductModal = () => {
   // hook 初始化 useForm、useToast
@@ -198,28 +196,25 @@ export const useProductModal = () => {
     setValue('imagesUrl', newImages);
   };
   // form Submit action
-  const handleSubmitProduct = async (formData, onSuccess, onError) => {
+  const handleSubmitProduct = async (formData) => {
     // RHF 已接管全部表單資料，僅 edit 模式需額外補上從api資料讀取的產品 id
     const submitData = {
       ...formData,
       id: editProductId,
     };
 
-    try {
-      if (modalMode === 'create') {
-        await createProduct(formatProductData(submitData, 'create'));
-      } else {
-        await updateProduct(submitData.id, formatProductData(submitData, 'update'));
-      }
+    const completedMode = modalMode;
+    const response =
+      completedMode === 'create'
+        ? await createProduct(formatProductData(submitData, 'create'))
+        : await updateProduct(submitData.id, formatProductData(submitData, 'update'));
 
-      closeProductModal();
-      onSuccess?.();
-      return true;
-    } catch (error) {
-      const errorMessage = extractErrorMessage(error, null, '更新產品失敗，請稍後再試。');
-      onError?.(errorMessage);
-      return false;
-    }
+    closeProductModal();
+
+    return {
+      mode: completedMode,
+      response,
+    };
   };
 
   return {

@@ -97,41 +97,31 @@ export const useArticleModal = () => {
     setValue('tag', updatedTags);
   };
 
-  const handleSubmitArticle = async (formData, onSuccess, onError) => {
+  const handleSubmitArticle = async (formData) => {
     const submitData = formatArticleForApi(formData, selectedTags);
     const validation = validateArticleAdminData(submitData);
 
-    try {
-      if (validation.errors.length > 0) {
-        throw new Error(validation.errors[0]);
-      }
+    if (validation.errors.length > 0) {
+      throw new Error(validation.errors[0]);
+    }
 
-      const response = modalMode === 'create'
+    const completedMode = modalMode;
+    const response = completedMode === 'create'
         ? await createArticle(submitData)
         : await updateArticle(editArticleId, submitData);
-      const savedArticle = {
-        ...submitData,
-        id:
-          editArticleId ||
-          response?.article_id ||
-          response?.article?.id ||
-          response?.id ||
-          null,
-      };
-      const completedMode = modalMode;
-
-      closeArticleModal();
-      await onSuccess?.({ article: savedArticle, mode: completedMode, response });
-      return true;
-    } catch (error) {
-      const errorMessage = extractErrorMessage(
-        error,
+    const savedArticle = {
+      ...submitData,
+      id:
+        editArticleId ||
+        response?.article_id ||
+        response?.article?.id ||
+        response?.id ||
         null,
-        '更新文章失敗，請稍後再試。',
-      );
-      onError?.(errorMessage);
-      return false;
-    }
+    };
+
+    closeArticleModal();
+
+    return { article: savedArticle, mode: completedMode, response };
   };
 
   return {
