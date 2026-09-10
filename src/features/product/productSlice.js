@@ -13,6 +13,7 @@ const initialState = {
   status: 'idle',
   error: null,
   lastFetchedAt: null,
+  activeRequestId: null,
 };
 
 const normalizeProducts = (source) => {
@@ -62,19 +63,26 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAdminProducts.pending, (state) => {
+      .addCase(fetchAdminProducts.pending, (state, action) => {
         state.status = 'loading';
         state.error = null;
+        state.activeRequestId = action.meta.requestId;
       })
       .addCase(fetchAdminProducts.fulfilled, (state, action) => {
+        if (state.activeRequestId !== action.meta.requestId) return;
+
         state.products = action.payload;
         state.status = 'success';
         state.error = null;
         state.lastFetchedAt = Date.now();
+        state.activeRequestId = null;
       })
       .addCase(fetchAdminProducts.rejected, (state, action) => {
+        if (state.activeRequestId !== action.meta.requestId) return;
+
         state.status = 'error';
         state.error = action.payload || action.error.message;
+        state.activeRequestId = null;
       })
       // 避免不同管理員在同一個瀏覽器工作階段共用舊商品快取。
       .addCase(logoutAction, () => ({ ...initialState }));

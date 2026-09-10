@@ -13,6 +13,7 @@ const initialState = {
   status: 'idle',
   error: null,
   lastFetchedAt: null,
+  activeRequestId: null,
 };
 
 const normalizeArticleList = (source) => {
@@ -75,19 +76,26 @@ const articleSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAdminArticles.pending, (state) => {
+      .addCase(fetchAdminArticles.pending, (state, action) => {
         state.status = 'loading';
         state.error = null;
+        state.activeRequestId = action.meta.requestId;
       })
       .addCase(fetchAdminArticles.fulfilled, (state, action) => {
+        if (state.activeRequestId !== action.meta.requestId) return;
+
         state.articles = action.payload;
         state.status = 'success';
         state.error = null;
         state.lastFetchedAt = Date.now();
+        state.activeRequestId = null;
       })
       .addCase(fetchAdminArticles.rejected, (state, action) => {
+        if (state.activeRequestId !== action.meta.requestId) return;
+
         state.status = 'error';
         state.error = action.payload || action.error.message;
+        state.activeRequestId = null;
       })
       .addCase(logoutAction, () => ({ ...initialState }));
   },

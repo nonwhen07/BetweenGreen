@@ -13,6 +13,7 @@ const initialState = {
   status: 'idle',
   error: null,
   lastFetchedAt: null,
+  activeRequestId: null,
 };
 
 const normalizeCouponList = (source) => {
@@ -87,19 +88,26 @@ const couponSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAdminCoupons.pending, (state) => {
+      .addCase(fetchAdminCoupons.pending, (state, action) => {
         state.status = 'loading';
         state.error = null;
+        state.activeRequestId = action.meta.requestId;
       })
       .addCase(fetchAdminCoupons.fulfilled, (state, action) => {
+        if (state.activeRequestId !== action.meta.requestId) return;
+
         state.coupons = action.payload;
         state.status = 'success';
         state.error = null;
         state.lastFetchedAt = Date.now();
+        state.activeRequestId = null;
       })
       .addCase(fetchAdminCoupons.rejected, (state, action) => {
+        if (state.activeRequestId !== action.meta.requestId) return;
+
         state.status = 'error';
         state.error = action.payload || action.error.message;
+        state.activeRequestId = null;
       })
       .addCase(logoutAction, () => ({ ...initialState }));
   },
