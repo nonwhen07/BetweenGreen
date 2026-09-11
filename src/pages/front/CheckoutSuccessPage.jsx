@@ -338,6 +338,7 @@ const CheckoutSuccessPage = () => {
                 ) : (
                   <ReadonlyOrderItems
                     items={orderProducts}
+                    variant="cards"
                     emptyTitle="目前沒有商品明細"
                     emptyDescription="您仍可以前往訂單查詢頁確認訂單狀態。"
                   />

@@ -11,6 +11,7 @@ const ReadonlyOrderItems = ({
   emptyDescription = '目前無法顯示這筆訂單的商品資料。',
 }) => {
   const isSummary = variant === 'summary';
+  const isCards = variant === 'cards';
 
   if (items.length === 0) {
     return (
@@ -52,7 +53,7 @@ const ReadonlyOrderItems = ({
   }
 
   return (
-    <div className="order-items">
+    <div className={`order-items${isCards ? ' order-items--cards' : ''}`}>
       {/* Mobile / Pad */}
       <div className="order-items__list">
         {items.map((item) => (

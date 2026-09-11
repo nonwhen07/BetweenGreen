@@ -5,16 +5,18 @@ import { FaAngleUp } from 'react-icons/fa';
 import { BREAKPOINTS } from '@/constants/breakpoints';
 
 function getShowThreshold() {
-  // 可自訂各裝置下的滾動距離
-  // if (window.innerWidth <= 575.98) return 200;
-  // if (window.innerWidth <= 991.98) return 250;
   if (window.innerWidth < BREAKPOINTS.pad) {
-    return 200;
+    return 160;
   }
 
   if (window.innerWidth < BREAKPOINTS.desktop) {
+    return 200;
+  }
+
+  if (window.innerWidth < BREAKPOINTS.desktopXL) {
     return 250;
   }
+
   return 400; // desktop
 }
 

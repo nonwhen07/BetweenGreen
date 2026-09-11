@@ -482,6 +482,64 @@ $cart-card-radius: 14px;
     &__table {
       display: block;
     }
+
+    &--cards {
+      .order-items__list {
+        display: grid;
+      }
+
+      .order-items__table {
+        display: none;
+      }
+
+      .order-item {
+        grid-template-columns: 72px minmax(0, 1fr);
+        align-items: center;
+
+        padding: 14px 16px;
+
+        &__image {
+          width: 72px;
+        }
+
+        &__content {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: center;
+          gap: $space-1 $space-4;
+        }
+
+        &__title,
+        &__meta {
+          grid-column: 1;
+          margin-bottom: 0;
+        }
+
+        &__meta {
+          display: flex;
+          flex-wrap: wrap;
+        }
+
+        &__subtotal {
+          grid-row: 1 / 3;
+          grid-column: 2;
+          align-self: stretch;
+          flex-direction: column;
+          justify-content: center;
+          gap: $space-1;
+
+          min-width: 112px;
+          padding-top: 0;
+          padding-left: $space-4;
+
+          border-top: 0;
+          border-left: 1px solid $border-color-soft;
+
+          text-align: right;
+          white-space: nowrap;
+        }
+      }
+    }
   }
 
   .editable-cart-items__table-scroll {

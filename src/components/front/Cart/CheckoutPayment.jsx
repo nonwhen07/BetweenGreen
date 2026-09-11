@@ -105,6 +105,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
               <div className="mt-3">
                 <ReadonlyOrderItems
                   items={paymentItems}
+                  variant="cards"
                   emptyTitle="訂單內容為空"
                   emptyDescription="目前無法顯示這筆訂單的商品明細。"
                 />
