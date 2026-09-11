@@ -3,17 +3,21 @@ import { useMemo, useState, useEffect } from 'react';
 import taiwanDistricts from '@/data/taiwanDistricts.json';
 
 // utils
-import { calculateCartTotal } from '@/utils/cartUtils';
+import { getCartPricing, getShippingPricing } from '@/utils/cartUtils';
 import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 // import { formatCategoryShortPreview, getProductUnitLabel } from '@/utils/product/productFormatter';
 // import { formatCategoryShortPreview, getProductUnitShortLabel } from '@/utils/product/productFormatter';
 // constants
-import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
+import { minfreeShippingFee } from '@/constants/cartConstants';
 // components
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
-const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBack }) => {
-  const total = calculateCartTotal(carts);
+const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, errors, onBack }) => {
+  const { subtotal, finalTotal, hasDiscount, discountAmount } = getCartPricing({
+    carts,
+    cartData,
+  });
+  const { shipping, paymentTotal, amountToFreeShipping } = getShippingPricing(finalTotal);
   const [isSame, setIsSame] = useState(false);
 
   const city = watch('city');
@@ -283,34 +287,49 @@ const CheckoutForm = ({ carts, register, onSubmit, setValue, watch, errors, onBa
 
               <div className="order-summary__list">
                 <div className="order-summary__row">
-                  <strong className="order-summary__label">小計</strong>
-                  <strong className="order-summary__value">NT$ {total.toLocaleString()}</strong>
+                  <strong className="order-summary__label">商品小計</strong>
+                  <strong className="order-summary__value">NT$ {subtotal.toLocaleString()}</strong>
                 </div>
+
+                {hasDiscount && (
+                  <div className="order-summary__row order-summary__row--discount">
+                    <strong className="order-summary__label">優惠折抵</strong>
+                    <strong className="order-summary__value">
+                      - NT$ {discountAmount.toLocaleString()}
+                    </strong>
+                  </div>
+                )}
 
                 <div className="order-summary__row">
                   <strong className="order-summary__label">
                     運費(本館滿 {minfreeShippingFee} 免運)
                   </strong>
                   <strong
-                    className={`order-summary__value ${total >= minfreeShippingFee ? 'text-success' : ''}`}
+                    className={`order-summary__value ${shipping === 0 ? 'text-success' : ''}`}
                   >
-                    {total >= minfreeShippingFee ? (
+                    {shipping === 0 ? (
                       <>已享免運</>
                     ) : (
-                      <>NT$ {shippingFee.toLocaleString()}</>
+                      <>NT$ {shipping.toLocaleString()}</>
                     )}
                   </strong>
                 </div>
 
+                <div className="order-summary__shipping-note">
+                  <span>全館優惠後滿 NT$ {minfreeShippingFee.toLocaleString()} 免運</span>
+
+                  {shipping === 0 ? (
+                    <strong className="order-summary__value text-success">已享免運</strong>
+                  ) : (
+                    <span className="order-summary__value text-muted">
+                      再購 NT$ {amountToFreeShipping.toLocaleString()} 即享免運
+                    </span>
+                  )}
+                </div>
+
                 <div className="order-summary__row order-summary__row--total">
                   <strong className="order-summary__label">合計</strong>
-                  <strong className="order-summary__value">
-                    {total >= minfreeShippingFee ? (
-                      <>NT$ {total.toLocaleString()}</>
-                    ) : (
-                      <>NT$ {(total + shippingFee).toLocaleString()}</>
-                    )}
-                  </strong>
+                  <strong className="order-summary__value">NT$ {paymentTotal.toLocaleString()}</strong>
                 </div>
               </div>
 

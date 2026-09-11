@@ -13,7 +13,7 @@ import CartSummary from '@/components/front/Cart/CartSummary';
 import CheckoutPayment from '@/components/front/Cart/CheckoutPayment';
 
 // services
-import { createOrder, payOrder } from '@/services/orderService';
+import { createOrder, getOrder, payOrder } from '@/services/orderService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
@@ -81,7 +81,11 @@ const CartPage = () => {
       // 並先記錄紀錄這一次訂單資料(轉換成訂單後購物車會被清空)
       setLastOrderCart([...carts]); // OrderCreated  顯示訂單資料
       const currentCartSnapshot = [...carts];
-      await fetchCart();
+      try {
+        await fetchCart();
+      } catch {
+        warning('訂單已建立，但購物車狀態更新失敗；請稍後重新整理確認。');
+      }
 
       const { orderId } = orderData;
       setOrderID(orderId); // OrderCreated  顯示訂單ID
@@ -142,6 +146,27 @@ const CartPage = () => {
     start();
 
     try {
+      const latestOrder = await getOrder(targetOrderID);
+      const order = latestOrder.data;
+
+      if (!order || !order.id) {
+        setErrorMessage('查無此訂單，請確認訂單編號是否正確。');
+        return;
+      }
+
+      if (order.is_paid) {
+        warning('此訂單已完成付款，不需要重複付款。');
+
+        navigate(`/checkout-success/${targetOrderID}`, {
+          state: {
+            orderId: targetOrderID,
+            carts: targetCart,
+          },
+        });
+
+        return;
+      }
+
       await payOrder(targetOrderID);
 
       success('您的訂單付款成功。');
@@ -257,6 +282,7 @@ const CartPage = () => {
           <section id="step2" className="ui-section ui-section--cart is-active">
             <CheckoutForm
               carts={carts}
+              cartData={cartData}
               register={register}
               errors={errors}
               setValue={setValue}

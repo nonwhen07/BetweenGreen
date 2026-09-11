@@ -12,6 +12,7 @@ import { useLoading } from '@/hooks/useLoading';
 // utils
 import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
+import { calculateCartTotal, getShippingPricing } from '@/utils/cartUtils';
 
 const normalizeOrders = (orders) => {
   if (!orders) return [];
@@ -143,7 +144,10 @@ const CustomerOrdersPage = () => {
               const orderProducts = normalizeOrderItems(order.products);
               const isPaid = order.is_paid;
               const orderId = order.id;
-              const orderAmount = order.final_total ?? order.total ?? 0;
+              const discountedItemsTotal = calculateCartTotal(orderProducts);
+              const { paymentTotal } = getShippingPricing(discountedItemsTotal);
+              const orderAmount =
+                orderProducts.length > 0 ? paymentTotal : (order.final_total ?? order.total ?? 0);
 
               const paymentAction = isPaid ? (
                 <Link

@@ -3,10 +3,9 @@ import { useForm, useWatch } from 'react-hook-form';
 import { CreditCard, Landmark, PackageCheck, Smartphone } from 'lucide-react';
 
 // utils
-import { calculateCartTotal, formatCardNumber } from '@/utils/cartUtils';
+import { calculateCartTotal, formatCardNumber, getShippingPricing } from '@/utils/cartUtils';
 import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 // constants
-import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 // components
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
@@ -14,7 +13,7 @@ const formatCurrency = (value = 0) => {
   return Math.round(Number(value || 0)).toLocaleString();
 };
 
-const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmit }) => {
+const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
   const paymentItems = useMemo(() => {
     return normalizeOrderItems(orderItems);
   }, [orderItems]);
@@ -64,9 +63,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
     return calculateCartTotal(paymentItems);
   }, [paymentItems]);
 
-  const shipping = itemsTotal >= minfreeShippingFee ? 0 : shippingFee;
-  const paymentTotal =
-    Number(orderAmount) > 0 ? Math.round(Number(orderAmount)) : itemsTotal + shipping;
+  const { shipping, paymentTotal } = getShippingPricing(itemsTotal);
 
   const handlePaymentSubmit = handleSubmit((formData) => {
     onSubmit?.(formData);

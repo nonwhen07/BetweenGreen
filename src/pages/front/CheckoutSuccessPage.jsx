@@ -10,7 +10,7 @@ import CartSteps from '@/components/front/Cart/CartSteps';
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
 // utils
-import { calculateCartFinalTotal, calculateCartTotal } from '@/utils/cartUtils';
+import { calculateCartTotal, getShippingPricing } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 
@@ -53,7 +53,7 @@ const CheckoutSuccessPage = () => {
   const { start, stop } = useLoading();
 
   const [orderData, setOrderData] = useState(null);
-  const [isFetchingOrder, setIsFetchingOrder] = useState(false);
+  const [isFetchingOrder, setIsFetchingOrder] = useState(Boolean(orderID));
   const [errorMessage, setErrorMessage] = useState('');
 
   const stateCarts = useMemo(() => {
@@ -85,20 +85,13 @@ const CheckoutSuccessPage = () => {
     }, 0);
   }, [stateCarts, orderProducts]);
 
-  const finalTotal = useMemo(() => {
-    if (orderData?.final_total != null || orderData?.total != null) {
-      return Number(orderData.final_total ?? orderData.total);
-    }
-
-    if (stateCarts.length > 0) {
-      return calculateCartFinalTotal(stateCarts);
-    }
-
+  const discountedItemsTotal = useMemo(() => {
     return orderProducts.reduce((total, item) => total + getItemTotal(item), 0);
-  }, [orderData, stateCarts, orderProducts]);
+  }, [orderProducts]);
 
-  const hasDiscount = finalTotal > 0 && subtotal > finalTotal;
-  const discountAmount = hasDiscount ? subtotal - finalTotal : 0;
+  const { shipping, paymentTotal } = getShippingPricing(discountedItemsTotal);
+  const hasDiscount = discountedItemsTotal < subtotal;
+  const discountAmount = hasDiscount ? subtotal - discountedItemsTotal : 0;
 
   const userInfo = orderData?.user || {};
   const orderStatusText = orderData?.is_paid ? '已付款' : '付款狀態確認中';
@@ -379,11 +372,19 @@ const CheckoutSuccessPage = () => {
                     </div>
                   )}
 
+                  <div className="checkout-success__info-row">
+                    <span className="checkout-success__info-label">運費</span>
+
+                    <strong className="checkout-success__info-value">
+                      {shipping === 0 ? '免運費' : `NT$ ${formatCurrency(shipping)}`}
+                    </strong>
+                  </div>
+
                   <div className="checkout-success__info-row checkout-success__info-row--total">
                     <span className="checkout-success__info-label">訂單金額</span>
 
                     <strong className="checkout-success__info-value">
-                      NT$ {formatCurrency(finalTotal)}
+                      NT$ {formatCurrency(paymentTotal)}
                     </strong>
                   </div>
                 </div>

@@ -1,5 +1,20 @@
+import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
+
 export const calculateCartTotal = (carts = []) => {
   return carts.reduce((total, cart) => total + Number(cart.total || 0), 0);
+};
+
+// 前台自訂運費不會寫入六角 Order API，因此所有前台訂單畫面都以
+// 「優惠後商品金額」作為免運判斷基準，再於顯示層補上運費。
+export const getShippingPricing = (discountedMerchandiseTotal = 0) => {
+  const merchandiseTotal = Math.max(0, getSafeNumber(discountedMerchandiseTotal));
+  const shipping = merchandiseTotal > 0 && merchandiseTotal < minfreeShippingFee ? shippingFee : 0;
+
+  return {
+    shipping,
+    paymentTotal: merchandiseTotal + shipping,
+    amountToFreeShipping: Math.max(minfreeShippingFee - merchandiseTotal, 0),
+  };
 };
 
 export const calculateCartFinalTotal = (carts = []) => {
@@ -18,11 +33,15 @@ export const getCartPricing = ({ carts = [], cartData = {} }) => {
 
   const apiTotal = getSafeNumber(cartData.total);
   const apiFinalTotal = getSafeNumber(cartData.final_total);
+  const hasApiTotal = cartData.total != null && Number.isFinite(Number(cartData.total));
+  const hasApiFinalTotal =
+    cartData.final_total != null && Number.isFinite(Number(cartData.final_total));
 
-  const subtotal = apiTotal > 0 ? Math.round(apiTotal) : Math.round(calculatedSubtotal);
+  const subtotal = hasApiTotal ? Math.round(apiTotal) : Math.round(calculatedSubtotal);
 
-  const finalTotal =
-    apiFinalTotal > 0 ? Math.round(apiFinalTotal) : Math.round(calculatedFinalTotal || subtotal);
+  const finalTotal = hasApiFinalTotal
+    ? Math.round(apiFinalTotal)
+    : Math.round(calculatedFinalTotal || subtotal);
 
   const hasDiscount = finalTotal < subtotal;
   const discountAmount = hasDiscount ? subtotal - finalTotal : 0;

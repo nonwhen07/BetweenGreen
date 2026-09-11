@@ -30,10 +30,6 @@ const CheckoutPaymentPage = () => {
     return normalizeOrderItems(orderData?.products);
   }, [orderData]);
 
-  const orderAmount = useMemo(() => {
-    return Number(orderData?.final_total ?? orderData?.total ?? 0);
-  }, [orderData]);
-
   const fetchOrder = async () => {
     if (!orderId) return;
 
@@ -216,7 +212,6 @@ const CheckoutPaymentPage = () => {
           <CheckoutPayment
             orderID={orderId}
             orderItems={orderProducts}
-            orderAmount={orderAmount}
             onSubmit={handlePay}
           />
         )}

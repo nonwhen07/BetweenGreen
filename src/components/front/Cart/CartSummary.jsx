@@ -1,9 +1,14 @@
 import { useState } from 'react';
 
 // utils
-import { getAppliedCoupon, getCartPricing, formatCouponDueDate } from '@/utils/cartUtils';
+import {
+  getAppliedCoupon,
+  getCartPricing,
+  getShippingPricing,
+  formatCouponDueDate,
+} from '@/utils/cartUtils';
 // constants
-import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
+import { minfreeShippingFee } from '@/constants/cartConstants';
 
 const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
   const [couponCode, setCouponCode] = useState('');
@@ -13,9 +18,7 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
     cartData,
   });
 
-  const shipping = finalTotal >= minfreeShippingFee ? 0 : shippingFee;
-  const paymentTotal = finalTotal + shipping;
-  const amountToFreeShipping = Math.max(minfreeShippingFee - finalTotal, 0);
+  const { shipping, paymentTotal, amountToFreeShipping } = getShippingPricing(finalTotal);
   const appliedCoupon = getAppliedCoupon(carts);
 
   const handleApplyCoupon = () => {
