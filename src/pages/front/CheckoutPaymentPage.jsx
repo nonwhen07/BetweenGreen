@@ -125,7 +125,7 @@ const CheckoutPaymentPage = () => {
 
           <p className="cart-state-card__description">缺少訂單編號，請回到訂單查詢頁重新操作。</p>
 
-          <div className="cart-state-card__actions cart-cta-group">
+          <div className="cart-state-card__actions">
             <Link to="/customer-orders" className="ui-btn ui-btn--primary">
               回到歷次訂單
             </Link>
@@ -143,7 +143,7 @@ const CheckoutPaymentPage = () => {
 
           <p className="cart-state-card__description">{errorMessage}</p>
 
-          <div className="cart-state-card__actions cart-cta-group">
+          <div className="cart-state-card__actions">
             <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
               重新整理
             </button>
@@ -177,7 +177,7 @@ const CheckoutPaymentPage = () => {
 
           <p className="cart-state-card__description">這筆訂單已完成付款，不需要再次付款。</p>
 
-          <div className="cart-state-card__actions cart-cta-group">
+          <div className="cart-state-card__actions">
             <Link to={`/checkout-success/${orderId}`} className="ui-btn ui-btn--primary">
               查看付款完成頁
             </Link>
@@ -206,7 +206,7 @@ const CheckoutPaymentPage = () => {
 
             <p className="cart-state-card__description">目前無法顯示這筆訂單的商品明細。</p>
 
-            <div className="cart-state-card__actions cart-cta-group">
+            <div className="cart-state-card__actions">
               <Link to="/customer-orders" className="ui-btn ui-btn--primary">
                 回到歷次訂單
               </Link>

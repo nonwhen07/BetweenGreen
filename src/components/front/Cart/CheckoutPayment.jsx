@@ -85,8 +85,10 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
     <div className="checkout-payment">
       <div className="checkout-payment__hero text-center mb-4">
         <span className="checkout-payment__eyebrow">Payment</span>
-        <h2 className="mb-2">請完成付款流程</h2>
-        <p className="text-muted mb-0">訂單已建立，您的訂單編號為：{orderID}</p>
+        <h2 className="checkout-payment__title mb-2">請完成付款流程</h2>
+        <p className="checkout-payment__intro text-muted mb-0">
+          訂單已建立，您的訂單編號為：{orderID}
+        </p>
       </div>
 
       <form onSubmit={handlePaymentSubmit}>
@@ -94,8 +96,10 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
           <div className="col-lg-7">
             <div className="checkout-payment__card card p-3 mb-3">
               <div className="checkout-payment__card-header">
-                <h2 className="mb-1">本次訂單明細</h2>
-                <p className="text-muted mb-0">請確認商品與數量後完成付款。</p>
+                <h2 className="checkout-payment__section-title mb-1">本次訂單明細</h2>
+                <p className="checkout-payment__section-intro text-muted mb-0">
+                  請確認商品與數量後完成付款。
+                </p>
               </div>
 
               <div className="mt-3">
@@ -109,8 +113,8 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
 
             <div className="checkout-payment__card card p-3">
               <div className="checkout-payment__card-header">
-                <h2 className="mb-1">付款方式</h2>
-                <p className="text-muted mb-0">
+                <h2 className="checkout-payment__section-title mb-1">付款方式</h2>
+                <p className="checkout-payment__section-intro text-muted mb-0">
                   此為作品集模擬付款流程，用於呈現第三方金流串接與欄位驗證體驗。
                 </p>
               </div>
@@ -374,10 +378,6 @@ const CheckoutPayment = ({ orderID, orderItems = [], orderAmount = null, onSubmi
                   確認付款
                 </button>
               </div>
-
-              {/* <p className="order-summary__note text-muted small mt-3 mb-0">
-                此頁面用於模擬金流流程畫面與欄位驗證，不會送出真實信用卡資訊。
-              </p> */}
             </div>
           </div>
         </div>

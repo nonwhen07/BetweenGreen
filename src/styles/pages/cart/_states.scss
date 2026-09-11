@@ -2,10 +2,6 @@
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
 
-$cart-card-radius: 14px;
-$cart-card-border: 1px solid rgba($color-primary, 0.1);
-$cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
-
 // ======================================================
 // Cart State Card
 // ======================================================
@@ -113,10 +109,6 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
     padding: $space-5;
 
     &__actions {
-      // justify-content: center;
-
-      // width: auto;
-
       .ui-btn,
       .btn {
         width: auto;

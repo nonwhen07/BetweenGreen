@@ -1,6 +1,6 @@
 import noImage from '@/assets/images/no-image.png';
 
-function ProductImage({ src, alt, size = 'medium' /*, showWatermark = true */ }) {
+function ProductImage({ src, alt, size = 'medium' }) {
   const isFallback = !src;
 
   return (

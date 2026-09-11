@@ -364,20 +364,6 @@ $cart-card-radius: 14px;
         margin: 0 auto;
 
         border-radius: 15%;
-
-        // cursor: zoom-in;
-
-        // transition:
-        //   transform 0.25s ease,
-        //   box-shadow 0.25s ease;
-
-        // &:hover {
-        //   z-index: 10;
-
-        //   transform: scale(3);
-
-        //   box-shadow: 0 8px 24px rgba($color-primary, 0.18);
-        // }
       }
     }
   }
@@ -424,17 +410,6 @@ $cart-card-radius: 14px;
   &--editable {
     .order-table__col--image {
       .product-image {
-        // position: relative;
-        // z-index: 1;
-
-        // display: flex;
-        // align-items: center;
-        // justify-content: center;
-
-        // margin: 0 auto;
-
-        // border-radius: 15%;
-
         cursor: zoom-in;
 
         transition:

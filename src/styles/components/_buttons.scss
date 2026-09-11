@@ -168,30 +168,6 @@
 // ToDo Shared toggle control；若未來增加 switch / segmented variants，再拆為 _toggle.scss。
 // ======================================================
 
-// .ui-toggle-btn {
-//   display: inline-block;
-//   padding: 8px 16px;
-//   border: 1px solid #2f6d4f;
-//   border-radius: 20px;
-//   cursor: pointer;
-//   user-select: none;
-//   transition: all 0.2s ease;
-
-//   input {
-//     display: none;
-//   }
-
-//   &:hover {
-//     background: rgba(47, 109, 79, 0.1);
-//   }
-
-//   &.active {
-//     background: #2f6d4f;
-//     color: #fff;
-//     border-color: #2f6d4f;
-//   }
-// }
-
 .ui-toggle-btn {
   display: inline-flex;
   align-items: center;

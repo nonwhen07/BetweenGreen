@@ -163,7 +163,7 @@ const CheckoutSuccessPage = () => {
 
           <p className="cart-state-card__description">{errorMessage}</p>
 
-          <div className="cart-state-card__actions cart-cta-group">
+          <div className="cart-state-card__actions">
             <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
               重新整理
             </button>
@@ -199,7 +199,7 @@ const CheckoutSuccessPage = () => {
             這筆訂單尚未完成付款，請先完成付款流程後再查看付款完成頁。
           </p>
 
-          <div className="cart-state-card__actions cart-cta-group">
+          <div className="cart-state-card__actions">
             <Link to={`/checkout-payment/${orderID}`} className="ui-btn ui-btn--primary">
               前往付款
             </Link>
@@ -227,7 +227,7 @@ const CheckoutSuccessPage = () => {
 
           <p className="cart-state-card__description">{errorMessage}</p>
 
-          <div className="cart-state-card__actions cart-cta-group">
+          <div className="cart-state-card__actions">
             <button type="button" className="ui-btn ui-btn--primary" onClick={fetchOrder}>
               重新整理
             </button>
