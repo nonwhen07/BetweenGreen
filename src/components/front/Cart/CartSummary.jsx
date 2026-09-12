@@ -149,7 +149,7 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
         </div>
       </div>
 
-      <div className="order-summary__actions cart-cta-group">
+      <div className="order-summary__actions ui-action-group">
         <button type="button" onClick={actions.onClear} className="ui-btn ui-btn--outline-danger">
           清空購物車
         </button>

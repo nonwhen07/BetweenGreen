@@ -278,20 +278,8 @@
   // ====================================================
 
   &__actions {
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
-
-    width: 100%;
-    margin-top: $space-4;
-
-    .ui-btn,
-    .btn {
-      justify-content: center;
-
-      width: 100%;
-    }
+    width: auto;
+    margin: $space-4;
   }
 }
 
@@ -337,17 +325,6 @@
 
     &__info-value {
       text-align: end;
-    }
-
-    &__actions {
-      align-items: center;
-      flex-direction: row;
-      justify-content: center;
-
-      .ui-btn,
-      .btn {
-        width: auto;
-      }
     }
   }
 }

@@ -371,8 +371,8 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                 </div>
               </div>
 
-              <div className="order-summary__actions">
-                <button type="submit" className="ui-btn ui-btn--primary w-100">
+              <div className="order-summary__actions ui-action-group ui-action-group--single">
+                <button type="submit" className="ui-btn ui-btn--primary">
                   確認付款
                 </button>
               </div>

@@ -413,7 +413,7 @@ const CheckoutSuccessPage = () => {
             </div>
           </section>
 
-          <div className="checkout-success__actions cart-cta-group">
+          <div className="checkout-success__actions ui-action-group">
             <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
               查看歷史訂單
             </Link>

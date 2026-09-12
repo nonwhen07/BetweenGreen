@@ -88,9 +88,6 @@
   }
 
   &__actions {
-    display: grid;
-    gap: $space-2;
-
     margin-top: $space-3;
   }
 
@@ -203,7 +200,6 @@
       grid-template-columns: 1fr auto;
     }
   }
-
 }
 
 // ======================================================

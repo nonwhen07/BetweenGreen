@@ -1,0 +1,46 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+
+// ======================================================
+// Shared Action Group
+// 外部 spacing 由使用此樣板的 block element 負責。
+// ======================================================
+
+.ui-action-group {
+  display: grid;
+  gap: $space-2;
+
+  width: 100%;
+
+  > .ui-btn,
+  > .btn {
+    justify-content: center;
+
+    width: 100%;
+  }
+}
+
+@include respond($breakpoints, tablet) {
+  .ui-action-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    width: auto;
+
+    > .ui-btn,
+    > .btn {
+      width: auto;
+    }
+
+    &--single {
+      justify-content: center;
+
+      > .ui-btn,
+      > .btn {
+        width: min(100%, 220px);
+      }
+    }
+  }
+}

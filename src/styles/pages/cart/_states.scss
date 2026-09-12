@@ -107,12 +107,14 @@
 @include respond($breakpoints, pad) {
   .cart-state-card {
     padding: $space-5;
+  }
+}
 
-    &__actions {
-      .ui-btn,
-      .btn {
-        width: auto;
-      }
+@include respond($breakpoints, tablet) {
+  .cart-state-card__actions {
+    .ui-btn,
+    .btn {
+      width: auto;
     }
   }
 }

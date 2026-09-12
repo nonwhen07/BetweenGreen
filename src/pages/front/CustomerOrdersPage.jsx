@@ -204,7 +204,7 @@ const CustomerOrdersPage = () => {
                     emptyDescription="目前無法顯示這筆訂單的商品資料。"
                   />
 
-                  <div className="customer-order-card__actions cart-cta-group">
+                  <div className="customer-order-card__actions ui-action-group">
                     <Link to="/products" className="ui-btn ui-btn--outline-primary">
                       繼續購物
                     </Link>

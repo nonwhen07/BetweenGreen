@@ -66,25 +66,6 @@
 }
 
 // ======================================================
-// Cart / Checkout Flow CTA Group
-// ======================================================
-
-.cart-cta-group {
-  display: grid;
-  gap: $space-2;
-
-  width: 100%;
-  margin-top: $space-4;
-
-  .ui-btn,
-  .btn {
-    justify-content: center;
-
-    width: 100%;
-  }
-}
-
-// ======================================================
 // Pad
 // ======================================================
 
@@ -96,19 +77,6 @@
 
   .ui-section--checkout-flow {
     padding: 16px;
-  }
-
-  .cart-cta-group {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    width: auto;
-
-    .ui-btn,
-    .btn {
-      width: auto;
-    }
   }
 }
 

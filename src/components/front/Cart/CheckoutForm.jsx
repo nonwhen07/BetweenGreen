@@ -307,11 +307,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                   <strong
                     className={`order-summary__value ${shipping === 0 ? 'text-success' : ''}`}
                   >
-                    {shipping === 0 ? (
-                      <>已享免運</>
-                    ) : (
-                      <>NT$ {shipping.toLocaleString()}</>
-                    )}
+                    {shipping === 0 ? <>已享免運</> : <>NT$ {shipping.toLocaleString()}</>}
                   </strong>
                 </div>
 
@@ -329,11 +325,13 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
 
                 <div className="order-summary__row order-summary__row--total">
                   <strong className="order-summary__label">合計</strong>
-                  <strong className="order-summary__value">NT$ {paymentTotal.toLocaleString()}</strong>
+                  <strong className="order-summary__value">
+                    NT$ {paymentTotal.toLocaleString()}
+                  </strong>
                 </div>
               </div>
 
-              <div className="order-summary__actions cart-cta-group">
+              <div className="order-summary__actions ui-action-group">
                 <button type="button" className="ui-btn ui-btn--outline-primary" onClick={onBack}>
                   回到購物車
                 </button>

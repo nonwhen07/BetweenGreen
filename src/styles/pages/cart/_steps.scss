@@ -35,6 +35,11 @@ $transition-speed: 0.3s;
       border-color: $color-primary-light;
       background-color: $color-primary;
       color: $text-on-primary;
+      box-shadow:
+        0 0 0 4px rgba($color-primary-light, 0.18),
+        $shadow-sm;
+
+      transform: scale(1.08);
     }
 
     &.is-active .cart-steps__label {
@@ -57,7 +62,9 @@ $transition-speed: 0.3s;
     transition:
       border-color $transition-speed ease,
       background-color $transition-speed ease,
-      color $transition-speed ease;
+      color $transition-speed ease,
+      box-shadow $transition-speed ease,
+      transform $transition-speed ease;
   }
 
   &__label {
