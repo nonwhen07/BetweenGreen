@@ -47,7 +47,7 @@ const CheckoutSuccessPage = () => {
   const { orderId: orderIdParam } = useParams();
 
   const routeState = location.state || {};
-  const orderID = routeState.orderId || orderIdParam;
+  const orderID = orderIdParam || routeState.orderId;
 
   const { showError } = useToast();
   const { start, stop } = useLoading();
@@ -61,19 +61,19 @@ const CheckoutSuccessPage = () => {
   }, [routeState.carts]);
 
   const orderProducts = useMemo(() => {
-    const sourceItems = stateCarts.length > 0 ? stateCarts : orderData?.products;
+    const sourceItems = orderData ? orderData.products : stateCarts;
 
     const normalizedItems = normalizeOrderItems(sourceItems);
 
     return normalizedItems;
-  }, [stateCarts, orderData?.products]);
+  }, [stateCarts, orderData]);
 
   const productCount = useMemo(() => {
     return orderProducts.reduce((total, item) => total + Number(item.qty || 0), 0);
   }, [orderProducts]);
 
   const subtotal = useMemo(() => {
-    if (stateCarts.length > 0) {
+    if (!orderData && stateCarts.length > 0) {
       return calculateCartTotal(stateCarts);
     }
 
@@ -83,7 +83,7 @@ const CheckoutSuccessPage = () => {
 
       return total + price * qty;
     }, 0);
-  }, [stateCarts, orderProducts]);
+  }, [stateCarts, orderData, orderProducts]);
 
   const discountedItemsTotal = useMemo(() => {
     return orderProducts.reduce((total, item) => total + getItemTotal(item), 0);

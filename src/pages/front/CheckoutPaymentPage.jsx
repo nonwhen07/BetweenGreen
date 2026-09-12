@@ -94,7 +94,6 @@ const CheckoutPaymentPage = () => {
       navigate(`/checkout-success/${orderId}`, {
         state: {
           orderId,
-          carts: orderProducts,
           paymentMethod: paymentData?.paymentMethod,
         },
       });
@@ -209,11 +208,7 @@ const CheckoutPaymentPage = () => {
             </div>
           </div>
         ) : (
-          <CheckoutPayment
-            orderID={orderId}
-            orderItems={orderProducts}
-            onSubmit={handlePay}
-          />
+          <CheckoutPayment orderID={orderId} orderItems={orderProducts} onSubmit={handlePay} />
         )}
       </section>
     </div>

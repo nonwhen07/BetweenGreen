@@ -39,11 +39,15 @@ export const useCart = () => {
 
     const calculatedTotal = carts.reduce((total, cart) => total + Number(cart.total || 0), 0);
 
-    setCartData({
+    const nextCartData = {
       carts,
       total: Number(data?.total ?? calculatedTotal),
       final_total: Number(data?.final_total ?? data?.total ?? calculatedTotal),
-    });
+    };
+
+    setCartData(nextCartData);
+
+    return nextCartData;
   };
 
   // 調整購物車品項
