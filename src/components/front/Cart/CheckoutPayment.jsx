@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { CreditCard, Landmark, PackageCheck, Smartphone } from 'lucide-react';
 
 // utils
-import { calculateCartTotal, formatCardNumber, getShippingPricing } from '@/utils/cartUtils';
+import { calculateCartFinalTotal, formatCardNumber, getShippingPricing } from '@/utils/cartUtils';
 import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 // constants
 // components
@@ -60,7 +60,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
   });
 
   const itemsTotal = useMemo(() => {
-    return calculateCartTotal(paymentItems);
+    return calculateCartFinalTotal(paymentItems);
   }, [paymentItems]);
 
   const { shipping, paymentTotal } = getShippingPricing(itemsTotal);

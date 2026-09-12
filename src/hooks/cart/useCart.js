@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 import { useCartActions } from '@/hooks/cart/useCartActions';
 // services
-import { getCartItems, updateCartItem, deleteCartItem, clearCart } from '@/services/cartService';
+import { updateCartItem, deleteCartItem, clearCart } from '@/services/cartService';
 import { applyCoupon } from '@/services/couponService';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
@@ -33,13 +33,8 @@ export const useCart = () => {
 
   const carts = cartData.carts || [];
 
-  // const fetchCart = async () => {
-  //   const carts = await getCartItems();
-  //   setCarts(carts);
-  //   await refreshCart();
-  // };
   const fetchCart = async () => {
-    const data = await getCartItems();
+    const data = await refreshCart();
     const carts = data.carts || [];
 
     const calculatedTotal = carts.reduce((total, cart) => total + Number(cart.total || 0), 0);
@@ -49,8 +44,6 @@ export const useCart = () => {
       total: Number(data?.total ?? calculatedTotal),
       final_total: Number(data?.final_total ?? data?.total ?? calculatedTotal),
     });
-
-    await refreshCart();
   };
 
   // 調整購物車品項
@@ -62,7 +55,6 @@ export const useCart = () => {
       if (!confirmDelete) return;
 
       await handleDeleteCartItem(cart_id);
-      await fetchCart();
       return;
     }
 

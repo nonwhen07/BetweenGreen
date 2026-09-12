@@ -11,7 +11,6 @@ import productsBanner from '@/assets/images/brand/hero/hero-desk.png';
 
 // services
 // import { getProducts } from '@/services/productService';
-// import { addsCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
@@ -151,32 +150,6 @@ const ProductsPage = () => {
 
     /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
-
-  // // 加入購物車
-  // const handleAddCartItem = async (product_id, qty = 1) => {
-  //   // setIsScreenLoading(true); // 加入購物車不需要整個畫面都 loading，改為按鈕局部 loading
-  //   if (loadingItems[product_id]) return; // 防止重複點擊
-  //   if (!product_id || qty < 1) return;
-
-  //   setLoadingItems((prev) => ({
-  //     ...prev,
-  //     [product_id]: true,
-  //   }));
-
-  //   try {
-  //     await addsCartItem(product_id, qty);
-  //     await refreshCart();
-  //   } catch (error) {
-  //     // const errorMessage = extractErrorMessage(error, setErrorMessage, '加入購物車失敗');
-  //     const errorMessage = extractErrorMessage(error, '', '加入購物車失敗');
-  //     showError(errorMessage);
-  //   } finally {
-  //     setLoadingItems((prev) => ({
-  //       ...prev,
-  //       [product_id]: false,
-  //     }));
-  //   }
-  // };
 
   return (
     <>

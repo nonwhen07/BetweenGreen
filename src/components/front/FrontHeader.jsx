@@ -1,19 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { Package, ShoppingCart, ReceiptText, LayoutDashboard, Users, LogOut } from 'lucide-react';
-
-// features
-import { logoutAction } from '@/features/auth/authSlice';
-// services
-import { logout } from '@/services/authService';
-// hooks
-import { useToast } from '@/hooks/useToast';
+import { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Package, ShoppingCart, ReceiptText, LayoutDashboard, Users } from 'lucide-react';
 // components
 import Logo from '@/components/shared/Logo';
-// utils
-import { clearToken } from '@/utils/auth';
-
 // Header-routes
 const routes = [
   {
@@ -77,16 +67,12 @@ const menuItems = [
 ];
 
 const FrontHeader = () => {
-  // 初始化
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const location = useLocation();
 
   // const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about-us');
   const heroPagePaths = ['/', '/home', '/about-us', '/products'];
   const isHeroPage = heroPagePaths.includes(location.pathname);
-
-  const { success, warning } = useToast();
+  const isCartFlowRoute = /^\/cart\/step[1-3]\/?$/.test(location.pathname);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollState, setScrollState] = useState('top');
@@ -95,26 +81,6 @@ const FrontHeader = () => {
   const isAuth = useSelector((state) => state.auth.isAuth);
   const carts = useSelector((state) => state.cart.carts);
   const cartCount = carts?.length || 0;
-
-  //加入登出
-  const handleLogout = async () => {
-    try {
-      const response = await logout();
-
-      if (!response.success) {
-        throw new Error(response.message || '伺服器未完成登出');
-      }
-
-      success('已成功登出，將跳轉到前台首頁。');
-    } catch (error) {
-      console.error('Logout failed:', error);
-      warning('伺服器登出未完成，但已清除本機登入狀態。');
-    } finally {
-      clearToken();
-      dispatch(logoutAction());
-      navigate('/', { replace: true });
-    }
-  };
 
   // 關閉 menu（點擊遮罩或選單連結後）
   const closeMenu = () => setIsMenuOpen(false);
@@ -175,12 +141,6 @@ const FrontHeader = () => {
     }
   }, [isMenuOpen]);
 
-  useEffect(() => {
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    }
-  }, [location.pathname]);
-
   return (
     <>
       <nav
@@ -216,6 +176,7 @@ const FrontHeader = () => {
                     aria-current="page"
                     to={route.path}
                     title={route.title}
+                    onClick={closeMenu}
                   >
                     {route.label}
                   </NavLink>
@@ -228,7 +189,9 @@ const FrontHeader = () => {
                 <li className="header__item">
                   <NavLink
                     to="/cart/step1"
-                    className="header__link header__icon"
+                    className={({ isActive }) =>
+                      `header__link header__icon${isActive || isCartFlowRoute ? ' active' : ''}`
+                    }
                     title="購物車"
                     onClick={closeMenu}
                   >
@@ -237,27 +200,6 @@ const FrontHeader = () => {
                   </NavLink>
                 </li>
               </ul>
-
-              {/* auth  */}
-              {/* {isAuth && (
-                <div className="header__auth">
-                  <NavLink to="/about-us" className="header__icon" title="後台" onClick={closeMenu}>
-                    <LayoutDashboard size={20} strokeWidth={1.9} />
-                  </NavLink>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleLogout();
-                      closeMenu();
-                    }}
-                    className="header__icon header__link--danger"
-                    title="登出"
-                  >
-                    <LogOut size={20} strokeWidth={1.9} />
-                  </button>
-                </div>
-              )} */}
             </div>
             {/* menu-list */}
             <ul className="header__menu-list">
@@ -271,7 +213,13 @@ const FrontHeader = () => {
                     <NavLink
                       to={item.path}
                       title={item.label}
-                      className="header__link"
+                      className={({ isActive }) =>
+                        `header__link${
+                          isActive || (item.path === '/cart/step1' && isCartFlowRoute)
+                            ? ' active'
+                            : ''
+                        }`
+                      }
                       onClick={closeMenu}
                     >
                       <div className="header__icon me-3">
@@ -286,22 +234,6 @@ const FrontHeader = () => {
                   </li>
                 );
               })}
-              {/* {isAuth && (
-                <li className="header__item">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleLogout();
-                      closeMenu();
-                    }}
-                    className="header__link"
-                    title="登出"
-                  >
-                    <LogOut size={20} />
-                    <span className="ms-2">登出</span>
-                  </button>
-                </li>
-              )} */}
             </ul>
           </div>
         </div>

@@ -12,7 +12,7 @@ import 'swiper/css/thumbs';
 
 // services
 import { getProductDetail } from '@/services/productService';
-import { addsCartItem } from '@/services/cartService';
+import { addCartItem } from '@/services/cartService';
 // hooks
 import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
@@ -76,7 +76,7 @@ const ProductDetailPage = () => {
     setCartIsLoading(true);
 
     try {
-      await addsCartItem(productId, qty);
+      await addCartItem(productId, qty);
       await refreshCart();
 
       // setCartMessage('✓ 已加入購物車');

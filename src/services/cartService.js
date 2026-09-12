@@ -1,11 +1,5 @@
 import axiosAPI from '@/api/axiosAPI';
 
-// 取得購物車列表
-export const getCartItems = async () => {
-  const res = await axiosAPI.get('/cart');
-
-  return res.data.data;
-};
 // 取得購物車列表 + 剩餘完整資料
 export const getCartSummary = async () => {
   const res = await axiosAPI.get('/cart');
@@ -13,7 +7,7 @@ export const getCartSummary = async () => {
 };
 
 // 加入單一品項 到 購物車
-export const addsCartItem = async (productId, qty) => {
+export const addCartItem = async (productId, qty) => {
   await axiosAPI.post(`/cart/`, {
     data: {
       product_id: productId,

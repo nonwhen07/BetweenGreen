@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 
 // services
-import { getCartSummary, addsCartItem } from '@/services/cartService';
+import { getCartSummary } from '@/services/cartService';
 
 // features
 import { updateCartData } from '@/features/cart/cartSlice';
@@ -12,12 +12,9 @@ export const useCartActions = () => {
   const refreshCart = async () => {
     const cartData = await getCartSummary();
     dispatch(updateCartData(cartData));
+
+    return cartData;
   };
 
-  const addItem = async (data) => {
-    await addsCartItem(data);
-    await refreshCart();
-  };
-
-  return { addItem, refreshCart };
+  return { refreshCart };
 };

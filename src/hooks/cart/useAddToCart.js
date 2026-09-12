@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/useToast';
 import { useCartActions } from '@/hooks/cart/useCartActions';
 
 // services
-import { addsCartItem } from '@/services/cartService';
+import { addCartItem } from '@/services/cartService';
 
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
@@ -31,14 +31,14 @@ export const useAddToCart = () => {
     }));
 
     try {
-      await addsCartItem(product_id, qty);
+      await addCartItem(product_id, qty);
 
       await refreshCart();
 
       // success 可先保留
       success('已加入購物車');
     } catch (error) {
-      const errorMessage = extractErrorMessage(error, '', '加入購物車失敗');
+      const errorMessage = extractErrorMessage(error, null, '加入購物車失敗');
 
       showError(errorMessage);
     } finally {
