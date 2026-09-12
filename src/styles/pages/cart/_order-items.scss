@@ -3,8 +3,7 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
-
-$cart-card-radius: 14px;
+@use '@/styles/pages/cart/tokens' as *;
 
 // ======================================================
 // Order Items Wrappers

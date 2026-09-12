@@ -212,7 +212,7 @@ const CartPage = () => {
   }, [activeStep]);
 
   return (
-    <div className="cart-page container ui-container ui-container--cart">
+    <div className="cart-page container ui-container ui-container--checkout-flow">
       <header className="cart-page__hero" data-aos="fade-up">
         <h1 className="page-title" key={activeStep}>
           {currentStepData.label}
@@ -236,7 +236,7 @@ const CartPage = () => {
         {activeStep === 1 && (
           <section
             id="step1"
-            className="ui-section ui-section--cart ui-section--cart-slide-up is-active mt-4"
+            className="ui-section ui-section--checkout-flow ui-section--checkout-flow-slide-up is-active mt-4"
           >
             {carts?.length === 0 ? (
               <CartEmpty />
@@ -279,7 +279,7 @@ const CartPage = () => {
         )}
 
         {activeStep === 2 && (
-          <section id="step2" className="ui-section ui-section--cart is-active">
+          <section id="step2" className="ui-section ui-section--checkout-flow is-active">
             <CheckoutForm
               carts={carts}
               cartData={cartData}
@@ -297,7 +297,7 @@ const CartPage = () => {
         )}
 
         {activeStep === 3 && (
-          <section id="step3" className="ui-section ui-section--cart is-active">
+          <section id="step3" className="ui-section ui-section--checkout-flow is-active">
             {!finalOrderID ? (
               <div className="cart-state-card cart-state-card--error">
                 <h2 className="cart-state-card__title">訂單資料不存在</h2>

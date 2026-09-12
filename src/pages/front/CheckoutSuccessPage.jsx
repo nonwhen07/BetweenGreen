@@ -132,7 +132,7 @@ const CheckoutSuccessPage = () => {
 
   if (!orderID) {
     return (
-      <div className="checkout-success container ui-container ui-container--cart py-5">
+      <div className="checkout-success container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--empty card">
           <h1 className="cart-state-card__title">找不到付款完成資料</h1>
 
@@ -150,7 +150,7 @@ const CheckoutSuccessPage = () => {
 
   if (errorMessage) {
     return (
-      <div className="checkout-success container ui-container ui-container--cart py-5">
+      <div className="checkout-success container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--error card">
           <h1 className="cart-state-card__title">暫時無法取得訂單資料</h1>
 
@@ -172,7 +172,7 @@ const CheckoutSuccessPage = () => {
 
   if (isFetchingOrder && !orderData) {
     return (
-      <div className="checkout-success container ui-container ui-container--cart py-5">
+      <div className="checkout-success container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--loading">
           <h1 className="cart-state-card__title">訂單資料載入中</h1>
 
@@ -184,7 +184,7 @@ const CheckoutSuccessPage = () => {
 
   if (orderData && !orderData.is_paid) {
     return (
-      <div className="checkout-success container ui-container ui-container--cart py-5">
+      <div className="checkout-success container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--error card">
           <h1 className="cart-state-card__title">此訂單尚未付款</h1>
 
@@ -207,7 +207,7 @@ const CheckoutSuccessPage = () => {
   }
 
   return (
-    <div className="checkout-success container ui-container ui-container--cart py-5">
+    <div className="checkout-success container ui-container ui-container--checkout-flow">
       <header className="checkout-success__page-hero text-center mb-4">
         <h1 className="page-title">付款完成</h1>
       </header>

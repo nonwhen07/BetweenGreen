@@ -115,7 +115,7 @@ const CheckoutPaymentPage = () => {
 
   if (!orderId) {
     return (
-      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
+      <div className="checkout-payment-page container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--error">
           <h1 className="cart-state-card__title">找不到付款資料</h1>
 
@@ -133,7 +133,7 @@ const CheckoutPaymentPage = () => {
 
   if (errorMessage) {
     return (
-      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
+      <div className="checkout-payment-page container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--error">
           <h1 className="cart-state-card__title">暫時無法取得訂單資料</h1>
 
@@ -155,7 +155,7 @@ const CheckoutPaymentPage = () => {
 
   if (!orderData) {
     return (
-      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
+      <div className="checkout-payment-page container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--loading">
           <h1 className="cart-state-card__title">訂單資料載入中</h1>
 
@@ -167,7 +167,7 @@ const CheckoutPaymentPage = () => {
 
   if (orderData.is_paid) {
     return (
-      <div className="checkout-payment-page container ui-container ui-container--cart py-5">
+      <div className="checkout-payment-page container ui-container ui-container--checkout-flow">
         <div className="cart-state-card cart-state-card--empty">
           <h1 className="cart-state-card__title">此訂單已付款</h1>
 
@@ -188,14 +188,14 @@ const CheckoutPaymentPage = () => {
   }
 
   return (
-    <div className="checkout-payment-page container ui-container ui-container--cart">
+    <div className="checkout-payment-page container ui-container ui-container--checkout-flow">
       <header className="checkout-payment-page__hero">
         <h1 className="page-title">確認付款</h1>
       </header>
 
       <CartSteps currentStep={3} />
 
-      <section className="checkout-payment-page__content ui-section ui-section--cart is-active">
+      <section className="checkout-payment-page__content ui-section ui-section--checkout-flow is-active">
         {orderProducts.length === 0 ? (
           <div className="cart-state-card cart-state-card--empty">
             <h2 className="cart-state-card__title">訂單內容為空</h2>

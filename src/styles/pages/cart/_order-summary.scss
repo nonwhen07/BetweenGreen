@@ -3,10 +3,7 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
-
-$cart-card-radius: 14px;
-$cart-card-border: 1px solid rgba($color-primary, 0.1);
-$cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
+@use '@/styles/pages/cart/tokens' as *;
 
 // ======================================================
 // Order Summary
@@ -187,25 +184,6 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
 }
 
 // ======================================================
-// Cart CTA
-// ======================================================
-
-.cart-cta-group {
-  display: grid;
-  gap: $space-2;
-
-  width: 100%;
-  margin-top: $space-4;
-
-  .ui-btn,
-  .btn {
-    justify-content: center;
-
-    width: 100%;
-  }
-}
-
-// ======================================================
 // Pad
 // ======================================================
 
@@ -226,18 +204,6 @@ $cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
     }
   }
 
-  .cart-cta-group {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    width: auto;
-
-    .ui-btn,
-    .btn {
-      width: auto;
-    }
-  }
 }
 
 // ======================================================

@@ -48,9 +48,11 @@ const GoTop = () => {
   return (
     <button
       type="button"
-      className={`ui-btn-gotop${visible ? ' show' : ''}`}
+      className={`ui-btn-gotop${visible ? ' is-visible is-active' : ''}`}
       onClick={scrollToTop}
       aria-label="回到頂部"
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
     >
       <FaAngleUp size={20} />
     </button>

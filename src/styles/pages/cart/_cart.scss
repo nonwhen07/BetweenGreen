@@ -6,8 +6,7 @@
 // Cart / Checkout Flow Container
 // ======================================================
 
-// TODO: Checkout flow 命名穩定後，評估 ui-container--cart 改為 ui-container--checkout-flow。
-.ui-container--cart {
+.ui-container--checkout-flow {
   padding-top: 20px;
   padding-bottom: 32px;
 
@@ -40,8 +39,7 @@
 // Cart / Checkout Flow Section
 // ======================================================
 
-// TODO: Checkout flow 共用範圍確定後，評估 ui-section--cart 改為 ui-section--checkout-flow。
-.ui-section--cart {
+.ui-section--checkout-flow {
   padding: 12px;
 
   background-color: $color-bg-main;
@@ -68,17 +66,49 @@
 }
 
 // ======================================================
+// Cart / Checkout Flow CTA Group
+// ======================================================
+
+.cart-cta-group {
+  display: grid;
+  gap: $space-2;
+
+  width: 100%;
+  margin-top: $space-4;
+
+  .ui-btn,
+  .btn {
+    justify-content: center;
+
+    width: 100%;
+  }
+}
+
+// ======================================================
 // Pad
 // ======================================================
 
 @include respond($breakpoints, pad) {
-  .ui-container--cart {
+  .ui-container--checkout-flow {
     padding-top: 24px;
     padding-bottom: 40px;
   }
 
-  .ui-section--cart {
+  .ui-section--checkout-flow {
     padding: 16px;
+  }
+
+  .cart-cta-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    width: auto;
+
+    .ui-btn,
+    .btn {
+      width: auto;
+    }
   }
 }
 
@@ -87,12 +117,12 @@
 // ======================================================
 
 @include respond($breakpoints, desktop) {
-  .ui-container--cart {
+  .ui-container--checkout-flow {
     padding-top: 40px;
     padding-bottom: 56px;
   }
 
-  .ui-section--cart {
+  .ui-section--checkout-flow {
     padding: 24px;
   }
 

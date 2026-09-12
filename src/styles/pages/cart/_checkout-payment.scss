@@ -3,10 +3,7 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
-
-$cart-card-radius: 14px;
-$cart-card-border: 1px solid rgba($color-primary, 0.1);
-$cart-card-shadow: 0 10px 28px rgba($color-primary, 0.06);
+@use '@/styles/pages/cart/tokens' as *;
 
 // ======================================================
 // Checkout Payment Page
