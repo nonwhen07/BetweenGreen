@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 // services
@@ -9,12 +10,12 @@ import { updateCartData } from '@/features/cart/cartSlice';
 export const useCartActions = () => {
   const dispatch = useDispatch();
 
-  const refreshCart = async () => {
+  const refreshCart = useCallback(async () => {
     const cartData = await getCartSummary();
     dispatch(updateCartData(cartData));
 
     return cartData;
-  };
+  }, [dispatch]);
 
   return { refreshCart };
 };

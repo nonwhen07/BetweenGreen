@@ -19,9 +19,10 @@ export const createOrder = async (orderPayload) => {
 };
 
 // 取得訂單列表（分頁）
-export const getOrders = async (page = 1) => {
+export const getOrders = async (page = 1, { signal } = {}) => {
   const { data } = await axiosAPI.get('/orders', {
     params: { page },
+    signal,
   });
 
   return {
@@ -31,8 +32,8 @@ export const getOrders = async (page = 1) => {
 };
 
 // 取得單一訂單
-export const getOrder = async (orderId) => {
-  const { data } = await axiosAPI.get(`/order/${orderId}`);
+export const getOrder = async (orderId, { signal } = {}) => {
+  const { data } = await axiosAPI.get(`/order/${orderId}`, { signal });
 
   return {
     data: data.order,

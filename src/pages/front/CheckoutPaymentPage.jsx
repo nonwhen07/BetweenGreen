@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 // components
@@ -25,18 +25,26 @@ const CheckoutPaymentPage = () => {
 
   const [orderData, setOrderData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const requestControllerRef = useRef(null);
 
   const orderProducts = useMemo(() => {
     return normalizeOrderItems(orderData?.products);
   }, [orderData]);
 
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     if (!orderId) return;
 
+    requestControllerRef.current?.abort();
+
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
+
+    setOrderData(null);
+    setErrorMessage('');
     start();
 
     try {
-      const res = await getOrder(orderId);
+      const res = await getOrder(orderId, { signal: controller.signal });
       const order = res.data;
 
       if (!order || !order.id) {
@@ -48,15 +56,20 @@ const CheckoutPaymentPage = () => {
       setOrderData(order);
       setErrorMessage('');
     } catch (error) {
+      if (error.code === 'ERR_CANCELED') return;
+
       const message = extractErrorMessage(error, setErrorMessage, '取得訂單付款資料失敗。');
 
       showError(message);
     } finally {
-      stop();
+      if (requestControllerRef.current === controller) {
+        requestControllerRef.current = null;
+        stop();
+      }
     }
-  };
+  }, [orderId, showError, start, stop]);
 
-  const handlePay = async (paymentData) => {
+  const handlePay = async () => {
     if (!orderId) {
       warning('找不到訂單編號，請返回訂單查詢頁重新操作。');
       return;
@@ -77,12 +90,7 @@ const CheckoutPaymentPage = () => {
       if (order.is_paid) {
         warning('此訂單已完成付款，不需要重複付款。');
 
-        navigate(`/checkout-success/${orderId}`, {
-          state: {
-            orderId,
-            paymentMethod: paymentData?.paymentMethod,
-          },
-        });
+        navigate(`/checkout-success/${orderId}`);
 
         return;
       }
@@ -91,12 +99,7 @@ const CheckoutPaymentPage = () => {
 
       success('您的訂單付款成功。');
 
-      navigate(`/checkout-success/${orderId}`, {
-        state: {
-          orderId,
-          paymentMethod: paymentData?.paymentMethod,
-        },
-      });
+      navigate(`/checkout-success/${orderId}`);
     } catch (error) {
       const message = extractErrorMessage(error, setErrorMessage, '訂單付款失敗。');
 
@@ -109,8 +112,16 @@ const CheckoutPaymentPage = () => {
   useEffect(() => {
     fetchOrder();
 
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [orderId]);
+    return () => {
+      const controller = requestControllerRef.current;
+
+      if (!controller) return;
+
+      controller.abort();
+      requestControllerRef.current = null;
+      stop();
+    };
+  }, [fetchOrder, stop]);
 
   if (!orderId) {
     return (

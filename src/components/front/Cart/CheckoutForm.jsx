@@ -38,17 +38,20 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
 
   useEffect(() => {
     setValue('district', '');
-
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [city]);
+  }, [city, setValue]);
 
   useEffect(() => {
-    if (isSame) {
-      setValue('shippingName', name);
-      setValue('shippingTel', tel);
-      setValue('shippingEmail', email);
-    }
-  }, [isSame, name, tel, email]);
+    if (!isSame) return;
+
+    const syncOptions = {
+      shouldDirty: true,
+      shouldValidate: true,
+    };
+
+    setValue('shippingName', name || '', syncOptions);
+    setValue('shippingTel', tel || '', syncOptions);
+    setValue('shippingEmail', email || '', syncOptions);
+  }, [email, isSame, name, setValue, tel]);
 
   return (
     <>
@@ -140,7 +143,8 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     type="text"
                     className={`form-control ${errors.shippingName ? 'is-invalid' : ''}`}
                     placeholder="請輸入收件人姓名"
-                    disabled={isSame}
+                    readOnly={isSame}
+                    aria-readonly={isSame}
                   />
                   {errors.shippingName && (
                     <p className="text-danger my-2">{errors.shippingName.message}</p>
@@ -163,7 +167,8 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     type="text"
                     className={`form-control ${errors.shippingTel ? 'is-invalid' : ''}`}
                     placeholder="請輸入電話"
-                    disabled={isSame}
+                    readOnly={isSame}
+                    aria-readonly={isSame}
                   />
                   {errors.shippingTel && (
                     <p className="text-danger my-2">{errors.shippingTel.message}</p>
@@ -187,7 +192,8 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     type="email"
                     className={`form-control ${errors.shippingEmail ? 'is-invalid' : ''}`}
                     placeholder="請輸入收件人 Email"
-                    disabled={isSame}
+                    readOnly={isSame}
+                    aria-readonly={isSame}
                   />
                   {errors.shippingEmail && (
                     <p className="text-danger my-2">{errors.shippingEmail.message}</p>

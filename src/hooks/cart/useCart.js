@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 // hooks
 import { useToast } from '@/hooks/useToast';
@@ -33,7 +33,7 @@ export const useCart = () => {
 
   const carts = cartData.carts || [];
 
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     const data = await refreshCart();
     const carts = data.carts || [];
 
@@ -48,7 +48,7 @@ export const useCart = () => {
     setCartData(nextCartData);
 
     return nextCartData;
-  };
+  }, [refreshCart]);
 
   // 調整購物車品項
   const handleUpdateCartItem = async (cart_id, product_id, qty = 1) => {

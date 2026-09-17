@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { CheckCircle2, ClipboardList, PackageCheck, ReceiptText } from 'lucide-react';
 
 // services
@@ -10,7 +10,7 @@ import CartSteps from '@/components/front/Cart/CartSteps';
 import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 
 // utils
-import { calculateCartTotal, getShippingPricing } from '@/utils/cartUtils';
+import { getShippingPricing } from '@/utils/cartUtils';
 import { extractErrorMessage } from '@/utils/errorHandler';
 import { normalizeOrderItems } from '@/utils/order/orderItemUtils';
 
@@ -43,11 +43,7 @@ const formatDate = (timestamp) => {
 };
 
 const CheckoutSuccessPage = () => {
-  const location = useLocation();
-  const { orderId: orderIdParam } = useParams();
-
-  const routeState = location.state || {};
-  const orderID = orderIdParam || routeState.orderId;
+  const { orderId: orderID } = useParams();
 
   const { showError } = useToast();
   const { start, stop } = useLoading();
@@ -55,35 +51,26 @@ const CheckoutSuccessPage = () => {
   const [orderData, setOrderData] = useState(null);
   const [isFetchingOrder, setIsFetchingOrder] = useState(Boolean(orderID));
   const [errorMessage, setErrorMessage] = useState('');
-
-  const stateCarts = useMemo(() => {
-    return routeState.carts || [];
-  }, [routeState.carts]);
+  const requestControllerRef = useRef(null);
 
   const orderProducts = useMemo(() => {
-    const sourceItems = orderData ? orderData.products : stateCarts;
-
-    const normalizedItems = normalizeOrderItems(sourceItems);
+    const normalizedItems = normalizeOrderItems(orderData?.products);
 
     return normalizedItems;
-  }, [stateCarts, orderData]);
+  }, [orderData]);
 
   const productCount = useMemo(() => {
     return orderProducts.reduce((total, item) => total + Number(item.qty || 0), 0);
   }, [orderProducts]);
 
   const subtotal = useMemo(() => {
-    if (!orderData && stateCarts.length > 0) {
-      return calculateCartTotal(stateCarts);
-    }
-
     return orderProducts.reduce((total, item) => {
       const price = getProductPrice(item);
       const qty = Number(item.qty || 0);
 
       return total + price * qty;
     }, 0);
-  }, [stateCarts, orderData, orderProducts]);
+  }, [orderProducts]);
 
   const discountedItemsTotal = useMemo(() => {
     return orderProducts.reduce((total, item) => total + getItemTotal(item), 0);
@@ -96,14 +83,21 @@ const CheckoutSuccessPage = () => {
   const userInfo = orderData?.user || {};
   const orderStatusText = orderData?.is_paid ? '已付款' : '付款狀態確認中';
 
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     if (!orderID) return;
 
+    requestControllerRef.current?.abort();
+
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
+
+    setOrderData(null);
+    setErrorMessage('');
     setIsFetchingOrder(true);
     start();
 
     try {
-      const res = await getOrder(orderID);
+      const res = await getOrder(orderID, { signal: controller.signal });
       const order = res.data;
 
       if (!order || !order.id) {
@@ -115,20 +109,33 @@ const CheckoutSuccessPage = () => {
       setOrderData(order);
       setErrorMessage('');
     } catch (error) {
+      if (error.code === 'ERR_CANCELED') return;
+
       const message = extractErrorMessage(error, setErrorMessage, '取得付款完成資料失敗。');
 
       showError(message);
     } finally {
-      setIsFetchingOrder(false);
-      stop();
+      if (requestControllerRef.current === controller) {
+        requestControllerRef.current = null;
+        setIsFetchingOrder(false);
+        stop();
+      }
     }
-  };
+  }, [orderID, showError, start, stop]);
 
   useEffect(() => {
     fetchOrder();
 
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [orderID]);
+    return () => {
+      const controller = requestControllerRef.current;
+
+      if (!controller) return;
+
+      controller.abort();
+      requestControllerRef.current = null;
+      stop();
+    };
+  }, [fetchOrder, stop]);
 
   if (!orderID) {
     return (

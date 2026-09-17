@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // components
@@ -56,27 +56,41 @@ const CustomerOrdersPage = () => {
   const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
+  const requestControllerRef = useRef(null);
 
   const sortedOrders = useMemo(() => {
     return [...orders].sort((a, b) => (b.create_at || 0) - (a.create_at || 0));
   }, [orders]);
 
-  const fetchOrders = async (page = 1) => {
-    start();
+  const fetchOrders = useCallback(
+    async (page = 1) => {
+      requestControllerRef.current?.abort();
 
-    try {
-      const res = await getOrders(page);
+      const controller = new AbortController();
+      requestControllerRef.current = controller;
 
-      setOrders(normalizeOrders(res.data));
-      setPagination(res.pagination);
-      setErrorMessage('');
-    } catch (error) {
-      const message = extractErrorMessage(error, setErrorMessage, '取得歷次訂單失敗。');
-      showError(message);
-    } finally {
-      stop();
-    }
-  };
+      start();
+
+      try {
+        const res = await getOrders(page, { signal: controller.signal });
+
+        setOrders(normalizeOrders(res.data));
+        setPagination(res.pagination);
+        setErrorMessage('');
+      } catch (error) {
+        if (error.code === 'ERR_CANCELED') return;
+
+        const message = extractErrorMessage(error, setErrorMessage, '取得歷次訂單失敗。');
+        showError(message);
+      } finally {
+        if (requestControllerRef.current === controller) {
+          requestControllerRef.current = null;
+          stop();
+        }
+      }
+    },
+    [showError, start, stop],
+  );
 
   const handlePageChange = (page) => {
     if (page === currentPage) return;
@@ -92,8 +106,16 @@ const CustomerOrdersPage = () => {
   useEffect(() => {
     fetchOrders(currentPage);
 
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [currentPage]);
+    return () => {
+      const controller = requestControllerRef.current;
+
+      if (!controller) return;
+
+      controller.abort();
+      requestControllerRef.current = null;
+      stop();
+    };
+  }, [currentPage, fetchOrders, stop]);
 
   return (
     <div className="customer-orders container ui-container py-5">

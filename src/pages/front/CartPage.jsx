@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 // constants
 import { CART_STEPS } from '@/constants/cartConstants';
@@ -30,9 +30,6 @@ const CartPage = () => {
   // 取得 ID 用於判斷條件
   const activeStep = currentStepData.id;
 
-  const location = useLocation();
-  const legacyOrderId = location.state?.orderId;
-
   const navigate = useNavigate();
   const { success, showError, warning } = useToast();
   const { start, stop } = useLoading();
@@ -60,7 +57,6 @@ const CartPage = () => {
     formState: { errors },
     reset,
     setValue,
-    getValues,
     watch,
   } = useForm();
 
@@ -124,10 +120,14 @@ const CartPage = () => {
   useEffect(() => {
     if (!isCartStep) return;
 
+    let isActive = true;
+
     const initCart = async () => {
       start();
       try {
         const latestCartData = await fetchCart();
+
+        if (!isActive) return;
 
         setErrorMessage('');
 
@@ -136,6 +136,8 @@ const CartPage = () => {
           navigate('/cart/step1', { replace: true });
         }
       } catch (error) {
+        if (!isActive) return;
+
         const errorMessage = extractErrorMessage(error, setErrorMessage);
         showError(errorMessage);
       } finally {
@@ -145,8 +147,10 @@ const CartPage = () => {
 
     initCart();
 
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, []);
+    return () => {
+      isActive = false;
+    };
+  }, [fetchCart, isCartStep, navigate, showError, start, stepParam, stop, warning]);
 
   // 改為簡單的：切換步驟就回到頂部
   useEffect(() => {
@@ -154,10 +158,7 @@ const CartPage = () => {
   }, [activeStep]);
 
   if (!isCartStep) {
-    const redirectPath =
-      stepParam === 'step3' && legacyOrderId ? `/checkout-payment/${legacyOrderId}` : '/cart/step1';
-
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to="/cart/step1" replace />;
   }
 
   return (
@@ -235,7 +236,6 @@ const CartPage = () => {
               register={register}
               errors={errors}
               setValue={setValue}
-              getValues={getValues}
               watch={watch}
               onSubmit={handleSubmitOrder}
               onBack={() => {
