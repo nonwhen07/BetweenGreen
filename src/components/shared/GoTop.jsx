@@ -1,26 +1,30 @@
 import { useEffect, useState } from 'react';
 import { FaAngleUp } from 'react-icons/fa';
+import PropTypes from 'prop-types';
 
 // constants
 import { BREAKPOINTS } from '@/constants/breakpoints';
 
-function getShowThreshold() {
-  if (window.innerWidth < BREAKPOINTS.pad) {
-    return 160;
-  }
+// constants
+const MIN_SHOW_THRESHOLD = 240;
+const MAX_SHOW_THRESHOLD = 480;
+const VIEWPORT_SHOW_RATIO = 0.6;
 
-  if (window.innerWidth < BREAKPOINTS.desktop) {
-    return 200;
-  }
+function getViewportShowThreshold() {
+  const viewportThreshold = Math.round(window.innerHeight * VIEWPORT_SHOW_RATIO);
 
-  if (window.innerWidth < BREAKPOINTS.desktopXL) {
-    return 250;
-  }
-
-  return 400; // desktop
+  return Math.min(MAX_SHOW_THRESHOLD, Math.max(MIN_SHOW_THRESHOLD, viewportThreshold));
 }
 
-const GoTop = () => {
+function getDefaultShowThreshold() {
+  if (window.innerWidth < BREAKPOINTS.pad) return 160;
+  if (window.innerWidth < BREAKPOINTS.desktop) return 200;
+  if (window.innerWidth < BREAKPOINTS.desktopXL) return 250;
+
+  return 400;
+}
+
+const GoTop = ({ variant = 'default' }) => {
   const [visible, setVisible] = useState(false);
   // accessibility（無障礙）設定，問問瀏覽器：使用者有沒有開「減少動態效果」？
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,12 +32,19 @@ const GoTop = () => {
   // 監聽滾動事件
   useEffect(() => {
     const handleScroll = () => {
-      const threshold = getShowThreshold();
+      const threshold =
+        variant === 'front' ? getViewportShowThreshold() : getDefaultShowThreshold();
       setVisible(window.scrollY > threshold);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [variant]);
 
   // 點擊回到頂部
   const scrollToTop = () => {
@@ -48,7 +59,7 @@ const GoTop = () => {
   return (
     <button
       type="button"
-      className={`ui-btn-gotop${visible ? ' is-visible is-active' : ''}`}
+      className={`ui-btn-gotop ui-btn-gotop--${variant}${visible ? ' is-visible is-active' : ''}`}
       onClick={scrollToTop}
       aria-label="回到頂部"
       aria-hidden={!visible}
@@ -59,7 +70,8 @@ const GoTop = () => {
   );
 };
 
-// TODO:
-// 未來考慮建立 SCSS / JS 共用 breakpoint token system
-// 避免 layout breakpoint 與 JS breakpoint 不同步
+GoTop.propTypes = {
+  variant: PropTypes.oneOf(['default', 'front']),
+};
+
 export default GoTop;

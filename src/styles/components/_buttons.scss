@@ -1,5 +1,7 @@
 @use 'sass:color';
 
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
 
 .ui-btn {
@@ -33,6 +35,18 @@
 
   &:active {
     transform: translateY(0);
+  }
+
+  &--sm {
+    min-height: 40px;
+    padding: 8px 12px;
+
+    font-size: $font-size-sm;
+  }
+
+  &--lg {
+    min-height: 48px;
+    padding: 10px 24px;
   }
 
   &--primary {
@@ -95,12 +109,12 @@
 ========================================================= */
 .ui-btn-gotop {
   position: fixed;
-  right: 2.5rem;
-  bottom: 2.5rem;
+  right: 0.8rem;
+  bottom: 0.8rem;
   z-index: 1200;
 
-  width: 3rem;
-  height: 3rem;
+  width: 38px;
+  height: 38px;
 
   display: flex;
   align-items: center;
@@ -128,15 +142,33 @@
     pointer-events: auto;
   }
 
-  // hover（重點：不是亂變色，是「同色系變化」）
+  // 無 hover 的觸控裝置顯示時直接使用反應色，避免與 Footer 主綠色融在一起。
+  @media (hover: none) {
+    &.is-active {
+      color: color.adjust($color-primary-light, $lightness: -10%);
+      background: $color-accent;
+      border: 1px solid color.adjust($color-primary-light, $lightness: -10%);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    }
+  }
+
+  @include respond($breakpoints, pad) {
+    right: 1.2rem;
+    bottom: 1.2rem;
+    width: 42px;
+    height: 42px;
+  }
+
+  @include respond($breakpoints, desktop) {
+    right: 2.5rem;
+    bottom: 2.5rem;
+    width: 3rem;
+    height: 3rem;
+  }
+
+  // Desktop hover 仍使用同色系反應。
   &:hover {
-    // transform: translateY(-3px) scale(1.05);
-
     color: color.adjust($color-primary-light, $lightness: -10%);
-
-    // 如果有 theme，就用 theme 色
-    // background: var(--season-primary, darken($color-primary, 40%));
-    // background: var(--season-bg, darken($color-primary, 40%));
     background: $color-accent;
     border: 1px solid color.adjust($color-primary-light, $lightness: -10%);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
@@ -147,29 +179,34 @@
     transform: scale(0.95);
   }
 
-  // Mobile / Pad 無穩定 hover；顯示時直接使用反應色，避免與 Footer 主綠色融在一起。
-  @media (max-width: 1024px) {
+  // 前台專用：Mobile 先避開瀏覽器底部操作列，Pad / Desktop 再逐級靠近右下角。
+  &--front {
+    right: calc(#{$space-4} + env(safe-area-inset-right, 0px));
+    bottom: calc(#{$space-20 - $space-2} + env(safe-area-inset-bottom, 0px));
+    width: $space-12;
+    height: $space-12;
+    border: $border-width-md solid $color-bg-surface;
+    box-shadow:
+      0 0 0 1px rgba($color-primary-dark, 0.16),
+      $shadow-md;
+
+    &:hover,
     &.is-active {
-      color: color.adjust($color-primary-light, $lightness: -10%);
-      background: $color-accent;
-      border: 1px solid color.adjust($color-primary-light, $lightness: -10%);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+      border-color: $color-bg-surface;
+      box-shadow:
+        0 0 0 1px rgba($color-primary-dark, 0.2),
+        $shadow-lg;
     }
-  }
 
-  //  RWD
-  @media (max-width: 991.98px) {
-    right: 1.2rem;
-    bottom: 1.2rem;
-    width: 42px;
-    height: 42px;
-  }
+    @include respond($breakpoints, pad) {
+      right: calc(#{$space-6} + env(safe-area-inset-right, 0px));
+      bottom: calc(#{$space-10} + env(safe-area-inset-bottom, 0px));
+    }
 
-  @media (max-width: 575.98px) {
-    right: 0.8rem;
-    bottom: 0.8rem;
-    width: 38px;
-    height: 38px;
+    @include respond($breakpoints, desktop) {
+      right: $space-10;
+      bottom: $space-10;
+    }
   }
 }
 
@@ -229,7 +266,7 @@
 
 .quantity-stepper {
   display: inline-grid;
-  grid-template-columns: auto minmax(36px, auto) auto auto;
+  grid-template-columns: auto minmax(44px, auto) auto auto;
   align-items: center;
 
   border: 1px solid $border-color-base;
@@ -243,8 +280,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     padding: 0;
 
     border: 0;
@@ -275,8 +312,8 @@
     align-items: center;
     justify-content: center;
 
-    min-width: 40px;
-    height: 36px;
+    min-width: 44px;
+    height: 44px;
     padding-inline: $space-2;
 
     border-right: 1px solid $border-color-base;
@@ -292,5 +329,19 @@
     color: $neutral-600;
     font-size: $font-size-sm;
     white-space: nowrap;
+  }
+
+  &--lg {
+    grid-template-columns: auto minmax(48px, auto) auto auto;
+
+    .quantity-stepper__button {
+      width: 48px;
+      height: 48px;
+    }
+
+    .quantity-stepper__value {
+      min-width: 48px;
+      height: 48px;
+    }
   }
 }

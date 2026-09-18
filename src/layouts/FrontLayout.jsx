@@ -42,7 +42,7 @@ const FrontLayout = () => {
         <main className={`ui-wrapper ${isHeroPage ? 'ui-wrapper-hero' : 'ui-wrapper-spacing'}`}>
           <Outlet />
         </main>
-        <GoTop />
+        <GoTop variant="front" />
         <FrontFooter />
       </div>
     </>

@@ -7,15 +7,19 @@ const QuantityStepper = ({
   unit = '',
   itemName = '商品',
   isLoading = false,
+  isDisabled = false,
+  min = 1,
+  max = Number.POSITIVE_INFINITY,
+  size = 'md',
   onDecrease,
   onIncrease,
 }) => {
   return (
-    <div className="quantity-stepper">
+    <div className={`quantity-stepper quantity-stepper--${size}`}>
       <button
         type="button"
         className="quantity-stepper__button"
-        disabled={isLoading || value <= 1}
+        disabled={isDisabled || isLoading || value <= min}
         aria-label={`減少 ${itemName} 數量`}
         onClick={onDecrease}
       >
@@ -29,7 +33,7 @@ const QuantityStepper = ({
       <button
         type="button"
         className="quantity-stepper__button"
-        disabled={isLoading}
+        disabled={isDisabled || isLoading || value >= max}
         aria-label={`增加 ${itemName} 數量`}
         onClick={onIncrease}
       >

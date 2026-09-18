@@ -7,7 +7,7 @@ import { CART_STEPS } from '@/constants/cartConstants';
 // components
 import CartSteps from '@/components/front/Cart/CartSteps';
 import CartEmpty from '@/components/front/Cart/CartEmpty';
-import CartTable from '@/components/front/Cart/CartTable';
+import EditableCartItems from '@/components/front/Cart/EditableCartItems';
 import CheckoutForm from '@/components/front/Cart/CheckoutForm';
 import CartSummary from '@/components/front/Cart/CartSummary';
 
@@ -192,7 +192,7 @@ const CartPage = () => {
               <CartEmpty />
             ) : (
               <>
-                <CartTable
+                <EditableCartItems
                   carts={carts}
                   actions={{
                     onClear: handleClearCart,

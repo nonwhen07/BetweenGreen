@@ -3,6 +3,7 @@ import { parseCategoryParts, parsePersonalityTags } from '@/constants/productCon
 
 // components
 import BtnLoader from '@/components/BtnLoader';
+import QuantityStepper from '@/components/shared/QuantityStepper';
 
 const ProductInfo = ({
   currentProduct,
@@ -69,59 +70,37 @@ const ProductInfo = ({
 
       {/* Purchase */}
       <section className="product-info__purchase">
-        <div className="row mx-0">
-          <div className="col-6">
-            <div className="d-flex align-items-center">
-              <div className="product-info__qty">
-                <button
-                  type="button"
-                  className={`product-info__qty-btn ${isAdded ? 'is-success' : ''} `}
-                  disabled={isLoading || isAdded || qtySelect <= 1}
-                  onClick={() => setQtySelect((prev) => Math.max(1, prev - 1))}
-                >
-                  −
-                </button>
-
-                <span>{qtySelect}</span>
-
-                <button
-                  type="button"
-                  className={`
-              product-info__qty-btn
-              ${isAdded ? 'is-success' : ''}
-            `}
-                  disabled={isLoading || isAdded}
-                  onClick={() => setQtySelect((prev) => Math.min(10, prev + 1))}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="d-flex align-items-center">
-              <button
-                type="button"
-                className="ui-btn ui-btn--primary product-info__cart-btn"
-                disabled={isLoading}
-                onClick={() => addCartItem(currentProduct?.id, qtySelect)}
-              >
-                {isLoading ? (
-                  <>
-                    <div className="d-flex justify-content-center align-items-center">
-                      <BtnLoader size="sm" />
-                      <span className="ms-2">加入中...</span>
-                    </div>
-                  </>
-                ) : isAdded ? (
-                  '✓ 已加入購物車'
-                ) : (
-                  '加入購物車'
-                )}
-              </button>
-            </div>
-          </div>
+        <div className="product-info__quantity">
+          <QuantityStepper
+            value={qtySelect}
+            min={1}
+            max={10}
+            size="lg"
+            itemName={currentProduct?.title}
+            isLoading={isLoading}
+            isDisabled={isAdded}
+            onDecrease={() => setQtySelect((prev) => Math.max(1, prev - 1))}
+            onIncrease={() => setQtySelect((prev) => Math.min(10, prev + 1))}
+          />
         </div>
+
+        <button
+          type="button"
+          className="ui-btn ui-btn--primary ui-btn--lg product-info__cart-btn"
+          disabled={isLoading}
+          onClick={() => addCartItem(currentProduct?.id, qtySelect)}
+        >
+          {isLoading ? (
+            <div className="d-flex justify-content-center align-items-center">
+              <BtnLoader size="sm" />
+              <span className="ms-2">加入中...</span>
+            </div>
+          ) : isAdded ? (
+            '✓ 已加入購物車'
+          ) : (
+            '加入購物車'
+          )}
+        </button>
       </section>
 
       {/* Service */}

@@ -20,10 +20,6 @@
     display: grid;
     gap: $space-3;
   }
-
-  &__table {
-    display: none;
-  }
 }
 
 .order-items {
@@ -72,22 +68,23 @@
   }
 
   &__content {
-    min-width: 0;
-  }
-
-  &__main {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    gap: $space-2;
+    grid-template-areas:
+      'title delete'
+      'categories categories'
+      'price price'
+      'footer footer';
+    gap: 0 $space-2;
 
     min-width: 0;
-    margin-bottom: $space-2;
   }
 
   &__title {
+    grid-area: title;
+
     min-width: 0;
-    margin-bottom: 0;
+    margin-bottom: $space-2;
 
     overflow-wrap: anywhere;
 
@@ -96,10 +93,14 @@
   }
 
   &__categories {
+    grid-area: categories;
+
     margin-bottom: $space-2;
   }
 
   &__price {
+    grid-area: price;
+
     margin-bottom: $space-3;
 
     color: $neutral-600;
@@ -107,6 +108,8 @@
   }
 
   &__footer {
+    grid-area: footer;
+
     display: grid;
     gap: $space-3;
 
@@ -127,6 +130,11 @@
     align-items: center;
     justify-content: space-between;
     gap: $space-2;
+  }
+
+  &__delete {
+    grid-area: delete;
+    align-self: start;
   }
 }
 
@@ -267,7 +275,6 @@
 // Order Items Table
 // ======================================================
 
-.editable-cart-items__table-scroll,
 .order-items__table-scroll {
   width: 100%;
 
@@ -405,26 +412,6 @@
     font-size: 20px;
     font-weight: 700;
   }
-
-  &--editable {
-    .order-table__col--image {
-      .product-image {
-        cursor: zoom-in;
-
-        transition:
-          transform 0.25s ease,
-          box-shadow 0.25s ease;
-
-        &:hover {
-          z-index: 10;
-
-          transform: scale(3);
-
-          box-shadow: 0 8px 24px rgba($color-primary, 0.18);
-        }
-      }
-    }
-  }
 }
 
 // ======================================================
@@ -445,7 +432,6 @@
     }
   }
 
-  .editable-cart-items__table-scroll,
   .order-items__table-scroll {
     padding-bottom: 8px;
 
@@ -463,13 +449,55 @@
 // ======================================================
 
 @include respond($breakpoints, desktop) {
-  .editable-cart-items {
-    &__list {
-      display: none;
+  .editable-cart-item {
+    grid-template-columns: 80px minmax(0, 1fr);
+    align-items: center;
+    gap: $space-4;
+
+    padding: $space-4 $space-5;
+
+    &__image {
+      width: 80px;
     }
 
-    &__table {
-      display: block;
+    &__content {
+      grid-template-columns:
+        minmax(110px, 1.1fr)
+        minmax(96px, 0.8fr)
+        minmax(92px, 0.7fr)
+        minmax(340px, 1.9fr)
+        42px;
+      grid-template-areas: 'title categories price footer delete';
+      align-items: center;
+      gap: $space-4;
+    }
+
+    &__title,
+    &__categories,
+    &__price {
+      margin-bottom: 0;
+    }
+
+    &__footer {
+      grid-template-columns: minmax(210px, 1fr) minmax(104px, auto);
+      align-items: center;
+      gap: $space-3;
+
+      padding-top: 0;
+
+      border-top: 0;
+    }
+
+    &__subtotal {
+      min-width: 104px;
+      padding-left: $space-3;
+
+      border-left: 1px solid $border-color-soft;
+      white-space: nowrap;
+    }
+
+    &__delete {
+      align-self: center;
     }
   }
 
@@ -539,14 +567,6 @@
         }
       }
     }
-  }
-
-  .editable-cart-items__table-scroll {
-    border-radius: $radius-md;
-
-    overflow: visible;
-
-    box-shadow: none;
   }
 
   .order-items__table-scroll {
