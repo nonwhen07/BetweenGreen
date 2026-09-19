@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
-
 // assets
 // import NO_IMAGE from '@/assets/images/no-image.png';
 
@@ -21,6 +15,7 @@ import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
+// import ProductSwiper from '@/components/front/product/ProductSwiper'; // 已由 ProductGallery 取代；保留一版遷移原因，下一版移除註解。
 import ProductGallery from '@/components/front/product/ProductGallery';
 import ProductDetailTabs from '@/components/front/product/ProductDetailTabs';
 import RelatedProducts from '@/components/front/product/RelatedProducts';
@@ -115,45 +110,42 @@ const ProductDetailPage = () => {
   }, []);
 
   return (
-    <>
-      <div className="container ui-container">
-        <div className="row align-items-start mt-5">
-          {errorMessage && (
-            <div className="col-12">
-              <div className="alert alert-danger py-2">{errorMessage}</div>
-            </div>
-          )}
+    <main className="product-detail-page">
+      <div className="ui-container">
+        {errorMessage && (
+          <div className="product-detail-page__error" role="alert">
+            {errorMessage}
+          </div>
+        )}
 
-          <div className="product-detail col-12">
-            <div className="row">
-              <div className="col-lg-7">
-                <ProductGallery currentProduct={product} />
-              </div>
-              <div className="col-lg-5">
-                {/* 商品資訊-1 */}
-                <ProductInfo
-                  currentProduct={product}
-                  qtySelect={qtySelect}
-                  setQtySelect={setQtySelect}
-                  addCartItem={handleAddCartItem}
-                  isLoading={isCartLoading}
-                  isAdded={isAdded}
-                />
-              </div>
-              {/* 商品資訊-2(商品特色、養護指南、配送說明) */}
-              <div className="col-12">
-                <ProductDetailTabs currentProduct={product} />
-              </div>
+        <div className="product-detail">
+          <div className="product-detail__layout">
+            <div className="product-detail__gallery">
+              <ProductGallery currentProduct={product} />
             </div>
-            {/* ==================== 相關推薦商品 ==================== */}
-            <div className="mt-5 border-top">
-              {/* <h5 className="fw-semibold mb-4 text-center text-primary">為您推薦 · 搭配建議</h5> */}
-              <RelatedProducts currentProduct={product} products={products} limit={5} />
+
+            <div className="product-detail__info">
+              <ProductInfo
+                currentProduct={product}
+                qtySelect={qtySelect}
+                setQtySelect={setQtySelect}
+                addCartItem={handleAddCartItem}
+                isLoading={isCartLoading}
+                isAdded={isAdded}
+              />
             </div>
+          </div>
+
+          <div className="product-detail__details">
+            <ProductDetailTabs currentProduct={product} />
+          </div>
+
+          <div className="product-detail__related">
+            <RelatedProducts currentProduct={product} products={products} limit={5} />
           </div>
         </div>
       </div>
-    </>
+    </main>
   );
 };
 

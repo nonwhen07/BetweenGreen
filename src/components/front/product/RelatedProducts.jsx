@@ -28,19 +28,11 @@ const RelatedProducts = ({ currentProduct, products = [], limit = 5 }) => {
   }
 
   return (
-    <section className="related-products mb-5">
+    <section className="related-products">
       <div className="related-products__header">
         <h2 className="related-products__title">為您推薦 ・ 搭配建議</h2>
         <p className="related-products__subtitle">探索更多相似風格植栽與空間搭配靈感</p>
       </div>
-
-      {/* <div className="row g-4">
-        {relatedProducts.map((product) => (
-          <div key={product.id} className="col-12 col-sm-6 col-lg-3">
-            <ProductCard product={product} variant="minimal" />
-          </div>
-        ))}
-      </div> */}
 
       <Swiper
         modules={[Autoplay]}

@@ -43,7 +43,7 @@ const ProductInfo = ({
 
         {discount > 0 && (
           <div className="product-info__origin">
-            <span className="text-danger">
+            <span className="product-info__origin-price">
               NT$ {currentProduct?.origin_price?.toLocaleString()}
             </span>
 
@@ -86,15 +86,15 @@ const ProductInfo = ({
 
         <button
           type="button"
-          className="ui-btn ui-btn--primary ui-btn--lg product-info__cart-btn"
+          className={`ui-btn ui-btn--primary ui-btn--lg product-info__cart-btn${isAdded ? ' is-success' : ''}`}
           disabled={isLoading}
           onClick={() => addCartItem(currentProduct?.id, qtySelect)}
         >
           {isLoading ? (
-            <div className="d-flex justify-content-center align-items-center">
+            <span className="product-info__cart-loading">
               <BtnLoader size="sm" />
-              <span className="ms-2">加入中...</span>
-            </div>
+              <span>加入中...</span>
+            </span>
           ) : isAdded ? (
             '✓ 已加入購物車'
           ) : (
