@@ -73,7 +73,7 @@ const ProductGallery = ({ currentProduct }) => {
         <Swiper
           onSwiper={setThumbsSwiper}
           watchSlidesProgress
-          slidesPerView={5}
+          slidesPerView={4}
           spaceBetween={12}
           className="product-gallery__thumb-swiper"
         >
@@ -81,8 +81,6 @@ const ProductGallery = ({ currentProduct }) => {
             <SwiperSlide key={index}>
               <div className={`product-gallery__thumb ${activeIndex === index ? 'is-active' : ''}`}>
                 <img
-                  // src={imgU  rl}
-                  // src={!imgUrl.trim() === '' ? imgUrl : NO_IMAGE}
                   src={imgUrl && imgUrl.trim() !== '' ? imgUrl : NO_IMAGE}
                   alt={`thumb-${index + 1}`}
                   onError={(e) => {

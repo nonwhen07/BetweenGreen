@@ -15,7 +15,6 @@ const ProductsGrid = ({ products = [], onAddCart, loadingItems = {} }) => {
     <section className="products-grid">
       <div className="products-grid__list">
         {products.map((product) => (
-          // <ProductCard key={product.id} product={product} />
           <ProductCard
             key={product.id}
             product={product}

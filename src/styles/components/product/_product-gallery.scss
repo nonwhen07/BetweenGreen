@@ -86,14 +86,44 @@
   }
 
   &__thumbs {
+    position: relative;
     overflow: hidden;
     flex-shrink: 0;
 
     margin-top: 14px;
 
+    &::before,
+    &::after {
+      content: '';
+
+      position: absolute;
+      top: 50%;
+
+      width: calc(10% - #{$space-2});
+      height: 1px;
+
+      background: linear-gradient(to right, transparent, rgba($color-primary, 0.32));
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    &::before {
+      left: 0;
+    }
+
+    &::after {
+      right: 0;
+      transform: translateY(-50%) rotate(180deg);
+    }
+
     .swiper-wrapper {
       padding-top: 4px;
     }
+  }
+
+  &__thumb-swiper {
+    width: 80%;
+    margin: 0 auto;
   }
 
   &__thumb {

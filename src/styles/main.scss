@@ -24,7 +24,6 @@
 
 // product
 @use '@/styles/pages/products-grid';
-// @use '@/styles/pages/product-swiper'; // 已由 product-gallery 取代；保留一版遷移原因，下一版移除註解。
 @use '@/styles/pages/product-detail';
 @use '@/styles/components/product/product-gallery';
 @use '@/styles/components/product/product-info';

@@ -267,9 +267,33 @@
 }
 
 // ==========================================================================
-//   Products-filter
+// Products Page
 // ==========================================================================
-// _products-filter.scss
+
+.products-page {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: $space-8;
+
+    margin-top: $space-8;
+  }
+
+  &__pagination {
+    margin-top: $space-4;
+  }
+
+  @include respond($breakpoints, desktop) {
+    &__content {
+      gap: $space-10;
+      margin-top: $space-10;
+    }
+  }
+}
+
+// ==========================================================================
+// Products Filter
+// ==========================================================================
 
 .products-filter {
   display: flex;
@@ -346,12 +370,6 @@
       color: white;
 
       transform: translateY(-2px);
-    }
-
-    &--soft {
-      color: rgba($text-main, 0.78);
-
-      border-color: rgba(0, 0, 0, 0.06);
     }
   }
 

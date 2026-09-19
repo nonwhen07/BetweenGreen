@@ -15,7 +15,6 @@ import { useCartActions } from '@/hooks/cart/useCartActions';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
 // components
-// import ProductSwiper from '@/components/front/product/ProductSwiper'; // 已由 ProductGallery 取代；保留一版遷移原因，下一版移除註解。
 import ProductGallery from '@/components/front/product/ProductGallery';
 import ProductDetailTabs from '@/components/front/product/ProductDetailTabs';
 import RelatedProducts from '@/components/front/product/RelatedProducts';
