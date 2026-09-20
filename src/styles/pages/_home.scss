@@ -524,23 +524,388 @@
 }
 
 /* =========================
-  garden-tips
+  Garden Tips Section
 ========================= */
 
-.garden-tips {
-  background: #f8f9f7;
+.garden-tips-section {
+  background: $color-bg-soft;
 
-  .garden-tip-card {
-    transition: transform 0.2s ease;
+  &__header {
+    max-width: 680px;
+    margin: 0 auto $space-10;
+    text-align: center;
 
+    @include respond($breakpoints, tablet) {
+      margin-bottom: $space-12;
+    }
+  }
+
+  &__eyebrow {
+    margin: 0 0 $space-3;
+    color: $color-primary;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin: 0;
+    color: $text-main;
+    font-size: 1.75rem;
+    line-height: 1.25;
+
+    @include respond($breakpoints, desktop) {
+      font-size: 2rem;
+    }
+  }
+
+  &__intro {
+    margin: $space-4 0 0;
+    color: $text-body;
+    line-height: $line-height-loose;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $space-3;
+
+    @include respond($breakpoints, tablet) {
+      gap: $space-6;
+    }
+
+    @include respond($breakpoints, desktop) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: $space-8;
+    }
+  }
+
+  &__mobile-detail {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+    padding: $space-5;
+    border: 1px solid rgba($color-primary, 0.24);
+    border-radius: $radius-xl;
+    background: rgba($color-bg-surface, 0.98);
+    box-shadow: $shadow-md;
+    animation: garden-tip-panel-in $transition-base both;
+
+    @include respond($breakpoints, tablet) {
+      display: none;
+    }
+  }
+
+  &__state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: $space-4;
+    min-height: 180px;
+    padding: $space-6;
+    border: 1px solid rgba($color-primary, 0.12);
+    border-radius: $radius-xl;
+    background: rgba($color-bg-surface, 0.72);
+    color: $text-body;
+    text-align: center;
+
+    p {
+      margin: 0;
+    }
+
+    &--error {
+      border-color: rgba($color-danger, 0.2);
+    }
+  }
+
+  &__state-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $color-primary;
+    animation: garden-tip-loading 1.2s ease-in-out infinite;
+  }
+}
+
+.garden-tip-card {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba($neutral-400, 0.12);
+  border-radius: $radius-xl;
+  background: $color-bg-surface;
+  box-shadow: $shadow-sm;
+  transition:
+    transform $transition-base,
+    box-shadow $transition-base,
+    border-color $transition-base;
+
+  &:first-child {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 9;
+  }
+
+  &__media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: $neutral-100;
+
+    &::after {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(#000000, 0.68), transparent 62%);
+      content: '';
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-slow;
+  }
+
+  &__body {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+    max-height: 88%;
+    padding: $space-4;
+    background: rgba($color-bg-surface, 0.96);
+    box-shadow: 0 -12px 28px rgba(#000000, 0.12);
+    animation: garden-tip-panel-in $transition-base both;
+  }
+
+  &__trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    flex-direction: column;
+    gap: $space-2;
+    width: 100%;
+    padding: $space-4;
+    border: 0;
+    background: transparent;
+    color: $text-on-primary;
+    text-align: left;
+
+    &:focus-visible {
+      outline: 3px solid rgba($color-primary, 0.6);
+      outline-offset: -3px;
+    }
+  }
+
+  &__trigger-eyebrow,
+  &__trigger-title,
+  &__trigger-hint {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__trigger-eyebrow,
+  &__trigger-hint {
+    font-size: $font-size-xs;
+    letter-spacing: 0.08em;
+  }
+
+  &__trigger-title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: $font-size-lg;
+    font-weight: 600;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  &__trigger-hint {
+    opacity: 0.78;
+  }
+
+  &__eyebrow,
+  &__title,
+  &__description,
+  &__author {
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    margin-top: $space-2;
+  }
+
+  &__link,
+  &__close {
+    font-size: $font-size-sm;
+  }
+
+  &__link {
+    color: $color-primary;
+    font-weight: 600;
+    text-decoration: none;
+
+    &[aria-disabled='true'] {
+      cursor: default;
+    }
+  }
+
+  &__close {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: $text-muted;
+  }
+
+  &.is-active {
+    border-color: rgba($color-primary, 0.34);
+    box-shadow: $shadow-lg;
+  }
+
+  &__eyebrow {
+    color: $color-primary;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  &__title {
+    color: $text-main;
+    font-size: $font-size-xl;
+    line-height: 1.45;
+  }
+
+  &__description {
+    display: -webkit-box;
+    overflow: hidden;
+    color: $text-body;
+    line-height: $line-height-loose;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  &__author {
+    margin-top: auto;
+    padding-top: $space-2;
+    color: $text-muted;
+    font-size: $font-size-sm;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
+      border-color: rgba($color-primary, 0.2);
+      box-shadow: $shadow-lg;
+
+      .garden-tip-card__image {
+        transform: scale(1.025);
+      }
+    }
+  }
+
+  @include respond($breakpoints, tablet) {
+    aspect-ratio: 4 / 3;
+
+    &:first-child {
+      aspect-ratio: 2.15 / 1;
     }
 
-    img {
-      height: 220px;
-      object-fit: cover;
+    .garden-tip-card__trigger {
+      padding: $space-6;
     }
+
+    .garden-tip-card__trigger-title {
+      font-size: $font-size-xl;
+    }
+
+    .garden-tip-card__body {
+      gap: $space-3;
+      padding: $space-6;
+    }
+  }
+
+  @include respond($breakpoints, desktop) {
+    aspect-ratio: auto;
+
+    &:first-child {
+      grid-column: auto;
+      aspect-ratio: auto;
+    }
+
+    .garden-tip-card__media {
+      position: relative;
+      inset: auto;
+      aspect-ratio: 4 / 3;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    .garden-tip-card__trigger {
+      display: none;
+    }
+
+    .garden-tip-card__body {
+      position: static;
+      flex: 1;
+      max-height: none;
+      padding: $space-6;
+      background: $color-bg-surface;
+      box-shadow: none;
+      animation: none;
+    }
+
+    .garden-tip-card__author {
+      display: block;
+    }
+
+    .garden-tip-card__close {
+      display: none;
+    }
+  }
+}
+
+@keyframes garden-tip-panel-in {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes garden-tip-loading {
+  0%,
+  100% {
+    transform: scale(0.75);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
