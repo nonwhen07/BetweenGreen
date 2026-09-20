@@ -158,6 +158,17 @@
   }
 }
 
+.hero-banner__eyebrow,
+.hero-banner__title,
+.hero-banner__desc {
+  margin: 0;
+}
+
+.hero-banner__title,
+.hero-banner__desc {
+  margin-top: $space-2;
+}
+
 /* 按鈕區 */
 .hero-banner__actions {
   display: flex;

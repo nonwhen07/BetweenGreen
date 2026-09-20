@@ -1,5 +1,4 @@
 import LifestyleCard from '@/components/front/home/Lifestyle/LifestyleCard';
-// import noImage from '@/assets/images/no-image.png';
 import desk from '@/assets/images/lifestyle/desk.png';
 import space from '@/assets/images/lifestyle/space.png';
 import balcony from '@/assets/images/lifestyle/balcony.png';
@@ -37,7 +36,7 @@ const lifestyleItems = [
 const LifestyleSection = () => {
   return (
     <section id="lifestyle" className="ui-section lifestyle-section">
-      <div className="container ui-container">
+      <div className="ui-container">
         <div className="lifestyle-section__heading">
           <p className="lifestyle-section__eyebrow">Lifestyle</p>
           <h2 className="lifestyle-section__title">從一個角落開始，打造屬於你的植感生活</h2>

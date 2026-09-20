@@ -360,13 +360,14 @@
     top: 0;
     left: 0;
 
-    width: 72px;
+    width: 100%;
     height: 100%;
 
     border-radius: inherit;
 
     background: $color-primary;
 
+    transform-origin: left center;
     transition: transform 0.45s ease;
   }
 }

@@ -1,27 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import noImage from '@/assets/images/no-image.png';
 
 const LifestyleCard = ({ item }) => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate(item.link);
-  };
-
   return (
-    <>
-      <article
-        className="ui-card lifestyle-card"
-        onClick={handleClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleClick();
-          }
-        }}
-      >
+    <article className="ui-card lifestyle-card">
+      <Link to={item.link} className="lifestyle-card__anchor" aria-label={`探索${item.title}`}>
         <div className="lifestyle-card__image">
           <img
             src={item.image}
@@ -42,8 +25,8 @@ const LifestyleCard = ({ item }) => {
             Explore <span className="lifestyle-card__arrow">→</span>
           </span>
         </div>
-      </article>
-    </>
+      </Link>
+    </article>
   );
 };
 
