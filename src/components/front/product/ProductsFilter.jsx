@@ -8,7 +8,6 @@ import clsx from 'clsx';
 
 const ProductsFilter = ({
   selectedTheme,
-  setSelectedTheme,
   setSearchParams,
   selectedType,
   setSelectedType,
@@ -31,7 +30,6 @@ const ProductsFilter = ({
               type="button"
               className={clsx('products-filter__chip', selectedTheme === theme.code && 'is-active')}
               onClick={() => {
-                setSelectedTheme(theme.code);
                 if (theme.code === 'AllProducts') {
                   setSearchParams({});
                 } else {

@@ -8,13 +8,9 @@ import { CATEGORY_THEME_MAP } from '@/constants/productConstants';
 import productsBanner from '@/assets/images/brand/hero/hero-desk.png';
 
 // hooks
-import { useToast } from '@/hooks/useToast';
-import { useLoading } from '@/hooks/useLoading';
 import { useProducts } from '@/hooks/product/useProducts';
 import { useAddToCart } from '@/hooks/cart/useAddToCart';
 import { usePagination } from '@/hooks/usePagination';
-// utils
-import { extractErrorMessage } from '@/utils/errorHandler';
 // components
 import PageHero from '@/components/shared/PageHero';
 import ProductsFilter from '@/components/front/product/ProductsFilter';
@@ -26,11 +22,7 @@ const ProductsPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = searchParams.get('theme');
-  const initialTheme = theme && CATEGORY_THEME_MAP[theme] ? theme : 'AllProducts';
-  const [selectedTheme, setSelectedTheme] = useState(initialTheme);
-
-  const { showError } = useToast();
-  const { start, stop } = useLoading();
+  const selectedTheme = theme && CATEGORY_THEME_MAP[theme] ? theme : 'AllProducts';
 
   const { products, fetchProducts } = useProducts({ isAdmin: false });
 
@@ -79,32 +71,9 @@ const ProductsPage = () => {
     perPage: PRODUCTS_PER_PAGE,
   });
 
-  // 取得商品列表
-  const initProducts = async () => {
-    start();
-
-    try {
-      await fetchProducts();
-    } catch (error) {
-      const errorMessage = extractErrorMessage(error, '', '取得產品列表失敗，請稍後再試。');
-      showError(errorMessage);
-    } finally {
-      stop();
-    }
-  };
-
   useEffect(() => {
-    const nextTheme = theme && CATEGORY_THEME_MAP[theme] ? theme : 'AllProducts';
-
-    setSelectedTheme(nextTheme);
-  }, [theme]);
-
-  useEffect(() => {
-    initProducts();
-    // 由於前端 filter，所以theme 改變 不需要重新 fetchProducts()
-
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, []);
+    fetchProducts();
+  }, [fetchProducts]);
 
   return (
     <main className="products-page">
@@ -123,7 +92,6 @@ const ProductsPage = () => {
           <div className="products-page__toolbar">
             <ProductsFilter
               selectedTheme={selectedTheme}
-              setSelectedTheme={setSelectedTheme}
               setSearchParams={setSearchParams}
               selectedType={selectedType}
               setSelectedType={setSelectedType}

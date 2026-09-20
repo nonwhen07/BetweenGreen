@@ -15,7 +15,6 @@ const ProductInfo = ({
 }) => {
   const { theme, species } = parseCategoryParts(currentProduct?.category);
 
-  // const tags = parsePersonalityTags(currentProduct?.content).slice(0, 4);
   const tags = parsePersonalityTags(currentProduct?.personalityTags).slice(0, 4);
 
   const discount =

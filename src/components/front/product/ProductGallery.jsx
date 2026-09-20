@@ -59,11 +59,19 @@ const ProductGallery = ({ currentProduct }) => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <button type="button" className="product-gallery__nav product-gallery__prev">
+        <button
+          type="button"
+          className="product-gallery__nav product-gallery__prev"
+          aria-label="上一張商品圖片"
+        >
           <ChevronLeft size={24} strokeWidth={2} />
         </button>
 
-        <button type="button" className="product-gallery__nav product-gallery__next">
+        <button
+          type="button"
+          className="product-gallery__nav product-gallery__next"
+          aria-label="下一張商品圖片"
+        >
           <ChevronRight size={24} strokeWidth={2} />
         </button>
       </div>
@@ -82,7 +90,7 @@ const ProductGallery = ({ currentProduct }) => {
               <div className={`product-gallery__thumb ${activeIndex === index ? 'is-active' : ''}`}>
                 <img
                   src={imgUrl && imgUrl.trim() !== '' ? imgUrl : NO_IMAGE}
-                  alt={`thumb-${index + 1}`}
+                  alt={`${currentProduct?.title || '商品'}縮圖 ${index + 1}`}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = NO_IMAGE;
