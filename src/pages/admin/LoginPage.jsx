@@ -81,7 +81,7 @@ const LoginPage = () => {
       <div className="d-flex flex-column justify-content-center align-items-center mt-5">
         <h1 className="mb-5">請先登入</h1>
         {/* <PoinsettiaIcon /> */}
-        {errorMessage && <div className="alert alert-danger w-100">{errorMessage}</div>}
+        {errorMessage && <div className="alert alert-danger w-25 text-center">{errorMessage}</div>}
         <form onSubmit={handleLogin} className="d-flex flex-column gap-3">
           <div className="form-floating mb-3">
             <input

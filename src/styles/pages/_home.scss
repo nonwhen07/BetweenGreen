@@ -147,28 +147,351 @@
 ========================= */
 
 .seasonal-section {
-  opacity: 1;
-  transition: 0.5s;
-  background: var(--season-bg, $color-bg-main);
+  --seasonal-rotation-delay: 6000ms;
 
-  &.inactive {
-    opacity: 0.3;
+  background: $color-bg-soft;
+}
+
+.seasonal-section__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: $space-5;
+  margin-bottom: $space-8;
+
+  @include respond($breakpoints, tablet) {
+    align-items: flex-end;
+    flex-direction: row;
+    margin-bottom: $space-10;
+  }
+}
+
+.seasonal-section__intro {
+  max-width: 680px;
+}
+
+.seasonal-section__eyebrow {
+  margin-bottom: $space-3;
+  color: $color-secondary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.seasonal-section__title {
+  margin-bottom: $space-3;
+  color: $text-primary;
+  font-size: clamp(1.75rem, 4vw, $font-size-3xl);
+  font-weight: $font-weight-bold;
+  line-height: $line-height-heading;
+}
+
+.seasonal-section__description {
+  margin: 0;
+  color: $text-body;
+  line-height: $line-height-loose;
+}
+
+.seasonal-section__rotation-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 40px;
+  padding: $space-2 $space-4;
+  border: 1px solid $neutral-400;
+  border-radius: $radius-pill;
+  color: $color-primary-dark;
+  background: transparent;
+  font-size: $font-size-sm;
+
+  svg {
+    width: 16px;
+    height: 16px;
   }
 
-  .card-img-top {
-    height: 220px;
-    object-fit: cover;
+  &:hover,
+  &:focus-visible {
+    border-color: $color-primary;
+    background: $neutral-200;
+  }
+}
+
+.seasonal-campaign {
+  overflow: hidden;
+  border: 1px solid $neutral-300;
+  border-radius: $radius-lg;
+  background: $color-bg-surface;
+  box-shadow: $shadow-md;
+
+  @include respond($breakpoints, desktop) {
+    border-radius: $radius-xl;
+  }
+}
+
+.seasonal-spotlight {
+  display: grid;
+  min-width: 0;
+
+  @include respond($breakpoints, desktop) {
+    grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr);
+    min-height: 540px;
+  }
+}
+
+.seasonal-spotlight__media {
+  overflow: hidden;
+  min-width: 0;
+  aspect-ratio: 4 / 3;
+  background: $neutral-200;
+
+  @include respond($breakpoints, tablet) {
+    aspect-ratio: 16 / 9;
   }
 
-  .section-title {
-    color: var(--season-primary, $color-primary);
+  @include respond($breakpoints, desktop) {
+    height: 100%;
+    aspect-ratio: auto;
   }
-  .section-subtitle {
-    color: var(--season-bg, $color-accent);
+}
+
+.seasonal-spotlight__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: seasonal-image-enter $transition-slow both;
+}
+
+.seasonal-spotlight__content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  padding: $space-8 $space-5;
+  color: $text-on-primary;
+  background: $color-primary-dark;
+  animation: seasonal-content-enter $transition-slow both;
+
+  @include respond($breakpoints, pad) {
+    padding: $space-10 $space-8;
   }
 
-  .btn {
-    background: var(--season-primary, $color-primary);
+  @include respond($breakpoints, desktop) {
+    padding: $space-12;
+  }
+}
+
+.seasonal-spotlight__eyebrow {
+  margin-bottom: $space-4;
+  color: $color-accent;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.seasonal-spotlight__title {
+  margin-bottom: $space-5;
+  color: $text-on-primary;
+  font-size: clamp($font-size-xl, 3.2vw, $font-size-3xl);
+  font-weight: $font-weight-bold;
+  line-height: 1.35;
+}
+
+.seasonal-spotlight__description {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-bottom: $space-6;
+  color: rgba($text-on-primary, 0.82);
+  line-height: $line-height-loose;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.seasonal-spotlight__price {
+  margin-bottom: $space-6;
+  color: $text-on-primary;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.04em;
+}
+
+.seasonal-spotlight__actions {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  gap: $space-4;
+  width: 100%;
+
+  @include respond($breakpoints, pad) {
+    align-items: center;
+    flex-direction: row;
+    width: auto;
+  }
+
+  .ui-btn--season {
+    color: $color-primary-dark;
+    background: $color-accent;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-primary-dark;
+      background: color.adjust($color-accent, $lightness: -8%);
+    }
+  }
+}
+
+.seasonal-spotlight__collection-link {
+  align-self: center;
+  padding: $space-2 0;
+  border-bottom: 1px solid rgba($text-on-primary, 0.5);
+  color: rgba($text-on-primary, 0.88);
+  font-size: $font-size-sm;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $color-accent;
+    color: $color-accent;
+  }
+}
+
+.seasonal-selector {
+  display: flex;
+  overflow-x: auto;
+  border-top: 1px solid $neutral-300;
+  background: $color-bg-surface;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+
+  @include respond($breakpoints, tablet) {
+    display: grid;
+    overflow: visible;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.seasonal-selector__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex: 0 0 min(82vw, 280px);
+  gap: $space-4;
+  min-width: 0;
+  min-height: 104px;
+  padding: $space-5;
+  border: 0;
+  border-right: 1px solid $neutral-300;
+  color: $text-body;
+  background: transparent;
+  text-align: left;
+  scroll-snap-align: start;
+
+  &:last-child {
+    border-right: 0;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: $neutral-100;
+  }
+
+  &.is-active {
+    color: $text-primary;
+    background: $neutral-200;
+  }
+
+  @include respond($breakpoints, tablet) {
+    width: auto;
+    min-height: 112px;
+    padding: $space-6;
+  }
+}
+
+.seasonal-selector__number {
+  flex: 0 0 auto;
+  color: $color-secondary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.08em;
+}
+
+.seasonal-selector__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.seasonal-selector__title {
+  overflow: hidden;
+  color: inherit;
+  font-weight: $font-weight-semibold;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seasonal-selector__price {
+  color: $text-muted;
+  font-size: $font-size-sm;
+}
+
+.seasonal-selector__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: $color-secondary;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: seasonal-selector-progress var(--seasonal-rotation-delay) linear forwards;
+
+  &.is-paused {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes seasonal-image-enter {
+  from {
+    opacity: 0.55;
+    transform: scale(1.02);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes seasonal-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes seasonal-selector-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seasonal-spotlight__image,
+  .seasonal-spotlight__content,
+  .seasonal-selector__progress {
+    animation: none;
+  }
+
+  .seasonal-selector__progress {
+    transform: scaleX(1);
   }
 }
 

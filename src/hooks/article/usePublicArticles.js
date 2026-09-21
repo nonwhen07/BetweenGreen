@@ -30,7 +30,11 @@ export const usePublicArticles = () => {
   }, []);
 
   useEffect(() => {
-    fetchArticles();
+    const requestTimer = window.setTimeout(() => {
+      fetchArticles();
+    }, 0);
+
+    return () => window.clearTimeout(requestTimer);
   }, [fetchArticles]);
 
   return { articles, status, error, fetchArticles };

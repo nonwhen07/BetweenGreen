@@ -32,7 +32,7 @@ const HomePage = () => {
       <LifestyleSection />
       <BrandStory />
       <ProductSection topProducts={topProducts} />
-      {isSeasonActive && <SeasonalCollection />}
+      {isSeasonActive && <SeasonalCollection products={products} />}
       <GardenTipsSection />
     </div>
   );
