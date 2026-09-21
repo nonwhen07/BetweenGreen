@@ -49,12 +49,14 @@ const SeasonalSection = ({ products = [] }) => {
 
   const {
     activeIndex,
+    rotationCycle,
     isUserPaused,
     isRotationPaused,
     prefersReducedMotion,
     selectItem,
     toggleUserPause,
-    setInteractionPaused,
+    setPointerPaused,
+    setKeyboardPaused,
   } = useSeasonalRotation({ itemCount: campaignProducts.length, delay: ROTATION_DELAY });
 
   if (campaignProducts.length === 0) return null;
@@ -90,20 +92,35 @@ const SeasonalSection = ({ products = [] }) => {
 
   const handleBlurCapture = (event) => {
     if (!event.currentTarget.contains(event.relatedTarget)) {
-      setInteractionPaused(false);
+      setKeyboardPaused(false);
+    }
+  };
+
+  const handleFocusCapture = (event) => {
+    if (event.target.matches(':focus-visible')) {
+      setKeyboardPaused(true);
+    }
+  };
+
+  const handlePointerEnter = (event) => {
+    if (event.pointerType === 'mouse') {
+      setPointerPaused(true);
+    }
+  };
+
+  const handlePointerLeave = (event) => {
+    if (event.pointerType === 'mouse') {
+      setPointerPaused(false);
     }
   };
 
   return (
-    <section
-      className="ui-section seasonal-section"
-      aria-labelledby="seasonal-section-title"
-      onMouseEnter={() => setInteractionPaused(true)}
-      onMouseLeave={() => setInteractionPaused(false)}
-      onFocusCapture={() => setInteractionPaused(true)}
-      onBlurCapture={handleBlurCapture}
-    >
-      <div className="ui-container">
+    <section className="ui-section seasonal-section" aria-labelledby="seasonal-section-title">
+      <div
+        className="ui-container seasonal-section__content"
+        onFocusCapture={handleFocusCapture}
+        onBlurCapture={handleBlurCapture}
+      >
         <div className="seasonal-section__header">
           <div className="seasonal-section__intro">
             <p className="seasonal-section__eyebrow">Seasonal Campaign</p>
@@ -128,7 +145,11 @@ const SeasonalSection = ({ products = [] }) => {
           )}
         </div>
 
-        <div className="seasonal-campaign">
+        <div
+          className="seasonal-campaign"
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+        >
           <SeasonalSpotlight
             key={activeProduct.id}
             product={activeProduct}
@@ -148,6 +169,7 @@ const SeasonalSection = ({ products = [] }) => {
                   product={product}
                   index={index}
                   isActive={index === activeIndex}
+                  rotationCycle={rotationCycle}
                   isRotationPaused={isRotationPaused}
                   onSelect={selectItem}
                   onKeyDown={handleSelectorKeyDown}

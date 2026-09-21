@@ -4,6 +4,7 @@ const SeasonalSelectorItem = ({
   product,
   index,
   isActive,
+  rotationCycle,
   isRotationPaused,
   onSelect,
   onKeyDown,
@@ -29,6 +30,7 @@ const SeasonalSelectorItem = ({
 
       {isActive && (
         <span
+          key={rotationCycle}
           className={`seasonal-selector__progress${isRotationPaused ? ' is-paused' : ''}`}
           aria-hidden="true"
         />
