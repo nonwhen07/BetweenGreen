@@ -12,6 +12,8 @@ import GardenTipsSection from '@/components/front/home/GardenTips/GardenTipsSect
 import BrandStory from '@/components/front/home/BrandStory';
 // 舊 ReviewSection 使用固定假評論，已由可驗證內容的 TrustSection 取代。
 import TrustSection from '@/components/front/home/Trust/TrustSection';
+// 舊 NewsletterSection 只有未接 submit 的輸入框，已由具驗證與誠實展示狀態的版本取代。
+import NewsletterSection from '@/components/front/home/Newsletter/NewsletterSection';
 
 const HomePage = () => {
   const { products, fetchProducts } = useProducts({ isAdmin: false });
@@ -37,6 +39,7 @@ const HomePage = () => {
       {isSeasonActive && <SeasonalCollection products={products} />}
       <GardenTipsSection />
       <TrustSection />
+      <NewsletterSection />
     </div>
   );
 };
