@@ -35,11 +35,17 @@ const lifestyleItems = [
 
 const LifestyleSection = () => {
   return (
-    <section id="lifestyle" className="ui-section lifestyle-section">
+    <section
+      id="lifestyle"
+      className="ui-section lifestyle-section"
+      aria-labelledby="lifestyle-title"
+    >
       <div className="ui-container">
         <div className="lifestyle-section__heading">
           <p className="lifestyle-section__eyebrow">Lifestyle</p>
-          <h2 className="lifestyle-section__title">從一個角落開始，打造屬於你的植感生活</h2>
+          <h2 id="lifestyle-title" className="lifestyle-section__title">
+            從一個角落開始，打造屬於你的植感生活
+          </h2>
           <p className="lifestyle-section__intro">不同空間，不同節奏，都能找到剛剛好的綠意陪伴。</p>
         </div>
 

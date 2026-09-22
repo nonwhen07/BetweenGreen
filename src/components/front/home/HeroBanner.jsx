@@ -56,7 +56,11 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="ui-section ui-section--full hero-banner">
+    <section className="ui-section ui-section--full hero-banner" aria-labelledby="home-title">
+      <h1 id="home-title" className="hero-banner__page-title">
+        Between Green 植感生活
+      </h1>
+
       <Swiper
         modules={[Autoplay]}
         slidesPerView={1}
@@ -68,35 +72,39 @@ const HeroBanner = () => {
       >
         {bannerData.map((item) => (
           <SwiperSlide key={item.id}>
-            <div className="hero-banner__slide">
-              <div className="hero-banner__bg">
-                <img src={item.img} alt={item.alt} />
-              </div>
-              <div className="hero-banner__overlay" />
-              <div className="ui-container hero-banner__content">
-                <div className="hero-banner__text">
-                  <p className="hero-banner__eyebrow">{item.eyebrow}</p>
-                  <h1 className="hero-banner__title">{item.title}</h1>
-                  <p className="hero-banner__desc">{item.desc}</p>
-                  <div className="hero-banner__actions">
-                    <button
-                      type="button"
-                      className="ui-btn ui-btn--primary"
-                      onClick={() => handleScroll('product')}
-                    >
-                      立即選購
-                    </button>
-                    <button
-                      type="button"
-                      className="ui-btn ui-btn--outline-primary"
-                      onClick={() => handleScroll('lifestyle')}
-                    >
-                      探索分類
-                    </button>
+            {({ isActive }) => (
+              <div className="hero-banner__slide" aria-hidden={isActive ? undefined : true}>
+                <div className="hero-banner__bg">
+                  <img src={item.img} alt={item.alt} />
+                </div>
+                <div className="hero-banner__overlay" />
+                <div className="ui-container hero-banner__content">
+                  <div className="hero-banner__text">
+                    <p className="hero-banner__eyebrow">{item.eyebrow}</p>
+                    <h2 className="hero-banner__title">{item.title}</h2>
+                    <p className="hero-banner__desc">{item.desc}</p>
+                    <div className="hero-banner__actions">
+                      <button
+                        type="button"
+                        className="ui-btn ui-btn--primary"
+                        tabIndex={isActive ? 0 : -1}
+                        onClick={() => handleScroll('product')}
+                      >
+                        立即選購
+                      </button>
+                      <button
+                        type="button"
+                        className="ui-btn ui-btn--outline-primary"
+                        tabIndex={isActive ? 0 : -1}
+                        onClick={() => handleScroll('lifestyle')}
+                      >
+                        探索分類
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </SwiperSlide>
         ))}
       </Swiper>

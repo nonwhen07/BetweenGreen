@@ -4,22 +4,16 @@ import { useProducts } from '@/hooks/product/useProducts';
 
 // components
 import HeroBanner from '@/components/front/home/HeroBanner';
-// import CategorySection from '@/components/front/home/Category/CategorySection';
 import LifestyleSection from '@/components/front/home/Lifestyle/LifestyleSection';
 import SeasonalCollection from '@/components/front/home/Seasonal/SeasonalSection';
 import ProductSection from '@/components/front/home/Product/ProductSection';
 import GardenTipsSection from '@/components/front/home/GardenTips/GardenTipsSection';
 import BrandStory from '@/components/front/home/BrandStory';
-// 舊 ReviewSection 使用固定假評論，已由可驗證內容的 TrustSection 取代。
 import TrustSection from '@/components/front/home/Trust/TrustSection';
-// 舊 NewsletterSection 只有未接 submit 的輸入框，已由具驗證與誠實展示狀態的版本取代。
 import NewsletterSection from '@/components/front/home/Newsletter/NewsletterSection';
 
 const HomePage = () => {
   const { products, fetchProducts } = useProducts({ isAdmin: false });
-
-  // 節慶前顯示
-  const isSeasonActive = true; // 之後可以改 API
 
   const topProducts = useMemo(
     () => products.filter((item) => Number(item.is_enabled) === 1).slice(0, 7),
@@ -36,7 +30,7 @@ const HomePage = () => {
       <LifestyleSection />
       <BrandStory />
       <ProductSection topProducts={topProducts} />
-      {isSeasonActive && <SeasonalCollection products={products} />}
+      <SeasonalCollection products={products} />
       <GardenTipsSection />
       <TrustSection />
       <NewsletterSection />

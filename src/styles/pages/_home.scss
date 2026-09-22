@@ -8,63 +8,32 @@
   --header-height: 100px;
 }
 
-#product,
-#category {
+#product {
   scroll-margin-top: var(--header-height);
 }
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.section-title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: $color-bg-main;
-  margin-bottom: 8px;
-}
-
-.section-subtitle {
-  font-size: 0.95rem;
-  color: $text-muted;
-  letter-spacing: 0.5px;
-}
-
-// /* =========================
-//   Category Section
-// ========================= */
-// .category-section {
-//   position: relative;
-//   background: $color-bg-surface;
-//   padding: 64px 0;
-
-//   &::before {
-//     content: '';
-//     position: absolute;
-//   }
-
-//   .section-title {
-//     color: $color-accent;
-//     // color: var(--season-bg, $color-accent);
-//   }
-//   .section-subtitle {
-//     color: $color-primary;
-//     // color: var(--season-primary, $color-primary);
-//   }
-// }
 
 /* =========================
   Lifestyle Section
 ========================= */
 .lifestyle-section {
-  background: #f8f6f1;
+  background: $color-bg-soft;
 
   .ui-container {
     max-width: 1296px;
   }
+}
+
+.hero-banner__page-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin: -1px;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .lifestyle-section__heading {
@@ -1582,19 +1551,5 @@
 
   &.is-success {
     color: $color-success;
-  }
-}
-
-/* tablet */
-@media (max-width: 992px) {
-  .product-slider-item {
-    width: 33%;
-  }
-}
-
-/* mobile */
-@media (max-width: 576px) {
-  .product-slider-item {
-    width: 50%;
   }
 }

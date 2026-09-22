@@ -25,14 +25,22 @@ const ProductSection = ({ topProducts }) => {
     setProgress(Math.min((swiper.realIndex + slidesPerView) / totalSlides, 1));
   };
 
+  if (topProducts.length === 0) return null;
+
   return (
-    <section id="product" className="ui-section product-section">
+    <section
+      id="product"
+      className="ui-section product-section"
+      aria-labelledby="product-section-title"
+    >
       <div className="ui-container">
         <div className="product-section__header">
           <div className="product-section__intro">
             <p className="product-section__eyebrow">Between Green Selection</p>
 
-            <h2 className="product-section__title">精選植感選物</h2>
+            <h2 id="product-section-title" className="product-section__title">
+              精選植感選物
+            </h2>
           </div>
 
           <Link to="/products" className="product-section__more">

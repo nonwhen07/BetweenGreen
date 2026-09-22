@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { Pause, Play } from 'lucide-react';
 
-// SeasonalCard 已刪除：四張商品卡版型改由 SeasonalSpotlight + SeasonalSelectorItem
-// 組成單一 Campaign 舞台，避免與商品列表用的 ProductCard 混用。
 import SeasonalSelectorItem from '@/components/front/home/Seasonal/SeasonalSelectorItem';
 import SeasonalSpotlight from '@/components/front/home/Seasonal/SeasonalSpotlight';
 import { useSeasonalRotation } from '@/hooks/home/useSeasonalRotation';

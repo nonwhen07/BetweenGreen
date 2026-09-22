@@ -4,7 +4,10 @@ import brandStoryImg from '@/assets/images/about/story-desk.png';
 
 const BrandStory = () => {
   return (
-    <section className="ui-section ui-section--loose brand-story-section">
+    <section
+      className="ui-section ui-section--loose brand-story-section"
+      aria-labelledby="brand-story-title"
+    >
       <div className="ui-container">
         <div className="brand-story-section__layout">
           <div className="brand-story-section__media" data-aos="fade-up" data-aos-duration="1000">
@@ -21,7 +24,9 @@ const BrandStory = () => {
           >
             <p className="brand-story-section__eyebrow">Our Philosophy</p>
 
-            <h2 className="brand-story-section__title">讓空間長出生活感</h2>
+            <h2 id="brand-story-title" className="brand-story-section__title">
+              讓空間長出生活感
+            </h2>
 
             <p className="brand-story-section__desc">
               我們相信植物不只是裝飾，而是讓生活慢下來的方式。
