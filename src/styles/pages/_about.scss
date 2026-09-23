@@ -539,6 +539,7 @@
     &__card:last-child {
       grid-column: auto;
       width: auto;
+      justify-self: stretch;
     }
   }
 

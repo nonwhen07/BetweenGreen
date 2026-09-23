@@ -1,0 +1,206 @@
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+
+.not-found-page {
+  position: relative;
+  display: flex;
+  min-height: calc(100svh - var(--header-height) - var(--footer-height));
+  align-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 18%, $color-bg-brand-soft 0, transparent 34%),
+    $color-bg-soft;
+
+  &::before,
+  &::after {
+    position: absolute;
+    border: $border-width-sm solid $border-color-base;
+    border-radius: 50%;
+    content: '';
+    pointer-events: none;
+    opacity: 0.52;
+  }
+
+  &::before {
+    top: -7rem;
+    right: -8rem;
+    width: 18rem;
+    aspect-ratio: 1;
+  }
+
+  &::after {
+    bottom: -6rem;
+    left: -7rem;
+    width: 15rem;
+    aspect-ratio: 1;
+  }
+
+  &__container {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-items: center;
+    gap: $space-10;
+  }
+
+  &__visual {
+    position: relative;
+    display: grid;
+    width: min(72vw, 18rem);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    place-items: center;
+    border: $border-width-sm solid $border-color-base;
+    border-radius: 50%;
+    background: $color-bg-brand-soft;
+    color: $color-primary-dark;
+
+    &::before {
+      position: absolute;
+      inset: $space-4;
+      border: $border-width-sm solid $color-primary-light;
+      border-radius: inherit;
+      content: '';
+      opacity: 0.45;
+    }
+  }
+
+  &__code {
+    font-size: clamp(4.5rem, 23vw, 7.5rem);
+    font-weight: $font-weight-semibold;
+    letter-spacing: -0.08em;
+    line-height: 1;
+  }
+
+  &__leaf {
+    position: absolute;
+    display: grid;
+    width: $space-12;
+    height: $space-12;
+    place-items: center;
+    border-radius: 50%;
+    background: $color-bg-surface;
+    color: $color-secondary-dark;
+    box-shadow: $shadow-sm;
+
+    svg {
+      width: $space-5;
+      height: $space-5;
+    }
+
+    &--one {
+      top: 6%;
+      right: 9%;
+      transform: rotate(18deg);
+    }
+
+    &--two {
+      bottom: 8%;
+      left: 4%;
+      transform: rotate(-28deg);
+    }
+  }
+
+  &__content {
+    max-width: 39rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__eyebrow {
+    margin-bottom: $space-3;
+    color: $color-secondary-dark;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin-bottom: $space-5;
+    color: $text-primary;
+    font-size: clamp(2rem, 9vw, 3.5rem);
+    font-weight: $font-weight-semibold;
+    line-height: 1.3;
+  }
+
+  &__description {
+    margin-bottom: 0;
+    color: $text-body;
+    font-size: $font-size-sm;
+    line-height: $line-height-loose;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    margin-top: $space-8;
+
+    .ui-btn {
+      width: 100%;
+    }
+  }
+}
+
+@include respond($breakpoints, pad) {
+  .not-found-page {
+    &__container {
+      gap: $space-12;
+    }
+
+    &__visual {
+      width: 20rem;
+    }
+
+    &__description {
+      font-size: $font-size-base;
+    }
+
+    &__actions {
+      flex-direction: row;
+      justify-content: center;
+
+      .ui-btn {
+        width: auto;
+        min-width: 10.5rem;
+      }
+    }
+  }
+}
+
+@include respond($breakpoints, desktop) {
+  .not-found-page {
+    padding-top: $space-20;
+    padding-bottom: $space-20;
+
+    &__container {
+      grid-template-columns: minmax(18rem, 0.82fr) minmax(28rem, 1.18fr);
+      gap: $space-20;
+    }
+
+    &__visual {
+      width: min(100%, 25rem);
+    }
+
+    &__content {
+      margin: 0;
+      text-align: left;
+    }
+
+    &__actions {
+      justify-content: flex-start;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .not-found-page .ui-btn {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
