@@ -8,6 +8,7 @@ const PageHero = ({
   tone = 'light',
   align = 'left',
   size = 'md',
+  titleId = 'page-hero-title',
   children,
 }) => {
   return (
@@ -18,6 +19,7 @@ const PageHero = ({
         `page-hero--${align}`,
         `page-hero--${size}`,
       )}
+      aria-labelledby={titleId}
     >
       {/* background image */}
       {backgroundImage && (
@@ -26,21 +28,26 @@ const PageHero = ({
           style={{
             backgroundImage: `url(${backgroundImage})`,
           }}
+          aria-hidden="true"
         />
       )}
 
       {/* overlay */}
-      <div className="page-hero__overlay" />
+      <div className="page-hero__overlay" aria-hidden="true" />
 
       {/* texture */}
-      <div className="page-hero__noise" />
+      <div className="page-hero__noise" aria-hidden="true" />
 
       {/* content */}
       <div className="ui-container">
         <div className="page-hero__content">
           {eyebrow && <p className="page-hero__eyebrow">{eyebrow}</p>}
 
-          {title && <h1 className="page-hero__title">{title}</h1>}
+          {title && (
+            <h1 className="page-hero__title" id={titleId}>
+              {title}
+            </h1>
+          )}
 
           {text && <p className="page-hero__text">{text}</p>}
 

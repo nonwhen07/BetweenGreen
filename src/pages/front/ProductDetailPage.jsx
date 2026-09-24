@@ -18,7 +18,7 @@ import RelatedProducts from '@/components/front/product/RelatedProducts';
 import ProductInfo from '@/components/front/product/ProductInfo';
 
 const ProductDetailPage = () => {
-  const { products, fetchProducts } = useProducts({ isAdmin: false });
+  const { products, fetchProducts } = useProducts();
   const { start, stop } = useLoading();
 
   const { product_id } = useParams();
@@ -82,7 +82,7 @@ const ProductDetailPage = () => {
   }, [fetchProducts]);
 
   return (
-    <main className="product-detail-page">
+    <div className="product-detail-page">
       <div className="ui-container">
         {errorMessage && (
           <div className="product-detail-page__error" role="alert">
@@ -117,7 +117,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

@@ -1,38 +1,36 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-// services
-import { getAllProducts, getAllAdminProducts } from '@/services/productService';
-// hooks
-import { useToast } from '@/hooks/useToast';
-import { useLoading } from '@/hooks/useLoading';
-// utils
-import { extractErrorMessage } from '@/utils/errorHandler';
+import {
+  ensureFrontProducts,
+  fetchFrontProducts,
+  selectFrontProducts,
+  selectFrontProductsError,
+  selectFrontProductsLastFetchedAt,
+  selectFrontProductsStatus,
+} from '@/features/product/frontProductSlice';
 
-export const useProducts = ({ isAdmin = false } = {}) => {
-  const { showError } = useToast();
-  const { start, stop } = useLoading();
+export const useProducts = () => {
+  const dispatch = useDispatch();
+  const products = useSelector(selectFrontProducts);
+  const status = useSelector(selectFrontProductsStatus);
+  const error = useSelector(selectFrontProductsError);
+  const lastFetchedAt = useSelector(selectFrontProductsLastFetchedAt);
 
-  const [products, setProducts] = useState([]);
+  const fetchProducts = useCallback(() => {
+    return dispatch(ensureFrontProducts());
+  }, [dispatch]);
 
-  // 取得商品
-  const fetchProducts = useCallback(async () => {
-    start();
-
-    try {
-      const res = isAdmin ? await getAllAdminProducts() : await getAllProducts();
-
-      const productList = Object.values(res.data || {});
-
-      setProducts(productList);
-    } catch (error) {
-      showError(extractErrorMessage(error));
-    } finally {
-      stop();
-    }
-  }, [isAdmin, showError, start, stop]);
+  const refreshProducts = useCallback(() => {
+    return dispatch(fetchFrontProducts());
+  }, [dispatch]);
 
   return {
     products,
+    status,
+    error,
+    lastFetchedAt,
     fetchProducts,
+    refreshProducts,
   };
 };

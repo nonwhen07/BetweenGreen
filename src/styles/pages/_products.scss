@@ -1,286 +1,37 @@
-@use '@/styles/helpers/custom-text' as *;
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
-@use 'sass:color';
-
-// ==========================================================================
-//   page-hero
-// ==========================================================================
-// _page-hero.scss
-
-.page-hero {
-  position: relative;
-  overflow: hidden;
-
-  display: flex;
-  align-items: center;
-
-  isolation: isolate;
-
-  background: linear-gradient(
-    90deg,
-    rgba(250, 248, 244, 0.96) 0%,
-    rgba(250, 248, 244, 0.92) 38%,
-    rgba(250, 248, 244, 0.82) 62%,
-    rgba(250, 248, 244, 0.76) 100%
-  );
-  // =========================
-  // size
-  // =========================
-
-  &--sm {
-    min-height: 220px;
-    padding: 120px 0 48px;
-  }
-
-  &--md {
-    min-height: 320px;
-    padding: 148px 0 72px;
-  }
-
-  &--lg {
-    min-height: 420px;
-    padding: 180px 0 96px;
-  }
-
-  // =========================
-  // align
-  // =========================
-
-  &--left {
-    text-align: left;
-
-    .page-hero__content {
-      margin-right: auto;
-    }
-  }
-
-  &--center {
-    text-align: center;
-
-    .page-hero__content {
-      margin: 0 auto;
-    }
-
-    .page-hero__text {
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  // =========================
-  // background image
-  // =========================
-
-  &__bg {
-    position: absolute;
-    inset: 0;
-    z-index: -3;
-
-    background-size: cover;
-    background-position: center;
-
-    opacity: 0.85;
-
-    transform: scale(1.04);
-
-    // filter: blur(2px) saturate(0.9);
-    filter: blur(6px) saturate(0.88) brightness(1.04);
-
-    transition:
-      transform 8s ease,
-      opacity 0.5s ease;
-  }
-
-  // =========================
-  // overlay
-  // =========================
-
-  &__overlay {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-
-    background: linear-gradient(
-      180deg,
-      rgba(248, 245, 240, 0.42) 0%,
-      rgba(255, 255, 255, 0.82) 100%
-    );
-  }
-
-  // =========================
-  // subtle texture
-  // =========================
-
-  &__noise {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-
-    opacity: 0.04;
-
-    background-image: radial-gradient(rgba(0, 0, 0, 0.5) 0.4px, transparent 0.4px);
-
-    background-size: 6px 6px;
-
-    pointer-events: none;
-  }
-
-  // =========================
-  // content
-  // =========================
-
-  &__content {
-    position: relative;
-    z-index: 2;
-
-    max-width: 760px;
-  }
-
-  &__eyebrow {
-    margin-bottom: 14px;
-
-    font-size: 0.875rem;
-    font-weight: 500;
-
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-
-    color: $color-primary;
-  }
-
-  &__title {
-    margin-bottom: 20px;
-
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    line-height: 1.08;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-
-    color: $text-main;
-  }
-
-  &__text {
-    max-width: 620px;
-
-    font-size: 1rem;
-    line-height: 1.9;
-
-    color: rgba($text-main, 0.72);
-  }
-
-  &__extra {
-    margin-top: 32px;
-  }
-
-  // =========================
-  // tone
-  // =========================
-
-  &--light {
-    .page-hero__overlay {
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.92) 0%,
-        rgba(255, 255, 255, 0.84) 100%
-      );
-    }
-  }
-
-  &--warm {
-    .page-hero__overlay {
-      background: linear-gradient(
-        180deg,
-        rgba(250, 246, 240, 0.9) 0%,
-        rgba(248, 242, 235, 0.82) 100%
-      );
-    }
-
-    .page-hero__eyebrow {
-      color: $color-secondary;
-    }
-  }
-
-  &--dark {
-    .page-hero__overlay {
-      background: linear-gradient(180deg, rgba(22, 22, 22, 0.62) 0%, rgba(22, 22, 22, 0.72) 100%);
-    }
-
-    .page-hero__eyebrow {
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .page-hero__title {
-      color: white;
-    }
-
-    .page-hero__text {
-      color: rgba(255, 255, 255, 0.78);
-    }
-  }
-
-  // =========================
-  // hover subtle motion
-  // =========================
-
-  &:hover {
-    .page-hero__bg {
-      transform: scale(1.07);
-    }
-  }
-
-  // =========================
-  // reduce motion
-  // =========================
-
-  @media (prefers-reduced-motion: reduce) {
-    &__bg {
-      transition: none;
-    }
-  }
-
-  // =========================
-  // rwd
-  // =========================
-
-  @include respond($breakpoints, pad) {
-    &--md {
-      min-height: 360px;
-    }
-  }
-
-  @include respond($breakpoints, desktop) {
-    &--md {
-      min-height: 420px;
-      padding: 180px 0 88px;
-    }
-
-    &__title {
-      font-size: clamp(3rem, 5vw, 5rem);
-    }
-
-    &__text {
-      font-size: 1.05rem;
-    }
-  }
-}
-
-// ==========================================================================
-// Products Page
-// ==========================================================================
 
 .products-page {
   &__content {
     display: flex;
     flex-direction: column;
     gap: $space-8;
-
     margin-top: $space-8;
   }
 
   &__pagination {
     margin-top: $space-4;
+  }
+
+  &__state {
+    display: grid;
+    min-height: 20rem;
+    place-items: center;
+    padding: $space-8;
+    border: $border-width-sm dashed $border-color-base;
+    border-radius: $radius-xl;
+    background: $color-bg-surface;
+    color: $text-secondary;
+    text-align: center;
+
+    p {
+      margin-bottom: $space-5;
+    }
+
+    &--error {
+      align-content: center;
+    }
   }
 
   @include respond($breakpoints, desktop) {
@@ -291,30 +42,21 @@
   }
 }
 
-// ==========================================================================
-// Products Filter
-// ==========================================================================
-
 .products-filter {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-
-  padding: 16px;
+  gap: $space-8;
+  padding: $space-4;
+  border: $border-width-sm solid rgba(black, 0.04);
   border-radius: $radius-xl;
-
-  background: rgba(255, 255, 255, 0.82);
-
+  background: rgba(white, 0.82);
+  box-shadow: 0 10px 30px rgba(black, 0.04);
   backdrop-filter: blur(12px);
-
-  border: 1px solid rgba(0, 0, 0, 0.04);
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
 
   &__group {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: $space-4;
   }
 
   &__header {
@@ -325,50 +67,43 @@
 
   &__title {
     margin: 0;
-
-    font-size: 1rem;
-    font-weight: 500;
-
     color: $text-main;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
   }
 
   &__chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: $space-3;
   }
 
   &__chip {
     padding: 10px 18px;
+    border: $border-width-sm solid rgba($color-primary, 0.12);
     border-radius: $radius-pill;
-
-    border: 1px solid rgba($color-primary, 0.12);
-
-    background: white;
-
-    font-size: 0.938rem;
-    font-weight: 500;
-
+    background: $color-bg-surface;
     color: $color-primary;
-
+    font-size: 0.938rem;
+    font-weight: $font-weight-medium;
     transition:
-      background-color 0.25s ease,
-      color 0.25s ease,
-      transform 0.25s ease;
+      background-color $transition-fast,
+      border-color $transition-fast,
+      color $transition-fast,
+      transform $transition-fast;
+
+    &.is-active,
+    &:hover {
+      border-color: $color-primary;
+      background: $color-primary;
+      color: $text-on-primary;
+    }
 
     &.is-active {
-      background: $color-primary;
-      color: white;
-
-      border-color: $color-primary;
-
       box-shadow: 0 8px 20px rgba($color-primary, 0.18);
     }
 
     &:hover {
-      background: $color-primary;
-      color: white;
-
       transform: translateY(-2px);
     }
   }
@@ -382,14 +117,10 @@
     width: 100%;
     max-width: 220px;
     height: 48px;
-
-    padding: 0 16px;
-
+    padding: 0 $space-4;
+    border: $border-width-sm solid rgba(black, 0.08);
     border-radius: $radius-pill;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-
-    background: white;
-
+    background: $color-bg-surface;
     color: $text-main;
   }
 
@@ -398,6 +129,16 @@
 
     &__sort {
       justify-content: flex-start;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .products-filter__chip {
+    transition: none;
+
+    &:hover {
+      transform: none;
     }
   }
 }

@@ -13,7 +13,7 @@ import TrustSection from '@/components/front/home/Trust/TrustSection';
 import NewsletterSection from '@/components/front/home/Newsletter/NewsletterSection';
 
 const HomePage = () => {
-  const { products, fetchProducts } = useProducts({ isAdmin: false });
+  const { products, fetchProducts } = useProducts();
 
   const topProducts = useMemo(
     () => products.filter((item) => Number(item.is_enabled) === 1).slice(0, 7),

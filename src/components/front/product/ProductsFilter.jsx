@@ -8,19 +8,20 @@ import clsx from 'clsx';
 
 const ProductsFilter = ({
   selectedTheme,
-  setSearchParams,
   selectedType,
-  setSelectedType,
   sortType,
-  setSortType,
-  resetPage,
+  onThemeChange,
+  onTypeChange,
+  onSortChange,
 }) => {
   return (
     <div className="products-filter">
       {/* theme */}
       <div className="products-filter__group">
         <div className="products-filter__header">
-          <h2 className="products-filter__title">主題探索</h2>
+          <h2 className="products-filter__title" id="products-filter-title">
+            主題探索
+          </h2>
         </div>
 
         <div className="products-filter__chips">
@@ -29,17 +30,8 @@ const ProductsFilter = ({
               key={theme.code}
               type="button"
               className={clsx('products-filter__chip', selectedTheme === theme.code && 'is-active')}
-              onClick={() => {
-                if (theme.code === 'AllProducts') {
-                  setSearchParams({});
-                } else {
-                  setSearchParams({
-                    theme: theme.code,
-                  });
-                }
-                setSelectedType('');
-                resetPage();
-              }}
+              aria-pressed={selectedTheme === theme.code}
+              onClick={() => onThemeChange(theme.code)}
             >
               {theme.label}
             </button>
@@ -65,10 +57,8 @@ const ProductsFilter = ({
                     'products-filter__chip',
                     selectedType === type.code && 'is-active',
                   )}
-                  onClick={() => {
-                    setSelectedType(type.code);
-                    resetPage();
-                  }}
+                  aria-pressed={selectedType === type.code}
+                  onClick={() => onTypeChange(type.code)}
                 >
                   {type.label}
                 </button>
@@ -85,8 +75,7 @@ const ProductsFilter = ({
           aria-label="商品排序方式"
           value={sortType}
           onChange={(e) => {
-            setSortType(e.target.value);
-            resetPage();
+            onSortChange(e.target.value);
           }}
         >
           <option value="latest">最新上架</option>

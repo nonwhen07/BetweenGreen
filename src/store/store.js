@@ -5,6 +5,7 @@ import articleReducer from '@/features/article/articleSlice';
 import authReducer from '@/features/auth/authSlice';
 import couponReducer from '@/features/coupon/couponSlice';
 import orderReducer from '@/features/order/orderSlice';
+import frontProductReducer from '@/features/product/frontProductSlice';
 import productReducer from '@/features/product/productSlice';
 // 由於沒有回傳會員名稱和權限狀態的API，userSlice先製作後暫時不使用
 // import userReducer from '@/features/user/userSlice';
@@ -19,6 +20,7 @@ export const appStore = configureStore({
     auth: authReducer,
     coupon: couponReducer,
     order: orderReducer,
+    frontProduct: frontProductReducer,
     product: productReducer,
     // user: userReducer, // 之後會從auth 拆分出 user資訊
     // customAuth: customAuthReducer, //日後給前台客戶的專屬登入系統，json-server去處理
