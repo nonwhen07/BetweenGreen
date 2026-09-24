@@ -13,6 +13,8 @@ const ProductsFilter = ({
   onThemeChange,
   onTypeChange,
   onSortChange,
+  onReset,
+  hasActiveFilters = false,
 }) => {
   return (
     <div className="products-filter">
@@ -22,6 +24,11 @@ const ProductsFilter = ({
           <h2 className="products-filter__title" id="products-filter-title">
             主題探索
           </h2>
+          {hasActiveFilters && (
+            <button className="products-filter__reset" type="button" onClick={onReset}>
+              清除篩選
+            </button>
+          )}
         </div>
 
         <div className="products-filter__chips">
@@ -70,9 +77,12 @@ const ProductsFilter = ({
 
       {/* sort */}
       <div className="products-filter__sort">
+        <label className="products-filter__sort-label" htmlFor="products-sort">
+          排序方式
+        </label>
         <select
+          id="products-sort"
           className="products-filter__select"
-          aria-label="商品排序方式"
           value={sortType}
           onChange={(e) => {
             onSortChange(e.target.value);

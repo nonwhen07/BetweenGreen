@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Eye, ShoppingBag } from 'lucide-react';
 import clsx from 'clsx';
@@ -5,7 +6,13 @@ import clsx from 'clsx';
 // assets
 import noImage from '@/assets/images/no-image.png';
 // constants
-import { parseCategoryParts, parsePersonalityTags } from '@/constants/productConstants';
+import {
+  PRODUCT_DISPLAY_TAGS_MAP,
+  parseCategoryParts,
+  parsePersonalityTags,
+} from '@/constants/productConstants';
+
+const currencyFormatter = new Intl.NumberFormat('zh-TW');
 
 const ProductCard = ({
   product,
@@ -17,13 +24,30 @@ const ProductCard = ({
 
   variant = 'default',
 }) => {
-  const isEmptySrc = !product.imageUrl || product.imageUrl.trim() === '';
+  const [hasImageError, setHasImageError] = useState(false);
+  const imageUrl = product.imageUrl?.trim();
+  const isEnabled = Number(product.is_enabled) === 1;
+  const isFallback = !imageUrl || hasImageError;
 
   const { theme, species } = parseCategoryParts(product.category);
   const previewTags = parsePersonalityTags(product.personalityTags).slice(0, 2);
+  const displayTag = useMemo(() => {
+    const displayTagKey = product.displayTags
+      ?.split('|')
+      .map((tag) => tag.trim())
+      .find((tag) => PRODUCT_DISPLAY_TAGS_MAP[tag]);
+
+    return displayTagKey
+      ? { key: displayTagKey, ...PRODUCT_DISPLAY_TAGS_MAP[displayTagKey] }
+      : null;
+  }, [product.displayTags]);
 
   const isCompact = variant === 'compact';
   const isMinimal = variant === 'minimal';
+  const isGrid = variant === 'grid';
+  const currentPrice = Number(product.price || 0);
+  const originPrice = Number(product.origin_price || 0);
+  const isOnSale = originPrice > currentPrice;
 
   return (
     <article
@@ -31,25 +55,27 @@ const ProductCard = ({
         'product-card',
         `product-card--${variant}`,
         loading && 'is-loading',
-        !product.is_enabled && 'is-disabled',
+        !isEnabled && 'is-disabled',
       )}
     >
       <Link to={`/product/${product.id}`} className="product-card__link">
         {/* image */}
-        <div className={clsx('product-card__media', isEmptySrc && 'is-fallback')}>
+        <div className={clsx('product-card__media', isFallback && 'is-fallback')}>
           <img
-            src={!isEmptySrc ? product.imageUrl : noImage}
-            alt={product.title}
+            src={!isFallback ? imageUrl : noImage}
+            alt={product.title || 'Between Green 商品'}
             className="product-card__image"
+            loading="lazy"
+            onError={() => setHasImageError(true)}
           />
 
-          <div className="product-card__overlay" />
+          <div className="product-card__overlay" aria-hidden="true" />
 
-          {/* display tag (負責處理熱銷、促銷庫存...商業處理標籤，後台尚未開工) */}
-          {/* displayTags 後續接 PRODUCT_DISPLAY_TAGS_MAP */}
-          {/* {product.displayTags && (
-              <span className="product-card__badge">{product.displayTags}</span>
-            )} */}
+          {isGrid && displayTag && (
+            <span className={clsx('product-card__badge', `is-${displayTag.type}`)}>
+              {displayTag.badge}
+            </span>
+          )}
         </div>
 
         {/* body */}
@@ -58,6 +84,9 @@ const ProductCard = ({
           <div className="product-card__info">
             <p className="product-card__eyebrow">{theme?.title || 'Between Green'}</p>
             <h3 className="product-card__title">{product.title}</h3>
+            {isGrid && product.titleEn && (
+              <p className="product-card__title-en">{product.titleEn}</p>
+            )}
             {!isMinimal && !isCompact && <p className="product-card__species">{species?.label}</p>}
           </div>
 
@@ -74,8 +103,14 @@ const ProductCard = ({
             )}
             {/* footer */}
             <div className="product-card__footer">
-              {/* optional species */}
-              <p className="product-card__price">NT$ {product.price?.toLocaleString()}</p>
+              <div className="product-card__pricing">
+                <p className="product-card__price">NT$ {currencyFormatter.format(currentPrice)}</p>
+                {isGrid && isOnSale && (
+                  <del className="product-card__origin-price">
+                    NT$ {currencyFormatter.format(originPrice)}
+                  </del>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -111,9 +146,10 @@ const ProductCard = ({
             <button
               type="button"
               className={clsx('product-card__icon-btn', loading && 'is-loading')}
-              aria-label="加入購物車"
+              aria-label={`將${product.title || '商品'}加入購物車`}
               title="加入購物車"
-              disabled={loading || !product.is_enabled}
+              disabled={loading || !isEnabled}
+              aria-busy={loading}
               onClick={() => onAddCart(product.id)}
             >
               {loading ? (

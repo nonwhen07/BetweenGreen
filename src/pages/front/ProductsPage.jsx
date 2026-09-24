@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { RefreshCw } from 'lucide-react';
 
 import {
   CATEGORY_THEME_MAP,
@@ -118,8 +119,17 @@ const ProductsPage = () => {
     updateSearchParams({ page: nextPage === 1 ? null : nextPage });
   };
 
+  const handleResetFilters = () => {
+    setSearchParams({});
+  };
+
   const isInitialLoading = status === 'idle' || (status === 'loading' && products.length === 0);
   const hasBlockingError = status === 'error' && products.length === 0;
+  const hasActiveFilters =
+    selectedTheme !== 'AllProducts' || Boolean(selectedType) || sortType !== 'latest';
+  const activeTheme = CATEGORY_THEME_MAP[selectedTheme];
+  const resultStart = sortedProducts.length === 0 ? 0 : pageStart + 1;
+  const resultEnd = Math.min(pageStart + PRODUCTS_PER_PAGE, sortedProducts.length);
 
   return (
     <div className="products-page">
@@ -147,38 +157,73 @@ const ProductsPage = () => {
               onThemeChange={handleThemeChange}
               onTypeChange={handleTypeChange}
               onSortChange={handleSortChange}
+              onReset={handleResetFilters}
+              hasActiveFilters={hasActiveFilters}
             />
           </div>
 
           <div className="products-page__content">
-            {isInitialLoading && (
-              <div className="products-page__state" role="status">
-                商品資料載入中…
+            {!hasBlockingError && (
+              <div className="products-page__results-header">
+                <div>
+                  <p className="products-page__results-eyebrow">Curated Collection</p>
+                  <h2 className="products-page__results-title">
+                    {activeTheme?.label || '全部商品'}
+                  </h2>
+                  <p className="products-page__results-intro">
+                    {activeTheme?.intro || '探索 Between Green 的植感生活選物。'}
+                  </p>
+                </div>
+
+                {!isInitialLoading && (
+                  <p className="products-page__results-count" aria-live="polite">
+                    共 {sortedProducts.length} 件
+                    {sortedProducts.length > 0 && (
+                      <span>
+                        顯示 {resultStart}–{resultEnd}
+                      </span>
+                    )}
+                  </p>
+                )}
               </div>
             )}
 
             {hasBlockingError && (
               <div className="products-page__state products-page__state--error" role="alert">
-                <p>{error || '目前無法取得商品資料。'}</p>
-                <button className="ui-btn ui-btn--outline-primary" type="button" onClick={refreshProducts}>
-                  重新載入
+                <span className="products-page__state-icon" aria-hidden="true">
+                  <RefreshCw size={24} strokeWidth={1.6} />
+                </span>
+                <div>
+                  <h2>商品資料暫時無法載入</h2>
+                  <p>{error || '請稍後再試，或重新載入商品資料。'}</p>
+                </div>
+                <button
+                  className="ui-btn ui-btn--outline-primary"
+                  type="button"
+                  onClick={refreshProducts}
+                >
+                  再試一次
                 </button>
               </div>
             )}
 
-            {!isInitialLoading && !hasBlockingError && (
+            {!hasBlockingError && (
               <>
                 <ProductsGrid
                   products={currentPageProducts}
                   onAddCart={handleAddCartItem}
                   loadingItems={loadingItems}
+                  isLoading={isInitialLoading}
+                  onResetFilters={hasActiveFilters ? handleResetFilters : undefined}
                 />
-                <BrandPagination
-                  currentPage={page}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                  className="products-page__pagination"
-                />
+                {!isInitialLoading && (
+                  <BrandPagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    className="products-page__pagination"
+                  />
+                )}
               </>
             )}
           </div>

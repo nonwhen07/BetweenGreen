@@ -1,56 +1,48 @@
-@use '@/styles/helpers/custom-text' as *;
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
-@use 'sass:color';
-
-// ==========================================================================
-//   Products-grid
-// ==========================================================================
-// _products-grid.scss
 
 .products-grid {
   &__list {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px 24px;
+    gap: $space-8 $space-6;
   }
 
   &__empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 320px;
-
+    display: grid;
+    justify-items: center;
+    gap: $space-5;
+    min-height: 22rem;
+    padding: $space-10 $space-6;
+    border: $border-width-sm dashed rgba($color-primary, 0.22);
     border-radius: $radius-2xl;
-
-    background: rgba(255, 255, 255, 0.55);
-
-    border: 1px dashed rgba($color-primary, 0.12);
-
-    color: rgba($text-main, 0.52);
-
-    font-size: 0.95rem;
-    letter-spacing: 0.08em;
+    background: rgba($color-bg-surface, 0.7);
+    text-align: center;
   }
 
-  &__placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  &__empty-icon {
+    display: grid;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: rgba($color-primary, 0.1);
+    color: $color-primary;
+    place-items: center;
+  }
 
-    min-height: 480px;
-    border-radius: $radius-2xl;
+  &__empty-title {
+    margin-bottom: $space-2;
+    color: $text-primary;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-medium;
+  }
 
-    background: rgba(255, 255, 255, 0.55);
-
-    border: 1px dashed rgba($color-primary, 0.18);
-
-    color: rgba($text-main, 0.5);
-
-    font-size: 1rem;
-    letter-spacing: 0.08em;
+  &__empty-text {
+    max-width: 30rem;
+    color: $text-secondary;
+    font-size: $font-size-sm;
+    line-height: $line-height-loose;
   }
 
   @include respond($breakpoints, pad) {
@@ -62,7 +54,7 @@
   @include respond($breakpoints, desktop) {
     &__list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 48px 28px;
+      gap: $space-12 28px;
     }
   }
 
@@ -70,5 +62,78 @@
     &__list {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+  }
+}
+
+.product-card-skeleton {
+  overflow: hidden;
+  min-width: 0;
+  border: $border-width-sm solid rgba($color-primary, 0.08);
+  border-radius: $radius-2xl;
+  background: $color-bg-surface;
+
+  &__media,
+  &__line {
+    background: linear-gradient(
+      100deg,
+      $neutral-200 20%,
+      rgba($color-bg-surface, 0.9) 40%,
+      $neutral-200 60%
+    );
+    background-size: 220% 100%;
+    animation: productSkeleton 1.6s ease-in-out infinite;
+  }
+
+  &__media {
+    aspect-ratio: 1 / 1.08;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    padding: $space-5;
+  }
+
+  &__line {
+    display: block;
+    height: 0.75rem;
+    border-radius: $radius-pill;
+
+    &--eyebrow {
+      width: 38%;
+    }
+
+    &--title {
+      width: 72%;
+      height: 1.1rem;
+    }
+
+    &--text {
+      width: 52%;
+    }
+
+    &--price {
+      width: 44%;
+      height: 1rem;
+      margin-top: $space-6;
+    }
+  }
+}
+
+@keyframes productSkeleton {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card-skeleton__media,
+  .product-card-skeleton__line {
+    animation: none;
   }
 }
