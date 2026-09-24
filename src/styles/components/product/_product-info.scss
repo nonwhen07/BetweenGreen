@@ -12,7 +12,12 @@
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: $space-6;
+  gap: $space-5;
+  padding: $space-5;
+  border: $border-width-sm solid rgba($color-primary, 0.08);
+  border-radius: $radius-xl;
+  background: rgba($color-bg-surface, 0.9);
+  box-shadow: $shadow-xs;
 
   &__header {
     display: flex;
@@ -27,6 +32,24 @@
     letter-spacing: 0.08em;
   }
 
+  &__eyebrow-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__badge {
+    padding: 5px 11px;
+    border-radius: $radius-pill;
+    background: rgba($color-secondary, 0.13);
+    color: $color-secondary-dark;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.08em;
+  }
+
   &__title {
     margin: 0;
 
@@ -36,12 +59,27 @@
     color: $text-main;
   }
 
+  &__title-en {
+    color: $neutral-600;
+    font-size: $font-size-sm;
+    letter-spacing: 0.05em;
+  }
+
   &__sub {
+    align-items: center;
     display: flex;
     gap: $space-4;
 
     color: $text-muted;
     font-size: $font-size-sm;
+  }
+
+  &__rating {
+    display: inline-flex;
+    gap: $space-1;
+    align-items: center;
+    color: $color-secondary-dark;
+    font-variant-numeric: tabular-nums;
   }
 
   // =====================
@@ -62,6 +100,7 @@
   }
 
   &__origin {
+    flex-wrap: wrap;
     display: flex;
     gap: $space-3;
 
@@ -92,14 +131,7 @@
 
     font-size: $font-size-sm;
 
-    transition: all 0.25s ease;
-
-    &:hover {
-      background: $color-primary;
-      color: $neutral-100;
-
-      transform: translateY(-2px);
-    }
+    color: $text-secondary;
   }
 
   // =====================
@@ -108,6 +140,7 @@
 
   &__summary {
     color: $text-body;
+    font-size: $font-size-sm;
     line-height: $line-height-loose;
   }
 
@@ -117,20 +150,28 @@
 
   &__purchase {
     display: grid;
-    grid-template-columns: auto minmax(0, 220px);
+    grid-template-columns: minmax(0, 1fr);
     align-items: stretch;
-    justify-content: start;
     gap: $space-3;
+    padding-top: $space-5;
+    border-top: $border-width-sm solid $border-color-soft;
   }
 
   &__quantity {
     display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
     align-items: center;
+  }
+
+  &__quantity-label {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
   }
 
   &__cart-btn {
     width: 100%;
-    max-width: 220px;
     min-height: 48px;
 
     border: 0;
@@ -159,27 +200,26 @@
 
   &__service {
     display: grid;
-
-    grid-template-columns: repeat(2, 1fr);
-
+    grid-template-columns: minmax(0, 1fr);
     gap: $space-3;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   &__service-item {
+    display: flex;
+    gap: $space-2;
+    align-items: center;
     padding: $space-4;
-
     border-radius: $radius-md;
-
     background: $color-bg-soft;
+    color: $text-secondary;
+    font-size: $font-size-sm;
 
-    transition: all 0.25s ease;
-
-    &:hover {
-      transform: translateY(-3px);
-
-      box-shadow: $shadow-md;
-
-      background: white;
+    svg {
+      flex: 0 0 auto;
+      color: $color-primary;
     }
   }
 
@@ -188,20 +228,51 @@
   // =====================
 
   &__meta {
-    display: flex;
-    flex-direction: column;
-
-    border-top: 1px solid $border-color-base;
-
-    padding-top: $space-4;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    border-top: $border-width-sm solid $border-color-soft;
+    border-bottom: $border-width-sm solid $border-color-soft;
   }
 
   &__meta-item {
     display: flex;
-    justify-content: space-between;
-
+    flex-direction: column;
+    gap: $space-1;
     padding: $space-3 0;
 
-    border-bottom: 1px solid $border-color-soft;
+    & + & {
+      padding-left: $space-4;
+      border-left: $border-width-sm solid $border-color-soft;
+    }
+
+    dt {
+      color: $text-muted;
+      font-size: $font-size-xs;
+    }
+
+    dd {
+      margin: 0;
+      color: $text-main;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  @include respond($breakpoints, pad) {
+    padding: $space-6;
+
+    &__purchase {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    &__service {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @include respond($breakpoints, desktop) {
+    position: sticky;
+    top: calc(var(--brand-height) + #{$space-4});
   }
 }

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs } from 'swiper/modules';
+import { A11y, Navigation, Thumbs } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -16,6 +16,7 @@ import NO_IMAGE from '@/assets/images/no-image.png';
 import { buildProductGalleryImages } from '@/utils/product/productGallery';
 
 const ProductGallery = ({ currentProduct }) => {
+  const [mainSwiper, setMainSwiper] = useState(null);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -34,14 +35,15 @@ const ProductGallery = ({ currentProduct }) => {
       {/* 主圖 */}
       <div className="product-gallery__main">
         <Swiper
-          modules={[Navigation, Thumbs]}
+          modules={[A11y, Navigation, Thumbs]}
           navigation={{
             prevEl: '.product-gallery__prev',
             nextEl: '.product-gallery__next',
           }}
           spaceBetween={12}
-          thumbs={{ swiper: thumbsSwiper }}
-          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+          thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+          onSwiper={setMainSwiper}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           className="product-gallery__main-swiper"
         >
           {allImages.map((imgUrl, index) => (
@@ -59,25 +61,33 @@ const ProductGallery = ({ currentProduct }) => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <button
-          type="button"
-          className="product-gallery__nav product-gallery__prev"
-          aria-label="上一張商品圖片"
-        >
-          <ChevronLeft size={24} strokeWidth={2} />
-        </button>
+        {allImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              className="product-gallery__nav product-gallery__prev"
+              aria-label="上一張商品圖片"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
 
-        <button
-          type="button"
-          className="product-gallery__nav product-gallery__next"
-          aria-label="下一張商品圖片"
-        >
-          <ChevronRight size={24} strokeWidth={2} />
-        </button>
+            <button
+              type="button"
+              className="product-gallery__nav product-gallery__next"
+              aria-label="下一張商品圖片"
+            >
+              <ChevronRight size={24} strokeWidth={2} />
+            </button>
+
+            <span className="product-gallery__counter" aria-live="polite">
+              {activeIndex + 1} / {allImages.length}
+            </span>
+          </>
+        )}
       </div>
 
       {/* 縮圖 */}
-      <div className="product-gallery__thumbs">
+      {allImages.length > 1 && <div className="product-gallery__thumbs">
         <Swiper
           onSwiper={setThumbsSwiper}
           watchSlidesProgress
@@ -87,7 +97,13 @@ const ProductGallery = ({ currentProduct }) => {
         >
           {allImages.map((imgUrl, index) => (
             <SwiperSlide key={index}>
-              <div className={`product-gallery__thumb ${activeIndex === index ? 'is-active' : ''}`}>
+              <button
+                type="button"
+                className={`product-gallery__thumb ${activeIndex === index ? 'is-active' : ''}`}
+                aria-label={`查看第 ${index + 1} 張商品圖片`}
+                aria-pressed={activeIndex === index}
+                onClick={() => mainSwiper?.slideTo(index)}
+              >
                 <img
                   src={imgUrl && imgUrl.trim() !== '' ? imgUrl : NO_IMAGE}
                   alt={`${currentProduct?.title || '商品'}縮圖 ${index + 1}`}
@@ -96,11 +112,11 @@ const ProductGallery = ({ currentProduct }) => {
                     e.target.src = NO_IMAGE;
                   }}
                 />
-              </div>
+              </button>
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
+      </div>}
     </div>
   );
 };

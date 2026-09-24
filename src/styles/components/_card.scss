@@ -567,6 +567,56 @@
   }
 }
 
+.product-card--related {
+  min-height: 100%;
+
+  .product-card__media {
+    aspect-ratio: $product-card-aspect;
+    background: $neutral-200;
+  }
+
+  .product-card__body {
+    gap: $space-3;
+    padding: $space-4;
+  }
+
+  .product-card__info {
+    gap: $space-1;
+  }
+
+  .product-card__title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: $font-size-base;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .product-card__species {
+    min-height: 1.3rem;
+    font-size: $font-size-xs;
+  }
+
+  .product-card__tags {
+    gap: $space-1;
+  }
+
+  .product-card__tag {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .product-card__meta {
+    gap: $space-3;
+    padding-top: $space-3;
+    border-top: $border-width-sm solid rgba($color-primary, 0.08);
+  }
+
+  .product-card__price {
+    color: $color-primary-dark;
+  }
+}
+
 // 暫時放這邊做比較，之後要放回_home、_article或像關scss
 .article-card {
   min-height: 520px;

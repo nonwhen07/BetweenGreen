@@ -45,6 +45,8 @@ const ProductCard = ({
   const isCompact = variant === 'compact';
   const isMinimal = variant === 'minimal';
   const isGrid = variant === 'grid';
+  const isRelated = variant === 'related';
+  const showsCatalogDetails = isGrid || isRelated;
   const currentPrice = Number(product.price || 0);
   const originPrice = Number(product.origin_price || 0);
   const isOnSale = originPrice > currentPrice;
@@ -71,7 +73,7 @@ const ProductCard = ({
 
           <div className="product-card__overlay" aria-hidden="true" />
 
-          {isGrid && displayTag && (
+          {showsCatalogDetails && displayTag && (
             <span className={clsx('product-card__badge', `is-${displayTag.type}`)}>
               {displayTag.badge}
             </span>
@@ -84,7 +86,7 @@ const ProductCard = ({
           <div className="product-card__info">
             <p className="product-card__eyebrow">{theme?.title || 'Between Green'}</p>
             <h3 className="product-card__title">{product.title}</h3>
-            {isGrid && product.titleEn && (
+            {showsCatalogDetails && product.titleEn && (
               <p className="product-card__title-en">{product.titleEn}</p>
             )}
             {!isMinimal && !isCompact && <p className="product-card__species">{species?.label}</p>}
@@ -105,7 +107,7 @@ const ProductCard = ({
             <div className="product-card__footer">
               <div className="product-card__pricing">
                 <p className="product-card__price">NT$ {currencyFormatter.format(currentPrice)}</p>
-                {isGrid && isOnSale && (
+                {showsCatalogDetails && isOnSale && (
                   <del className="product-card__origin-price">
                     NT$ {currencyFormatter.format(originPrice)}
                   </del>
@@ -116,7 +118,7 @@ const ProductCard = ({
         </div>
       </Link>
 
-      {!isMinimal && (
+      {!isMinimal && !isRelated && (
         <div className="product-card__actions">
           {onToggleFavorite && (
             <button

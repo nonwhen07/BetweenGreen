@@ -17,12 +17,13 @@
   height: 100%;
 
   &__main {
-    // flex: 1;
     position: relative;
     overflow: hidden;
+    aspect-ratio: $product-main-image-aspect;
+    border: $border-width-sm solid rgba($color-primary, 0.08);
     border-radius: $radius-xl;
     background: $color-bg-surface;
-    aspect-ratio: 4 / 3;
+    box-shadow: $shadow-xs;
   }
 
   &__main-swiper,
@@ -32,7 +33,6 @@
   }
 
   &__image {
-    aspect-ratio: 1 / 1;
     overflow: hidden;
 
     img {
@@ -41,6 +41,20 @@
       display: block;
       object-fit: cover;
     }
+  }
+
+  &__counter {
+    position: absolute;
+    right: $space-4;
+    bottom: $space-4;
+    z-index: 4;
+    padding: 6px 10px;
+    border-radius: $radius-pill;
+    background: rgba($text-main, 0.68);
+    color: $text-on-primary;
+    font-size: $font-size-xs;
+    font-variant-numeric: tabular-nums;
+    backdrop-filter: blur(8px);
   }
 
   &__nav {
@@ -74,6 +88,22 @@
       background: rgba(255, 255, 255, 0.96);
       transform: translateY(-50%) scale(1.06);
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+      transform: translateY(-50%) scale(0.94);
+    }
+
+    &:focus-visible {
+      outline: $border-width-md solid rgba($color-primary, 0.55);
+      outline-offset: 3px;
+      transform: translateY(-50%);
+    }
+
+    &.swiper-button-disabled {
+      opacity: 0.38;
+      transform: translateY(-50%);
+      cursor: not-allowed;
     }
   }
 
@@ -131,9 +161,11 @@
     overflow: hidden;
     border-radius: 12px;
     aspect-ratio: 4 / 3;
+    width: 100%;
+    padding: 0;
+    border: $border-width-md solid transparent;
+    background: transparent;
     cursor: pointer;
-
-    border: 2px solid transparent;
 
     transition:
       border-color 0.2s ease,
@@ -157,6 +189,11 @@
       &::after {
         opacity: 0.15;
       }
+    }
+
+    &:focus-visible {
+      outline: $border-width-md solid rgba($color-primary, 0.48);
+      outline-offset: 2px;
     }
 
     &.is-active {
@@ -208,5 +245,25 @@
     font-size: 20px;
     font-weight: 700;
     color: $color-primary;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-gallery__nav,
+  .product-gallery__thumb,
+  .product-gallery__thumb::after {
+    transition: none;
+  }
+
+  .product-gallery__nav:hover,
+  .product-gallery__nav:active,
+  .product-gallery__nav:focus-visible,
+  .product-gallery__nav.swiper-button-disabled {
+    transform: translateY(-50%);
+  }
+
+  .product-gallery__thumb:hover,
+  .product-gallery__thumb.is-active {
+    transform: none;
   }
 }

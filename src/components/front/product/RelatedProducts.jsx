@@ -1,67 +1,64 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
 // components
 import ProductCard from '@/components/shared/ProductCard';
+// constants
 import { parseCategoryParts } from '@/constants/productConstants';
 
-const RelatedProducts = ({ currentProduct, products = [], limit = 5 }) => {
-  const { theme } = parseCategoryParts(currentProduct?.category);
-  const currentThemeKey = theme?.key;
+const RelatedProducts = ({ currentProduct, products = [], limit = 4 }) => {
+  const { theme, type } = parseCategoryParts(currentProduct?.category);
+  const currentThemeCode = theme?.code;
+  const currentTypeCode = type?.code;
 
   const relatedProducts = products
-    .filter((item) => {
-      const { theme: itemTheme } = parseCategoryParts(item.category);
+    .filter((item) => item.id !== currentProduct?.id && Number(item.is_enabled) === 1)
+    .map((item, index) => {
+      const itemCategory = parseCategoryParts(item.category);
+      const sameTheme = itemCategory.theme?.code === currentThemeCode;
+      const sameType = itemCategory.type?.code === currentTypeCode;
 
-      return (
-        item.id !== currentProduct?.id &&
-        itemTheme?.key === currentThemeKey &&
-        Number(item.is_enabled) === 1
-      );
+      return {
+        item,
+        index,
+        score: (sameTheme ? 2 : 0) + (sameType ? 1 : 0),
+      };
     })
-    .slice(0, limit);
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .slice(0, limit)
+    .map(({ item }) => item);
 
   if (!relatedProducts.length) {
     return null;
   }
 
+  const viewMoreUrl = currentThemeCode
+    ? `/products?theme=${encodeURIComponent(currentThemeCode)}`
+    : '/products';
+
   return (
-    <section className="related-products">
+    <section className="related-products" aria-labelledby="related-products-title">
       <div className="related-products__header">
-        <h2 className="related-products__title">為您推薦 ・ 搭配建議</h2>
-        <p className="related-products__subtitle">探索更多相似風格植栽與空間搭配靈感</p>
+        <div>
+          <p className="related-products__eyebrow">More to Explore</p>
+          <h2 className="related-products__title" id="related-products-title">
+            延伸你的植感選擇
+          </h2>
+          <p className="related-products__subtitle">依照相同主題與商品類型，挑選更多搭配靈感。</p>
+        </div>
+
+        <Link className="related-products__link" to={viewMoreUrl}>
+          瀏覽同主題
+          <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
+        </Link>
       </div>
 
-      <Swiper
-        modules={[Autoplay]}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        navigation
-        spaceBetween={20}
-        slidesPerView={1.15}
-        breakpoints={{
-          576: {
-            slidesPerView: 2,
-            spaceBetween: 20,
-          },
-          992: {
-            slidesPerView: 4,
-            spaceBetween: 24,
-          },
-        }}
-        className="related-products__swiper"
-      >
+      <div className="related-products__grid">
         {relatedProducts.map((product) => (
-          <SwiperSlide key={product.id}>
-            <ProductCard product={product} variant="minimal" />
-          </SwiperSlide>
+          <ProductCard key={product.id} product={product} variant="related" />
         ))}
-      </Swiper>
+      </div>
     </section>
   );
 };

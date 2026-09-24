@@ -1,9 +1,18 @@
+import { PackageCheck, ShieldCheck, Star, Truck } from 'lucide-react';
+
 // constants
-import { parseCategoryParts, parsePersonalityTags } from '@/constants/productConstants';
+import {
+  PRODUCT_DISPLAY_TAGS_MAP,
+  PRODUCT_UNIT_MAP,
+  parseCategoryParts,
+  parsePersonalityTags,
+} from '@/constants/productConstants';
 
 // components
 import BtnLoader from '@/components/BtnLoader';
 import QuantityStepper from '@/components/shared/QuantityStepper';
+
+const currencyFormatter = new Intl.NumberFormat('zh-TW');
 
 const ProductInfo = ({
   currentProduct,
@@ -13,63 +22,86 @@ const ProductInfo = ({
   isLoading,
   isAdded,
 }) => {
-  const { theme, species } = parseCategoryParts(currentProduct?.category);
-
+  const { theme, type, species } = parseCategoryParts(currentProduct?.category);
   const tags = parsePersonalityTags(currentProduct?.personalityTags).slice(0, 4);
-
-  const discount =
-    currentProduct?.origin_price > currentProduct?.price
-      ? currentProduct.origin_price - currentProduct.price
-      : 0;
+  const currentPrice = Number(currentProduct?.price || 0);
+  const originPrice = Number(currentProduct?.origin_price || 0);
+  const discount = Math.max(0, originPrice - currentPrice);
+  const rating = Math.min(5, Math.max(0, Number(currentProduct?.rating || 0)));
+  const unit = Object.values(PRODUCT_UNIT_MAP).find(
+    (unitOption) => unitOption.value === currentProduct?.unit,
+  );
+  const displayTagKey = currentProduct?.displayTags
+    ?.split('|')
+    .map((tag) => tag.trim())
+    .find((tag) => PRODUCT_DISPLAY_TAGS_MAP[tag]);
+  const displayTag = displayTagKey ? PRODUCT_DISPLAY_TAGS_MAP[displayTagKey] : null;
 
   return (
     <div className="product-info">
-      {/* Header */}
-      <section className="product-info__header">
-        <p className="product-info__eyebrow">{theme?.title || 'Between Green'}</p>
+      <header className="product-info__header">
+        <div className="product-info__eyebrow-row">
+          <p className="product-info__eyebrow">{theme?.title || 'Between Green'}</p>
+          {displayTag && <span className="product-info__badge">{displayTag.badge}</span>}
+        </div>
 
         <h1 className="product-info__title">{currentProduct?.title}</h1>
+        {currentProduct?.titleEn && (
+          <p className="product-info__title-en">{currentProduct.titleEn}</p>
+        )}
 
         <div className="product-info__sub">
-          <span>{species?.label}</span>
-          {/* <span>★★★★☆</span> */}
+          <span>{species?.label || type?.label || '植感生活選物'}</span>
+          {rating > 0 && (
+            <span className="product-info__rating" aria-label={`商品評分 ${rating} 顆星，滿分 5 顆`}>
+              <Star size={15} strokeWidth={1.8} fill="currentColor" aria-hidden="true" />
+              {rating.toFixed(1)}
+            </span>
+          )}
         </div>
-      </section>
+      </header>
 
-      {/* Price */}
-      <section className="product-info__pricing">
-        <div className="product-info__price">NT$ {currentProduct?.price?.toLocaleString()}</div>
+      {currentProduct?.description && (
+        <p className="product-info__summary">{currentProduct.description}</p>
+      )}
+
+      <section className="product-info__pricing" aria-label="商品價格">
+        <div className="product-info__price">NT$ {currencyFormatter.format(currentPrice)}</div>
 
         {discount > 0 && (
           <div className="product-info__origin">
-            <span className="product-info__origin-price">
-              NT$ {currentProduct?.origin_price?.toLocaleString()}
-            </span>
-
-            <span>現省 NT$ {discount.toLocaleString()}</span>
+            <del className="product-info__origin-price">
+              NT$ {currencyFormatter.format(originPrice)}
+            </del>
+            <span>現省 NT$ {currencyFormatter.format(discount)}</span>
           </div>
         )}
       </section>
 
-      {/* Tags */}
       {tags.length > 0 && (
-        <section className="product-info__tags">
+        <div className="product-info__tags" aria-label="商品特色標籤">
           {tags.map((tag) => (
             <span key={tag.badge} className="product-info__tag">
               {tag.label}
             </span>
           ))}
-        </section>
+        </div>
       )}
 
-      {/* Summary 產品實際內容說明 */}
-      {/* <section className="product-info__summary">
-        <p>{product?.content}</p>
-      </section> */}
+      <dl className="product-info__meta">
+        <div className="product-info__meta-item">
+          <dt>商品類型</dt>
+          <dd>{type?.label || '生活選物'}</dd>
+        </div>
+        <div className="product-info__meta-item">
+          <dt>販售單位</dt>
+          <dd>{unit?.label || currentProduct?.unit || '單件商品'}</dd>
+        </div>
+      </dl>
 
-      {/* Purchase */}
-      <section className="product-info__purchase">
+      <section className="product-info__purchase" aria-label="選擇數量並加入購物車">
         <div className="product-info__quantity">
+          <span className="product-info__quantity-label">數量</span>
           <QuantityStepper
             value={qtySelect}
             min={1}
@@ -86,7 +118,8 @@ const ProductInfo = ({
         <button
           type="button"
           className={`ui-btn ui-btn--primary ui-btn--lg product-info__cart-btn${isAdded ? ' is-success' : ''}`}
-          disabled={isLoading}
+          disabled={isLoading || isAdded}
+          aria-busy={isLoading}
           onClick={() => addCartItem(currentProduct?.id, qtySelect)}
         >
           {isLoading ? (
@@ -102,16 +135,20 @@ const ProductInfo = ({
         </button>
       </section>
 
-      {/* Service */}
-      <section className="product-info__service">
-        <div className="product-info__service-item">7天鑑賞期</div>
-
-        <div className="product-info__service-item">滿 NT$999 免運</div>
-
-        <div className="product-info__service-item">專業防撞包裝</div>
-
-        <div className="product-info__service-item">到貨補寄保障</div>
-      </section>
+      <ul className="product-info__service" aria-label="購物服務">
+        <li className="product-info__service-item">
+          <PackageCheck size={19} strokeWidth={1.7} aria-hidden="true" />
+          <span>專業防撞包裝</span>
+        </li>
+        <li className="product-info__service-item">
+          <Truck size={19} strokeWidth={1.7} aria-hidden="true" />
+          <span>滿 NT$999 免運</span>
+        </li>
+        <li className="product-info__service-item">
+          <ShieldCheck size={19} strokeWidth={1.7} aria-hidden="true" />
+          <span>到貨狀況保障</span>
+        </li>
+      </ul>
     </div>
   );
 };
