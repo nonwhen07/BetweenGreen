@@ -1,9 +1,11 @@
 import axiosAPI from '@/api/axiosAPI';
+import { normalizeCartData } from '@/utils/cartUtils';
 
 // 取得購物車列表 + 剩餘完整資料
 export const getCartSummary = async () => {
   const res = await axiosAPI.get('/cart');
-  return res.data.data;
+
+  return normalizeCartData(res?.data);
 };
 
 // 加入單一品項 到 購物車

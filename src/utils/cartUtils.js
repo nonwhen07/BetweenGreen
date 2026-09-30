@@ -1,5 +1,40 @@
 import { shippingFee, minfreeShippingFee } from '@/constants/cartConstants';
 
+export const EMPTY_CART_DATA = Object.freeze({
+  carts: [],
+  total: 0,
+  final_total: 0,
+});
+
+const getCartPayload = (payload) => {
+  if (Array.isArray(payload)) return { carts: payload };
+  if (!payload || typeof payload !== 'object') return null;
+  if (Array.isArray(payload.carts)) return payload;
+
+  return getCartPayload(payload.data);
+};
+
+export const normalizeCartData = (payload) => {
+  const cartPayload = getCartPayload(payload);
+
+  if (!cartPayload) return { ...EMPTY_CART_DATA };
+
+  const carts = Array.isArray(cartPayload.carts) ? cartPayload.carts : [];
+  const calculatedTotal = calculateCartTotal(carts);
+  const total = Number.isFinite(Number(cartPayload.total))
+    ? Number(cartPayload.total)
+    : calculatedTotal;
+  const finalTotal = Number.isFinite(Number(cartPayload.final_total))
+    ? Number(cartPayload.final_total)
+    : total;
+
+  return {
+    carts,
+    total,
+    final_total: finalTotal,
+  };
+};
+
 export const calculateCartTotal = (carts = []) => {
   return carts.reduce((total, cart) => total + Number(cart.total || 0), 0);
 };

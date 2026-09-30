@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 // hooks
 import { useToast } from '@/hooks/useToast';
@@ -9,19 +10,14 @@ import { updateCartItem, deleteCartItem, clearCart } from '@/services/cartServic
 import { applyCoupon } from '@/services/couponService';
 // utils
 import { extractErrorMessage } from '@/utils/errorHandler';
-
-const EMPTY_CART_DATA = {
-  carts: [],
-  total: 0,
-  final_total: 0,
-};
+import { selectCartData } from '@/features/cart/cartSlice';
 
 export const useCart = () => {
   // const [carts, setCarts] = useState([]);
   // const [loadingItems, setLoadingItems] = useState({});
 
   // const [error, setError] = useState('');
-  const [cartData, setCartData] = useState(EMPTY_CART_DATA);
+  const cartData = useSelector(selectCartData);
   const [loadingItems, setLoadingItems] = useState({});
   const [isCouponLoading, setIsCouponLoading] = useState(false);
   const [error, setError] = useState('');
@@ -34,20 +30,7 @@ export const useCart = () => {
   const carts = cartData.carts || [];
 
   const fetchCart = useCallback(async () => {
-    const data = await refreshCart();
-    const carts = data.carts || [];
-
-    const calculatedTotal = carts.reduce((total, cart) => total + Number(cart.total || 0), 0);
-
-    const nextCartData = {
-      carts,
-      total: Number(data?.total ?? calculatedTotal),
-      final_total: Number(data?.final_total ?? data?.total ?? calculatedTotal),
-    };
-
-    setCartData(nextCartData);
-
-    return nextCartData;
+    return refreshCart();
   }, [refreshCart]);
 
   // 調整購物車品項
