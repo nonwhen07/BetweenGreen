@@ -30,6 +30,13 @@
     width: 100%;
   }
 
+  &__cart-layout {
+    display: grid;
+    gap: $space-5;
+
+    width: 100%;
+  }
+
   &__error {
     margin-bottom: $space-3;
   }
@@ -97,6 +104,12 @@
   .cart-page {
     &__hero {
       padding: 24px;
+    }
+
+    &__cart-layout {
+      grid-template-columns: minmax(0, 1.65fr) minmax(310px, 0.75fr);
+      align-items: start;
+      gap: $space-6;
     }
   }
 }

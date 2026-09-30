@@ -191,11 +191,10 @@ const CartPage = () => {
             {carts?.length === 0 ? (
               <CartEmpty />
             ) : (
-              <>
+              <div className="cart-page__cart-layout">
                 <EditableCartItems
                   carts={carts}
                   actions={{
-                    onClear: handleClearCart,
                     onUpdate: handleUpdateCartItem,
                     onDelete: handleDeleteCartItem,
                   }}
@@ -223,7 +222,7 @@ const CartPage = () => {
                     navigate('/cart/step2');
                   }}
                 />
-              </>
+              </div>
             )}
           </section>
         )}

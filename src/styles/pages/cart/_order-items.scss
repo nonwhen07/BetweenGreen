@@ -16,6 +16,48 @@
 .editable-cart-items {
   width: 100%;
 
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $space-3;
+
+    margin-bottom: $space-4;
+    padding: 0 $space-1;
+  }
+
+  &__eyebrow {
+    margin-bottom: $space-1;
+
+    color: $color-secondary-dark;
+    font-size: 11px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  &__heading {
+    margin-bottom: 0;
+
+    color: $color-primary-dark;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border-radius: $radius-pill;
+    background-color: $color-bg-brand-soft;
+    color: $color-primary-dark;
+    font-size: $font-size-xs;
+    white-space: nowrap;
+  }
+
   &__list {
     display: grid;
     gap: $space-3;
@@ -57,39 +99,106 @@
 
 .editable-cart-item {
   display: grid;
-  grid-template-columns: 60px minmax(0, 1fr);
+  grid-template-columns: 80px minmax(0, 1fr);
   gap: $space-3;
 
   padding: $space-3;
 
+  box-shadow: $shadow-xs;
+
+  transition:
+    border-color $transition-base,
+    box-shadow $transition-base,
+    opacity $transition-base;
+
+  &:hover {
+    border-color: rgba($color-primary, 0.22);
+    box-shadow: $cart-card-shadow;
+  }
+
+  &.is-loading {
+    opacity: 0.68;
+  }
+
   &__image {
-    width: 60px;
+    width: 80px;
     min-width: 0;
+
+    .product-image {
+      width: 100%;
+      height: auto;
+
+      aspect-ratio: 1;
+      border-radius: $radius-md;
+      background-color: $neutral-200;
+    }
   }
 
   &__content {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      'title delete'
+      'heading delete'
       'categories categories'
       'price price'
       'footer footer';
-    gap: 0 $space-2;
+    gap: $space-2;
 
     min-width: 0;
   }
 
-  &__title {
-    grid-area: title;
+  &__heading-group {
+    grid-area: heading;
 
     min-width: 0;
-    margin-bottom: $space-2;
+  }
+
+  &__eyebrow {
+    margin-bottom: 3px;
+
+    color: $color-secondary;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    min-width: 0;
+    margin-bottom: 2px;
 
     overflow-wrap: anywhere;
 
     font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
     line-height: 1.4;
+
+    a {
+      color: $color-primary-dark;
+      text-decoration: none;
+
+      transition: color $transition-fast;
+
+      &:hover {
+        color: $color-secondary-dark;
+      }
+
+      &:focus-visible {
+        border-radius: 2px;
+        outline: $border-width-md solid rgba($color-primary, 0.45);
+        outline-offset: 3px;
+      }
+    }
+  }
+
+  &__title-en {
+    margin-bottom: 0;
+
+    overflow: hidden;
+
+    color: $neutral-600;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__categories {
@@ -101,10 +210,19 @@
   &__price {
     grid-area: price;
 
-    margin-bottom: $space-3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-2;
 
     color: $neutral-600;
-    font-size: $font-size-sm;
+    font-size: $font-size-xs;
+
+    strong {
+      color: $color-primary-dark;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-semibold;
+    }
   }
 
   &__footer {
@@ -130,11 +248,69 @@
     align-items: center;
     justify-content: space-between;
     gap: $space-2;
+
+    color: $neutral-600;
+    font-size: $font-size-sm;
+
+    strong {
+      color: $color-primary-dark;
+      font-size: $font-size-md;
+    }
   }
 
   &__delete {
     grid-area: delete;
     align-self: start;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+    padding: 0;
+
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background-color: transparent;
+    color: $neutral-500;
+
+    cursor: pointer;
+
+    transition:
+      border-color $transition-fast,
+      background-color $transition-fast,
+      color $transition-fast;
+
+    &:hover:not(:disabled) {
+      border-color: rgba($color-danger, 0.16);
+      background-color: rgba($color-danger, 0.06);
+      color: $color-danger;
+    }
+
+    &:focus-visible {
+      outline: $border-width-md solid rgba($color-danger, 0.4);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+  }
+
+  .quantity-stepper {
+    grid-template-columns: auto minmax(36px, auto) auto auto;
+
+    &__button {
+      width: 36px;
+      height: 36px;
+    }
+
+    &__value {
+      min-width: 36px;
+      height: 36px;
+    }
   }
 }
 
@@ -420,7 +596,12 @@
 
 @include respond($breakpoints, pad) {
   .editable-cart-item {
+    grid-template-columns: 96px minmax(0, 1fr);
     padding: $space-4;
+
+    &__image {
+      width: 96px;
+    }
 
     &__footer {
       grid-template-columns: minmax(0, 1fr) auto;
@@ -450,54 +631,39 @@
 
 @include respond($breakpoints, desktop) {
   .editable-cart-item {
-    grid-template-columns: 80px minmax(0, 1fr);
-    align-items: center;
+    grid-template-columns: 112px minmax(0, 1fr);
+    align-items: start;
     gap: $space-4;
 
-    padding: $space-4 $space-5;
+    padding: $space-4;
 
     &__image {
-      width: 80px;
+      width: 112px;
     }
 
     &__content {
-      grid-template-columns:
-        minmax(110px, 1.1fr)
-        minmax(96px, 0.8fr)
-        minmax(92px, 0.7fr)
-        minmax(340px, 1.9fr)
-        42px;
-      grid-template-areas: 'title categories price footer delete';
-      align-items: center;
-      gap: $space-4;
-    }
-
-    &__title,
-    &__categories,
-    &__price {
-      margin-bottom: 0;
+      grid-template-areas:
+        'heading delete'
+        'categories categories'
+        'price price'
+        'footer footer';
+      gap: $space-2 $space-3;
     }
 
     &__footer {
-      grid-template-columns: minmax(210px, 1fr) minmax(104px, auto);
+      grid-template-columns: minmax(0, 1fr) minmax(132px, auto);
       align-items: center;
       gap: $space-3;
 
-      padding-top: 0;
-
-      border-top: 0;
+      padding-top: $space-3;
     }
 
     &__subtotal {
-      min-width: 104px;
+      min-width: 132px;
       padding-left: $space-3;
 
       border-left: 1px solid $border-color-soft;
       white-space: nowrap;
-    }
-
-    &__delete {
-      align-self: center;
     }
   }
 

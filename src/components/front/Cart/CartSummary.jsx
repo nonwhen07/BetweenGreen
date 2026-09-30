@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ArrowRight, ShieldCheck, TicketPercent, Truck } from 'lucide-react';
 
 // utils
 import {
@@ -20,8 +21,13 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
 
   const { shipping, paymentTotal, amountToFreeShipping } = getShippingPricing(finalTotal);
   const appliedCoupon = getAppliedCoupon(carts);
+  const freeShippingProgress = Math.min(
+    100,
+    Math.round((Math.max(0, finalTotal) / minfreeShippingFee) * 100),
+  );
 
-  const handleApplyCoupon = () => {
+  const handleApplyCoupon = (event) => {
+    event.preventDefault();
     const trimmedCode = couponCode.trim();
     if (!trimmedCode) return;
     actions.onApplyCoupon?.(trimmedCode);
@@ -32,10 +38,12 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
   }
 
   return (
-    <>
-      <div className="order-summary order-summary--cart card mt-3 p-3">
+    <div className="cart-summary-panel">
+      <div className="order-summary order-summary--cart">
         <div className="order-summary__header">
-          <h2 className="order-summary__title mb-3">訂單摘要</h2>
+          <p className="order-summary__eyebrow">Order Summary</p>
+          <h2 className="order-summary__title">訂單摘要</h2>
+          <p className="order-summary__intro">確認品項與優惠後，再前往填寫收件資料。</p>
         </div>
 
         <ul className="order-summary__list">
@@ -55,61 +63,63 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
 
           <li className="cart-summary-coupon">
             <div className="cart-summary-coupon__top">
-              <label htmlFor="couponCode" className="form-label mb-0">
+              <span className="cart-summary-coupon__label">
+                <TicketPercent size={17} aria-hidden="true" />
                 優惠碼
-              </label>
+              </span>
 
               {appliedCoupon && (
                 <span className="cart-summary-coupon__current">目前使用：{appliedCoupon.code}</span>
               )}
             </div>
 
-            <div className="row g-2 mb-2">
-              <div className="col-lg-6 col-12">
-                <div className="cart-summary-coupon__input-group">
-                  <input
-                    id="couponCode"
-                    type="text"
-                    className="form-control"
-                    value={couponCode}
-                    placeholder="請輸入優惠碼"
-                    disabled={isCouponLoading}
-                    onChange={(event) => setCouponCode(event.target.value)}
-                  />
+            <form className="cart-summary-coupon__form" onSubmit={handleApplyCoupon}>
+              <label htmlFor="couponCode" className="visually-hidden">
+                輸入優惠碼
+              </label>
 
-                  <button
-                    type="button"
-                    className="ui-btn ui-btn--outline-primary"
-                    disabled={isCouponLoading}
-                    onClick={handleApplyCoupon}
-                  >
-                    {isCouponLoading ? '套用中' : '套用'}
-                  </button>
+              <div className="cart-summary-coupon__input-group">
+                <input
+                  id="couponCode"
+                  type="text"
+                  className="cart-summary-coupon__input"
+                  value={couponCode}
+                  placeholder="請輸入優惠碼"
+                  disabled={isCouponLoading}
+                  autoComplete="off"
+                  onChange={(event) => setCouponCode(event.target.value)}
+                />
+
+                <button
+                  type="submit"
+                  className="ui-btn ui-btn--outline-primary"
+                  disabled={isCouponLoading || !couponCode.trim()}
+                  aria-busy={isCouponLoading}
+                >
+                  {isCouponLoading ? '套用中' : '套用'}
+                </button>
+              </div>
+            </form>
+
+            {hasDiscount && appliedCoupon ? (
+              <div className="cart-coupon-applied">
+                <div className="cart-coupon-applied__header">
+                  <span className="cart-coupon-applied__label">已套用</span>
+                  <strong className="cart-coupon-applied__code">{appliedCoupon.code}</strong>
                 </div>
-              </div>
-              <div className="col-lg-6 col-12">
-                {hasDiscount && appliedCoupon ? (
-                  <div className="cart-coupon-applied">
-                    <div className="cart-coupon-applied__header">
-                      <span className="cart-coupon-applied__label">已套用優惠碼</span>
-                      <strong className="cart-coupon-applied__code">{appliedCoupon.code}</strong>
-                    </div>
 
-                    <p className="cart-coupon-applied__text">
-                      約 {discountRate}% OFF，折抵 NT$ {discountAmount.toLocaleString()}。
-                      <span className="cart-coupon-applied__hint">
-                        到期日：{formatCouponDueDate(appliedCoupon.due_date)}
-                        ，再次輸入其他優惠碼系統會以最後成功套用優惠碼為準。
-                      </span>
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-muted small mt-2 mb-0">
-                    有優惠碼嗎？請在建立訂單前輸入，單筆訂單限套用一組優惠碼。
-                  </p>
-                )}
+                <p className="cart-coupon-applied__text">
+                  約 {discountRate}% OFF，折抵 NT$ {discountAmount.toLocaleString()}。
+                </p>
+                <p className="cart-coupon-applied__hint">
+                  到期日：{formatCouponDueDate(appliedCoupon.due_date)}
+                </p>
               </div>
-            </div>
+            ) : (
+              <p className="cart-summary-coupon__hint">
+                單筆訂單限套用一組，以最後成功套用的優惠碼為準。
+              </p>
+            )}
           </li>
 
           {hasDiscount && (
@@ -129,15 +139,31 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
             </strong>
           </li>
           <li className="order-summary__shipping-note">
-            <span>全館 NT$ {minfreeShippingFee.toLocaleString()} 免運</span>
-
-            {shipping === 0 ? (
-              <strong className="order-summary__value  text-success">已享免運</strong>
-            ) : (
-              <span className="order-summary__value text-muted">
-                距離免運還差 NT$ {amountToFreeShipping.toLocaleString()}
+            <div className="order-summary__shipping-copy">
+              <span className="order-summary__shipping-title">
+                <Truck size={17} aria-hidden="true" />
+                全館 NT$ {minfreeShippingFee.toLocaleString()} 免運
               </span>
-            )}
+
+              {shipping === 0 ? (
+                <strong className="order-summary__shipping-status is-complete">已享免運</strong>
+              ) : (
+                <span className="order-summary__shipping-status">
+                  還差 NT$ {amountToFreeShipping.toLocaleString()}
+                </span>
+              )}
+            </div>
+
+            <div
+              className="order-summary__shipping-progress"
+              role="progressbar"
+              aria-label="免運門檻進度"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow={freeShippingProgress}
+            >
+              <span style={{ width: `${freeShippingProgress}%` }} />
+            </div>
           </li>
         </ul>
 
@@ -147,18 +173,24 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
           <strong className="order-summary__label">合計</strong>
           <strong className="order-summary__value">NT$ {paymentTotal.toLocaleString()}</strong>
         </div>
-      </div>
 
-      <div className="order-summary__actions ui-action-group">
-        <button type="button" onClick={actions.onClear} className="ui-btn ui-btn--outline-danger">
-          清空購物車
-        </button>
+        <p className="order-summary__assurance">
+          <ShieldCheck size={17} aria-hidden="true" />
+          下一步才會建立訂單，目前仍可返回修改。
+        </p>
 
-        <button type="button" onClick={onNext} className="ui-btn ui-btn--primary">
-          前往結帳
-        </button>
+        <div className="order-summary__actions">
+          <button type="button" onClick={onNext} className="ui-btn ui-btn--primary">
+            前往填寫資料
+            <ArrowRight size={18} aria-hidden="true" />
+          </button>
+
+          <button type="button" onClick={actions.onClear} className="order-summary__clear">
+            清空購物車
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
