@@ -1,4 +1,4 @@
-import { ShoppingCart, CreditCard, CheckCircle } from 'lucide-react';
+import { CheckCircle, ContactRound, CreditCard, ShoppingCart } from 'lucide-react';
 
 export const CART_STEPS = [
   {
@@ -13,14 +13,14 @@ export const CART_STEPS = [
     label: '填寫資料',
     hash: '#step2',
     path: 'step2',
-    icon: CreditCard,
+    icon: ContactRound,
   },
   {
     id: 3,
     label: '確認付款',
     hash: '#step3',
     path: 'step3',
-    icon: CheckCircle,
+    icon: CreditCard,
   },
   {
     id: 4,

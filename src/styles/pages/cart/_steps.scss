@@ -9,14 +9,40 @@ $transition-speed: 0.3s;
 // ======================================================
 
 .cart-steps {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  gap: $space-3;
 
   width: 100%;
   padding: 16px 8px;
 
   background-color: $color-bg-main;
+
+  &__current-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-2;
+
+    margin-bottom: 0;
+
+    color: $color-primary-dark;
+    font-size: $font-size-sm;
+
+    span {
+      color: $color-secondary-dark;
+      font-size: 10px;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.12em;
+    }
+  }
+
+  &__track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+  }
 
   &__item {
     display: flex;
@@ -128,6 +154,10 @@ $transition-speed: 0.3s;
 @include respond($breakpoints, desktop) {
   .cart-steps {
     padding: 24px;
+
+    &__current-label {
+      display: none;
+    }
 
     &__icon {
       width: 40px;

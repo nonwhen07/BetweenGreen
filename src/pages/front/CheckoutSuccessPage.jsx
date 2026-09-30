@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { CheckCircle2, ClipboardList, PackageCheck, ReceiptText } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  ClipboardList,
+  History,
+  PackageCheck,
+  ReceiptText,
+} from 'lucide-react';
 
 // services
 import { getOrder } from '@/services/orderService';
@@ -19,7 +26,7 @@ import { useToast } from '@/hooks/useToast';
 import { useLoading } from '@/hooks/useLoading';
 
 const getProductPrice = (item) => {
-  return Number(item.product?.price || 0);
+  return Number(item.price ?? item.product?.price ?? 0);
 };
 
 const getItemTotal = (item) => {
@@ -34,6 +41,8 @@ const formatDate = (timestamp) => {
   if (!timestamp) return '—';
 
   const date = new Date(Number(timestamp) * 1000);
+
+  if (Number.isNaN(date.getTime())) return '—';
 
   return date.toLocaleDateString('zh-TW', {
     year: 'numeric',
@@ -215,28 +224,28 @@ const CheckoutSuccessPage = () => {
 
   return (
     <div className="checkout-success container ui-container ui-container--checkout-flow">
-      <header className="checkout-success__page-hero text-center mb-4">
+      <header className="checkout-success__page-hero">
         <h1 className="page-title">付款完成</h1>
       </header>
 
       <CartSteps currentStep={4} />
 
-      <div className="checkout-success__body mt-4">
+      <div className="checkout-success__body">
         {/* Success Hero */}
-        <section className="checkout-success__hero card p-4 text-center" data-aos="fade-up">
-          <div className="checkout-success__icon mx-auto mb-3">
-            <CheckCircle2 size={40} />
+        <section className="checkout-success__hero" data-aos="fade-up">
+          <div className="checkout-success__icon">
+            <CheckCircle2 size={40} aria-hidden="true" />
           </div>
 
           <span className="checkout-success__eyebrow">Payment Complete</span>
 
-          <h2 className="checkout-success__title mb-2">已完成付款，感謝您的購買</h2>
+          <h2 className="checkout-success__title">已完成付款，感謝您的購買</h2>
 
-          <p className="checkout-success__text text-muted mb-3">
+          <p className="checkout-success__text">
             我們已收到您的訂單，會盡快為您安排出貨。
           </p>
 
-          <div className="checkout-success__order-code mx-auto">
+          <div className="checkout-success__order-code">
             <span className="checkout-success__order-code-label">訂單編號</span>
 
             <strong className="checkout-success__order-code-value">{orderID}</strong>
@@ -245,67 +254,60 @@ const CheckoutSuccessPage = () => {
 
         {/* Summary Cards */}
         <section
-          className="checkout-success__summary-grid row g-3 mt-3 mx-0"
+          className="checkout-success__summary-grid"
           data-aos="fade-up"
           data-aos-delay="100"
         >
-          <div className="col-4">
-            <article className="checkout-success__summary-card card p-3 h-100">
+            <article className="checkout-success__summary-card">
               <div className="checkout-success__summary-icon">
-                <ReceiptText size={22} />
+                <ReceiptText size={22} aria-hidden="true" />
               </div>
 
               <div>
-                <p className="checkout-success__summary-label mb-1">付款狀態</p>
+                <p className="checkout-success__summary-label">付款狀態</p>
 
-                <h3 className="checkout-success__summary-value mb-0">{orderStatusText}</h3>
+                <h3 className="checkout-success__summary-value">{orderStatusText}</h3>
               </div>
             </article>
-          </div>
 
-          <div className="col-4">
-            <article className="checkout-success__summary-card card p-3 h-100">
+            <article className="checkout-success__summary-card">
               <div className="checkout-success__summary-icon">
-                <PackageCheck size={22} />
+                <PackageCheck size={22} aria-hidden="true" />
               </div>
 
               <div>
-                <p className="checkout-success__summary-label mb-1">商品數量</p>
+                <p className="checkout-success__summary-label">商品數量</p>
 
-                <h3 className="checkout-success__summary-value mb-0">{productCount} 件</h3>
+                <h3 className="checkout-success__summary-value">{productCount} 件</h3>
               </div>
             </article>
-          </div>
 
-          <div className="col-4">
-            <article className="checkout-success__summary-card card p-3 h-100">
+            <article className="checkout-success__summary-card">
               <div className="checkout-success__summary-icon">
-                <ClipboardList size={22} />
+                <ClipboardList size={22} aria-hidden="true" />
               </div>
 
               <div>
-                <p className="checkout-success__summary-label mb-1">建立日期</p>
+                <p className="checkout-success__summary-label">建立日期</p>
 
-                <h3 className="checkout-success__summary-value mb-0">
+                <h3 className="checkout-success__summary-value">
                   {formatDate(orderData?.create_at)}
                 </h3>
               </div>
             </article>
-          </div>
         </section>
 
         {/* Order Content */}
         <section
-          className="checkout-success__content row g-4 mt-1 mx-0"
+          className="checkout-success__content"
           data-aos="fade-up"
           data-aos-delay="150"
         >
-          <div className="col-lg-8">
-            <div className="checkout-success__items card p-3">
-              <div className="checkout-success__section-header mb-3">
-                <h3 className="checkout-success__section-title mb-1">本次購買商品</h3>
+            <div className="checkout-success__items">
+              <div className="checkout-success__section-header">
+                <h3 className="checkout-success__section-title">本次購買商品</h3>
 
-                <p className="checkout-success__section-intro text-muted mb-0">
+                <p className="checkout-success__section-intro">
                   請確認本次訂單商品與數量。
                 </p>
               </div>
@@ -325,14 +327,12 @@ const CheckoutSuccessPage = () => {
                 />
               )}
             </div>
-          </div>
 
-          <div className="col-lg-4">
-            <aside className="checkout-success__aside order-summary card p-3">
-              <div className="checkout-success__section-header mb-3">
-                <h3 className="checkout-success__section-title mb-1">訂單摘要</h3>
+            <aside className="checkout-success__aside order-summary">
+              <div className="checkout-success__section-header">
+                <h3 className="checkout-success__section-title">訂單摘要</h3>
 
-                <p className="checkout-success__section-intro text-muted mb-0">付款與收件資訊</p>
+                <p className="checkout-success__section-intro">付款與收件資訊</p>
               </div>
 
               <div className="checkout-success__info-list">
@@ -380,34 +380,35 @@ const CheckoutSuccessPage = () => {
               <hr className="checkout-success__divider" />
 
               <div className="checkout-success__customer">
-                <h4 className="checkout-success__customer-title mb-2">收件資訊</h4>
+                <h4 className="checkout-success__customer-title">收件資訊</h4>
 
-                <p className="checkout-success__customer-row mb-1">
+                <p className="checkout-success__customer-row">
                   <span className="checkout-success__customer-label">收件人：</span>
                   {userInfo.name || '—'}
                 </p>
 
-                <p className="checkout-success__customer-row mb-1">
+                <p className="checkout-success__customer-row">
                   <span className="checkout-success__customer-label">電話：</span>
                   {userInfo.tel || '—'}
                 </p>
 
-                <p className="checkout-success__customer-row mb-0">
+                <p className="checkout-success__customer-row">
                   <span className="checkout-success__customer-label">地址：</span>
                   {userInfo.address || '—'}
                 </p>
               </div>
             </aside>
-          </div>
         </section>
 
         <div className="checkout-success__actions ui-action-group">
           <Link to="/customer-orders" className="ui-btn ui-btn--outline-primary">
+            <History size={18} aria-hidden="true" />
             查看歷史訂單
           </Link>
 
           <Link to="/products" className="ui-btn ui-btn--primary">
             繼續購物
+            <ArrowRight size={18} aria-hidden="true" />
           </Link>
         </div>
       </div>

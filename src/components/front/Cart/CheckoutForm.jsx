@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { ArrowLeft, ArrowRight, LockKeyhole, Truck } from 'lucide-react';
 
 import taiwanDistricts from '@/data/taiwanDistricts.json';
 
@@ -55,11 +56,18 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
 
   return (
     <>
-      <form className="checkout-form" onSubmit={onSubmit}>
+      <form className="checkout-form" onSubmit={onSubmit} noValidate>
         <div className="checkout-form__layout row">
           <div className="col-lg-7">
-            <div className="checkout-form__section checkout-form__section--customer card row justify-content-center p-3 mb-3">
-              <h2 className="checkout-form__title mb-3">訂購人資訊</h2>
+            <section className="checkout-form__section checkout-form__section--customer">
+              <header className="checkout-form__section-header">
+                <span className="checkout-form__section-number">01</span>
+                <div>
+                  <p className="checkout-form__eyebrow">Contact</p>
+                  <h2 className="checkout-form__title">訂購人資訊</h2>
+                  <p className="checkout-form__section-intro">用於訂單通知與必要聯繫。</p>
+                </div>
+              </header>
 
               <div className="row mb-3">
                 <div className="col-lg-6">
@@ -69,6 +77,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                   <input
                     {...register('name', { required: '姓名 欄位必填' })}
                     id="name"
+                    autoComplete="name"
                     className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                     placeholder="請輸入姓名"
                   />
@@ -89,6 +98,8 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     })}
                     id="tel"
                     type="text"
+                    inputMode="tel"
+                    autoComplete="tel"
                     className={`form-control ${errors.tel ? 'is-invalid' : ''}`}
                     placeholder="請輸入電話"
                   />
@@ -111,16 +122,25 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     })}
                     id="email"
                     type="email"
+                    autoComplete="email"
                     className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                     placeholder="請輸入 Email"
                   />
                   {errors.email && <p className="text-danger my-2">{errors.email.message}</p>}
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div className="checkout-form__section checkout-form__section--shipping card row justify-content-center p-3">
-              <h2 className="checkout-form__title mb-3">寄送資訊</h2>
+            <section className="checkout-form__section checkout-form__section--shipping">
+              <header className="checkout-form__section-header">
+                <span className="checkout-form__section-number">02</span>
+                <div>
+                  <p className="checkout-form__eyebrow">Delivery</p>
+                  <h2 className="checkout-form__title">寄送資訊</h2>
+                  <p className="checkout-form__section-intro">請填寫可正常收件的聯絡資訊與地址。</p>
+                </div>
+              </header>
+
               <div className="col-12 mb-3">
                 <label className={`ui-toggle-btn ${isSame ? 'is-active' : ''}`}>
                   <input
@@ -141,6 +161,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     {...register('shippingName', { required: '姓名 欄位必填' })}
                     id="shippingName"
                     type="text"
+                    autoComplete="shipping name"
                     className={`form-control ${errors.shippingName ? 'is-invalid' : ''}`}
                     placeholder="請輸入收件人姓名"
                     readOnly={isSame}
@@ -165,6 +186,8 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     })}
                     id="shippingTel"
                     type="text"
+                    inputMode="tel"
+                    autoComplete="shipping tel"
                     className={`form-control ${errors.shippingTel ? 'is-invalid' : ''}`}
                     placeholder="請輸入電話"
                     readOnly={isSame}
@@ -190,6 +213,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     })}
                     id="shippingEmail"
                     type="email"
+                    autoComplete="shipping email"
                     className={`form-control ${errors.shippingEmail ? 'is-invalid' : ''}`}
                     placeholder="請輸入收件人 Email"
                     readOnly={isSame}
@@ -213,6 +237,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     id="city"
                     {...register('city', { required: '請選擇縣市' })}
                     className={`form-select ${errors.city ? 'is-invalid' : ''}`}
+                    autoComplete="shipping address-level1"
                   >
                     <option value="">請選擇縣市</option>
                     {cityList.map((city) => (
@@ -221,6 +246,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                       </option>
                     ))}
                   </select>
+                  {errors.city && <p className="text-danger my-2">{errors.city.message}</p>}
                 </div>
                 <div className="col-lg-6">
                   {/* 鄉鎮 */}
@@ -231,6 +257,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     id="district"
                     {...register('district', { required: '請選擇區域' })}
                     className={`form-select ${errors.district ? 'is-invalid' : ''}`}
+                    autoComplete="shipping address-level2"
                   >
                     <option value="">請選擇區域</option>
                     {districtList?.map((district) => (
@@ -239,6 +266,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                       </option>
                     ))}
                   </select>
+                  {errors.district && <p className="text-danger my-2">{errors.district.message}</p>}
                 </div>
               </div>
               <div className="row mb-3">
@@ -252,6 +280,7 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     type="text"
                     {...register('addressDetail', { required: '請輸入詳細地址' })}
                     className={`form-control ${errors.addressDetail ? 'is-invalid' : ''}`}
+                    autoComplete="shipping street-address"
                     placeholder="例如：忠孝東路一段 100 號"
                   />
                 </div>
@@ -271,15 +300,19 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                     className="form-control"
                     cols="30"
                     rows="3"
+                    maxLength="200"
+                    placeholder="如有配送時間或其他需求，可在此補充（選填）"
                   ></textarea>
                 </div>
               </div>
-            </div>
+            </section>
           </div>
           <div className="col-lg-5">
-            <div className="order-summary order-summary--cart card p-3">
+            <aside className="order-summary order-summary--checkout">
               <div className="order-summary__header">
-                <h2 className="order-summary__title mb-3">訂單摘要</h2>
+                <p className="order-summary__eyebrow">Review Order</p>
+                <h2 className="order-summary__title">確認訂單</h2>
+                <p className="order-summary__intro">建立訂單前，請再次確認商品與金額。</p>
               </div>
 
               <ReadonlyOrderItems
@@ -318,7 +351,10 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                 </div>
 
                 <div className="order-summary__shipping-note">
-                  <span>全館優惠後滿 NT$ {minfreeShippingFee.toLocaleString()} 免運</span>
+                  <span className="order-summary__shipping-title">
+                    <Truck size={17} aria-hidden="true" />
+                    優惠後滿 NT$ {minfreeShippingFee.toLocaleString()} 免運
+                  </span>
 
                   {shipping === 0 ? (
                     <strong className="order-summary__value text-success">已享免運</strong>
@@ -337,15 +373,22 @@ const CheckoutForm = ({ carts, cartData, register, onSubmit, setValue, watch, er
                 </div>
               </div>
 
-              <div className="order-summary__actions ui-action-group">
+              <p className="order-summary__assurance">
+                <LockKeyhole size={17} aria-hidden="true" />
+                送出後會建立訂單，再進入模擬付款頁。
+              </p>
+
+              <div className="order-summary__actions order-summary__actions--checkout">
                 <button type="button" className="ui-btn ui-btn--outline-primary" onClick={onBack}>
+                  <ArrowLeft size={18} aria-hidden="true" />
                   回到購物車
                 </button>
                 <button type="submit" className="ui-btn ui-btn--primary">
-                  送出訂單
+                  建立訂單並前往付款
+                  <ArrowRight size={18} aria-hidden="true" />
                 </button>
               </div>
-            </div>
+            </aside>
           </div>
         </div>
       </form>

@@ -70,7 +70,7 @@
 
   &__row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
     gap: $space-3;
 
@@ -101,9 +101,25 @@
   &__value {
     min-width: 0;
 
-    overflow-wrap: anywhere;
-
     text-align: right;
+    white-space: nowrap;
+
+    &--code {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    &--stack {
+      white-space: normal;
+
+      del,
+      span {
+        display: inline-block;
+
+        white-space: nowrap;
+      }
+    }
   }
 
   &__divider {

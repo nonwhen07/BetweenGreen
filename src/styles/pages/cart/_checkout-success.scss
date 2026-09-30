@@ -20,6 +20,7 @@
 
   &__body {
     width: 100%;
+    margin-top: $space-6;
   }
 
   // ====================================================
@@ -27,6 +28,8 @@
   // ====================================================
 
   &__hero {
+    padding: $space-6 $space-4;
+
     overflow: hidden;
 
     border: $cart-card-border;
@@ -44,6 +47,7 @@
 
     width: 64px;
     height: 64px;
+    margin: 0 auto $space-4;
 
     border-radius: 50%;
     background-color: color.adjust($color-primary-light, $lightness: 34%);
@@ -63,6 +67,8 @@
   }
 
   &__title {
+    margin-bottom: $space-2;
+
     color: $color-primary;
     font-size: 22px;
     font-weight: 700;
@@ -70,6 +76,9 @@
   }
 
   &__text {
+    margin-bottom: $space-4;
+
+    color: $neutral-600;
     line-height: 1.7;
   }
 
@@ -78,6 +87,7 @@
     gap: 4px;
 
     max-width: 520px;
+    margin: 0 auto;
     padding: 12px 16px;
 
     border-radius: 12px;
@@ -101,18 +111,21 @@
   // ====================================================
 
   &__summary-grid {
-    row-gap: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-3;
+
+    margin-top: $space-4;
   }
 
   &__summary-card {
-    display: flex;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
     align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    gap: 8px;
+    gap: $space-3;
 
-    min-height: 102px;
-    padding: 14px 8px;
+    min-height: 88px;
+    padding: $space-4;
 
     overflow: hidden;
 
@@ -138,18 +151,22 @@
   }
 
   &__summary-label {
+    margin-bottom: 2px;
+
     color: $text-muted;
     font-size: 12px;
     line-height: 1.4;
-    text-align: center;
+    text-align: left;
   }
 
   &__summary-value {
+    margin-bottom: 0;
+
     color: $color-primary;
     font-size: 16px;
     font-weight: 700;
     line-height: 1.4;
-    text-align: center;
+    text-align: left;
   }
 
   // ====================================================
@@ -157,11 +174,16 @@
   // ====================================================
 
   &__content {
-    row-gap: 24px;
+    display: grid;
+    gap: $space-5;
+
+    margin-top: $space-5;
   }
 
   &__items,
   &__aside {
+    padding: $space-4;
+
     overflow: hidden;
 
     border: $cart-card-border;
@@ -172,6 +194,10 @@
 
   &__section-header {
     width: 100%;
+    margin-bottom: $space-4;
+    padding-bottom: $space-3;
+
+    border-bottom: 1px solid $border-color-soft;
   }
 
   &__section-title {
@@ -265,8 +291,14 @@
   }
 
   &__customer-row {
+    margin-bottom: $space-1;
+
     color: $color-secondary;
     line-height: 1.7;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   &__customer-label {
@@ -279,7 +311,7 @@
 
   &__actions {
     width: auto;
-    margin: $space-4;
+    margin: $space-5 0 0;
   }
 }
 
@@ -295,8 +327,8 @@
     }
 
     &__summary-card {
-      min-height: 118px;
-      padding: 18px 12px;
+      min-height: 104px;
+      padding: $space-4;
     }
 
     &__summary-icon {
@@ -326,6 +358,30 @@
     &__info-value {
       text-align: end;
     }
+
+    &__hero {
+      padding: $space-8 $space-6;
+    }
+  }
+}
+
+@include respond($breakpoints, tablet) {
+  .checkout-success {
+    &__summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &__summary-card {
+      grid-template-columns: 1fr;
+      justify-items: center;
+
+      text-align: center;
+    }
+
+    &__summary-label,
+    &__summary-value {
+      text-align: center;
+    }
   }
 }
 
@@ -349,6 +405,22 @@
 
     &__summary-card {
       align-items: center;
+    }
+
+    &__content {
+      grid-template-columns: minmax(0, 1.65fr) minmax(310px, 0.75fr);
+      align-items: start;
+      gap: $space-6;
+    }
+
+    &__items,
+    &__aside {
+      padding: $space-5;
+    }
+
+    &__aside {
+      position: sticky;
+      top: 104px;
     }
   }
 }

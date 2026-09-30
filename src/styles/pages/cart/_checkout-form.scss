@@ -1,8 +1,9 @@
-@use '@/styles/helpers/variables' as *;
+@use 'sass:color';
 
-// ======================================================
-// Checkout Form
-// ======================================================
+@use '@/styles/helpers/mixins' as *;
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/variables' as *;
+@use '@/styles/pages/cart/tokens' as *;
 
 .checkout-form {
   &__layout {
@@ -11,28 +12,214 @@
     margin-right: 0;
     margin-left: 0;
 
-    row-gap: 16px;
+    row-gap: $space-5;
+
+    > [class*='col-'] {
+      padding-right: 0;
+      padding-left: 0;
+    }
   }
 
   &__section {
     width: 100%;
+    margin: 0 0 $space-4;
+    padding: $space-4;
 
-    margin-right: 0;
-    margin-left: 0;
+    border: $cart-card-border;
+    border-radius: $cart-card-radius;
+    background-color: $color-bg-surface;
+    box-shadow: $cart-card-shadow;
 
-    row-gap: 16px;
+    > .row {
+      margin-right: calc($space-2 * -1);
+      margin-left: calc($space-2 * -1);
 
-    .form-select {
-      min-width: 0;
-      max-width: 100%;
+      row-gap: $space-3;
+
+      > [class*='col-'] {
+        padding-right: $space-2;
+        padding-left: $space-2;
+      }
     }
   }
 
+  &__section-header {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: $space-3;
+
+    width: 100%;
+    margin-bottom: $space-5;
+    padding-bottom: $space-4;
+
+    border-bottom: 1px solid $border-color-soft;
+  }
+
+  &__section-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+    background-color: $color-bg-brand-soft;
+    color: $color-primary-dark;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.08em;
+  }
+
+  &__eyebrow {
+    margin-bottom: 2px;
+
+    color: $color-secondary-dark;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
   &__title {
-    margin-bottom: 16px;
+    margin-bottom: $space-1;
+
+    color: $color-primary-dark;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__section-intro {
+    margin-bottom: 0;
+
+    color: $neutral-600;
+    font-size: $font-size-sm;
+    line-height: 1.6;
   }
 
   &__subtitle {
-    margin-bottom: 12px;
+    margin-bottom: $space-3;
+
+    color: $color-primary-dark;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+  }
+
+  .form-label {
+    margin-bottom: 6px;
+
+    color: $color-primary-dark;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+
+  .form-control,
+  .form-select {
+    min-height: 48px;
+
+    border-color: rgba($color-primary, 0.18);
+    border-radius: $radius-sm;
+    background-color: $color-bg-surface;
+    color: $color-text;
+
+    transition:
+      border-color $transition-fast,
+      box-shadow $transition-fast,
+      background-color $transition-fast;
+
+    &:focus {
+      border-color: rgba($color-primary, 0.62);
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    }
+
+    &::placeholder {
+      color: $neutral-500;
+    }
+
+    &[readonly] {
+      background-color: $color-bg-brand-soft;
+      color: $neutral-700;
+    }
+  }
+
+  textarea.form-control {
+    min-height: 112px;
+
+    resize: vertical;
+  }
+
+  .is-invalid {
+    border-color: rgba($color-danger, 0.65);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-danger, 0.1);
+    }
+  }
+
+  .text-danger {
+    margin-top: 6px !important;
+    margin-bottom: 0 !important;
+
+    color: color.adjust($color-danger, $lightness: -8%) !important;
+    font-size: $font-size-xs;
+    line-height: 1.5;
+  }
+
+  .ui-toggle-btn {
+    border-color: rgba($color-primary, 0.22);
+    background-color: $color-bg-soft;
+
+    &.is-active {
+      border-color: $color-primary;
+      background-color: $color-bg-brand-soft;
+      color: $color-primary-dark;
+    }
+  }
+}
+
+.order-summary--checkout {
+  width: 100%;
+  padding: $space-5;
+
+  border: $cart-card-border;
+  border-radius: $cart-card-radius;
+  background-color: $color-bg-surface;
+  box-shadow: $cart-card-shadow;
+}
+
+@include respond($breakpoints, tablet) {
+  .checkout-form__section {
+    padding: $space-5;
+  }
+}
+
+@include respond($breakpoints, desktop) {
+  .checkout-form {
+    &__layout {
+      column-gap: $space-6;
+
+      > .col-lg-7 {
+        flex: 1 1 0;
+
+        width: auto;
+      }
+
+      > .col-lg-5 {
+        flex: 0 0 min(38%, 430px);
+
+        width: min(38%, 430px);
+      }
+    }
+
+    &__section {
+      padding: $space-6;
+    }
+  }
+
+  .order-summary--checkout {
+    position: sticky;
+    top: 104px;
+
+    padding: $space-5;
   }
 }

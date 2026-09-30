@@ -50,7 +50,11 @@ const CartSummary = ({ carts, cartData, actions, onNext, isCouponLoading }) => {
           <li className="order-summary__row">
             <strong className="order-summary__label">商品小計</strong>
 
-            <strong className="order-summary__value">
+            <strong
+              className={`order-summary__value${
+                hasDiscount ? ' order-summary__value--stack' : ''
+              }`}
+            >
               {hasDiscount && (
                 <del className="text-muted me-2">NT$ {subtotal.toLocaleString()}</del>
               )}

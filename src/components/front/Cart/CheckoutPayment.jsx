@@ -1,6 +1,13 @@
 import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { CreditCard, Landmark, PackageCheck, Smartphone } from 'lucide-react';
+import {
+  CreditCard,
+  Landmark,
+  LockKeyhole,
+  PackageCheck,
+  ShieldCheck,
+  Smartphone,
+} from 'lucide-react';
 
 // utils
 import { calculateCartFinalTotal, formatCardNumber, getShippingPricing } from '@/utils/cartUtils';
@@ -80,26 +87,29 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
 
   return (
     <div className="checkout-payment">
-      <div className="checkout-payment__hero text-center mb-4">
+      <div className="checkout-payment__hero">
         <span className="checkout-payment__eyebrow">Payment</span>
-        <h2 className="checkout-payment__title mb-2">請完成付款流程</h2>
-        <p className="checkout-payment__intro text-muted mb-0">
-          訂單已建立，您的訂單編號為：{orderID}
-        </p>
+        <h2 className="checkout-payment__title">請完成付款流程</h2>
+        <p className="checkout-payment__intro">訂單已建立，請確認付款方式與應付金額。</p>
+        <p className="checkout-payment__order-code">訂單編號：{orderID}</p>
       </div>
 
-      <form onSubmit={handlePaymentSubmit}>
-        <div className="checkout-payment__layout row mx-0">
+      <form onSubmit={handlePaymentSubmit} noValidate>
+        <div className="checkout-payment__layout row">
           <div className="col-lg-7">
-            <div className="checkout-payment__card card p-3 mb-3">
+            <section className="checkout-payment__card">
               <div className="checkout-payment__card-header">
-                <h2 className="checkout-payment__section-title mb-1">本次訂單明細</h2>
-                <p className="checkout-payment__section-intro text-muted mb-0">
+                <span className="checkout-payment__section-number">01</span>
+                <div>
+                  <p className="checkout-payment__section-eyebrow">Review</p>
+                  <h2 className="checkout-payment__section-title">本次訂單明細</h2>
+                  <p className="checkout-payment__section-intro">
                   請確認商品與數量後完成付款。
-                </p>
+                  </p>
+                </div>
               </div>
 
-              <div className="mt-3">
+              <div className="checkout-payment__items">
                 <ReadonlyOrderItems
                   items={paymentItems}
                   variant="cards"
@@ -107,17 +117,21 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                   emptyDescription="目前無法顯示這筆訂單的商品明細。"
                 />
               </div>
-            </div>
+            </section>
 
-            <div className="checkout-payment__card card p-3">
+            <section className="checkout-payment__card">
               <div className="checkout-payment__card-header">
-                <h2 className="checkout-payment__section-title mb-1">付款方式</h2>
-                <p className="checkout-payment__section-intro text-muted mb-0">
-                  此為作品集模擬付款流程，用於呈現第三方金流串接與欄位驗證體驗。
-                </p>
+                <span className="checkout-payment__section-number">02</span>
+                <div>
+                  <p className="checkout-payment__section-eyebrow">Method</p>
+                  <h2 className="checkout-payment__section-title">付款方式</h2>
+                  <p className="checkout-payment__section-intro">
+                    此為作品集模擬付款，不會送出真實金流資料。
+                  </p>
+                </div>
               </div>
 
-              <div className="checkout-payment__methods mt-3 mb-4">
+              <div className="checkout-payment__methods" role="radiogroup" aria-label="付款方式">
                 <label
                   className={`checkout-payment__method ${
                     paymentMethod === 'credit-card' ? 'is-active' : ''
@@ -128,7 +142,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                     value="credit-card"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
-                  <CreditCard size={20} />
+                  <CreditCard size={20} aria-hidden="true" />
                   <span>信用卡</span>
                 </label>
 
@@ -142,7 +156,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                     value="line-pay"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
-                  <Smartphone size={20} />
+                  <Smartphone size={20} aria-hidden="true" />
                   <span>LINE Pay</span>
                 </label>
 
@@ -154,7 +168,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                     value="atm"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
-                  <Landmark size={20} />
+                  <Landmark size={20} aria-hidden="true" />
                   <span>ATM 轉帳</span>
                 </label>
 
@@ -166,7 +180,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                     value="cod"
                     {...register('paymentMethod', { required: '請選擇付款方式' })}
                   />
-                  <PackageCheck size={20} />
+                  <PackageCheck size={20} aria-hidden="true" />
                   <span>貨到付款</span>
                 </label>
               </div>
@@ -177,7 +191,7 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
 
               {paymentMethod === 'credit-card' && (
                 <div className="checkout-payment__form">
-                  <div className="fake-card-preview mb-4">
+                  <div className="fake-card-preview" aria-hidden="true">
                     <div className="fake-card-preview__brand">BETWEEN GREEN CARD</div>
 
                     <div className="fake-card-preview__number">
@@ -327,24 +341,28 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                   </p>
                 </div>
               )}
-            </div>
+            </section>
           </div>
 
           <div className="col-lg-5">
-            <div className="order-summary checkout-payment__summary card p-3">
+            <aside className="order-summary order-summary--payment checkout-payment__summary">
               <div className="order-summary__header">
-                <h3 className="order-summary__title mb-3">付款摘要</h3>
+                <p className="order-summary__eyebrow">Payment Summary</p>
+                <h3 className="order-summary__title">付款摘要</h3>
+                <p className="order-summary__intro">付款前請核對訂單編號與金額。</p>
               </div>
 
               <div className="order-summary__list">
                 <div className="order-summary__row">
                   <span className="order-summary__label">訂單編號</span>
-                  <strong className="order-summary__value">{orderID}</strong>
+                  <strong className="order-summary__value order-summary__value--code">
+                    {orderID}
+                  </strong>
                 </div>
 
                 <div className="order-summary__row">
                   <span className="order-summary__label">付款狀態</span>
-                  <strong className="order-summary__value text-warning">尚未付款</strong>
+                  <strong className="order-summary__status is-pending">尚未付款</strong>
                 </div>
 
                 <hr className="order-summary__divider" />
@@ -371,12 +389,18 @@ const CheckoutPayment = ({ orderID, orderItems = [], onSubmit }) => {
                 </div>
               </div>
 
-              <div className="order-summary__actions ui-action-group ui-action-group--single">
+              <p className="order-summary__assurance">
+                <LockKeyhole size={17} aria-hidden="true" />
+                本頁欄位僅供作品集流程展示，不會儲存卡片資料。
+              </p>
+
+              <div className="order-summary__actions">
                 <button type="submit" className="ui-btn ui-btn--primary">
+                  <ShieldCheck size={18} aria-hidden="true" />
                   確認付款
                 </button>
               </div>
-            </div>
+            </aside>
           </div>
         </div>
       </form>
