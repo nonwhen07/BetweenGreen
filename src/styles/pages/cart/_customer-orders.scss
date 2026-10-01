@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
@@ -5,58 +7,141 @@
 
 $cart-card-shadow-hover: 0 14px 36px rgba($color-primary, 0.1);
 
-// ======================================================
-// Customer Orders
-// ======================================================
-
 .customer-orders {
   width: 100%;
+  padding-top: $space-6;
+  padding-bottom: $space-10;
 
   &__hero {
-    padding: 16px 8px;
+    max-width: 680px;
+    margin: 0 auto $space-6;
 
     text-align: center;
+
+    .page-title {
+      margin-bottom: $space-2;
+    }
+  }
+
+  &__eyebrow {
+    margin-bottom: $space-2;
+
+    color: $color-secondary-dark;
+    font-size: 11px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  &__intro {
+    margin-bottom: 0;
+
+    color: $neutral-600;
+    line-height: 1.7;
+  }
+
+  &__overview {
+    display: grid;
+    gap: $space-4;
+
+    margin-bottom: $space-5;
+    padding: $space-4;
+
+    border: $cart-card-border;
+    border-radius: $cart-card-radius;
+    background-color: $color-bg-brand-soft;
+  }
+
+  &__overview-copy {
+    p {
+      margin-bottom: 2px;
+
+      color: $color-secondary-dark;
+      font-size: 10px;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-bottom: 0;
+
+      color: $color-primary-dark;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $space-2;
+
+    margin-bottom: 0;
+
+    div {
+      padding: $space-2;
+
+      border-radius: $radius-sm;
+      background-color: rgba($color-bg-surface, 0.72);
+
+      text-align: center;
+    }
+
+    dt {
+      margin-bottom: 2px;
+
+      color: $neutral-600;
+      font-size: 11px;
+      font-weight: $font-weight-regular;
+    }
+
+    dd {
+      margin-bottom: 0;
+
+      color: $color-primary-dark;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+    }
   }
 
   &__list {
     display: grid;
-    gap: 20px;
+    align-items: start;
+    gap: $space-4;
 
     width: 100%;
   }
 
   &__pagination {
     width: 100%;
-
-    &--top {
-      display: flex;
-
-      margin-bottom: $space-4;
-    }
-
-    &--bottom {
-      display: none;
-
-      margin-top: $space-2;
-    }
+    margin-top: $space-6;
   }
 }
 
-// ======================================================
-// Customer Order Card
-// ======================================================
-
 .customer-order-card {
+  min-width: 0;
+  padding: $space-4;
+
   overflow: hidden;
 
   border: $cart-card-border;
+  border-top: 4px solid $neutral-400;
   border-radius: $cart-card-radius;
   background-color: $color-bg-surface;
   box-shadow: $cart-card-shadow;
 
   transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+    box-shadow $transition-fast,
+    transform $transition-fast;
+
+  &.is-paid {
+    border-top-color: $color-primary;
+  }
+
+  &.is-unpaid {
+    border-top-color: $color-secondary;
+  }
 
   &:hover {
     box-shadow: $cart-card-shadow-hover;
@@ -64,82 +149,229 @@ $cart-card-shadow-hover: 0 14px 36px rgba($color-primary, 0.1);
   }
 
   &__header {
-    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $space-3;
+
+    margin-bottom: $space-4;
+    padding-bottom: $space-4;
+
+    border-bottom: 1px solid $border-color-soft;
   }
 
   &__identity {
     min-width: 0;
   }
 
+  &__eyebrow {
+    margin-bottom: 3px;
+
+    color: $color-secondary-dark;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
   &__title {
-    color: $color-primary;
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.4;
+    margin-bottom: 0;
 
     overflow-wrap: anywhere;
-  }
 
-  &__meta {
-    color: $text-muted;
-    line-height: 1.7;
-  }
-
-  &__status-group {
-    flex-shrink: 0;
+    color: $color-primary-dark;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    line-height: 1.45;
   }
 
   &__status {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    border-radius: $radius-pill;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    white-space: nowrap;
+
+    &.is-paid {
+      background-color: $color-bg-brand-soft;
+      color: $color-primary-dark;
+    }
+
+    &.is-unpaid {
+      background-color: color.adjust($color-warning, $lightness: 24%);
+      color: $color-secondary-dark;
+    }
+  }
+
+  &__summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $space-3;
+
+    margin-bottom: $space-4;
+
+    div {
+      min-width: 0;
+      padding: $space-3;
+
+      border-radius: $radius-sm;
+      background-color: $color-bg-soft;
+    }
+
+    dt {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      margin-bottom: $space-1;
+
+      color: $neutral-600;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-regular;
+    }
+
+    dd {
+      margin-bottom: 0;
+
+      overflow-wrap: anywhere;
+
+      color: $color-primary-dark;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  &__amount dd {
+    color: $color-secondary-dark;
     white-space: nowrap;
   }
 
-  &__amount {
-    color: $color-secondary;
-    font-weight: 700;
-    line-height: 1.7;
-  }
+  &__details {
+    border-top: 1px solid $border-color-soft;
+    border-bottom: 1px solid $border-color-soft;
 
-  &__actions {
-    width: 100%;
-  }
-}
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: $space-2;
 
-// ======================================================
-// Pad
-// ======================================================
+      padding: $space-3 0;
 
-@include respond($breakpoints, pad) {
-  .customer-orders {
-    &__list {
-      gap: 24px;
-    }
-  }
-}
+      color: $color-primary-dark;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
 
-// ======================================================
-// Desktop
-// ======================================================
+      cursor: pointer;
+      list-style: none;
 
-@include respond($breakpoints, desktop) {
-  .customer-orders {
-    &__hero {
-      padding: 24px;
-    }
-
-    &__pagination {
-      &--top {
+      &::-webkit-details-marker {
         display: none;
       }
 
-      &--bottom {
-        display: flex;
+      svg {
+        transition: transform $transition-fast;
       }
+
+      &:focus-visible {
+        border-radius: $radius-xs;
+        outline: $border-width-md solid rgba($color-primary, 0.42);
+        outline-offset: 3px;
+      }
+    }
+
+    &[open] summary svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__details-content {
+    padding: $space-1 0 $space-4;
+  }
+
+  &__actions {
+    display: grid;
+    gap: $space-2;
+
+    margin-top: $space-4;
+
+    .ui-btn {
+      width: 100%;
+    }
+  }
+}
+
+@include respond($breakpoints, pad) {
+  .customer-orders {
+    padding-top: $space-8;
+
+    &__overview {
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
+      align-items: center;
+      padding: $space-5;
     }
   }
 
   .customer-order-card {
-    &__title {
-      font-size: 24px;
+    padding: $space-5;
+
+    &__summary {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+
+    &__actions {
+      grid-template-columns: repeat(2, minmax(0, auto));
+      justify-content: flex-end;
+
+      .ui-btn {
+        width: auto;
+      }
+    }
+  }
+}
+
+@include respond($breakpoints, desktop) {
+  .customer-orders {
+    padding-top: $space-10;
+    padding-bottom: $space-16;
+
+    &__hero {
+      margin-bottom: $space-8;
+    }
+
+    &__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: $space-5;
+    }
+  }
+
+  .customer-order-card {
+    display: flex;
+    flex-direction: column;
+
+    &__summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &__details {
+      margin-top: auto;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-order-card,
+  .customer-order-card__details summary svg {
+    transition: none;
+  }
+
+  .customer-order-card:hover {
+    transform: none;
   }
 }

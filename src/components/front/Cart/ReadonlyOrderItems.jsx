@@ -54,7 +54,7 @@ const ReadonlyOrderItems = ({
 
   return (
     <div className={`order-items${isCards ? ' order-items--cards' : ''}`}>
-      {/* Mobile / Pad */}
+      {/* Card presentation */}
       <div className="order-items__list">
         {items.map((item) => (
           <article
@@ -84,42 +84,45 @@ const ReadonlyOrderItems = ({
         ))}
       </div>
 
-      {/* Desktop */}
-      <div className="order-items__table">
-        <div className="table-responsive order-items__table-scroll">
-          <table className="table order-table order-table--readonly align-middle mb-0">
-            <thead className="order-table__header">
-              <tr>
-                <th className="order-table__col--info">商品名稱</th>
-                <th className="order-table__col--image">圖片</th>
-                <th className="order-table__col--price">單價</th>
-                <th className="order-table__col--qty">數量</th>
-                <th className="order-table__col--subtotal">小計</th>
-              </tr>
-            </thead>
-
-            <tbody className="order-table__body">
-              {items.map((item) => (
-                <tr key={`table-${item.displayId || item.id || item.product_id}`}>
-                  <td className="order-table__col--info">{item.title}</td>
-
-                  <td className="order-table__col--image">
-                    <ProductImage src={item.imageUrl} alt={item.title} size="small" />
-                  </td>
-
-                  <td className="order-table__col--price">NT$ {formatCurrency(item.price)}</td>
-
-                  <td className="order-table__col--qty">
-                    {item.qty} {item.unit || '未設定單位'}
-                  </td>
-
-                  <td className="order-table__col--subtotal">NT$ {formatCurrency(item.total)}</td>
+      {!isCards && (
+        <div className="order-items__table">
+          <div className="table-responsive order-items__table-scroll">
+            <table className="table order-table order-table--readonly align-middle mb-0">
+              <thead className="order-table__header">
+                <tr>
+                  <th className="order-table__col--info">商品名稱</th>
+                  <th className="order-table__col--image">圖片</th>
+                  <th className="order-table__col--price">單價</th>
+                  <th className="order-table__col--qty">數量</th>
+                  <th className="order-table__col--subtotal">小計</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody className="order-table__body">
+                {items.map((item) => (
+                  <tr key={`table-${item.displayId || item.id || item.product_id}`}>
+                    <td className="order-table__col--info">{item.title}</td>
+
+                    <td className="order-table__col--image">
+                      <ProductImage src={item.imageUrl} alt={item.title} size="small" />
+                    </td>
+
+                    <td className="order-table__col--price">NT$ {formatCurrency(item.price)}</td>
+
+                    <td className="order-table__col--qty">
+                      {item.qty} {item.unit || '未設定單位'}
+                    </td>
+
+                    <td className="order-table__col--subtotal">
+                      NT$ {formatCurrency(item.total)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
