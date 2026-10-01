@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { matchPath, NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Package, ShoppingCart, ReceiptText, LayoutDashboard, Users } from 'lucide-react';
 // components
@@ -16,6 +16,7 @@ const routes = [
   },
   {
     path: '/products',
+    activePatterns: ['/product/:product_id'],
     name: 'Products',
     title: '產品目錄',
     label: '產品目錄',
@@ -42,6 +43,7 @@ const menuItems = [
   {
     type: 'link',
     path: '/products',
+    activePatterns: ['/product/:product_id'],
     label: '產品目錄',
     icon: Package,
   },
@@ -65,6 +67,12 @@ const menuItems = [
     auth: true,
   },
 ];
+
+const isRouteSectionActive = (item, pathname) => {
+  return item.activePatterns?.some((pattern) =>
+    matchPath({ path: pattern, end: true }, pathname),
+  );
+};
 
 const FrontHeader = () => {
   const location = useLocation();
@@ -169,19 +177,25 @@ const FrontHeader = () => {
           <div className={`header__menu${isMenuOpen ? ' is-open' : ''}`} id="headerMenu">
             {/* nav */}
             <ul className="navbar-nav header__nav">
-              {routes.map((route) => (
-                <li key={route.path} className="nav-item header__item">
-                  <NavLink
-                    className="nav-link header__link"
-                    aria-current="page"
-                    to={route.path}
-                    title={route.title}
-                    onClick={closeMenu}
-                  >
-                    {route.label}
-                  </NavLink>
-                </li>
-              ))}
+              {routes.map((route) => {
+                const isSectionActive = isRouteSectionActive(route, location.pathname);
+
+                return (
+                  <li key={route.path} className="nav-item header__item">
+                    <NavLink
+                      className={({ isActive }) =>
+                        `nav-link header__link${isActive || isSectionActive ? ' is-active' : ''}`
+                      }
+                      aria-current={isSectionActive ? 'page' : undefined}
+                      to={route.path}
+                      title={route.title}
+                      onClick={closeMenu}
+                    >
+                      {route.label}
+                    </NavLink>
+                  </li>
+                );
+              })}
             </ul>
             {/* actions */}
             <div className="header__actions">
@@ -190,8 +204,11 @@ const FrontHeader = () => {
                   <NavLink
                     to="/cart/step1"
                     className={({ isActive }) =>
-                      `header__link header__icon${isActive || isCartFlowRoute ? ' active' : ''}`
+                      `header__link header__icon${
+                        isActive || isCartFlowRoute ? ' is-active' : ''
+                      }`
                     }
+                    aria-current={isCartFlowRoute ? 'page' : undefined}
                     title="購物車"
                     onClick={closeMenu}
                   >
@@ -207,6 +224,8 @@ const FrontHeader = () => {
                 if (item.auth && !isAuth) return null;
 
                 const Icon = item.icon;
+                const isSectionActive = isRouteSectionActive(item, location.pathname);
+                const isCartSectionActive = item.path === '/cart/step1' && isCartFlowRoute;
 
                 return (
                   <li key={item.path + index} className="header__item" style={{ '--i': index }}>
@@ -215,10 +234,13 @@ const FrontHeader = () => {
                       title={item.label}
                       className={({ isActive }) =>
                         `header__link${
-                          isActive || (item.path === '/cart/step1' && isCartFlowRoute)
-                            ? ' active'
+                          isActive || isSectionActive || isCartSectionActive
+                            ? ' is-active'
                             : ''
                         }`
+                      }
+                      aria-current={
+                        isSectionActive || isCartSectionActive ? 'page' : undefined
                       }
                       onClick={closeMenu}
                     >
