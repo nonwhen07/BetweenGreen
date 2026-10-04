@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
 import { matchPath, NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Package, ShoppingCart, ReceiptText, LayoutDashboard, Users } from 'lucide-react';
+import {
+  BookOpenText,
+  LayoutDashboard,
+  Package,
+  ReceiptText,
+  ShoppingCart,
+  Users,
+} from 'lucide-react';
 // components
 import Logo from '@/components/shared/Logo';
 // Header-routes
@@ -20,6 +27,15 @@ const routes = [
     name: 'Products',
     title: '產品目錄',
     label: '產品目錄',
+    type: 'link',
+    showInNav: true,
+  },
+  {
+    path: '/articles',
+    activePatterns: ['/article/:article_id'],
+    name: 'Articles',
+    title: '植栽筆記',
+    label: '植栽筆記',
     type: 'link',
     showInNav: true,
   },
@@ -46,6 +62,13 @@ const menuItems = [
     activePatterns: ['/product/:product_id'],
     label: '產品目錄',
     icon: Package,
+  },
+  {
+    type: 'link',
+    path: '/articles',
+    activePatterns: ['/article/:article_id'],
+    label: '植栽筆記',
+    icon: BookOpenText,
   },
   {
     type: 'action',
@@ -78,7 +101,7 @@ const FrontHeader = () => {
   const location = useLocation();
 
   // const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about-us');
-  const heroPagePaths = ['/', '/home', '/about-us', '/products'];
+  const heroPagePaths = ['/', '/home', '/about-us', '/products', '/articles'];
   const isHeroPage = heroPagePaths.includes(location.pathname);
   const isCartFlowRoute = /^\/cart\/step[1-3]\/?$/.test(location.pathname);
 

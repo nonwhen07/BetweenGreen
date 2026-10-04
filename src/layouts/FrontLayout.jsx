@@ -23,7 +23,8 @@ const FrontLayout = () => {
 
   // 手動列出哪些頁面「有 Hero Banner」 (所以 Header 要浮動且 Main 不要有 Padding)
   // const heroPagePaths = ['/', '/home', '/about-us'];
-  const heroPagePaths = ['/', '/home', '/about-us', '/products']; // 之後可以改 API 或是用路由 meta 來判斷
+  // const heroPagePaths = ['/', '/home', '/about-us', '/products', '/articles']; // 之後可以改 API 或是用路由 meta 來判斷
+  const heroPagePaths = ['/', '/home', '/about-us', '/products']; //先讓/articles 不要套用hero版面，因為還沒確定hero風格
   // 考慮到 HashRouter，我們要檢查 location.pathname
   // 或是檢查 hash 內容
   const isHeroPage = heroPagePaths.includes(location.pathname);

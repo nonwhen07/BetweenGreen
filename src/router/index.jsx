@@ -34,6 +34,8 @@ import HomePage from '@/pages/front/HomePage';
 import AboutPage from '@/pages/front/AboutPage';
 import ProductsPage from '@/pages/front/ProductsPage';
 import ProductDetailPage from '@/pages/front/ProductDetailPage';
+import FrontArticlesPage from '@/pages/front/ArticlesPage';
+import ArticleDetailPage from '@/pages/front/ArticleDetailPage';
 import CartPage from '@/pages/front/CartPage';
 import CheckoutPaymentPage from '@/pages/front/CheckoutPaymentPage';
 import CheckoutSuccessPage from '@/pages/front/CheckoutSuccessPage';
@@ -59,6 +61,8 @@ const routes = [
       { path: 'about-us', element: <AboutPage /> },
       { path: 'products', element: <ProductsPage /> },
       { path: 'product/:product_id', element: <ProductDetailPage /> },
+      { path: 'articles', element: <FrontArticlesPage /> },
+      { path: 'article/:article_id', element: <ArticleDetailPage /> },
       { path: 'cart/:step', element: <CartPage /> },
       { path: 'checkout-payment/:orderId', element: <CheckoutPaymentPage /> },
       // { path: 'checkout-success', element: <CheckoutSuccessPage /> },

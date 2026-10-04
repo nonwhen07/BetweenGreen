@@ -5,6 +5,11 @@ import { ARTICLE_GARDEN_TIPS_LIMIT } from '@/constants/articleConstants';
 import { BREAKPOINTS } from '@/constants/breakpoints';
 // hooks
 import { usePublicArticles } from '@/hooks/article/usePublicArticles';
+import {
+  isPublicArticleAvailable,
+  isTruthyArticleFlag,
+  sortArticlesByPriorityAndDate,
+} from '@/utils/publicArticleSelectors';
 // components
 import GardenTipCard from '@/components/front/home/GardenTips/GardenTipCard';
 import GardenTipDetails from '@/components/front/home/GardenTips/GardenTipDetails';
@@ -18,9 +23,6 @@ const getIsDesktop = () =>
   typeof window !== 'undefined' && window.matchMedia(desktopMediaQuery).matches;
 const getIsBelowTablet = () =>
   typeof window !== 'undefined' && !window.matchMedia(tabletMediaQuery).matches;
-
-const isFeaturedArticle = (article) =>
-  article.isFeatured === true || Number(article.isFeatured) === 1;
 
 const GardenTipsSection = () => {
   const { articles, status, error, fetchArticles } = usePublicArticles();
@@ -53,28 +55,17 @@ const GardenTipsSection = () => {
   }, []);
 
   const tips = useMemo(() => {
-    const eligibleArticles = articles
-      .filter((article) => {
-        const hasStarted = !article.publishStart || Number(article.publishStart) <= pageLoadedAt;
-        const hasNotEnded = !article.publishEnd || Number(article.publishEnd) >= pageLoadedAt;
-
-        return (
-          article.isPublic &&
-          article.viewerScope === 'public' &&
-          article.displayZone === 'garden-tips' &&
-          hasStarted &&
-          hasNotEnded
-        );
-      })
-      .sort((left, right) => {
-        const priorityDifference =
-          Number(right.priorityLevel || 1) - Number(left.priorityLevel || 1);
-        if (priorityDifference !== 0) return priorityDifference;
-        return Number(right.create_at || 0) - Number(left.create_at || 0);
-      });
+    const eligibleArticles = sortArticlesByPriorityAndDate(
+      articles.filter((article) =>
+        isPublicArticleAvailable(article, {
+          now: pageLoadedAt,
+          displayZone: 'garden-tips',
+        }),
+      ),
+    );
 
     const featuredArticles = eligibleArticles
-      .filter(isFeaturedArticle)
+      .filter((article) => isTruthyArticleFlag(article.isFeatured))
       .slice(0, ARTICLE_GARDEN_TIPS_LIMIT);
     const featuredIds = new Set(featuredArticles.map((article) => article.id));
     const fallbackArticles = eligibleArticles
