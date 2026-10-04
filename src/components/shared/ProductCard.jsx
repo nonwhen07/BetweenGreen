@@ -28,25 +28,33 @@ const ProductCard = ({
   const imageUrl = product.imageUrl?.trim();
   const isEnabled = Number(product.is_enabled) === 1;
   const isFallback = !imageUrl || hasImageError;
-
-  const { theme, species } = parseCategoryParts(product.category);
-  const previewTags = parsePersonalityTags(product.personalityTags).slice(0, 2);
-  const displayTag = useMemo(() => {
-    const displayTagKey = product.displayTags
-      ?.split('|')
-      .map((tag) => tag.trim())
-      .find((tag) => PRODUCT_DISPLAY_TAGS_MAP[tag]);
-
-    return displayTagKey
-      ? { key: displayTagKey, ...PRODUCT_DISPLAY_TAGS_MAP[displayTagKey] }
-      : null;
-  }, [product.displayTags]);
-
   const isCompact = variant === 'compact';
   const isMinimal = variant === 'minimal';
   const isGrid = variant === 'grid';
   const isRelated = variant === 'related';
+  const isFeatured = variant === 'featured';
+
+  const { theme, species } = parseCategoryParts(product.category);
+  const previewTags = parsePersonalityTags(product.personalityTags).slice(0, 2);
+  const displayTag = useMemo(() => {
+    const displayTagKeys =
+      product.displayTags
+        ?.split('|')
+        .map((tag) => tag.trim())
+        .filter(Boolean) || [];
+    const displayTagKey =
+      (isFeatured && displayTagKeys.includes('Featured') && 'Featured') ||
+      displayTagKeys.find((tag) => PRODUCT_DISPLAY_TAGS_MAP[tag]);
+
+    return displayTagKey
+      ? { key: displayTagKey, ...PRODUCT_DISPLAY_TAGS_MAP[displayTagKey] }
+      : null;
+  }, [isFeatured, product.displayTags]);
+
   const showsCatalogDetails = isGrid || isRelated;
+  const showsDisplayBadge = showsCatalogDetails || isFeatured;
+  const showsTitleEn = showsCatalogDetails || isFeatured;
+  const showsSalePrice = showsCatalogDetails || isFeatured;
   const currentPrice = Number(product.price || 0);
   const originPrice = Number(product.origin_price || 0);
   const isOnSale = originPrice > currentPrice;
@@ -73,7 +81,7 @@ const ProductCard = ({
 
           <div className="product-card__overlay" aria-hidden="true" />
 
-          {showsCatalogDetails && displayTag && (
+          {showsDisplayBadge && displayTag && (
             <span className={clsx('product-card__badge', `is-${displayTag.type}`)}>
               {displayTag.badge}
             </span>
@@ -86,7 +94,7 @@ const ProductCard = ({
           <div className="product-card__info">
             <p className="product-card__eyebrow">{theme?.title || 'Between Green'}</p>
             <h3 className="product-card__title">{product.title}</h3>
-            {showsCatalogDetails && product.titleEn && (
+            {showsTitleEn && product.titleEn && (
               <p className="product-card__title-en">{product.titleEn}</p>
             )}
             {!isMinimal && !isCompact && <p className="product-card__species">{species?.label}</p>}
@@ -107,7 +115,7 @@ const ProductCard = ({
             <div className="product-card__footer">
               <div className="product-card__pricing">
                 <p className="product-card__price">NT$ {currencyFormatter.format(currentPrice)}</p>
-                {showsCatalogDetails && isOnSale && (
+                {showsSalePrice && isOnSale && (
                   <del className="product-card__origin-price">
                     NT$ {currencyFormatter.format(originPrice)}
                   </del>

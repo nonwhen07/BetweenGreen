@@ -4,46 +4,12 @@ import { Pause, Play } from 'lucide-react';
 import SeasonalSelectorItem from '@/components/front/home/Seasonal/SeasonalSelectorItem';
 import SeasonalSpotlight from '@/components/front/home/Seasonal/SeasonalSpotlight';
 import { useSeasonalRotation } from '@/hooks/home/useSeasonalRotation';
+import { selectSeasonalCampaignProducts } from '@/utils/product/homeProductSelectors';
 
-const CAMPAIGN_LIMIT = 3;
 const ROTATION_DELAY = 6000;
 
-const splitCodes = (value = '') =>
-  value
-    .split('|')
-    .map((code) => code.trim())
-    .filter(Boolean);
-
-const getCampaignPriority = (product) => {
-  const displayTags = splitCodes(product.displayTags);
-  const [theme] = product.category?.split('-') || [];
-  const isFeaturedSeasonal =
-    displayTags.includes('Featured') && displayTags.includes('SeasonalHot');
-
-  if (isFeaturedSeasonal) return 4;
-  if (displayTags.includes('SeasonalHot')) return 3;
-  if (theme === 'SeasonGift') return 2;
-  if (theme === 'CelebrationGift') return 1;
-
-  return 0;
-};
-
 const SeasonalSection = ({ products = [] }) => {
-  const campaignProducts = useMemo(
-    () =>
-      products
-        .filter((product) => Number(product.is_enabled) === 1)
-        .map((product, sourceIndex) => ({
-          product,
-          sourceIndex,
-          priority: getCampaignPriority(product),
-        }))
-        .filter(({ priority }) => priority > 0)
-        .sort((a, b) => b.priority - a.priority || a.sourceIndex - b.sourceIndex)
-        .slice(0, CAMPAIGN_LIMIT)
-        .map(({ product }) => product),
-    [products],
-  );
+  const campaignProducts = useMemo(() => selectSeasonalCampaignProducts(products), [products]);
 
   const {
     activeIndex,

@@ -1,6 +1,10 @@
 import { useEffect, useMemo } from 'react';
 
 import { useProducts } from '@/hooks/product/useProducts';
+import {
+  HOME_FEATURED_MIN,
+  selectHomepageFeaturedProducts,
+} from '@/utils/product/homeProductSelectors';
 
 // components
 import HeroBanner from '@/components/front/home/HeroBanner';
@@ -15,21 +19,30 @@ import NewsletterSection from '@/components/front/home/Newsletter/NewsletterSect
 const HomePage = () => {
   const { products, fetchProducts } = useProducts();
 
-  const topProducts = useMemo(
-    () => products.filter((item) => Number(item.is_enabled) === 1).slice(0, 7),
-    [products],
-  );
+  const featuredProducts = useMemo(() => selectHomepageFeaturedProducts(products), [products]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    if (
+      import.meta.env.DEV &&
+      products.length > 0 &&
+      featuredProducts.length < HOME_FEATURED_MIN
+    ) {
+      console.warn(
+        `[Homepage Featured] 啟用中的 Featured 商品只有 ${featuredProducts.length} 筆，建議至少補到 ${HOME_FEATURED_MIN} 筆。`,
+      );
+    }
+  }, [featuredProducts.length, products.length]);
 
   return (
     <div className="home-page">
       <HeroBanner />
       <LifestyleSection />
       <BrandStory />
-      <ProductSection topProducts={topProducts} />
+      <ProductSection featuredProducts={featuredProducts} />
       <SeasonalCollection products={products} />
       <GardenTipsSection />
       <TrustSection />

@@ -6,10 +6,12 @@ import 'swiper/css';
 
 // hooks
 import { useAddToCart } from '@/hooks/cart/useAddToCart';
+// constants
+import { BREAKPOINTS } from '@/constants/breakpoints';
 // components
 import ProductCard from '@/components/shared/ProductCard';
 
-const ProductSection = ({ topProducts }) => {
+const ProductSection = ({ featuredProducts = [] }) => {
   const { loadingItems, handleAddCartItem } = useAddToCart();
   const [progress, setProgress] = useState(0);
 
@@ -25,7 +27,7 @@ const ProductSection = ({ topProducts }) => {
     setProgress(Math.min((swiper.realIndex + slidesPerView) / totalSlides, 1));
   };
 
-  if (topProducts.length === 0) return null;
+  if (featuredProducts.length === 0) return null;
 
   return (
     <section
@@ -61,22 +63,22 @@ const ProductSection = ({ topProducts }) => {
           spaceBetween={24}
           slidesPerView={1.15}
           breakpoints={{
-            576: {
+            [BREAKPOINTS.pad]: {
               slidesPerView: 1.15,
             },
-            768: {
+            [BREAKPOINTS.tablet]: {
               slidesPerView: 2.4,
             },
-            1296: {
+            [BREAKPOINTS.desktopXL]: {
               slidesPerView: 3.4,
             },
           }}
         >
-          {topProducts.map((product) => (
+          {featuredProducts.map((product) => (
             <SwiperSlide key={product.id}>
               <ProductCard
                 product={product}
-                variant="compact"
+                variant="featured"
                 onAddCart={handleAddCartItem}
                 loading={loadingItems[product.id]}
               />
