@@ -413,6 +413,11 @@ export const ARTICLE_FORM_FIELDS = [
     label: '是否公開',
     type: 'switch',
   },
+  {
+    name: 'isFeatured',
+    label: '首頁 Garden Tips 入選',
+    type: 'switch',
+  },
 
   // 客製化欄位
   {

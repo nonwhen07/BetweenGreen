@@ -27,6 +27,8 @@ const ArticleModal = ({
 }) => {
   const watchTitle = watch('title');
   const watchImage = watch('image');
+  const watchDisplayZone = watch('displayZone');
+  const isGardenTipsZone = watchDisplayZone === 'garden-tips';
   // const watchContent = watch('content');
   const tagPreviewText = selectedTags.join(' | ');
 
@@ -227,9 +229,9 @@ const ArticleModal = ({
               </div>
             </div>
 
-            {/* 第七列：標籤 + 公開 */}
+            {/* 第七列：標籤 + 公開 + Garden Tips 入選 */}
             <div className="row g-3 mb-3 align-items-end">
-              <div className="col-md-9">
+              <div className="col-md-6">
                 <label className="form-label fw-semibold">文章標籤</label>
                 <div className="d-flex flex-wrap gap-2 mb-2">
                   {Object.values(ARTICLE_TAG_MAP).map((item) => {
@@ -265,6 +267,27 @@ const ArticleModal = ({
                     是否公開
                   </label>
                 </div>
+              </div>
+
+              <div className="col-md-3 pb-2">
+                <div className="form-check mt-4">
+                  <input
+                    {...register('isFeatured')}
+                    type="checkbox"
+                    className="form-check-input"
+                    id="isFeatured"
+                    aria-describedby="isFeaturedHelp"
+                    disabled={!isGardenTipsZone}
+                  />
+                  <label className="form-check-label" htmlFor="isFeatured">
+                    首頁 Garden Tips 入選
+                  </label>
+                </div>
+                <small id="isFeaturedHelp" className="text-muted d-block mt-1">
+                  {isGardenTipsZone
+                    ? '建議選滿 3 篇；權重最高者顯示為大卡'
+                    : '顯示區域設為 Garden Tips 後才能指定'}
+                </small>
               </div>
             </div>
 

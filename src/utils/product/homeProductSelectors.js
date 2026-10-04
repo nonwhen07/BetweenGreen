@@ -2,6 +2,14 @@ export const HOME_FEATURED_MIN = 6;
 export const HOME_FEATURED_LIMIT = 8;
 export const SEASONAL_CAMPAIGN_LIMIT = 3;
 
+const HOME_FEATURED_THEME_ORDER = [
+  'DeskLiving',
+  'SpaceStyling',
+  'BalconyMood',
+  'PlantCare',
+  'CelebrationGift',
+];
+
 export const splitProductCodes = (value = '') =>
   value
     .split('|')
@@ -41,8 +49,8 @@ export const selectSeasonalCampaignProducts = (
 export const selectHomepageFeaturedProducts = (
   products = [],
   limit = HOME_FEATURED_LIMIT,
-) =>
-  products
+) => {
+  const candidates = products
     .filter((product) => {
       if (Number(product.is_enabled) !== 1) return false;
 
@@ -51,5 +59,35 @@ export const selectHomepageFeaturedProducts = (
       const belongsToSeasonalCampaign = getSeasonalCampaignPriority(product) > 0;
 
       return isFeatured && !belongsToSeasonalCampaign;
-    })
-    .slice(0, limit);
+    });
+
+  const groups = candidates.reduce((result, product) => {
+    const [theme = 'Other'] = product.category?.split('-') || [];
+    const group = result.get(theme) || [];
+    group.push(product);
+    result.set(theme, group);
+    return result;
+  }, new Map());
+  const orderedThemes = [
+    ...HOME_FEATURED_THEME_ORDER.filter((theme) => groups.has(theme)),
+    ...[...groups.keys()].filter((theme) => !HOME_FEATURED_THEME_ORDER.includes(theme)),
+  ];
+  const diversifiedProducts = [];
+  let groupIndex = 0;
+
+  while (diversifiedProducts.length < candidates.length) {
+    let addedInRound = false;
+
+    orderedThemes.forEach((theme) => {
+      const product = groups.get(theme)?.[groupIndex];
+      if (!product) return;
+      diversifiedProducts.push(product);
+      addedInRound = true;
+    });
+
+    if (!addedInRound) break;
+    groupIndex += 1;
+  }
+
+  return diversifiedProducts.slice(0, limit);
+};

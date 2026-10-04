@@ -172,6 +172,7 @@ export const DEFAULT_ARTICLE = {
   tag: [],
   create_at: Math.floor(Date.now() / 1000),
   isPublic: false,
+  isFeatured: false,
   articleCategory: 'care-guide',
   publishStart: '',
   publishEnd: '',

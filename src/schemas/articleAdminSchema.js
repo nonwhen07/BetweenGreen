@@ -18,6 +18,7 @@ export const ARTICLE_ADMIN_FIELDS = {
   tag: { label: '文章標籤', required: false, type: 'stringArray' },
   create_at: { label: '建立日期', required: true, type: 'unixTimestamp' },
   isPublic: { label: '公開狀態', required: true, type: 'boolean' },
+  isFeatured: { label: '首頁 Garden Tips 入選', required: true, type: 'boolean' },
   articleCategory: { label: '文章分類', required: true, type: 'string' },
   publishStart: { label: '上架開始', required: false, type: 'optionalUnixTimestamp' },
   publishEnd: { label: '上架結束', required: false, type: 'optionalUnixTimestamp' },
@@ -83,6 +84,7 @@ export const normalizeArticleAdminData = (source = {}) => {
     tag: normalizeTags(source.tag ?? DEFAULT_ARTICLE.tag),
     create_at: Number(source.create_at ?? DEFAULT_ARTICLE.create_at),
     isPublic: normalizeBoolean(source.isPublic ?? DEFAULT_ARTICLE.isPublic),
+    isFeatured: normalizeBoolean(source.isFeatured ?? DEFAULT_ARTICLE.isFeatured),
     articleCategory: normalizeString('articleCategory'),
     publishStart: normalizeOptionalTimestamp(source.publishStart),
     publishEnd: normalizeOptionalTimestamp(source.publishEnd),
@@ -192,6 +194,9 @@ export const validateArticleAdminData = (article = {}) => {
   if (!article.image) warnings.push('文章尚未設定封面圖片');
   if (article.isPublic && article.viewerScope === 'admin') {
     warnings.push('文章已公開但顯示對象為內部管理');
+  }
+  if (article.isFeatured && article.displayZone !== 'garden-tips') {
+    warnings.push('首頁 Garden Tips 入選只會套用於 displayZone 為 garden-tips 的文章');
   }
 
   return { errors, warnings };

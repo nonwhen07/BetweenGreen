@@ -27,7 +27,7 @@ const ArticleImportModal = ({
         alert:
           '本功能會逐筆建立新文章，ID 由 API 自動產生。文章標題不可和 Store 或本次 JSON 內資料重複。',
         placeholder:
-          '{\n  "articles": [\n    {\n      "title": "室內植物光照指南",\n      "author": "Between Green 編輯部",\n      "description": "找出適合植物的位置。",\n      "content": "完整文章內容",\n      "image": "https://example.com/article.jpg",\n      "tag": ["plant-care", "lighting"],\n      "create_at": 1787702400,\n      "isPublic": true,\n      "articleCategory": "care-guide",\n      "publishStart": 1787702400,\n      "publishEnd": "",\n      "viewerScope": "public",\n      "priorityLevel": "2",\n      "bannerText": "不同植物需要不同光照條件。",\n      "displayZone": "garden-tips"\n    }\n  ]\n}',
+          '{\n  "articles": [\n    {\n      "title": "室內植物光照指南",\n      "author": "Between Green 編輯部",\n      "description": "找出適合植物的位置。",\n      "content": "完整文章內容",\n      "image": "https://example.com/article.jpg",\n      "tag": ["plant-care", "lighting"],\n      "create_at": 1787702400,\n      "isPublic": true,\n      "isFeatured": true,\n      "articleCategory": "care-guide",\n      "publishStart": 1787702400,\n      "publishEnd": "",\n      "viewerScope": "public",\n      "priorityLevel": "2",\n      "bannerText": "不同植物需要不同光照條件。",\n      "displayZone": "garden-tips"\n    }\n  ]\n}',
         progress: '正在逐筆新增文章',
         result: '新增結果',
         execute: '執行批次新增',

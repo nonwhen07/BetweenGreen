@@ -12,7 +12,6 @@ import GardenTipDetails from '@/components/front/home/GardenTips/GardenTipDetail
 import fallbackGardenTipImage from '@/assets/images/source/hero-main.png';
 
 const pageLoadedAt = Math.floor(Date.now() / 1000);
-const currentRotationDay = Math.floor(pageLoadedAt / 86400);
 const desktopMediaQuery = `(min-width: ${BREAKPOINTS.desktop}px)`;
 const tabletMediaQuery = `(min-width: ${BREAKPOINTS.tablet}px)`;
 const getIsDesktop = () =>
@@ -20,12 +19,8 @@ const getIsDesktop = () =>
 const getIsBelowTablet = () =>
   typeof window !== 'undefined' && !window.matchMedia(tabletMediaQuery).matches;
 
-const rotateItems = (items, offset) => {
-  if (items.length <= 1) return items;
-
-  const safeOffset = offset % items.length;
-  return [...items.slice(safeOffset), ...items.slice(0, safeOffset)];
-};
+const isFeaturedArticle = (article) =>
+  article.isFeatured === true || Number(article.isFeatured) === 1;
 
 const GardenTipsSection = () => {
   const { articles, status, error, fetchArticles } = usePublicArticles();
@@ -78,20 +73,16 @@ const GardenTipsSection = () => {
         return Number(right.create_at || 0) - Number(left.create_at || 0);
       });
 
-    const featuredArticle =
-      eligibleArticles.find((article) => article.isFeatured === true) || eligibleArticles[0];
+    const featuredArticles = eligibleArticles
+      .filter(isFeaturedArticle)
+      .slice(0, ARTICLE_GARDEN_TIPS_LIMIT);
+    const featuredIds = new Set(featuredArticles.map((article) => article.id));
+    const fallbackArticles = eligibleArticles
+      .filter((article) => !featuredIds.has(article.id))
+      .slice(0, Math.max(ARTICLE_GARDEN_TIPS_LIMIT - featuredArticles.length, 0));
+    const selectedArticles = [...featuredArticles, ...fallbackArticles];
 
-    if (!featuredArticle) return [];
-
-    const rotationCandidates = eligibleArticles.filter(
-      (article) => article.id !== featuredArticle.id,
-    );
-    const rotatingArticles = rotateItems(rotationCandidates, currentRotationDay).slice(
-      0,
-      Math.max(ARTICLE_GARDEN_TIPS_LIMIT - 1, 0),
-    );
-
-    return [featuredArticle, ...rotatingArticles].map((article) => ({
+    return selectedArticles.map((article) => ({
       id: article.id,
       title: article.title,
       description: article.bannerText || article.description,

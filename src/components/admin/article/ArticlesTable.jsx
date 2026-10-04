@@ -89,6 +89,9 @@ const ArticlesTable = ({
                     <span className="badge text-bg-secondary">
                       {getLabelByValue(ARTICLE_VIEWER_SCOPE_MAP, article.viewerScope, '未設定對象')}
                     </span>
+                    {(article.isFeatured === true || Number(article.isFeatured) === 1) && (
+                      <span className="badge text-bg-warning">Garden Tips 入選</span>
+                    )}
                   </div>
                 </td>
 

@@ -6,13 +6,16 @@ import {
   formatUnixToDateInput,
 } from '@/utils/adminBuilderUtils';
 
+const formatBooleanForForm = (value) => value === true || value === 1 || value === '1';
+
 export const formatArticleForForm = (article = {}) => ({
   ...DEFAULT_ARTICLE,
   ...article,
   create_at: formatUnixToDateInput(article.create_at),
   publishStart: formatUnixToDateInput(article.publishStart),
   publishEnd: formatUnixToDateInput(article.publishEnd),
-  isPublic: Boolean(article.isPublic),
+  isPublic: formatBooleanForForm(article.isPublic),
+  isFeatured: formatBooleanForForm(article.isFeatured),
   tag: Array.isArray(article.tag) ? article.tag : [],
 });
 
@@ -24,6 +27,7 @@ export const formatArticleForApi = (formData = {}, selectedTags = []) => {
     publishStart: formatOptionalDateToUnix(formData.publishStart),
     publishEnd: formatOptionalDateToUnix(formData.publishEnd),
     isPublic: Boolean(formData.isPublic),
+    isFeatured: Boolean(formData.isFeatured),
   });
 };
 

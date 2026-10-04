@@ -37,6 +37,10 @@ export const ARTICLE_HEALTH_ISSUE_MAP = {
     label: '公開狀態異常',
     severity: ARTICLE_HEALTH_STATUS.ERROR,
   },
+  INVALID_FEATURED_STATUS: {
+    label: 'Garden Tips 入選狀態異常',
+    severity: ARTICLE_HEALTH_STATUS.ERROR,
+  },
   INVALID_IMAGE: {
     label: '封面網址異常',
     severity: ARTICLE_HEALTH_STATUS.ERROR,
@@ -71,6 +75,18 @@ export const ARTICLE_HEALTH_ISSUE_MAP = {
   },
   NO_PUBLISH_START: {
     label: '未設定上架開始日',
+    severity: ARTICLE_HEALTH_STATUS.WARNING,
+  },
+  MISSING_FEATURED_FIELD: {
+    label: '尚未補入選欄位',
+    severity: ARTICLE_HEALTH_STATUS.WARNING,
+  },
+  INCOMPLETE_GARDEN_TIPS_FEATURED: {
+    label: 'Garden Tips 入選不足',
+    severity: ARTICLE_HEALTH_STATUS.WARNING,
+  },
+  TOO_MANY_GARDEN_TIPS_FEATURED: {
+    label: 'Garden Tips 入選過多',
     severity: ARTICLE_HEALTH_STATUS.WARNING,
   },
 };
@@ -137,7 +153,7 @@ const getDuplicateTitleSet = (articles) => {
   );
 };
 
-const analyzeSingleArticle = (article, duplicateTitles, now) => {
+const analyzeSingleArticle = (article, duplicateTitles, featuredSelection, now) => {
   const issues = [];
   // 列表 API 不保證回傳完整 content；內文由匯入、新增與編輯送出時驗證。
   const missingFields = [
@@ -192,6 +208,30 @@ const analyzeSingleArticle = (article, duplicateTitles, now) => {
   if (typeof article.isPublic !== 'boolean') {
     addIssue(issues, 'INVALID_PUBLIC_STATUS', 'isPublic 必須是 boolean');
   }
+  if (article.isFeatured !== undefined && typeof article.isFeatured !== 'boolean') {
+    addIssue(issues, 'INVALID_FEATURED_STATUS', 'isFeatured 必須是 boolean');
+  }
+  if (article.displayZone === 'garden-tips' && article.isFeatured === undefined) {
+    addIssue(
+      issues,
+      'MISSING_FEATURED_FIELD',
+      '請重新儲存文章，明確寫入 isFeatured true 或 false',
+    );
+  }
+  if (featuredSelection.noticeIds.has(article.id) && featuredSelection.count < 3) {
+    addIssue(
+      issues,
+      'INCOMPLETE_GARDEN_TIPS_FEATURED',
+      `目前只有 ${featuredSelection.count} 篇有效入選，首頁會依權重自動補足 3 篇`,
+    );
+  }
+  if (featuredSelection.noticeIds.has(article.id) && featuredSelection.count > 3) {
+    addIssue(
+      issues,
+      'TOO_MANY_GARDEN_TIPS_FEATURED',
+      `目前有 ${featuredSelection.count} 篇有效入選，首頁只顯示權重最高的 3 篇`,
+    );
+  }
 
   if (!article.image) {
     addIssue(issues, 'MISSING_IMAGE', '前台會使用預設圖片，建議補上正式封面');
@@ -241,6 +281,35 @@ const analyzeSingleArticle = (article, duplicateTitles, now) => {
 
 export const analyzeArticleHealth = (articles = [], now = Date.now()) => {
   const duplicateTitles = getDuplicateTitleSet(articles);
+  const nowSeconds = Math.floor(now / 1000);
+  const eligibleGardenTips = articles
+    .filter(
+      (article) =>
+        article.id &&
+        article.displayZone === 'garden-tips' &&
+        article.viewerScope === 'public' &&
+        article.isPublic === true &&
+        (!article.publishStart || Number(article.publishStart) <= nowSeconds) &&
+        (!article.publishEnd || Number(article.publishEnd) >= nowSeconds),
+    )
+    .sort((left, right) => {
+      const priorityDifference =
+        Number(right.priorityLevel || 1) - Number(left.priorityLevel || 1);
+      if (priorityDifference !== 0) return priorityDifference;
+      return Number(right.create_at || 0) - Number(left.create_at || 0);
+    });
+  const featuredGardenTips = eligibleGardenTips.filter(
+    (article) =>
+      article.isFeatured === true,
+  );
+  const featuredSelection = {
+    count: featuredGardenTips.length,
+    noticeIds: new Set(
+      featuredGardenTips.length > 0
+        ? featuredGardenTips.map((article) => article.id)
+        : eligibleGardenTips.slice(0, 1).map((article) => article.id),
+    ),
+  };
   const byArticleId = {};
   const issueGroupMap = new Map();
   const summary = {
@@ -255,7 +324,7 @@ export const analyzeArticleHealth = (articles = [], now = Date.now()) => {
   };
 
   articles.forEach((article, index) => {
-    const result = analyzeSingleArticle(article, duplicateTitles, now);
+    const result = analyzeSingleArticle(article, duplicateTitles, featuredSelection, now);
     const key = article.id || `article-${index}`;
     byArticleId[key] = result;
     summary[result.status] += 1;
