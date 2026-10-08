@@ -5,6 +5,12 @@ import {
   ARTICLE_TAG_MAP,
   ARTICLE_VIEWER_SCOPE_MAP,
 } from '@/constants/articleConstants';
+import {
+  getArticleScheduleState,
+  getGardenTipsCandidates,
+  hasArticleId,
+  isTruthyArticleFlag,
+} from '@/utils/publicArticleSelectors';
 
 export const ARTICLE_HEALTH_STATUS = {
   HEALTHY: 'healthy',
@@ -13,6 +19,10 @@ export const ARTICLE_HEALTH_STATUS = {
 };
 
 export const ARTICLE_HEALTH_ISSUE_MAP = {
+  MISSING_ID: {
+    label: '文章識別碼缺漏',
+    severity: ARTICLE_HEALTH_STATUS.ERROR,
+  },
   MISSING_REQUIRED: {
     label: '必填內容不完整',
     severity: ARTICLE_HEALTH_STATUS.ERROR,
@@ -122,12 +132,6 @@ const isValidHttpUrl = (value) => {
   }
 };
 
-const getDayStart = (dateValue) => {
-  const date = new Date(dateValue);
-  date.setHours(0, 0, 0, 0);
-  return date.getTime();
-};
-
 const addIssue = (issues, code, message) => {
   const definition = ARTICLE_HEALTH_ISSUE_MAP[code];
 
@@ -155,6 +159,9 @@ const getDuplicateTitleSet = (articles) => {
 
 const analyzeSingleArticle = (article, duplicateTitles, featuredSelection, now) => {
   const issues = [];
+  if (!hasArticleId(article)) {
+    addIssue(issues, 'MISSING_ID', '文章缺少有效 id，前台不會建立閱讀連結');
+  }
   // 列表 API 不保證回傳完整 content；內文由匯入、新增與編輯送出時驗證。
   const missingFields = [
     ['title', '文章標題'],
@@ -197,11 +204,10 @@ const analyzeSingleArticle = (article, duplicateTitles, featuredSelection, now) 
   if (!isValidTimestamp(article.create_at)) {
     addIssue(issues, 'INVALID_DATE', 'create_at 必須是有效的 Unix timestamp');
   }
-  const hasStart = article.publishStart !== '' && article.publishStart != null;
-  const hasEnd = article.publishEnd !== '' && article.publishEnd != null;
-  if ((hasStart && !isValidTimestamp(article.publishStart)) ||
-      (hasEnd && !isValidTimestamp(article.publishEnd)) ||
-      (hasStart && hasEnd && article.publishEnd < article.publishStart)) {
+  const schedule = getArticleScheduleState(article, Math.floor(now / 1000));
+  if (!schedule.isValid ||
+      (schedule.hasStart && !isValidTimestamp(article.publishStart)) ||
+      (schedule.hasEnd && !isValidTimestamp(article.publishEnd))) {
     addIssue(issues, 'INVALID_DATE', '上下架日期無效或結束日早於開始日');
   }
 
@@ -239,28 +245,21 @@ const analyzeSingleArticle = (article, duplicateTitles, featuredSelection, now) 
     addIssue(issues, 'INVALID_IMAGE', 'image 必須是有效的 HTTP(S) 網址');
   }
 
-  if (article.isPublic && article.viewerScope === 'admin') {
+  const isPublic = isTruthyArticleFlag(article.isPublic);
+  if (isPublic && article.viewerScope === 'admin') {
     addIssue(issues, 'SCOPE_MISMATCH', '公開文章不可只設定為內部管理可見');
   }
 
-  const today = getDayStart(now);
-  const startDay = hasStart && isValidTimestamp(article.publishStart)
-    ? getDayStart(article.publishStart * 1000)
-    : null;
-  const endDay = hasEnd && isValidTimestamp(article.publishEnd)
-    ? getDayStart(article.publishEnd * 1000)
-    : null;
-
-  if (!article.isPublic) addIssue(issues, 'DRAFT', '文章目前不會顯示於前台');
-  if (!hasStart) addIssue(issues, 'NO_PUBLISH_START', '未設定時將不限制開始日期');
-  if (startDay !== null && startDay > today) {
+  if (!isPublic) addIssue(issues, 'DRAFT', '文章目前不會顯示於前台');
+  if (!schedule.hasStart) addIssue(issues, 'NO_PUBLISH_START', '未設定時將不限制開始日期');
+  if (schedule.isScheduled) {
     addIssue(issues, 'SCHEDULED', '文章已排程，但尚未到上架開始日');
   }
-  if (endDay !== null && endDay < today) {
+  if (schedule.isExpired) {
     addIssue(
       issues,
-      article.isPublic ? 'EXPIRED_PUBLIC' : 'EXPIRED',
-      article.isPublic ? '請取消公開或延長下架日' : '文章已結束投放',
+      isPublic ? 'EXPIRED_PUBLIC' : 'EXPIRED',
+      isPublic ? '請取消公開或延長下架日' : '文章已結束投放',
     );
   }
 
@@ -282,25 +281,10 @@ const analyzeSingleArticle = (article, duplicateTitles, featuredSelection, now) 
 export const analyzeArticleHealth = (articles = [], now = Date.now()) => {
   const duplicateTitles = getDuplicateTitleSet(articles);
   const nowSeconds = Math.floor(now / 1000);
-  const eligibleGardenTips = articles
-    .filter(
-      (article) =>
-        article.id &&
-        article.displayZone === 'garden-tips' &&
-        article.viewerScope === 'public' &&
-        article.isPublic === true &&
-        (!article.publishStart || Number(article.publishStart) <= nowSeconds) &&
-        (!article.publishEnd || Number(article.publishEnd) >= nowSeconds),
-    )
-    .sort((left, right) => {
-      const priorityDifference =
-        Number(right.priorityLevel || 1) - Number(left.priorityLevel || 1);
-      if (priorityDifference !== 0) return priorityDifference;
-      return Number(right.create_at || 0) - Number(left.create_at || 0);
-    });
+  const eligibleGardenTips = getGardenTipsCandidates(articles, nowSeconds);
   const featuredGardenTips = eligibleGardenTips.filter(
     (article) =>
-      article.isFeatured === true,
+      isTruthyArticleFlag(article.isFeatured),
   );
   const featuredSelection = {
     count: featuredGardenTips.length,
@@ -328,7 +312,7 @@ export const analyzeArticleHealth = (articles = [], now = Date.now()) => {
     const key = article.id || `article-${index}`;
     byArticleId[key] = result;
     summary[result.status] += 1;
-    if (article.isPublic) summary.published += 1;
+    if (isTruthyArticleFlag(article.isPublic)) summary.published += 1;
     else summary.draft += 1;
     if (result.issues.some((issue) => issue.code === 'SCHEDULED')) summary.scheduled += 1;
     if (result.issues.some((issue) => ['EXPIRED', 'EXPIRED_PUBLIC'].includes(issue.code))) {

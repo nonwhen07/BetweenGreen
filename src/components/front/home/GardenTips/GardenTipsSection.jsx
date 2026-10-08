@@ -1,22 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 
 // constants
-import { ARTICLE_GARDEN_TIPS_LIMIT } from '@/constants/articleConstants';
 import { BREAKPOINTS } from '@/constants/breakpoints';
 // hooks
 import { usePublicArticles } from '@/hooks/article/usePublicArticles';
-import {
-  isPublicArticleAvailable,
-  isTruthyArticleFlag,
-  sortArticlesByPriorityAndDate,
-} from '@/utils/publicArticleSelectors';
+import { selectGardenTipsArticles } from '@/utils/publicArticleSelectors';
 // components
 import GardenTipCard from '@/components/front/home/GardenTips/GardenTipCard';
 import GardenTipDetails from '@/components/front/home/GardenTips/GardenTipDetails';
 // fallback asset
 import fallbackGardenTipImage from '@/assets/images/source/hero-main.png';
 
-const pageLoadedAt = Math.floor(Date.now() / 1000);
 const desktopMediaQuery = `(min-width: ${BREAKPOINTS.desktop}px)`;
 const tabletMediaQuery = `(min-width: ${BREAKPOINTS.tablet}px)`;
 const getIsDesktop = () =>
@@ -25,7 +19,7 @@ const getIsBelowTablet = () =>
   typeof window !== 'undefined' && !window.matchMedia(tabletMediaQuery).matches;
 
 const GardenTipsSection = () => {
-  const { articles, status, error, fetchArticles } = usePublicArticles();
+  const { articles, status, error, fetchArticles, loadedAt } = usePublicArticles();
   const [activeTipId, setActiveTipId] = useState(null);
   const [isDesktop, setIsDesktop] = useState(getIsDesktop);
   const [isBelowTablet, setIsBelowTablet] = useState(getIsBelowTablet);
@@ -55,23 +49,7 @@ const GardenTipsSection = () => {
   }, []);
 
   const tips = useMemo(() => {
-    const eligibleArticles = sortArticlesByPriorityAndDate(
-      articles.filter((article) =>
-        isPublicArticleAvailable(article, {
-          now: pageLoadedAt,
-          displayZone: 'garden-tips',
-        }),
-      ),
-    );
-
-    const featuredArticles = eligibleArticles
-      .filter((article) => isTruthyArticleFlag(article.isFeatured))
-      .slice(0, ARTICLE_GARDEN_TIPS_LIMIT);
-    const featuredIds = new Set(featuredArticles.map((article) => article.id));
-    const fallbackArticles = eligibleArticles
-      .filter((article) => !featuredIds.has(article.id))
-      .slice(0, Math.max(ARTICLE_GARDEN_TIPS_LIMIT - featuredArticles.length, 0));
-    const selectedArticles = [...featuredArticles, ...fallbackArticles];
+    const selectedArticles = selectGardenTipsArticles(articles, loadedAt);
 
     return selectedArticles.map((article) => ({
       id: article.id,
@@ -82,7 +60,7 @@ const GardenTipsSection = () => {
       author: article.author || 'Between Green 編輯部',
       category: article.articleCategory,
     }));
-  }, [articles]);
+  }, [articles, loadedAt]);
 
   const activeTip = tips.find((tip) => tip.id === activeTipId) || null;
   const activeTipIndex = tips.findIndex((tip) => tip.id === activeTipId);

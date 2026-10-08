@@ -202,6 +202,9 @@ const ArticleModal = ({
                   type="date"
                   className="form-control"
                 />
+                <small className="text-muted d-block mt-1">
+                  設定日期當天 00:00 起可顯示（台灣時間）
+                </small>
               </div>
 
               <div className="col-md-6">
@@ -225,7 +228,9 @@ const ArticleModal = ({
                 {errors.publishEnd && (
                   <small className="text-danger">{errors.publishEnd.message}</small>
                 )}
-                <small className="text-muted d-block mt-1">若未設定將持續顯示不自動下架</small>
+                <small className="text-muted d-block mt-1">
+                  結束日當天仍可顯示，隔日 00:00 起下架（台灣時間）；留空則不限制結束日
+                </small>
               </div>
             </div>
 

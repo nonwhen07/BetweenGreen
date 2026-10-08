@@ -24,7 +24,9 @@ const ArticleDetailPage = () => {
 
     try {
       const response = await getArticle(articleId);
-      const nextArticle = response.data || null;
+      const nextArticle = response.data
+        ? { ...response.data, id: response.data.id || articleId }
+        : null;
 
       if (!nextArticle || !isPublicArticleAvailable(nextArticle)) {
         setArticle(null);
@@ -32,7 +34,7 @@ const ArticleDetailPage = () => {
         return;
       }
 
-      setArticle({ ...nextArticle, id: nextArticle.id || articleId });
+      setArticle(nextArticle);
       setStatus('success');
     } catch (requestError) {
       if (requestError?.response?.status === 404) {

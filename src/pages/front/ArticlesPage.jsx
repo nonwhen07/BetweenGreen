@@ -10,18 +10,16 @@ import {
 import PageHero from '@/components/shared/PageHero';
 import ArticleCard from '@/components/front/article/ArticleCard';
 
-const pageLoadedAt = Math.floor(Date.now() / 1000);
-
 const ArticlesPage = () => {
-  const { articles, status, error, fetchArticles } = usePublicArticles();
+  const { articles, status, error, fetchArticles, loadedAt } = usePublicArticles();
   const publicArticles = useMemo(
     () =>
       sortArticlesByNewest(
         articles.filter((article) =>
-          isPublicArticleAvailable(article, { now: pageLoadedAt }),
+          isPublicArticleAvailable(article, { now: loadedAt }),
         ),
       ),
-    [articles],
+    [articles, loadedAt],
   );
 
   const isLoading = status === 'idle' || status === 'loading';

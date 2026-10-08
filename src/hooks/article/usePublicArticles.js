@@ -7,6 +7,7 @@ export const usePublicArticles = () => {
   const [articles, setArticles] = useState([]);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState(null);
+  const [loadedAt, setLoadedAt] = useState(0);
 
   const fetchArticles = useCallback(async () => {
     setStatus('loading');
@@ -15,6 +16,7 @@ export const usePublicArticles = () => {
     try {
       const response = await getAllArticles();
       setArticles(response.data || []);
+      setLoadedAt(Math.floor(Date.now() / 1000));
       setStatus('success');
       return response.data || [];
     } catch (requestError) {
@@ -37,5 +39,5 @@ export const usePublicArticles = () => {
     return () => window.clearTimeout(requestTimer);
   }, [fetchArticles]);
 
-  return { articles, status, error, fetchArticles };
+  return { articles, status, error, fetchArticles, loadedAt };
 };
