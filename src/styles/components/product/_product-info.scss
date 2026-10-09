@@ -273,6 +273,7 @@
 
   @include respond($breakpoints, desktop) {
     position: sticky;
-    top: calc(var(--brand-height) + #{$space-4});
+    // 品牌高度改為 Header 區域變數；sticky 改依頁面的 Header 留白計算。
+    top: calc(var(--header-height) + #{$space-4});
   }
 }

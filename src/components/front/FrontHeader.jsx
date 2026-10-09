@@ -1,290 +1,180 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { matchPath, NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-  BookOpenText,
-  LayoutDashboard,
-  Package,
-  ReceiptText,
-  ShoppingCart,
-  Users,
-} from 'lucide-react';
-// components
+import { BookOpenText, LayoutDashboard, Package, ReceiptText, ShoppingCart, Users } from 'lucide-react';
 import Logo from '@/components/shared/Logo';
-// Header-routes
-const routes = [
-  {
-    path: '/about-us',
-    name: 'AboutUs',
-    title: '關於我們',
-    label: '關於我們',
-    type: 'link',
-    showInNav: true,
-  },
-  {
-    path: '/products',
-    activePatterns: ['/product/:product_id'],
-    name: 'Products',
-    title: '產品目錄',
-    label: '產品目錄',
-    type: 'link',
-    showInNav: true,
-  },
-  {
-    path: '/articles',
-    activePatterns: ['/article/:article_id'],
-    name: 'Articles',
-    title: '植栽筆記',
-    label: '植栽筆記',
-    type: 'link',
-    showInNav: true,
-  },
-  {
-    path: '/customer-orders',
-    name: 'CustomerOrders',
-    title: '歷次訂單',
-    label: '歷次訂單',
-    type: 'link',
-    showInNav: true,
-  },
-  // { path: '/favorite', name: 'Favorite', title: '回到首頁' },
-];
+import useBodyScrollLock from '@/hooks/useBodyScrollLock';
+import { BREAKPOINTS } from '@/constants/breakpoints';
+
+// 桌機／手機共用入口；詳情頁只亮所屬入口，不新增導覽項目。
 const menuItems = [
-  {
-    type: 'link',
-    path: '/about-us',
-    label: '關於我們',
-    icon: Users,
-  },
-  {
-    type: 'link',
-    path: '/products',
-    activePatterns: ['/product/:product_id'],
-    label: '產品目錄',
-    icon: Package,
-  },
-  {
-    type: 'link',
-    path: '/articles',
-    activePatterns: ['/article/:article_id'],
-    label: '植栽筆記',
-    icon: BookOpenText,
-  },
-  {
-    type: 'action',
-    path: '/cart/step1',
-    label: '購物車',
-    icon: ShoppingCart,
-  },
-  {
-    type: 'link',
-    path: '/customer-orders',
-    label: '歷次訂單',
-    icon: ReceiptText,
-  },
-  {
-    type: 'action',
-    path: '/admin',
-    label: '回到後台首頁',
-    icon: LayoutDashboard,
-    auth: true,
-  },
+  { path: '/about-us', label: '關於我們', icon: Users, desktop: true },
+  { path: '/products', label: '產品目錄', icon: Package, desktop: true, activePatterns: ['/product/:product_id'] },
+  { path: '/articles', label: '植栽筆記', icon: BookOpenText, desktop: true, activePatterns: ['/article/:article_id'] },
+  { path: '/cart/step1', label: '購物車', icon: ShoppingCart, activePatterns: ['/cart/step1', '/cart/step2', '/cart/step3'] },
+  { path: '/customer-orders', label: '歷次訂單', icon: ReceiptText, desktop: true },
+  { path: '/admin', label: '回到後台首頁', icon: LayoutDashboard, auth: true },
 ];
 
-const isRouteSectionActive = (item, pathname) => {
-  return item.activePatterns?.some((pattern) =>
-    matchPath({ path: pattern, end: true }, pathname),
-  );
-};
+// 保留 current 的 Header 設定；與 FrontLayout 的留白規則於子頁 Hero 專題再統整。
+const heroPagePaths = ['/', '/home', '/about-us', '/products', '/articles'];
+const isRouteSectionActive = (item, pathname) =>
+  item.activePatterns?.some((path) => matchPath({ path, end: true }, pathname));
 
 const FrontHeader = () => {
   const location = useLocation();
-
-  // const isHeroPage = location.pathname === '/' || location.pathname.startsWith('/about-us');
-  const heroPagePaths = ['/', '/home', '/about-us', '/products', '/articles'];
   const isHeroPage = heroPagePaths.includes(location.pathname);
-  const isCartFlowRoute = /^\/cart\/step[1-3]\/?$/.test(location.pathname);
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollState, setScrollState] = useState('top');
-  const [lastScrollY, setLastScrollY] = useState(0);
-
+  const [menuRouteKey, setMenuRouteKey] = useState(null);
+  const isMenuOpen = menuRouteKey === location.key;
+  const [scroll, setScroll] = useState({ routeKey: null, value: 'top' });
+  const scrollState = scroll.routeKey === location.key ? scroll.value : 'top';
+  const toggleRef = useRef(null);
+  const menuRef = useRef(null);
   const isAuth = useSelector((state) => state.auth.isAuth);
   const carts = useSelector((state) => state.cart.carts);
   const cartCount = carts?.length || 0;
+  const closeMenu = useCallback(() => setMenuRouteKey(null), []);
 
-  // 關閉 menu（點擊遮罩或選單連結後）
-  const closeMenu = () => setIsMenuOpen(false);
+  useBodyScrollLock(isMenuOpen);
 
   useEffect(() => {
-    if (!isHeroPage) return; // 直接關掉
+    // 路由立即讓抽屜失效，再清掉舊 key，避免返回歷史頁面時重開。
+    const frame = window.requestAnimationFrame(closeMenu);
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.key, closeMenu]);
 
+  useEffect(() => {
+    if (!isHeroPage) return undefined;
+    let previousY = window.scrollY;
     const handleScroll = () => {
-      const currentY = window.scrollY;
-      let nextState = 'down';
-
-      if (currentY <= 150) {
-        nextState = 'top';
-      } else if (currentY < lastScrollY) {
-        nextState = 'active';
-      }
-
-      setScrollState((prev) => (prev !== nextState ? nextState : prev));
-      setLastScrollY(currentY);
+      const currentY = Math.max(0, window.scrollY);
+      const value = currentY <= 150 ? 'top' : currentY < previousY ? 'active' : 'down';
+      previousY = currentY;
+      setScroll((previous) =>
+        previous.routeKey === location.key && previous.value === value
+          ? previous
+          : { routeKey: location.key, value },
+      );
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHeroPage, lastScrollY]);
+    const frame = window.requestAnimationFrame(handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isHeroPage, location.key]);
 
   useEffect(() => {
-    // const lockScroll = () => {
-    //   const scrollY = window.scrollY;
-    //   const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const query = window.matchMedia(`(min-width: ${BREAKPOINTS.desktop}px)`);
+    const handleChange = (event) => {
+      if (event.matches) closeMenu();
+    };
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
+  }, [closeMenu]);
 
-    //   document.body.style.top = `-${scrollY}px`;
-    //   document.body.style.position = 'fixed';
-    //   document.body.style.width = '100%';
-    //   document.body.style.paddingRight = `${scrollbarWidth}px`; // ⭐
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+    const toggle = toggleRef.current;
+    const getControls = () => [toggle, ...menuRef.current.querySelectorAll('a[href]')].filter(Boolean);
+    const frame = window.requestAnimationFrame(() => getControls()[1]?.focus());
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu();
+      }
+      if (event.key !== 'Tab') return;
+      const controls = getControls();
+      const first = controls[0];
+      const last = controls.at(-1);
+      const active = document.activeElement;
+      if (!controls.includes(active) || (event.shiftKey && active === first) || (!event.shiftKey && active === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first)?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      document.removeEventListener('keydown', handleKeyDown);
+      if (toggle?.isConnected && toggle.getClientRects().length) toggle.focus();
+    };
+  }, [isMenuOpen, closeMenu]);
 
-    //   document.body.classList.add('is-locked');
-    // };
-
-    // const unlockScroll = () => {
-    //   const scrollY = document.body.style.top;
-
-    //   document.body.style.position = '';
-    //   document.body.style.top = '';
-    //   document.body.style.width = '';
-    //   document.body.style.paddingRight = '';
-
-    //   document.body.classList.remove('is-locked');
-
-    //   window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    // };
-
-    if (isMenuOpen) {
-      // lockScroll();
-      document.body.classList.add('is-locked');
-    } else {
-      // unlockScroll();
-      document.body.classList.remove('is-locked');
-    }
-  }, [isMenuOpen]);
+  const renderLink = (item, mobile = false) => {
+    const Icon = item.icon;
+    const isSectionActive = isRouteSectionActive(item, location.pathname);
+    return (
+      <NavLink
+        to={item.path}
+        title={item.label}
+        className={({ isActive }) => `front-header__link${isActive || isSectionActive ? ' is-active' : ''}`}
+        aria-current={isSectionActive ? 'page' : undefined}
+        onClick={closeMenu}
+      >
+        {mobile && (
+          <span className="front-header__icon" aria-hidden="true">
+            <Icon size={22} strokeWidth={1.9} />
+            {item.path === '/cart/step1' && cartCount > 0 && <span className="front-header__badge">{cartCount}</span>}
+          </span>
+        )}
+        {item.label}
+      </NavLink>
+    );
+  };
+  const cartItem = menuItems.find((item) => item.path === '/cart/step1');
 
   return (
     <>
-      <nav
-        className={`navbar header ${isHeroPage ? `header--scroll-${scrollState}` : 'header--solid'}`}
-      >
-        <div className="container ui-container header__content">
-          {/* brand */}
-          <div className="header__brand">
-            {/* variant={isHeroPage ? 'light' : 'muted'} */}
-            <Logo />
-          </div>
-          {/* toggle */}
+      <header className={`front-header ${isHeroPage && !isMenuOpen ? `front-header--scroll-${scrollState}` : 'front-header--solid'}`}>
+        <div className="front-header__content">
+          <div className="front-header__brand"><Logo /></div>
+          <nav className="front-header__desktop" aria-label="主要導覽">
+            <ul className="front-header__nav">
+              {menuItems.filter((item) => item.desktop).map((item) => (
+                <li key={item.path}>{renderLink(item)}</li>
+              ))}
+            </ul>
+            <NavLink
+              to={cartItem.path}
+              className={({ isActive }) => `front-header__link front-header__icon${isActive || isRouteSectionActive(cartItem, location.pathname) ? ' is-active' : ''}`}
+              aria-current={isRouteSectionActive(cartItem, location.pathname) ? 'page' : undefined}
+              aria-label={`購物車${cartCount > 0 ? `，${cartCount} 項商品` : ''}`}
+              title="購物車"
+            >
+              <ShoppingCart size={20} strokeWidth={1.9} aria-hidden="true" />
+              {cartCount > 0 && <span className="front-header__badge" aria-hidden="true">{cartCount}</span>}
+            </NavLink>
+          </nav>
           <button
-            className={`btn header__toggle${!isMenuOpen ? ' collapsed' : ''}`}
+            ref={toggleRef}
+            className={`front-header__toggle${isMenuOpen ? ' is-open' : ''}`}
             type="button"
-            aria-controls="headerMenu"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
+            aria-controls="frontHeaderMenu"
+            aria-expanded={isMenuOpen}
+            aria-label={isMenuOpen ? '關閉導覽選單' : '開啟導覽選單'}
+            onClick={() => setMenuRouteKey(isMenuOpen ? null : location.key)}
           >
-            <span className="header__bar"></span>
-            <span className="header__bar"></span>
-            <span className="header__bar"></span>
+            <span className="front-header__bar" aria-hidden="true" />
+            <span className="front-header__bar" aria-hidden="true" />
+            <span className="front-header__bar" aria-hidden="true" />
           </button>
-          {/* header__menu */}
-          <div className={`header__menu${isMenuOpen ? ' is-open' : ''}`} id="headerMenu">
-            {/* nav */}
-            <ul className="navbar-nav header__nav">
-              {routes.map((route) => {
-                const isSectionActive = isRouteSectionActive(route, location.pathname);
-
-                return (
-                  <li key={route.path} className="nav-item header__item">
-                    <NavLink
-                      className={({ isActive }) =>
-                        `nav-link header__link${isActive || isSectionActive ? ' is-active' : ''}`
-                      }
-                      aria-current={isSectionActive ? 'page' : undefined}
-                      to={route.path}
-                      title={route.title}
-                      onClick={closeMenu}
-                    >
-                      {route.label}
-                    </NavLink>
-                  </li>
-                );
-              })}
+          <nav
+            ref={menuRef}
+            className={`front-header__menu${isMenuOpen ? ' is-open' : ''}`}
+            id="frontHeaderMenu"
+            aria-label="手機導覽"
+            inert={!isMenuOpen}
+          >
+            <ul className="front-header__menu-list">
+              {menuItems.filter((item) => !item.auth || isAuth).map((item, index) => (
+                <li key={item.path} className="front-header__item" style={{ '--i': index }}>{renderLink(item, true)}</li>
+              ))}
             </ul>
-            {/* actions */}
-            <div className="header__actions">
-              <ul className="header__action-list">
-                <li className="header__item">
-                  <NavLink
-                    to="/cart/step1"
-                    className={({ isActive }) =>
-                      `header__link header__icon${
-                        isActive || isCartFlowRoute ? ' is-active' : ''
-                      }`
-                    }
-                    aria-current={isCartFlowRoute ? 'page' : undefined}
-                    title="購物車"
-                    onClick={closeMenu}
-                  >
-                    <ShoppingCart size={20} strokeWidth={1.9} />
-                    {cartCount > 0 && <span className="header__badge">{cartCount}</span>}
-                  </NavLink>
-                </li>
-              </ul>
-            </div>
-            {/* menu-list */}
-            <ul className="header__menu-list">
-              {menuItems.map((item, index) => {
-                if (item.auth && !isAuth) return null;
-
-                const Icon = item.icon;
-                const isSectionActive = isRouteSectionActive(item, location.pathname);
-                const isCartSectionActive = item.path === '/cart/step1' && isCartFlowRoute;
-
-                return (
-                  <li key={item.path + index} className="header__item" style={{ '--i': index }}>
-                    <NavLink
-                      to={item.path}
-                      title={item.label}
-                      className={({ isActive }) =>
-                        `header__link${
-                          isActive || isSectionActive || isCartSectionActive
-                            ? ' is-active'
-                            : ''
-                        }`
-                      }
-                      aria-current={
-                        isSectionActive || isCartSectionActive ? 'page' : undefined
-                      }
-                      onClick={closeMenu}
-                    >
-                      <div className="header__icon me-3">
-                        {Icon && <Icon size={22} strokeWidth={1.9} />}
-                        {item.path === '/cart/step1' && cartCount > 0 && (
-                          <span className="header__badge">{cartCount}</span>
-                        )}
-                      </div>
-
-                      {item.label}
-                    </NavLink>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          </nav>
         </div>
-      </nav>
-      {/* overlay */}
-      <div className={`header__overlay${isMenuOpen ? ' is-active' : ''}`} onClick={closeMenu}></div>
+      </header>
+      <div className={`front-header__overlay${isMenuOpen ? ' is-active' : ''}`} onClick={closeMenu} aria-hidden="true" />
     </>
   );
 };

@@ -1,493 +1,194 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
-@use 'sass:color';
 
-// Mobile-First，但是目前部分樣式先混用，除非有2種區別需要處理，ex:header__collapse
-:root {
-  --brand-height: 60px !important; // 預設brand高度、寬度auto，header根據brand高度在調整高度+樣式
+// 取代 Bootstrap navbar／btn 的混用；品牌高度不再污染 :root 或其他頁面。
+.front-header {
+  --front-brand-height: 60px;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: $z-dropdown;
+  padding: $space-2 0;
+  background: transparent;
+  transition: transform $transition-base, background-color $transition-base, box-shadow $transition-base;
 
-  @include respond($breakpoints, desktop) {
-    --brand-height: 80px !important; // desktop 較大時的高度
-  }
-}
-
-// body-is-locked
-.is-locked {
-  overflow: hidden;
-}
-
-.header {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  /* 初始狀態：透明 */
-  background-color: transparent;
-
-  transition:
-    transform 0.35s ease,
-    background-color 0.3s ease,
-    box-shadow 0.3s ease;
-
-  transform: translateY(0);
-  will-change: transform;
-  backface-visibility: hidden;
-
-  // ========================
-  // --scroll
-  // ========================
-
+  @include respond($breakpoints, desktop) { --front-brand-height: 80px; }
   &--scroll-top {
-    background-color: transparent;
-    box-shadow: none;
-
-    @include respond($breakpoints, desktop) {
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
+    @include respond($breakpoints, desktop) { box-shadow: $shadow-sm; }
   }
   &--scroll-down {
     transform: translateY(-100%);
     pointer-events: none;
-
-    @include respond($breakpoints, desktop) {
-      background-color: transparent;
-      color: transparent;
-      transition: 0.3s ease;
-    }
-  }
-  &--scroll-down:hover {
-    pointer-events: auto;
-
-    @include respond($breakpoints, desktop) {
-      background-color: $color-primary;
-      color: $text-on-primary;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
   }
   &--scroll-active,
   &--solid {
-    transform: translateY(0);
-
+    background: rgba($color-primary, 0.8);
     backdrop-filter: blur(10px);
-    background-color: rgba($color-primary, 0.8);
-    color: $text-on-primary;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-    @include respond($breakpoints, desktop) {
-      padding: 10px 0 !important;
-    }
+    box-shadow: $shadow-md;
+    @include respond($breakpoints, desktop) { padding: 18px 0; }
   }
-
-  // ========================
-  // content、brand
-  // ========================
+  // 保留一版修正原因：切頁後 NavLink 可保留焦點，不能用 focus-within
+  // 將整條 Header 染色或強制顯示；鍵盤提示由下方 focus-visible 負責。
+  &:hover {
+    background: $color-primary;
+    box-shadow: $shadow-sm;
+  }
 
   &__content {
-    padding: 0 24px !important;
-
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-6;
     width: 100%;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    margin: 0 auto;
-
-    @include respond($breakpoints, desktop) {
-      max-width: 1296px !important;
-
-      display: flex !important;
-      justify-content: space-between !important;
-      // align-items: center !important;
-      gap: 48px;
-    }
+    max-width: $content-width;
+    padding-inline: $space-6;
+    margin-inline: auto;
+    @include respond($breakpoints, desktop) { gap: $space-12; }
   }
-
   &__brand {
-    z-index: 950;
-
-    .logo {
-      flex-shrink: 0;
-
-      &__img {
-        height: var(--brand-height); // header 高度控制在這
-        width: auto;
-        display: block;
-
-        border: 1px solid transparent;
-      }
-
-      &__img:hover {
-        border: 1px solid $text-on-primary;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      }
-
-      &--light {
-        // Hero 用（白字）
-        filter: brightness(1);
-      }
-
-      &--dark {
-        // 白底 header 用
-        filter: brightness(0); // 直接轉黑
-      }
-
-      &--muted {
-        // 白底 header 用
-        filter: grayscale(100%) brightness(60%); // 直接轉灰
-      }
+    flex-shrink: 0;
+    .logo__img {
+      height: var(--front-brand-height);
+      width: auto;
+      border: 1px solid transparent;
+      &:hover { border-color: $text-on-primary; box-shadow: $shadow-sm; }
     }
   }
+  &__desktop {
+    display: none;
+    @include respond($breakpoints, desktop) {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: space-between;
+      gap: $space-6;
+      min-width: 0;
+    }
+  }
+  &__nav,
+  &__menu-list { list-style: none; margin: 0; padding: 0; }
+  &__nav { display: flex; align-items: center; flex-wrap: wrap; gap: $space-6; }
 
-  // ========================
-  // toggle
-  // ========================
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    min-height: 36px;
+    text-decoration: none;
+    font-weight: $font-weight-bold;
+    color: $text-muted;
+    &.is-active,
+    &:hover { color: $text-on-primary; }
+  }
+  &__link:focus-visible,
+  &__toggle:focus-visible { outline: 2px solid $color-accent; outline-offset: 4px; }
 
   &__toggle {
-    width: 40px;
-    height: 40px;
-    // padding: 12px !important;
-    // color: $color-default !important;
-
-    z-index: 950; //  比 overlay 高
-
     position: relative;
-
-    // border-radius: 10% !important;
-    // border: 1px solid $border-color-base !important;
-
-    display: flex !important;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    @include respond($breakpoints, desktop) {
-      display: none !important;
-    }
-
-    // 關閉（collapsed）
-    &.collapsed {
-      border-color: transparent !important;
-      background-color: transparent;
-    }
-    // 打開（沒有 collapsed）
-    &:not(.collapsed) {
-      border-color: $color-default !important;
-
-      .header__bar:nth-child(1) {
-        transform: rotate(-45deg);
-      }
-
-      .header__bar:nth-child(2) {
-        opacity: 0;
-      }
-
-      .header__bar:nth-child(3) {
-        transform: rotate(45deg);
-      }
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: $radius-xs;
+    background: transparent;
+    cursor: pointer;
+    @include respond($breakpoints, desktop) { display: none; }
+    &.is-open {
+      border-color: $text-on-primary;
+      .front-header__bar:nth-child(1) { transform: rotate(-45deg); }
+      .front-header__bar:nth-child(2) { opacity: 0; }
+      .front-header__bar:nth-child(3) { transform: rotate(45deg); }
     }
   }
-
-  &__toggle.btn {
-    border-radius: 10%;
-    border: 1px solid $border-color-base;
-  }
-
   &__bar {
     position: absolute;
     width: 20px;
     height: 2px;
-    background-color: $color-default !important;
-
-    transition: all 0.3s ease;
-
-    &:nth-child(1) {
-      transform: translateY(-6px);
-    }
-    &:nth-child(2) {
-      transform: translateY(0);
-    }
-    &:nth-child(3) {
-      transform: translateY(6px);
-    }
+    background: $text-on-primary;
+    transition: transform $transition-base, opacity $transition-base;
+    &:nth-child(1) { transform: translateY(-6px); }
+    &:nth-child(3) { transform: translateY(6px); }
   }
-  // ========================
-  // mobile menu
-  // ========================
+
   &__menu {
-    position: fixed; // 側邊滑入必備
+    position: absolute;
     top: 100%;
     right: 0;
-
     width: min(75%, 320px);
-
-    z-index: 950; //  比 overlay 高
-
-    // background-color: $color-primary-light;
-    background-color: transparent;
-    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
-
-    // padding: 24px;
-    padding: 0;
-
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-
-    transform: translateX(100%);
+    max-height: calc(100dvh - var(--front-brand-height) - #{$space-4});
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: $color-primary-light;
+    box-shadow: $shadow-lg;
+    visibility: hidden;
     opacity: 0;
-    pointer-events: none; // 防誤點
-
-    transition:
-      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.2s ease;
-    will-change: transform;
-
-    @include respond($breakpoints, desktop) {
-      position: static;
-      top: 0;
-      width: 75%;
-      background-color: transparent;
-      box-shadow: none;
-      flex-grow: 1; // 讓導覽選單佔據剩餘空間
-
-      transform: none;
-      pointer-events: auto;
-      opacity: 1;
-
-      padding: 0;
-      display: flex !important;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center !important;
-      // flex: 1; // 🔥 讓它吃空間
-    }
-
-    &.is-open {
-      transform: translateX(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
+    // 關閉時不移出 viewport，避免隱藏抽屜仍撐出水平捲軸。
+    transform: translateY(-#{$space-2});
+    transition: transform $transition-base, opacity $transition-base, visibility $transition-base;
+    &.is-open { visibility: visible; opacity: 1; transform: translateY(0); }
+    @include respond($breakpoints, desktop) { display: none; }
   }
-
-  &__menu.is-open .header__item {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  // ========================
-  // desktop nav/action：mobile 先隱藏
-  // ========================
-  // &__nav {
-  //   display: none !important;
-
-  //   @include respond($breakpoints, desktop) {
-  //     display: flex !important;
-  //     flex-direction: row !important;
-  //     align-items: center !important;
-  //     gap: 24px;
-  //   }
-  // }
-
-  &__nav,
-  &__actions {
-    display: none !important;
-
-    @include respond($breakpoints, desktop) {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      margin-top: 0;
-      gap: 24px;
-    }
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  &__action-list {
-    display: none;
-
-    @include respond($breakpoints, desktop) {
-      display: flex !important;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin: 0;
-      padding: 0;
-      // gap: 12px;
-    }
-  }
-
-  &__auth {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  // ========================
-  // mobile menu-list
-  // ========================
-
-  &__menu-list {
-    display: flex;
-    flex-direction: column;
-    background-color: $color-primary-light;
-
-    padding: 12px 0 12px 24px;
-    margin-bottom: 0;
-    gap: 12px;
-
-    @include respond($breakpoints, desktop) {
-      display: none;
-    }
-  }
-
+  &__menu-list { display: flex; flex-direction: column; gap: $space-3; padding: $space-3 $space-6; }
   &__item {
-    list-style: none;
     opacity: 0;
     transform: translateX(20px);
-    transition: all 0.3s ease;
-
+    transition: transform $transition-base, opacity $transition-base;
     transition-delay: calc(var(--i) * 0.08s);
-
-    @include respond($breakpoints, desktop) {
-      opacity: 1;
-      transform: none;
-      transition-delay: 0s;
-      height: 36px;
-    }
   }
-
-  &__link {
-    text-decoration: none !important;
-    color: $text-muted !important;
-    font-weight: $font-weight-bold !important;
-
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px;
-
-    // padding: 0 !important;
-    // padding: 12px 0;
-
-    // &::after {
-    //   content: '';
-    //   position: absolute;
-    //   bottom: -2px;
-    //   left: 0;
-    //   width: 0%;
-    //   height: 2px;
-    //   background-color: $text-on-primary;
-    //   transition: width 0.3s ease;
-    // }
-
-    // &:hover::after {
-    //   width: 100%;
-    // }
-
-    // @include respond($breakpoints, desktop) {
-    //   color: $text-on-primary !important;
-    // }
-  }
-
-  &__link.is-active,
-  &__link:hover {
-    color: $text-on-primary !important;
-    // border-bottom: 2px solid $text-on-primary;
-  }
-
-  &__link--danger {
-    color: $color-danger; // 🔥 提示色
-
-    &:hover {
-      background: $color-secondary;
-    }
-  }
+  &__menu.is-open &__item { opacity: 1; transform: translateX(0); }
+  &__menu &__link { display: flex; gap: $space-4; min-height: 44px; }
 
   &__icon {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: inherit;
-    text-decoration: none;
-    background-color: transparent;
-    border: 0;
-    padding: 0.5rem;
-    transition: transform 0.2s ease;
-
-    min-width: 32px;
-    min-height: 32px;
-
-    &:hover {
-      opacity: 0.8;
-      transform: scale(1.1);
-    }
+    flex-shrink: 0;
+    min-width: 36px;
+    min-height: 36px;
+    padding: $space-2;
   }
-
   &__badge {
     position: absolute;
     top: -1px;
     right: -3px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 999px;
+    min-width: 18px;
+    height: 18px;
+    padding-inline: $space-1;
+    border-radius: $radius-pill;
     font-size: 10px;
     line-height: 1;
-    background-color: $color-danger;
-    color: $color-default;
+    background: $color-danger;
+    color: $text-on-primary;
   }
-
-  // ========================
-  // overlay
-  // ========================
   &__overlay {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 900; // 比 header 低
-
+    z-index: 900;
     opacity: 0;
     pointer-events: none;
-    backdrop-filter: blur(0px);
-    transition: opacity 0.3s ease;
-
-    // 玻璃霧面
-    // background-color: rgba(255, 255, 255, 0.06);
-    background-color: rgba($color-muted, 0.8);
-    backdrop-filter: blur(8px);
-
-    &.is-active {
-      opacity: 1;
-      pointer-events: auto;
-      backdrop-filter: blur(6px);
-    }
+    background: $overlay-dark-base;
+    backdrop-filter: blur(6px);
+    transition: opacity $transition-base;
+    &.is-active { opacity: 1; pointer-events: auto; }
+    @include respond($breakpoints, desktop) { display: none; }
   }
 
-  &__overlay.is-active {
-    opacity: 1;
-    pointer-events: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    &__menu,
+    &__item,
+    &__bar,
+    &__overlay { transition: none; }
   }
-}
-
-/* Hover 時的樣式 */
-.header:hover {
-  background-color: $color-primary;
-  color: $color-default;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
