@@ -16,9 +16,10 @@ const BrandStory = () => {
             </div>
           </div>
 
+          {/* 保留一版修正原因：斜向進場的水平位移會撐寬頁面；只保留垂直淡入。 */}
           <div
             className="brand-story-section__content"
-            data-aos="fade-up-left"
+            data-aos="fade-up"
             data-aos-delay="120"
             data-aos-duration="1000"
           >

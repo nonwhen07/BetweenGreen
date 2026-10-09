@@ -1,27 +1,18 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
-@use 'sass:color';
-
-:root {
-  --header-height: 80px; // 預設高度
-
-  @include respond($breakpoints, desktop) {
-    --header-height: 96px; // RWD 較大時的高度
-  }
-}
 
 .hero-banner {
   --hero-text-primary: #2f3e2f;
   --hero-text-secondary: #5c6b5c;
 
-  padding: 0 0;
-
-  min-height: 600px;
+  padding: 0;
   height: 92vh;
+  height: 92svh;
 
   position: relative;
   min-height: clamp(520px, 72vh, 760px);
+  min-height: clamp(520px, 72svh, 760px);
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -42,12 +33,10 @@
   }
 }
 
-.hero-banner .swiper {
+.hero-banner__slide {
+  position: relative;
   height: 100%;
-}
-
-.hero-banner .swiper-slide {
-  height: 100%;
+  isolation: isolate;
 }
 
 /* ========================================
@@ -81,7 +70,7 @@
   }
   /* 無障礙：減少動畫 */
   @media (prefers-reduced-motion: reduce) {
-    .hero-banner__bg img {
+    img {
       animation: none;
     }
   }
@@ -121,18 +110,19 @@
   position: relative;
   z-index: 2;
   width: 100%;
+  // 版面由容器負責，動畫只位移卡片本身；不再用 absolute 百分比置中。
+  padding-top: clamp(132px, 24vh, 228px);
+  padding-top: clamp(132px, 24svh, 228px);
+  padding-bottom: $space-8;
 }
 
 /* ===== Glass Card ===== */
 .hero-banner__text {
-  position: absolute;
-  top: calc(var(--header-height) + 8rem);
-  left: 50%;
-  transform: translateX(-50%) !important;
-
+  position: relative;
   width: 100%;
   max-width: 350px;
-  padding: 16px;
+  margin-inline: auto;
+  padding: $space-4;
 
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.08);
@@ -149,12 +139,10 @@
   animation-delay: 0.3s;
 
   @include respond($breakpoints, desktop) {
-    left: 27%;
-    transform: none;
-    width: 100%;
+    margin-inline: 0;
     max-width: 720px;
     min-height: 280px;
-    padding: 24px;
+    padding: $space-6;
   }
 }
 
@@ -173,8 +161,8 @@
 .hero-banner__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 24px;
+  gap: $space-3;
+  margin-top: $space-6;
 
   .ui-btn {
     transition: all 0.25s ease;
@@ -203,5 +191,14 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-banner__text,
+  .hero-banner__overlay {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
