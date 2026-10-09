@@ -1,18 +1,19 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
+@use '@/styles/helpers/front-layout-tokens' as *;
 
 // 取代 Bootstrap navbar／btn 的混用；品牌高度不再污染 :root 或其他頁面。
 .front-header {
-  --front-brand-height: 60px;
+  --front-brand-height: #{$front-header-brand-mobile};
   position: fixed;
   inset: 0 0 auto;
   z-index: $z-dropdown;
-  padding: $space-2 0;
+  padding: $front-header-padding 0;
   background: transparent;
   transition: transform $transition-base, background-color $transition-base, box-shadow $transition-base;
 
-  @include respond($breakpoints, desktop) { --front-brand-height: 80px; }
+  @include respond($breakpoints, desktop) { --front-brand-height: #{$front-header-brand-desktop}; }
   &--scroll-top {
     @include respond($breakpoints, desktop) { box-shadow: $shadow-sm; }
   }
@@ -28,7 +29,7 @@
     background: rgba($color-primary, 0.8);
     backdrop-filter: blur(10px);
     box-shadow: $shadow-md;
-    @include respond($breakpoints, desktop) { padding: 18px 0; }
+    @include respond($breakpoints, desktop) { padding: $front-header-solid-padding-desktop 0; }
   }
   // 保留一版修正原因：切頁後 NavLink 可保留焦點，不能用 focus-within
   // 將整條 Header 染色或強制顯示；鍵盤提示由下方 focus-visible 負責。

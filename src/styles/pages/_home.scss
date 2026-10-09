@@ -4,9 +4,7 @@
 @use '@/styles/helpers/variables' as *;
 @use 'sass:color';
 
-:root {
-  --header-height: 100px;
-}
+// Header 留白已集中到 layout；首頁不再覆蓋全站 :root 高度。
 
 #product {
   scroll-margin-top: var(--header-height);

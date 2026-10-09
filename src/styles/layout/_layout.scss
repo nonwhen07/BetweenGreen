@@ -3,11 +3,18 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
+@use '@/styles/helpers/front-layout-tokens' as *;
 
 :root {
-  // 先手動設定header、footer的height當後面參考依據
-  --header-height: 80px;
+  // v2：這是內容遮擋留白，不是 Header 的固定高度；mobile 保留 100px，
+  // desktop 依實色最大狀態留白，避免 116px Header 蓋住僅留 100px 的頁首。
+  --header-height: #{$front-header-clearance-mobile};
+  // 仍為近似估值，Footer 實際高度會隨內容／尺寸變動，待後續版型整合。
   --footer-height: 80px;
+
+  @include respond($breakpoints, desktop) {
+    --header-height: #{$front-header-clearance-desktop};
+  }
 }
 
 body {
