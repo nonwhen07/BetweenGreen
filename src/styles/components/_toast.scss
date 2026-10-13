@@ -4,7 +4,27 @@
 @use '@/styles/helpers/mixins' as *;
 
 .ui-toast-container {
+  // 手機增加留白，獨立於 Header；48px 是試用頂距，並非動態島硬體尺寸。
+  position: fixed;
+  top: calc(#{$space-4 * 3} + env(safe-area-inset-top, 0px));
+  @include respond($breakpoints, pad) {
+    top: calc(#{$space-4 + $space-2} + env(safe-area-inset-top, 0px));
+  }
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(420px, calc(100vw - #{$space-4 * 2} - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  padding: 0;
   pointer-events: none; // 不擋 UI
+}
+.ui-toast-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  // 卡片之間的空隙也屬閱讀區，避免穿過空隙反覆暫停／恢復。
+  pointer-events: auto;
+  &:empty { pointer-events: none; }
+  &:focus-visible { outline: 2px solid $color-primary; outline-offset: $space-1; }
 }
 .ui-toast {
   pointer-events: auto;
@@ -135,8 +155,8 @@
 }
 
 
-// Success v1.2：目前預設為 v1.1 霧白材質；深綠不再藏在共用預設值。
-// 其他狀態仍沿用前面的舊規則，待 success 外觀定案再統一；不改正式時序。
+// Interaction v2：沿用 v1.4 位置與 success 材質；其他狀態外觀仍待統一。
+// 生命週期由 React 控制，Bootstrap JS 不再管理此 Toast。
 .ui-toast.ui-toast--success {
   // 材質 alpha 不影響文字／圖示 opacity，保留 v1.1 已交付的霧白外觀。
   --toast-surface: #{rgba($color-bg-soft, 0.78)};
@@ -148,7 +168,7 @@
   --toast-close-bg: #{rgba($color-primary, 0.10)};
 
   box-sizing: border-box;
-  width: min(440px, calc(100vw - #{$space-4 * 2}));
+  width: 100%;
   min-width: 0;
   max-width: none;
   border: $border-width-sm solid var(--toast-outline);
@@ -164,8 +184,16 @@
     inset 0 1px 0 rgba($text-on-primary, 0.80),
     inset 0 -1px 0 rgba($color-primary-dark, 0.06);
 
-  @include respond($breakpoints, desktop) {
-    width: min(460px, calc(100vw - #{$space-4 * 2}));
+  // A：無縮放，進場 220ms／離場 180ms。
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: toast-success-enter 220ms ease-out forwards;
+  &.toast-exit { animation: toast-success-exit 180ms ease-in forwards; }
+  @media (prefers-reduced-motion: reduce) {
+    animation-name: toast-success-enter-reduced;
+    animation-duration: 100ms;
+    transform: none;
+    &.toast-exit { animation: toast-success-exit-reduced 100ms ease forwards; }
   }
 
   // 深綠玻璃參考｜原 A 樣本：暫不編譯，也不是已定案的夜間模式。
@@ -194,8 +222,12 @@
     grid-template-columns: 32px minmax(0, 1fr) 44px;
     align-items: start;
     gap: $space-3;
-    min-height: 88px;
-    padding: $space-4;
+    min-height: 80px;
+    padding: $space-3 + 0.125rem;
+    @include respond($breakpoints, desktop) {
+      min-height: 88px;
+      padding: $space-4;
+    }
     box-sizing: border-box;
   }
   .ui-toast__status-icon {
@@ -228,7 +260,7 @@
     white-space: pre-line;
     overflow-wrap: anywhere;
     text-shadow: none;
-    @include respond($breakpoints, desktop) { font-size: $font-size-base; }
+    @include respond($breakpoints, desktop) { font-size: $font-size-sm + 0.0625rem; }
   }
   .ui-toast__close {
     display: flex;
@@ -282,4 +314,21 @@
       &:focus-visible { outline: 2px solid $color-primary; outline-offset: 2px; }
     }
   }
+}
+
+@keyframes toast-success-enter {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes toast-success-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes toast-success-enter-reduced {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes toast-success-exit-reduced {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
