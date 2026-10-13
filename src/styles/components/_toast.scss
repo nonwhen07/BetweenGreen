@@ -1,5 +1,7 @@
-@use '../helpers/variables' as *;
+@use '@/styles/helpers/variables' as *;
 @use 'sass:color';
+@use '@/styles/helpers/breakpoints' as *;
+@use '@/styles/helpers/mixins' as *;
 
 .ui-toast-container {
   pointer-events: none; // 不擋 UI
@@ -130,4 +132,154 @@
 .toast-info {
   background:
     linear-gradient(rgba($color-info, 0.25), rgba($color-info, 0.25)), rgba(255, 255, 255, 0.08);
+}
+
+
+// Success v1.2：目前預設為 v1.1 霧白材質；深綠不再藏在共用預設值。
+// 其他狀態仍沿用前面的舊規則，待 success 外觀定案再統一；不改正式時序。
+.ui-toast.ui-toast--success {
+  // 材質 alpha 不影響文字／圖示 opacity，保留 v1.1 已交付的霧白外觀。
+  --toast-surface: #{rgba($color-bg-soft, 0.78)};
+  --toast-outline: #{rgba($color-primary-dark, 0.26)};
+  --toast-accent: #{$color-primary};
+  --toast-text: #{$text-primary};
+  --toast-label: #{$text-primary};
+  --toast-icon-bg: #{rgba($color-primary, 0.12)};
+  --toast-close-bg: #{rgba($color-primary, 0.10)};
+
+  box-sizing: border-box;
+  width: min(440px, calc(100vw - #{$space-4 * 2}));
+  min-width: 0;
+  max-width: none;
+  border: $border-width-sm solid var(--toast-outline);
+  border-inline-start: 3px solid var(--toast-accent);
+  border-top-color: rgba($text-on-primary, 0.82);
+  border-radius: $radius-lg;
+  background: linear-gradient(135deg, rgba($text-on-primary, 0.26), rgba($text-on-primary, 0.04) 65%), var(--toast-surface);
+  color: var(--toast-text);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
+  backdrop-filter: blur(22px) saturate(115%);
+  box-shadow:
+    0 12px 32px rgba($color-primary-dark, 0.18),
+    inset 0 1px 0 rgba($text-on-primary, 0.80),
+    inset 0 -1px 0 rgba($color-primary-dark, 0.06);
+
+  @include respond($breakpoints, desktop) {
+    width: min(460px, calc(100vw - #{$space-4 * 2}));
+  }
+
+  // 深綠玻璃參考｜原 A 樣本：暫不編譯，也不是已定案的夜間模式。
+  // 未來開發深色版面時，可從此配色開始；需重新檢查不同背景的辨識與對比。
+  // 啟用時須同時恢復 JSX 的樣式選擇／deep class；僅解開此段不會自動切換。
+  // 使用 // 保留完整歷史參考，不將註解輸出到 CSS。
+  // &.ui-toast--deep {
+  //   --toast-surface: #{rgba($color-primary-dark, 0.84)};
+  //   --toast-outline: #{rgba($text-on-primary, 0.38)};
+  //   --toast-accent: #{$color-accent};
+  //   --toast-text: #{$text-on-primary};
+  //   --toast-label: #{rgba($text-on-primary, 0.78)};
+  //   --toast-icon-bg: #{rgba($color-accent, 0.16)};
+  //   --toast-close-bg: #{rgba($text-on-primary, 0.12)};
+  //   border-top-color: var(--toast-outline);
+  //   background: linear-gradient(135deg, rgba($text-on-primary, 0.10), transparent 65%), var(--toast-surface);
+  //   -webkit-backdrop-filter: blur(18px) saturate(125%);
+  //   backdrop-filter: blur(18px) saturate(125%);
+  //   box-shadow: 0 12px 32px rgba($color-primary-dark, 0.20), inset 0 1px 0 rgba($text-on-primary, 0.14);
+  // }
+}
+
+.ui-toast--success {
+  .ui-toast__success-layout {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 44px;
+    align-items: start;
+    gap: $space-3;
+    min-height: 88px;
+    padding: $space-4;
+    box-sizing: border-box;
+  }
+  .ui-toast__status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-top: $space-1;
+    border-radius: $radius-pill;
+    background: var(--toast-icon-bg);
+    color: var(--toast-accent);
+  }
+  .ui-toast__copy { min-width: 0; }
+  .ui-toast__label {
+    display: block;
+    margin-bottom: $space-1;
+    color: var(--toast-label);
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    line-height: $line-height-base;
+    text-shadow: none;
+  }
+  .ui-toast__message {
+    color: var(--toast-text);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    line-height: 1.6;
+    text-align: start;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    text-shadow: none;
+    @include respond($breakpoints, desktop) { font-size: $font-size-base; }
+  }
+  .ui-toast__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: $radius-sm;
+    background: transparent;
+    color: var(--toast-text);
+    cursor: pointer;
+    &:hover { background: var(--toast-close-bg); }
+    &:focus-visible { outline: 2px solid var(--toast-accent); outline-offset: 2px; }
+  }
+}
+
+// 僅由 DEV 預覽面板使用，不在正式版顯示。
+.ui-toast-preview {
+  position: fixed;
+  inset: auto $space-4 calc(#{$space-4} + env(safe-area-inset-bottom)) auto;
+  z-index: $z-toast;
+  box-sizing: border-box;
+  width: min(360px, calc(100vw - #{$space-4 * 2}));
+  max-height: 42dvh;
+  overflow-y: auto;
+  padding: $space-3;
+  border: $border-width-sm solid $border-color-base;
+  border-radius: $radius-md;
+  background: $color-bg-soft;
+  color: $text-primary;
+  box-shadow: $shadow-lg;
+  font-size: $font-size-sm;
+  summary { cursor: pointer; font-weight: $font-weight-bold; }
+  p { margin: $space-2 0; line-height: $line-height-base; }
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin-block: $space-2;
+    button {
+      min-height: 44px;
+      padding: $space-2 $space-3;
+      border: $border-width-sm solid $color-primary;
+      border-radius: $radius-sm;
+      background: $color-bg-surface;
+      color: $color-primary-dark;
+      cursor: pointer;
+      &.is-active { background: $color-primary-dark; color: $text-on-primary; }
+      &:focus-visible { outline: 2px solid $color-primary; outline-offset: 2px; }
+    }
+  }
 }

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { Toast as BSToast } from 'bootstrap'; //由於bootstrap的Toast與套件名稱衝突，所以把bootstrap的Toast取個別名為 'BSToast'
-import { removeMessage } from '@/features/ui/toastSlice';
+import { CircleCheck, X } from 'lucide-react';
+
+import { pushMessage, removeMessage } from '@/features/ui/toastSlice';
 
 // Toast 原始流程
 // 1. Component 呼叫 useToast()任何(success, showError, warning, info)
@@ -52,9 +54,16 @@ const statusText = {
   info: '資訊',
 };
 
+// 只在開發模式、網址明確開啟預覽時出現；正式頁面的通知仍使用原有時間。
+const isToastPreviewEnabled = import.meta.env.DEV &&
+  new URLSearchParams(window.location.search).get('toastPreview') === '1';
+const DEFAULT_SUCCESS_STYLE = 'mist';
+
 const ToastList = () => {
   // dispatch 是用來發送 actions 到 Redux store 的，讓我們可以修改 store 的狀態。
   const dispatch = useDispatch();
+  const store = useStore();
+  const previewIds = useRef(new Set());
   const messages = useSelector((state) => state.toast.messages);
   const toastRef = useRef({});
   // 如果你用 state 存 timer => setTimers → re-render → function 重建 → timer 爆炸
@@ -113,6 +122,7 @@ const ToastList = () => {
 
     setTimeout(() => {
       dispatch(removeMessage(message_id));
+      previewIds.current.delete(message_id);
     }, 300);
   };
 
@@ -124,12 +134,16 @@ const ToastList = () => {
       const messageElement = toastRef.current[message.id];
       if (!messageElement) return;
 
-      const toastInstance = BSToast.getOrCreateInstance(messageElement);
+      const isPreviewMessage = isToastPreviewEnabled && previewIds.current.has(message.id);
+      // 預覽固定留在畫面，方便比較外觀；只有這些測試 id 會停用自動消失。
+      const toastInstance = isPreviewMessage
+        ? BSToast.getOrCreateInstance(messageElement, { autohide: false })
+        : BSToast.getOrCreateInstance(messageElement);
       toastInstance.show();
 
       const duration = durationMap[message.status];
 
-      startTimer(message.id, duration);
+      if (!isPreviewMessage) startTimer(message.id, duration);
     });
 
     // return () => {
@@ -138,8 +152,45 @@ const ToastList = () => {
     // };
   }, [messages, startTimer]); // 將 dispatch 加入依賴陣列
 
+  const showPreview = (text) => {
+    if (!isToastPreviewEnabled) return;
+    dispatch(pushMessage({ text, status: 'success' }));
+    const message = store.getState().toast.messages.at(-1);
+    if (message) previewIds.current.add(message.id);
+  };
+
+  const clearPreviews = () => {
+    previewIds.current.forEach((id) => {
+      const element = toastRef.current[id];
+      if (element) BSToast.getInstance(element)?.dispose();
+      dispatch(removeMessage(id));
+    });
+    previewIds.current.clear();
+  };
+
   return (
     <>
+      {isToastPreviewEnabled && (
+        <details className="ui-toast-preview" open>
+          <summary>Toast 外觀比較 · 開發模式</summary>
+          <div className="ui-toast-preview__content">
+            <p>目前預覽：霧白玻璃。測試通知會暫留畫面。</p>
+            <p>深綠配色已註解保留，供未來深色版面參考，目前不啟用切換。</p>
+            <div className="ui-toast-preview__actions" role="group" aria-label="測試訊息">
+              <button type="button" onClick={() => showPreview('商品已加入購物車')}>短訊息</button>
+              <button type="button" onClick={() => showPreview('商品已加入購物車。晨霧多肉盆栽與櫻花記憶禮盒已為你保留，請前往購物車確認數量與配送資訊。')}>長訊息</button>
+              <button type="button" onClick={() => showPreview('訂單已建立\nBG-20261011-ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')}>換行／長編號</button>
+              <button type="button" onClick={() => {
+                showPreview('商品已加入購物車');
+                showPreview('優惠券已套用');
+                showPreview('訂單已建立，請確認付款資訊');
+              }}>三則堆疊</button>
+              <button type="button" onClick={clearPreviews}>清除測試通知</button>
+            </div>
+            <p>正式通知仍依原本時間消失；刷新即可恢復套用包的預設樣式。</p>
+          </div>
+        </details>
+      )}
       <div
         className="toast-container ui-toast-container position-fixed top-0 start-50 translate-middle-x p-3"
         style={{ zIndex: 1056 }}
@@ -148,13 +199,25 @@ const ToastList = () => {
           <div
             key={message.id}
             ref={(el) => (toastRef.current[message.id] = el)}
-            className={`toast ui-toast show ${statusClass[message.status]}`}
+            className={`toast ui-toast show ${statusClass[message.status]}${message.status === 'success' ? ` ui-toast--success ui-toast--${DEFAULT_SUCCESS_STYLE}` : ''}`}
             // onMouseEnter={() => pauseTimer(message.id)}
             // onMouseLeave={() => resumeTimer(message.id, durationMap[message.status])}
             role="alert"
             aria-live="assertive"
             aria-atomic="true"
           >
+            {message.status === 'success' ? (
+              <div className="ui-toast__success-layout">
+                <span className="ui-toast__status-icon" aria-hidden="true"><CircleCheck size={22} strokeWidth={2} /></span>
+                <div className="ui-toast__copy">
+                  <span className="ui-toast__label">操作成功</span>
+                  <div className="ui-toast__message">{message.text}</div>
+                </div>
+                <button type="button" className="ui-toast__close" aria-label="關閉成功通知"
+                  onClick={() => handleDismiss(message.id)}><X size={18} strokeWidth={2} aria-hidden="true" /></button>
+              </div>
+            ) : (
+              <>
             <div className="toast-header ui-toast-header text-white">
               <span className="ui-toast-title">{statusText[message.status]}</span>
               <button
@@ -165,6 +228,8 @@ const ToastList = () => {
               ></button>
             </div>
             <div className="toast-body ui-toast-message text-white text-center">{message.text}</div>
+              </>
+            )}
           </div>
         ))}
       </div>
