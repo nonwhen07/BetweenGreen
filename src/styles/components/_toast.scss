@@ -1,7 +1,14 @@
 @use '@/styles/helpers/variables' as *;
-@use 'sass:color';
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/mixins' as *;
+
+// Toast 局部配色：亮色用於邊框／襯底，深色用於圖示／標籤。
+// 不改全域 warning/info，以免連動既有按鈕、表單與後台狀態。
+$toast-warning-signal: #f5bf00;
+$toast-warning-ink: #946200;
+$toast-info-signal: #0284c7;
+$toast-info-ink: #0369a1;
+$toast-error-ink: #b42318;
 
 .ui-toast-container {
   // 手機增加留白，獨立於 Header；48px 是試用頂距，並非動態島硬體尺寸。
@@ -26,156 +33,34 @@
   &:empty { pointer-events: none; }
   &:focus-visible { outline: 2px solid $color-primary; outline-offset: $space-1; }
 }
-.ui-toast {
-  pointer-events: auto;
-
-  min-width: 280px;
-  max-width: 420px;
-
-  border-radius: 12px;
-  overflow: hidden;
-
-  // glassmorphism
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-
-  // 初始動畫狀態
-  opacity: 0;
-  transform: translateY(-30px) scale(0.96);
-
-  // 進場動畫
-  animation: toast-slide-down 0.4s ease forwards;
-}
-
-@keyframes toast-slide-down {
-  0% {
-    opacity: 0;
-    transform: translateY(-40px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.toast-exit {
-  animation: toast-fade-out 0.3s ease forwards;
-}
-
-@keyframes toast-fade-out {
-  to {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-}
-
-.ui-toast-header {
-  background: transparent;
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.6),
-    0 0 8px rgba(0, 0, 0, 0.2);
-  // border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-  border-bottom: 0px;
-
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center; // 讓標題置中
-}
-
-.ui-toast-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-
-  font-size: 0.75rem;
-  font-weight: 600; // semi-bold（比 bold 精緻）
-  letter-spacing: 0.02em;
-
-  color: rgba(255, 255, 255, 0.92);
-
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
-.ui-toast-message {
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 500;
-
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.ui-toast-header .btn-close {
-  padding: 0.5rem;
-  margin-left: auto;
-
-  filter: invert(1) brightness(1.5);
-  opacity: 0.85;
-
-  transition: all 0.2s ease;
-
-  &:hover {
-    opacity: 1;
-    filter: invert(1) brightness(2);
-    transform: scale(1.05);
-  }
-}
-
-// .ui-toast-body {
-//   background: transparent;
-//   text-shadow:
-//     0 1px 2px rgba(0, 0, 0, 0.6),
-//     0 0 8px rgba(0, 0, 0, 0.2);
-// }
-
-.toast-success {
-  background:
-    linear-gradient(rgba($color-success, 0.25), rgba($color-success, 0.25)),
-    rgba(255, 255, 255, 0.08);
-}
-
-.toast-warning {
-  background:
-    linear-gradient(rgba($color-warning, 0.25), rgba($color-warning, 0.25)),
-    rgba(255, 255, 255, 0.08);
-}
-
-.toast-danger {
-  background:
-    linear-gradient(rgba($color-danger, 0.25), rgba($color-danger, 0.25)), rgba(255, 255, 255, 0.08);
-}
-.toast-info {
-  background:
-    linear-gradient(rgba($color-info, 0.25), rgba($color-info, 0.25)), rgba(255, 255, 255, 0.08);
-}
-
-
-// Interaction v2：沿用 v1.4 位置與 success 材質；其他狀態外觀仍待統一。
-// 生命週期由 React 控制，Bootstrap JS 不再管理此 Toast。
-.ui-toast.ui-toast--success {
+// v2.2：頂框＋側線＋局部色霧補強辨識；仍保留霧白玻璃與深色正文。
+.ui-toast.ui-toast--mist {
   // 材質 alpha 不影響文字／圖示 opacity，保留 v1.1 已交付的霧白外觀。
   --toast-surface: #{rgba($color-bg-soft, 0.78)};
   --toast-outline: #{rgba($color-primary-dark, 0.26)};
   --toast-accent: #{$color-primary};
+  --toast-signal: #{$color-primary};
+  --toast-wash: #{rgba($color-primary, 0.12)};
   --toast-text: #{$text-primary};
   --toast-label: #{$text-primary};
   --toast-icon-bg: #{rgba($color-primary, 0.12)};
+  --toast-icon-outline: #{rgba($color-primary, 0.26)};
   --toast-close-bg: #{rgba($color-primary, 0.10)};
 
+  pointer-events: auto;
+  overflow: hidden;
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
   max-width: none;
   border: $border-width-sm solid var(--toast-outline);
-  border-inline-start: 3px solid var(--toast-accent);
-  border-top-color: rgba($text-on-primary, 0.82);
+  border-inline-start: 3px solid var(--toast-signal);
+  border-top: 2px solid var(--toast-signal);
   border-radius: $radius-lg;
-  background: linear-gradient(135deg, rgba($text-on-primary, 0.26), rgba($text-on-primary, 0.04) 65%), var(--toast-surface);
+  background:
+    linear-gradient(120deg, var(--toast-wash), transparent 72%),
+    linear-gradient(135deg, rgba($text-on-primary, 0.26), rgba($text-on-primary, 0.04) 65%),
+    var(--toast-surface);
   color: var(--toast-text);
   -webkit-backdrop-filter: blur(22px) saturate(115%);
   backdrop-filter: blur(22px) saturate(115%);
@@ -187,13 +72,13 @@
   // A：無縮放，進場 220ms／離場 180ms。
   opacity: 0;
   transform: translateY(-10px);
-  animation: toast-success-enter 220ms ease-out forwards;
-  &.toast-exit { animation: toast-success-exit 180ms ease-in forwards; }
+  animation: toast-enter 220ms ease-out forwards;
+  &.toast-exit { animation: toast-leave 180ms ease-in forwards; }
   @media (prefers-reduced-motion: reduce) {
-    animation-name: toast-success-enter-reduced;
+    animation-name: toast-enter-reduced;
     animation-duration: 100ms;
     transform: none;
-    &.toast-exit { animation: toast-success-exit-reduced 100ms ease forwards; }
+    &.toast-exit { animation: toast-leave-reduced 100ms ease forwards; }
   }
 
   // 深綠玻璃參考｜原 A 樣本：暫不編譯，也不是已定案的夜間模式。
@@ -204,9 +89,12 @@
   //   --toast-surface: #{rgba($color-primary-dark, 0.84)};
   //   --toast-outline: #{rgba($text-on-primary, 0.38)};
   //   --toast-accent: #{$color-accent};
+  //   --toast-signal: #{$color-accent};
+  //   --toast-wash: transparent;
   //   --toast-text: #{$text-on-primary};
   //   --toast-label: #{rgba($text-on-primary, 0.78)};
   //   --toast-icon-bg: #{rgba($color-accent, 0.16)};
+  //   --toast-icon-outline: #{rgba($color-accent, 0.30)};
   //   --toast-close-bg: #{rgba($text-on-primary, 0.12)};
   //   border-top-color: var(--toast-outline);
   //   background: linear-gradient(135deg, rgba($text-on-primary, 0.10), transparent 65%), var(--toast-surface);
@@ -216,8 +104,45 @@
   // }
 }
 
-.ui-toast--success {
-  .ui-toast__success-layout {
+// v2.3：只加強 success 色霧，保留相同漸層方向與 72% 淡出位置。
+.ui-toast.ui-toast--success {
+  --toast-wash: #{rgba($color-primary, 0.24)};
+}
+
+// 亮的 signal 與深的 accent 分工，避免亮黃圖示在霧白上失去辨識。
+.ui-toast.ui-toast--warning {
+  --toast-accent: #{$toast-warning-ink};
+  --toast-signal: #{$toast-warning-signal};
+  --toast-label: #{$toast-warning-ink};
+  --toast-outline: #{rgba($toast-warning-signal, 0.45)};
+  --toast-wash: #{rgba($toast-warning-signal, 0.20)};
+  --toast-icon-bg: #{rgba($toast-warning-signal, 0.24)};
+  --toast-icon-outline: #{rgba($toast-warning-ink, 0.32)};
+  --toast-close-bg: #{rgba($toast-warning-signal, 0.16)};
+}
+.ui-toast.ui-toast--error {
+  --toast-accent: #{$toast-error-ink};
+  --toast-signal: #{$color-danger};
+  --toast-label: #{$toast-error-ink};
+  --toast-outline: #{rgba($color-danger, 0.32)};
+  --toast-wash: #{rgba($color-danger, 0.12)};
+  --toast-icon-bg: #{rgba($color-danger, 0.16)};
+  --toast-icon-outline: #{rgba($toast-error-ink, 0.28)};
+  --toast-close-bg: #{rgba($color-danger, 0.10)};
+}
+.ui-toast.ui-toast--info {
+  --toast-accent: #{$toast-info-ink};
+  --toast-signal: #{$toast-info-signal};
+  --toast-label: #{$toast-info-ink};
+  --toast-outline: #{rgba($toast-info-signal, 0.36)};
+  --toast-wash: #{rgba($toast-info-signal, 0.14)};
+  --toast-icon-bg: #{rgba($toast-info-signal, 0.18)};
+  --toast-icon-outline: #{rgba($toast-info-ink, 0.30)};
+  --toast-close-bg: #{rgba($toast-info-signal, 0.12)};
+}
+
+.ui-toast--mist {
+  .ui-toast__layout {
     display: grid;
     grid-template-columns: 32px minmax(0, 1fr) 44px;
     align-items: start;
@@ -239,6 +164,7 @@
     margin-top: $space-1;
     border-radius: $radius-pill;
     background: var(--toast-icon-bg);
+    box-shadow: inset 0 0 0 1px var(--toast-icon-outline);
     color: var(--toast-accent);
   }
   .ui-toast__copy { min-width: 0; }
@@ -316,19 +242,19 @@
   }
 }
 
-@keyframes toast-success-enter {
+@keyframes toast-enter {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes toast-success-exit {
+@keyframes toast-leave {
   from { opacity: 1; transform: translateY(0); }
   to { opacity: 0; transform: translateY(-6px); }
 }
-@keyframes toast-success-enter-reduced {
+@keyframes toast-enter-reduced {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-@keyframes toast-success-exit-reduced {
+@keyframes toast-leave-reduced {
   from { opacity: 1; }
   to { opacity: 0; }
 }

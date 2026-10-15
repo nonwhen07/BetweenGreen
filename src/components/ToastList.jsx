@@ -1,12 +1,17 @@
 import { useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
-import { CircleCheck, X } from 'lucide-react';
+import { CircleCheck, TriangleAlert, CircleX, Info, X } from 'lucide-react';
 import { pushMessage, removeMessage } from '@/features/ui/toastSlice';
 import useToastLifecycle from '@/hooks/useToastLifecycle';
 import ToastPreview from '@/components/ToastPreview';
 
 const STATUS_CLASS = { success: 'toast-success', warning: 'toast-warning', error: 'toast-danger', info: 'toast-info' };
-const STATUS_TEXT = { success: '成功', warning: '警告', error: '錯誤', info: '資訊' };
+const STATUS_UI = {
+  success: { label: '操作成功', icon: CircleCheck },
+  warning: { label: '請留意', icon: TriangleAlert },
+  error: { label: '發生錯誤', icon: CircleX },
+  info: { label: '資訊提示', icon: Info },
+};
 const PREVIEW_ENABLED = import.meta.env.DEV &&
   new URLSearchParams(window.location.search).get('toastPreview') === '1';
 
@@ -70,35 +75,25 @@ const ToastList = () => {
           }}>
           {visibleItems.map(({ id, phase }) => {
             const message = messageById.get(id);
-            const success = message.status === 'success';
+            const status = STATUS_UI[message.status] ? message.status : 'info';
+            const { label, icon: StatusIcon } = STATUS_UI[status];
             const urgent = message.status === 'error';
             return (
               <div key={id} data-toast-id={id}
-                className={`toast ui-toast show ${STATUS_CLASS[message.status] ?? STATUS_CLASS.info}${success ? ' ui-toast--success ui-toast--mist' : ''}${phase === 'exiting' ? ' toast-exit' : ''}`}
+                className={`toast ui-toast show ${STATUS_CLASS[status]} ui-toast--${status} ui-toast--mist${phase === 'exiting' ? ' toast-exit' : ''}`}
                 role={urgent ? 'alert' : 'status'} aria-live={urgent ? 'assertive' : 'polite'} aria-atomic="true"
                 onAnimationEnd={(event) => {
                   if (event.target === event.currentTarget) controller.animationEnded(id, event.animationName);
                 }}>
-                {success ? (
-                  <div className="ui-toast__success-layout">
-                    <span className="ui-toast__status-icon" aria-hidden="true"><CircleCheck size={22} strokeWidth={2} /></span>
-                    <div className="ui-toast__copy">
-                      <span className="ui-toast__label">操作成功</span>
-                      <div className="ui-toast__message">{message.text}</div>
-                    </div>
-                    <button type="button" className="ui-toast__close" aria-label="關閉成功通知"
-                      onClick={() => controller.dismiss(id)}><X size={18} strokeWidth={2} aria-hidden="true" /></button>
+                <div className="ui-toast__layout">
+                  <span className="ui-toast__status-icon" aria-hidden="true"><StatusIcon size={22} strokeWidth={2} /></span>
+                  <div className="ui-toast__copy">
+                    <span className="ui-toast__label">{label}</span>
+                    <div className="ui-toast__message">{message.text}</div>
                   </div>
-                ) : (
-                  <>
-                    <div className="toast-header ui-toast-header text-white">
-                      <span className="ui-toast-title">{STATUS_TEXT[message.status] ?? STATUS_TEXT.info}</span>
-                      <button type="button" className="btn-close btn-close-white" aria-label="關閉通知"
-                        onClick={() => controller.dismiss(id)} />
-                    </div>
-                    <div className="toast-body ui-toast-message text-white text-center">{message.text}</div>
-                  </>
-                )}
+                  <button type="button" className="ui-toast__close" aria-label={`關閉${label}通知`}
+                    onClick={() => controller.dismiss(id)}><X size={18} strokeWidth={2} aria-hidden="true" /></button>
+                </div>
               </div>
             );
           })}

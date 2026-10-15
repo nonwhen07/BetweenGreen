@@ -73,7 +73,7 @@ export function createToastLifecycle({ onRemove, reducedMotion = () => false, cl
     }
     stop(record);
     record.phase = 'exiting';
-    record.remaining = record.status === 'success' ? (reducedMotion() ? 100 : 180) : 300;
+    record.remaining = reducedMotion() ? 100 : 180;
     schedule(record, () => finishExit(id));
     emit();
   };
@@ -96,7 +96,7 @@ export function createToastLifecycle({ onRemove, reducedMotion = () => false, cl
       for (const record of records.values()) {
         if (record.phase === 'queued' && occupied < MAX_VISIBLE) {
           record.phase = 'entering';
-          record.remaining = record.status === 'success' ? (reducedMotion() ? 100 : 220) : 400;
+          record.remaining = reducedMotion() ? 100 : 220;
           occupied += 1;
         }
         if (record.phase === 'entering') schedule(record, () => finishEntrance(record.id));
@@ -130,8 +130,8 @@ export function createToastLifecycle({ onRemove, reducedMotion = () => false, cl
     },
     dismiss,
     animationEnded(id, name) {
-      if (name.startsWith('toast-success-enter') || name === 'toast-slide-down') finishEntrance(id);
-      else if (name.startsWith('toast-success-exit') || name === 'toast-fade-out') finishExit(id);
+      if (name.startsWith('toast-enter')) finishEntrance(id);
+      else if (name.startsWith('toast-leave')) finishExit(id);
     },
     removeImmediately(id) {
       forget(id);
