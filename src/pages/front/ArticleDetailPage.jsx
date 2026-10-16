@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 import fallbackArticleImage from '@/assets/images/source/hero-main.png';
 import { getArticle } from '@/services/articleService';
@@ -13,6 +13,10 @@ import {
 } from '@/utils/publicArticleSelectors';
 
 const ArticleDetailPage = () => {
+  const location = useLocation();
+  const originPage = location.state?.articleListPage;
+  const returnTo = Number.isSafeInteger(originPage) && originPage > 1
+    ? `/articles?page=${originPage}` : '/articles';
   const { article_id: articleId } = useParams();
   const [article, setArticle] = useState(null);
   const [status, setStatus] = useState('loading');
@@ -85,7 +89,7 @@ const ArticleDetailPage = () => {
           <p className="article-detail-page__eyebrow">Journal Note</p>
           <h1>這篇文章目前無法閱讀</h1>
           <p>文章可能尚未公開、已結束展示，或連結不存在。</p>
-          <Link to="/articles" className="ui-btn ui-btn--primary">
+          <Link to={returnTo} state={{ articleListReturn: true }} className="ui-btn ui-btn--primary">
             返回文章列表
           </Link>
         </div>
@@ -100,7 +104,7 @@ const ArticleDetailPage = () => {
   return (
     <article className="article-detail-page">
       <div className="ui-container article-detail-page__container">
-        <Link to="/articles" className="article-detail-page__back-link">
+        <Link to={returnTo} state={{ articleListReturn: true }} className="article-detail-page__back-link">
           <ArrowLeft size={17} strokeWidth={1.7} aria-hidden="true" />
           返回植栽筆記
         </Link>
@@ -151,6 +155,16 @@ const ArticleDetailPage = () => {
               ))}
             </ul>
           )}
+          <nav className="article-detail-page__end-nav" aria-label="文章閱讀導覽">
+            <Link
+              to={returnTo}
+              state={{ articleListReturn: true }}
+              className="article-detail-page__back-link article-detail-page__back-link--end"
+            >
+              <ArrowLeft size={17} strokeWidth={1.7} aria-hidden="true" />
+              返回植栽筆記
+            </Link>
+          </nav>
         </div>
       </div>
     </article>

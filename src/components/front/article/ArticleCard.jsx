@@ -5,15 +5,23 @@ import fallbackArticleImage from '@/assets/images/source/hero-main.png';
 import {
   formatPublicArticleDate,
   getArticleCategoryLabel,
+  getArticleTagLabel,
 } from '@/utils/publicArticleSelectors';
 
-const ArticleCard = ({ article }) => {
+const ArticleCard = ({ article, listPage = 1 }) => {
   const publishedAt = formatPublicArticleDate(article.create_at);
+  const topicTags = [...new Set(
+    (Array.isArray(article.tag) ? article.tag : [])
+      .filter((tag) => typeof tag === 'string')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag && tag !== 'plant-care'),
+  )].slice(0, 2);
 
   return (
     <article className="article-card">
       <Link
         to={`/article/${article.id}`}
+        state={{ articleListPage: listPage }}
         className="article-card__media"
         aria-label={`閱讀「${article.title}」`}
       >
@@ -36,13 +44,20 @@ const ArticleCard = ({ article }) => {
         </div>
 
         <h2 className="article-card__title">
-          <Link to={`/article/${article.id}`}>{article.title}</Link>
+          <Link to={`/article/${article.id}`} state={{ articleListPage: listPage }}>{article.title}</Link>
         </h2>
+        {topicTags.length > 0 && (
+          <ul className="article-card__topics" aria-label="文章主題">
+            {topicTags.map((tag) => (
+              <li key={tag}>{getArticleTagLabel(tag)}</li>
+            ))}
+          </ul>
+        )}
         <p className="article-card__description">
           {article.bannerText || article.description || '這篇植栽筆記正在整理中。'}
         </p>
 
-        <Link to={`/article/${article.id}`} className="article-card__link">
+        <Link to={`/article/${article.id}`} state={{ articleListPage: listPage }} className="article-card__link">
           閱讀文章
           <ArrowUpRight size={16} strokeWidth={1.7} aria-hidden="true" />
         </Link>

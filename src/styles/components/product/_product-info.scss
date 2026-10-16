@@ -271,9 +271,12 @@
     }
   }
 
-  @include respond($breakpoints, desktop) {
-    position: sticky;
-    // 品牌高度改為 Header 區域變數；sticky 改依頁面的 Header 留白計算。
-    top: calc(var(--header-height) + #{$space-4});
-  }
+  // 目前採自然捲動；保留桌機 sticky 寫法，供未來調整版型時使用。
+  // 恢復前須讓 .product-detail__info 提供大於資訊卡的吸附範圍，
+  // 並確認卡片能完整放入扣除 Header 與留白後的視窗高度；
+  // 矮視窗或長內容卡片須維持自然捲動，避免購買區難以操作。
+  // @include respond($breakpoints, desktop) {
+  //   position: sticky;
+  //   top: calc(var(--header-height) + #{$space-4});
+  // }
 }

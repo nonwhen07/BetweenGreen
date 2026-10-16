@@ -47,6 +47,58 @@
     gap: $space-6;
   }
 
+  &__pagination {
+    margin-top: $space-10;
+    text-align: center;
+  }
+
+  &__page-count {
+    margin-bottom: $space-4;
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+
+  // 文章頁局部柔和化；不改動共用分頁及商品／訂單外觀。
+  &__page-nav {
+    flex-wrap: wrap;
+    gap: $space-2;
+    max-width: 40rem;
+    margin-inline: auto;
+
+    .brand-pagination__item {
+      flex: 0 0 44px;
+      width: 44px;
+      height: 44px;
+      border: $border-width-sm solid rgba($color-primary, 0.14);
+      background: rgba($color-bg-surface, 0.6);
+      color: $color-primary-dark;
+      box-shadow: none;
+
+      &:hover:not(:disabled) {
+        border-color: rgba($color-primary, 0.3);
+        background: rgba($color-primary, 0.09);
+        transform: translateY(-1px);
+      }
+
+      &:focus-visible {
+        outline: 2px solid $color-primary;
+        outline-offset: 3px;
+      }
+
+      &.is-active {
+        border-color: $color-primary;
+        background: $color-primary;
+        color: $text-on-primary;
+        box-shadow: 0 4px 10px rgba($color-primary, 0.1);
+
+        &:hover:not(:disabled) {
+          background: $color-primary-dark;
+          color: $text-on-primary;
+        }
+      }
+    }
+  }
+
   &__state {
     display: grid;
     min-height: 18rem;
@@ -174,6 +226,23 @@
     }
   }
 
+  &__topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin: 0 0 $space-3;
+    padding: 0;
+    list-style: none;
+
+    li {
+      padding: $space-1 $space-3;
+      border-radius: $radius-pill;
+      background: rgba($color-primary, 0.07);
+      color: $color-primary;
+      font-size: $font-size-xs;
+    }
+  }
+
   &__description {
     display: -webkit-box;
     overflow: hidden;
@@ -219,6 +288,14 @@
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
     text-decoration: none;
+
+    &--end {
+      margin-bottom: 0;
+    }
+  }
+
+  &__end-nav {
+    margin-top: $space-8;
   }
 
   &__header {
@@ -377,7 +454,8 @@
 @media (prefers-reduced-motion: reduce) {
   .article-card,
   .article-card__image,
-  .articles-page__state-dot {
+  .articles-page__state-dot,
+  .articles-page__page-nav .brand-pagination__item {
     animation: none;
     transition: none;
   }
