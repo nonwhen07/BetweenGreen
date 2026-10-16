@@ -5,7 +5,9 @@
 .not-found-page {
   position: relative;
   display: flex;
-  min-height: calc(100svh - var(--header-height) - var(--footer-height));
+  // main 分配剩餘高度，404 填滿該空間；內容較多時仍可自然增高。
+  flex: 1 0 auto;
+  width: 100%;
   align-items: center;
   overflow: hidden;
   background:

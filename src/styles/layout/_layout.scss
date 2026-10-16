@@ -9,8 +9,6 @@
   // v2：這是內容遮擋留白，不是 Header 的固定高度；mobile 保留 100px，
   // desktop 依實色最大狀態留白，避免 116px Header 蓋住僅留 100px 的頁首。
   --header-height: #{$front-header-clearance-mobile};
-  // 仍為近似估值，Footer 實際高度會隨內容／尺寸變動，待後續版型整合。
-  --footer-height: 80px;
 
   @include respond($breakpoints, desktop) {
     --header-height: #{$front-header-clearance-desktop};
@@ -43,6 +41,29 @@ button {
 // ui-container 系列 依照畫面切割看來，主要有三種寬度：1296px / 1840px / 1920px
 // 大致上為main/header/footer(.ui-wrapper 1920px) => section(.ui-section 1840px) => content( .ui-container 1296px)
 
+// Footer 依內容自然占高；短頁由 main 補足剩餘視窗，不估算 Footer 高度。
+.front-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  > .ui-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    width: 100%;
+
+    > * {
+      flex-shrink: 0;
+    }
+  }
+
+  > .front-footer {
+    flex-shrink: 0;
+  }
+}
+
 // ui-wrapper為 main/header/footer 共用版型  1920px，
 // 要注意 bootstarp row 的 padding 設定
 .ui-wrapper {
@@ -59,9 +80,6 @@ button {
 
 .ui-wrapper-spacing {
   padding-top: var(--header-height);
-  min-height: calc(
-    100vh - var(--footer-height)
-  ); // 減去 footer 約略高度，避免內容太少時 footer 飄上來
 }
 
 // 共用 section 版型 "暫定" 1840px，

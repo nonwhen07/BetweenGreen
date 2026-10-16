@@ -37,7 +37,7 @@ const FrontLayout = () => {
 
   return (
     <>
-      <div className={`${mode}${season}`}>
+      <div className={`front-layout ${mode}${season}`}>
         <ScrollToTop />
         <FrontHeader />
         <main className={`ui-wrapper ${isHeroPage ? 'ui-wrapper-hero' : 'ui-wrapper-spacing'}`}>
