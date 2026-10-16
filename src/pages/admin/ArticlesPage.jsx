@@ -47,7 +47,7 @@ const ArticlesPage = () => {
     addActivity,
     markActivityReviewed,
   } = useAdminActivities({ module: 'article', reviewedLimit: 5 });
-  const { exportAllArticles } = useArticleExport(articles);
+  const { exportAllArticles, isExporting } = useArticleExport(articles);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const requestedHealthFilter = searchParams.get('health') || 'all';
@@ -275,9 +275,10 @@ const ArticlesPage = () => {
                 type="button"
                 className="btn btn-outline-secondary px-4"
                 onClick={exportAllArticles}
-                disabled={articles.length === 0}
+                disabled={articles.length === 0 || isExporting}
+                aria-busy={isExporting}
               >
-                匯出全部 JSON
+                {isExporting ? '準備匯出中…' : '匯出全部 JSON'}
               </button>
               <button
                 type="button"

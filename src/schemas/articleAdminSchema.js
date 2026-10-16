@@ -230,12 +230,38 @@ const getUnknownFields = (article) => {
   );
 };
 
-const getHealthWarnings = (article) => {
-  const previewId = article.id || '__article-import-preview__';
-  const result = analyzeArticleHealth([{ ...article, id: previewId }]);
-  return (result.byArticleId[previewId]?.issues || []).map(
-    (issue) => `健康提醒：${issue.label}－${issue.message}`,
-  );
+// 集合提醒以套用整批有效資料後的全集計算，不用單篇模擬全站入選數。
+const COLLECTION_HEALTH_CODES = new Set([
+  'INCOMPLETE_GARDEN_TIPS_FEATURED',
+  'TOO_MANY_GARDEN_TIPS_FEATURED',
+]);
+
+const appendHealthWarnings = (entries, proposedArticles, getPreviewId = (entry) => entry.id) => {
+  const validEntries = entries.filter((entry) => entry.isValid);
+  if (validEntries.length === 0) return;
+  const result = analyzeArticleHealth(proposedArticles);
+  validEntries.forEach((entry) => {
+    const issues = result.byArticleId[getPreviewId(entry)]?.issues || [];
+    entry.warnings = [...new Set([
+      ...entry.warnings,
+      ...issues.filter((issue) => !COLLECTION_HEALTH_CODES.has(issue.code)).map(
+        (issue) => `健康提醒：${issue.label}－${issue.message}`,
+      ),
+    ])];
+  });
+  // 即使入選不足只標在未匯入的既有文章，仍於第一筆有效預覽顯示一次集合提醒。
+  const collectionIssues = new Map();
+  Object.values(result.byArticleId).forEach(({ issues }) => {
+    issues.forEach((issue) => {
+      if (COLLECTION_HEALTH_CODES.has(issue.code)) collectionIssues.set(issue.code, issue);
+    });
+  });
+  validEntries[0].warnings = [...new Set([
+    ...validEntries[0].warnings,
+    ...[...collectionIssues.values()].map(
+      (issue) => `整批預覽提醒：${issue.label}－${issue.message}`,
+    ),
+  ])];
 };
 
 const normalizeTitle = (value) => {
@@ -321,7 +347,6 @@ export const analyzeArticleCreateImport = (source, existingArticles = []) => {
     }
     if (titleKey) importTitles.add(titleKey);
 
-    if (errors.length === 0) warnings.push(...getHealthWarnings(data));
 
     return {
       key,
@@ -336,6 +361,21 @@ export const analyzeArticleCreateImport = (source, existingArticles = []) => {
       hasChanges: true,
     };
   });
+
+  const usedIds = new Set(existingArticles.map((article) => article.id));
+  const previewIds = new Map();
+  const createdArticles = entries.filter((entry) => entry.isValid).map((entry) => {
+    let previewId = `__article-import-preview-${entry.key}`;
+    while (usedIds.has(previewId)) previewId += '_';
+    usedIds.add(previewId);
+    previewIds.set(entry.key, previewId);
+    return { ...entry.data, id: previewId };
+  });
+  appendHealthWarnings(
+    entries,
+    [...existingArticles, ...createdArticles],
+    (entry) => previewIds.get(entry.key),
+  );
 
   const summary = buildSummary(entries, 'create');
   return {
@@ -377,9 +417,6 @@ export const analyzeArticleUpdateImport = (source, existingArticles = []) => {
     const validation = validateArticleAdminData(data);
     errors.push(...validation.errors);
     warnings.push(...validation.warnings);
-    if (errors.length === 0) {
-      warnings.push(...getHealthWarnings({ ...data, id }));
-    }
     const changedFields = getChangedFields(currentArticle, data);
 
     return {
@@ -416,6 +453,12 @@ export const analyzeArticleUpdateImport = (source, existingArticles = []) => {
       entry.isValid = false;
     }
   });
+
+  const healthMap = new Map(existingMap);
+  entries.filter((entry) => entry.isValid).forEach((entry) => {
+    healthMap.set(entry.id, { ...entry.data, id: entry.id });
+  });
+  appendHealthWarnings(entries, [...healthMap.values()]);
 
   const summary = buildSummary(entries, 'update');
   return {
