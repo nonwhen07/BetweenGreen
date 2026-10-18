@@ -12,34 +12,6 @@ $cart-card-shadow-hover: 0 14px 36px rgba($color-primary, 0.1);
   padding-top: $space-6;
   padding-bottom: $space-10;
 
-  &__hero {
-    max-width: 680px;
-    margin: 0 auto $space-6;
-
-    text-align: center;
-
-    .page-title {
-      margin-bottom: $space-2;
-    }
-  }
-
-  &__eyebrow {
-    margin-bottom: $space-2;
-
-    color: $color-secondary-dark;
-    font-size: 11px;
-    font-weight: $font-weight-semibold;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-
-  &__intro {
-    margin-bottom: 0;
-
-    color: $neutral-600;
-    line-height: 1.7;
-  }
-
   &__overview {
     display: grid;
     gap: $space-4;
@@ -340,10 +312,6 @@ $cart-card-shadow-hover: 0 14px 36px rgba($color-primary, 0.1);
   .customer-orders {
     padding-top: $space-10;
     padding-bottom: $space-16;
-
-    &__hero {
-      margin-bottom: $space-8;
-    }
 
     &__list {
       grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -5,6 +5,7 @@ import { BookOpenText, LayoutDashboard, Package, ReceiptText, ShoppingCart, User
 import Logo from '@/components/shared/Logo';
 import useBodyScrollLock from '@/hooks/useBodyScrollLock';
 import { BREAKPOINTS } from '@/constants/breakpoints';
+import { isFrontHeroPage } from '@/constants/frontPageConfig';
 
 // 桌機／手機共用入口；詳情頁只亮所屬入口，不新增導覽項目。
 const menuItems = [
@@ -16,14 +17,12 @@ const menuItems = [
   { path: '/admin', label: '回到後台首頁', icon: LayoutDashboard, auth: true },
 ];
 
-// 保留 current 的 Header 設定；與 FrontLayout 的留白規則於子頁 Hero 專題再統整。
-const heroPagePaths = ['/', '/home', '/about-us', '/products', '/articles'];
 const isRouteSectionActive = (item, pathname) =>
   item.activePatterns?.some((path) => matchPath({ path, end: true }, pathname));
 
 const FrontHeader = () => {
   const location = useLocation();
-  const isHeroPage = heroPagePaths.includes(location.pathname);
+  const isHeroPage = isFrontHeroPage(location.pathname);
   const [menuRouteKey, setMenuRouteKey] = useState(null);
   const isMenuOpen = menuRouteKey === location.key;
   const [scroll, setScroll] = useState({ routeKey: null, value: 'top' });

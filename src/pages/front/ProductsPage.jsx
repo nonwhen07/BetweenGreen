@@ -139,6 +139,9 @@ const ProductsPage = () => {
         titleId="products-page-title"
         text="從書桌陪伴、陽台生活到空間造景，找到適合你日常節奏的植物與生活提案。"
         backgroundImage={productsBanner}
+        imagePosition="center 58%"
+        variant="subpage"
+        className="page-hero--products"
         tone=""
         align="left"
         size="md"

@@ -173,6 +173,73 @@
   }
 }
 
+// 共用短版子頁 Hero。保留預設 sm/md/lg，未選用此變體的頁面不受影響。
+// 頁面可用 className 加 BEM modifier，或覆寫以下局部變數調整尺度／銜接底色。
+.page-hero--subpage {
+  --page-hero-surface: #{$color-bg-main};
+  --page-hero-min-height: 320px;
+  min-height: var(--page-hero-min-height);
+  padding: calc(var(--header-height) + #{$space-10}) 0 $space-8;
+  background: var(--page-hero-surface);
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to bottom, transparent 52%, var(--page-hero-surface) 100%);
+    content: '';
+    pointer-events: none;
+  }
+
+  .page-hero__bg {
+    filter: saturate(0.9) brightness(1.02);
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  &:hover .page-hero__bg {
+    transform: none;
+  }
+
+  .page-hero__overlay {
+    background: linear-gradient(
+      90deg,
+      rgba($color-bg-main, 0.96) 0%,
+      rgba($color-bg-main, 0.9) 38%,
+      rgba($color-bg-main, 0.52) 72%,
+      rgba($color-bg-main, 0.32) 100%
+    );
+  }
+
+  .page-hero__eyebrow {
+    margin-bottom: $space-2;
+    font-size: $font-size-xs;
+  }
+
+  .page-hero__title {
+    margin-bottom: $space-3;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.2;
+  }
+
+  .page-hero__text {
+    max-width: 44rem;
+    margin-bottom: 0;
+    color: $text-body;
+    font-size: $font-size-sm;
+    line-height: $line-height-loose;
+  }
+
+  @include respond($breakpoints, tablet) {
+    --page-hero-min-height: 336px;
+  }
+
+  @include respond($breakpoints, desktop) {
+    --page-hero-min-height: 360px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-hero__bg {
     transition: none;

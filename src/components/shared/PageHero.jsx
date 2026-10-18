@@ -5,6 +5,9 @@ const PageHero = ({
   title,
   text,
   backgroundImage,
+  imagePosition,
+  variant,
+  className,
   tone = 'light',
   align = 'left',
   size = 'md',
@@ -18,6 +21,8 @@ const PageHero = ({
         tone && `page-hero--${tone}`,
         `page-hero--${align}`,
         `page-hero--${size}`,
+        variant && `page-hero--${variant}`,
+        className,
       )}
       aria-labelledby={titleId}
     >
@@ -27,6 +32,7 @@ const PageHero = ({
           className="page-hero__bg"
           style={{
             backgroundImage: `url(${backgroundImage})`,
+            backgroundPosition: imagePosition,
           }}
           aria-hidden="true"
         />

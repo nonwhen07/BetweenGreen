@@ -11,6 +11,8 @@ import {
 import PageHero from '@/components/shared/PageHero';
 import ArticleCard from '@/components/front/article/ArticleCard';
 import BrandPagination from '@/components/shared/BrandPagination';
+// 暫用既有圖片；正式文章頁首圖留待集中圖片整合時替換。
+import articlesBanner from '@/assets/images/brand/hero/hero-desk.png';
 
 const ARTICLES_PER_PAGE = 6;
 
@@ -90,6 +92,10 @@ const ArticlesPage = () => {
         title="植栽生活筆記"
         titleId="articles-page-title"
         text="從光照、澆水到換盆，整理植物與日常共處時值得慢慢讀懂的細節。"
+        backgroundImage={articlesBanner}
+        imagePosition="center 58%"
+        variant="subpage"
+        className="page-hero--articles"
         tone="warm"
         align="left"
         size="md"
