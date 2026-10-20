@@ -2,6 +2,26 @@
 
 整理日期：2026-10-16。本文件整合現有版面修補的原因與責任，行為基準見 [版面規範](../specs/FRONT-LAYOUT-INTERACTION-RULES.md)。
 
+## 共用短版子頁 Hero（2026-10-18）
+
+Articles、產品目錄與歷次訂單使用 `PageHero variant="subpage"`，以短幅圖片銜接 main。背景全寬，文字與內容共用 `ui-container`；最小高度為 767px 以下 320px、768–991px 336px、992px 起 360px，放大文字時依內容長高。背景採左側可讀性遮罩、底部淡入 main 底色，停用 hover 放大。
+
+元件新增可選的 `variant`、`className`、`imagePosition`。子頁局部變數為 `--page-hero-min-height`、`--page-hero-surface`，頁面差異可放在 BEM modifier；不變更原有 sm／md／lg 預設樣式。三頁暫用既有 `hero-desk.png`，圖片位置為 `center 58%`；各頁分別保留 articles／products／orders modifier。
+
+Header 與 FrontLayout 都使用 `frontPageConfig.js` 的 Hero 路徑判定。三頁 main 為零頂部 padding，遮擋參考由 Hero 內部 `calc(var(--header-height) + spacing)` 承擔，避免兩份留白疊加。歷次訂單移除原容器內的重複文字頁首，Hero 放在全寬層；下方訂單容器保留原來的內容寬度、卡片與分頁。Home／About 的獨立 Hero 與非 Hero 頁面的留白維持既有行為。
+
+### 使用範例
+
+```jsx
+<PageHero
+  variant="subpage"
+  className="page-hero--articles"
+  title="植栽生活筆記"
+  backgroundImage={articlesBanner}
+  imagePosition="center 58%"
+/>
+```
+
 ## Header token 與遮擋參考
 
 `src/styles/helpers/_front-layout-tokens.scss` 保存：

@@ -25,16 +25,17 @@ Header 為 fixed，不占一般文件流。有 Hero 的頁面由內容延伸到�
 - Hero main 不追加這份頂部留白。
 - 參考值以 `src/styles/helpers/_front-layout-tokens.scss` 為來源，不能漏掉此 helper 或任意重複一份數字。
 
-目前兩份配置的責任不同，保留以下程式現況：
+FrontHeader 與 FrontLayout 共用 `src/constants/frontPageConfig.js` 的 `isFrontHeroPage`，目前路徑為 `/`、`/home`、`/about-us`、`/products`、`/articles`、`/customer-orders`。
 
-| 配置 | 路徑 |
-|---|---|
-| FrontHeader 的 Hero 行為 | `/`、`/home`、`/about-us`、`/products`、`/articles` |
-| FrontLayout 的 Hero main | `/`、`/home`、`/about-us`、`/products` |
-
-`/articles` 的差異不應在一般整理時自動合併。`/home` 是上述判定陣列中的值；Router 的實際首頁為 `/`，不要據此建立或使用不存在的首頁路由。
+Articles 啟用短版圖文 Hero 後，其頂部遮擋空間改由 Hero 內部 padding 處理，main 不再重複留白。`/home` 是保留的既有判定值；Router 的實際首頁為 `/`，不要據此建立或使用不存在的首頁路由。
 
 商品詳情維持產品目錄 active、文章詳情維持植栽筆記 active；購物流程歸屬購物車入口。active 不代表詳情頁屬於 Hero。
+
+## 共用短版子頁 Hero
+
+`PageHero` 的 `variant="subpage"` 使用全寬圖像、與 main 共用的 `ui-container`、左側文字遮罩及底部淡化銜接。最小高度為 767px 以下 320px、768–991px 336px、992px 起 360px，文字換行或放大時可自然長高，不採固定高度裁切。此版型由 Articles、產品目錄及歷次訂單共用。
+
+`imagePosition` 調整背景構圖；`className` 可加入 `page-hero--articles` 等頁面 modifier；`--page-hero-min-height` 與 `--page-hero-surface` 是局部尺度／底色變數。既有 `size`、`tone`、`align` 仍可使用；未選用 subpage 的頁面沿用原規則。短版背景不套用 hover 放大，避免視覺銜帶在游標經過時移動。
 
 ## 手機選單與 Footer
 

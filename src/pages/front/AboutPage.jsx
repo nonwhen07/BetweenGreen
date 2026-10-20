@@ -2,25 +2,34 @@ import { Link } from 'react-router-dom';
 
 // assets
 import heroAbout from '@/assets/images/about/hero-about.png';
+import storySlowDown from '@/assets/images/about/about-story-slow-down.png';
+import storyGrowTogether from '@/assets/images/about/about-story-grow-together.png';
+import endingGreenCorner from '@/assets/images/about/about-ending-green-corner.png';
+import lifestyleDesk from '@/assets/images/lifestyle/desk.png';
+import lifestyleSpace from '@/assets/images/lifestyle/space.png';
+import lifestyleBalcony from '@/assets/images/lifestyle/balcony.png';
 
 const lifestyleItems = [
   {
     id: '01',
     title: '書桌陪伴',
     description: '讓日常多一點安靜與專注',
-    imageLabel: 'Desk companion',
+    image: lifestyleDesk,
+    imageAlt: '書桌與植栽搭配的生活場景',
   },
   {
     id: '02',
     title: '空間造景',
     description: '為空間創造屬於你的氛圍',
-    imageLabel: 'Interior landscape',
+    image: lifestyleSpace,
+    imageAlt: '室內空間與植栽搭配的生活場景',
   },
   {
     id: '03',
     title: '陽台生活',
     description: '在城市裡保留一點自然',
-    imageLabel: 'Balcony living',
+    image: lifestyleBalcony,
+    imageAlt: '陽台與植栽搭配的生活場景',
   },
 ];
 
@@ -35,10 +44,7 @@ const AboutPage = () => {
         <div className="about-hero__overlay" aria-hidden="true" />
 
         <div className="about-hero__bg" aria-hidden="true">
-          <img
-            src={heroAbout}
-            alt=""
-          />
+          <img src={heroAbout} alt="" />
         </div>
 
         <div className="ui-container">
@@ -89,10 +95,15 @@ const AboutPage = () => {
           {/* scene 1 */}
           <div className="about-story__scene">
             <div className="about-story__image">
-              <div className="about-media-placeholder about-media-placeholder--story" aria-hidden="true">
-                <span>Story Image 01</span>
-                <small>3:2</small>
-              </div>
+              <img
+                src={storySlowDown}
+                alt="窗邊書桌上的盆栽、陶杯與筆記本"
+                className="about-story__photo"
+                width="1536"
+                height="1024"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
 
             <div className="about-story__text">
@@ -108,10 +119,15 @@ const AboutPage = () => {
           {/* scene 2 */}
           <div className="about-story__scene about-story__scene--reverse">
             <div className="about-story__image">
-              <div className="about-media-placeholder about-media-placeholder--story" aria-hidden="true">
-                <span>Story Image 02</span>
-                <small>3:2</small>
-              </div>
+              <img
+                src={storyGrowTogether}
+                alt="公寓陽台門邊的植栽，連接室內與戶外光線"
+                className="about-story__photo"
+                width="1536"
+                height="1024"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
 
             <div className="about-story__text">
@@ -142,13 +158,15 @@ const AboutPage = () => {
           <div className="about-lifestyle__grid">
             {lifestyleItems.map((item) => (
               <article className="about-lifestyle__card" key={item.id}>
-                <div
-                  className="about-media-placeholder about-media-placeholder--lifestyle"
-                  aria-hidden="true"
-                >
-                  <span>{item.imageLabel}</span>
-                  <small>1:1</small>
-                </div>
+                <img
+                  src={item.image}
+                  alt={item.imageAlt}
+                  className="about-lifestyle__image"
+                  width="1254"
+                  height="1254"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="about-lifestyle__body">
                   <span className="about-lifestyle__number">{item.id}</span>
                   <div>
@@ -170,7 +188,7 @@ const AboutPage = () => {
         <div className="about-ending__overlay" aria-hidden="true" />
 
         <div className="about-ending__bg" aria-hidden="true">
-          <span>Ending Image / 16:9</span>
+          <img src={endingGreenCorner} alt="" loading="lazy" decoding="async" />
         </div>
 
         <div className="ui-container">
