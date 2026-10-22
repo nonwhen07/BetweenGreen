@@ -1,18 +1,20 @@
 import { Link } from 'react-router-dom';
-import noImage from '@/assets/images/no-image.png';
+import SiteImage from '@/components/shared/SiteImage';
 
-const LifestyleCard = ({ item }) => {
+const LifestyleCard = ({ item, variant = 'home' }) => {
+  const isAbout = variant === 'about';
+
   return (
-    <article className="ui-card lifestyle-card">
+    <article
+      className={`ui-card lifestyle-card${isAbout ? ' lifestyle-card--about' : ''}`}
+    >
       <Link to={item.link} className="lifestyle-card__anchor" aria-label={`探索${item.title}`}>
         <div className="lifestyle-card__image">
-          <img
-            src={item.image}
-            alt={item.title}
+          <SiteImage
+            asset={item.imageAsset}
+            alt={item.imageAlt}
             loading="lazy"
-            onError={(e) => {
-              e.currentTarget.src = noImage;
-            }}
+            decoding="async"
           />
         </div>
 
@@ -21,8 +23,10 @@ const LifestyleCard = ({ item }) => {
 
           <h3 className="lifestyle-card__title">{item.title}</h3>
 
+          {isAbout && <p className="lifestyle-card__description">{item.aboutDescription}</p>}
+
           <span className="lifestyle-card__link">
-            Explore <span className="lifestyle-card__arrow">→</span>
+            {isAbout ? '探索這種生活' : 'Explore'} <span className="lifestyle-card__arrow">→</span>
           </span>
         </div>
       </Link>
@@ -31,3 +35,4 @@ const LifestyleCard = ({ item }) => {
 };
 
 export default LifestyleCard;
+

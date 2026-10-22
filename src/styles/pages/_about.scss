@@ -221,57 +221,6 @@
     gap: $space-6;
   }
 
-  &__card {
-    overflow: hidden;
-    border: $border-width-sm solid $border-color-soft;
-    border-radius: $radius-lg;
-    background: $color-bg-surface;
-    box-shadow: $shadow-xs;
-    transition:
-      transform $transition-base,
-      box-shadow $transition-base;
-
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: $shadow-sm;
-    }
-  }
-
-  &__image {
-    display: block;
-    width: 100%;
-    aspect-ratio: 1;
-    height: auto;
-    object-fit: cover;
-  }
-
-  &__body {
-    display: flex;
-    align-items: flex-start;
-    gap: $space-4;
-    padding: $space-6;
-
-    h3 {
-      margin-bottom: $space-2;
-      color: $text-primary;
-      font-size: $font-size-lg;
-    }
-
-    p {
-      margin-bottom: 0;
-      color: $text-body;
-      font-size: $font-size-sm;
-      line-height: $line-height-loose;
-    }
-  }
-
-  &__number {
-    flex: 0 0 auto;
-    padding-top: 0.2em;
-    color: $color-secondary-dark;
-    font-size: $font-size-xs;
-    letter-spacing: 0.08em;
-  }
 }
 
 /* Ending CTA */
@@ -389,7 +338,7 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    &__card:last-child {
+    &__grid > .about-lifestyle__item:last-child {
       grid-column: 1 / -1;
       width: calc(50% - $space-3);
       justify-self: center;
@@ -464,7 +413,7 @@
       gap: $space-6;
     }
 
-    &__card:last-child {
+    &__grid > .about-lifestyle__item:last-child {
       grid-column: auto;
       width: auto;
       justify-self: stretch;
@@ -502,11 +451,153 @@
     animation: none;
   }
 
-  .about-lifestyle__card {
-    transition: none;
+}
 
-    &:hover {
+
+/* About專用卡片：暖白文字與生活短句，維持Home的圖片構圖。 */
+.about-lifestyle__item {
+  min-width: 0;
+}
+
+.about-page .lifestyle-card--about {
+  height: 100%;
+  transition: transform 350ms ease, box-shadow 350ms ease;
+
+  .lifestyle-card__anchor {
+    height: 100%;
+  }
+  .lifestyle-card__image {
+    position: absolute;
+    inset: 0;
+
+    img {
+      display: block;
+      filter: none;
       transform: none;
     }
+  }
+
+  .lifestyle-card__overlay {
+    position: relative;
+    min-height: 22rem;
+    aspect-ratio: 1;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    background: linear-gradient(to top, rgba(15, 24, 18, 0.68), rgba(15, 24, 18, 0.12) 55%, transparent);
+  }
+
+  // 草綠薄幕獨立疊在圖片上，淡出時不影響文字的底部對比。
+  .lifestyle-card__image::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: rgba(145, 167, 113, 0.12);
+    opacity: 1;
+    transition: opacity 350ms ease;
+    content: '';
+  }
+
+  .lifestyle-card__eyebrow,
+  .lifestyle-card__link {
+    opacity: 1;
+    transform: none;
+    color: #eee8db;
+  }
+
+  .lifestyle-card__eyebrow {
+    margin: 0 0 0.6rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .lifestyle-card__title {
+    margin: 0 0 0.65rem;
+    color: #fffaf0;
+    font-size: clamp(1.4rem, 2vw, 1.75rem);
+    line-height: 1.4;
+  }
+
+  .lifestyle-card__description {
+    margin: 0;
+    color: #eee8db;
+    font-size: 0.875rem;
+    line-height: 1.8;
+  }
+
+  .lifestyle-card__link {
+    margin-top: 1.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+  }
+
+  .lifestyle-card__anchor:hover .lifestyle-card__overlay,
+  .lifestyle-card__anchor:focus-visible .lifestyle-card__overlay {
+    background: linear-gradient(to top, rgba(15, 24, 18, 0.68), rgba(15, 24, 18, 0.12) 55%, transparent);
+  }
+}
+
+// 進場動畫在外層，整卡縮放在內層，兩者不共用transform。
+@media (hover: hover) and (pointer: fine) {
+  .about-page .lifestyle-card--about:hover {
+    transform: scale(1.018);
+    box-shadow: 0 16px 32px rgba(33, 52, 39, 0.16);
+
+    .lifestyle-card__image::after { opacity: 0; }
+  }
+}
+
+.about-page .lifestyle-card--about:has(.lifestyle-card__anchor:focus-visible) {
+  transform: scale(1.018);
+  box-shadow: 0 16px 32px rgba(33, 52, 39, 0.16);
+
+  .lifestyle-card__image::after { opacity: 0; }
+}
+
+.about-page .lifestyle-card--about .lifestyle-card__anchor:hover .lifestyle-card__image img,
+.about-page .lifestyle-card--about .lifestyle-card__anchor:focus-visible .lifestyle-card__image img {
+  transform: none;
+  filter: none;
+}
+
+// AOS短距離單次進場；鍵盤焦點可直接顯示內容。
+.about-page [data-aos='about-reveal'] {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition-property: opacity, transform;
+  transition-timing-function: ease-out;
+
+  &.aos-animate,
+  &:focus-within {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page [data-aos='about-reveal'] {
+    opacity: 1;
+    transform: none;
+    transition: none !important;
+  }
+
+  .about-page .lifestyle-card,
+  .about-page .lifestyle-card * {
+    transition: none !important;
+  }
+
+  .about-page .lifestyle-card__anchor:hover .lifestyle-card__image img,
+  .about-page .lifestyle-card__anchor:focus-visible .lifestyle-card__image img {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page .lifestyle-card--about:hover,
+  .about-page .lifestyle-card--about:has(.lifestyle-card__anchor:focus-visible) {
+    transform: none;
+  }
+
+  .about-page .lifestyle-card--about .lifestyle-card__image::after {
+    transition: none;
   }
 }

@@ -32,7 +32,26 @@ About頁保留既有獨立Hero、敘事文字與商品入口。兩張故事照�
 
 結尾以深色綠意照片取代占位背景，保留深色遮罩與中央白色文案；768px以下圖片採70%水平取景，讓窄視窗仍看得到右側植栽，768px起回到中央取景。背景圖為裝飾，使用空alt；有內容意義的故事及生活照片提供描述alt。圖片以lazy／async載入，故事與生活圖保留尺寸資訊，避免等圖片載入才形成版面。
 
-素材位於src/assets/images/about，採版本化新檔名，沒有覆寫舊素材。Home與三頁共用短Hero使用的圖片不因本次About整合而更換。
+故事與結尾素材及三種生活方式圖片，集中於 `src/assets/images/site-assets/branding/about` 與 `branding/lifestyle`；保留本地圖作備援，不刪除舊素材。Home與三頁共用短Hero的既有圖片尚未遷移。
+
+### 網站素材優先來源與備援
+
+`src/constants/siteAssets.js` 集中管理每張網站素材的ImageKit `src` 與Vite匯入的本地 `fallbackSrc`。CDN根路徑為 `https://ik.imagekit.io/linassets/between-green/site-assets`，其後路徑與本地site-assets內部目錄一致。
+
+`SiteImage` 先將CDN網址設為img的src；收到載入錯誤時才切到本地圖，不預先下載兩張圖。若本地圖也失敗，不重設src，避免錯誤迴圈。來源組合變更時重新建立載入狀態，因此舊圖的失敗不會阻止新圖嘗試主要來源。既有class、alt、尺寸與lazy／async設定仍由各頁提供。
+
+```jsx
+<SiteImage
+  asset={SITE_ASSETS.aboutStorySlowDown}
+  alt="窗邊書桌上的盆栽、陶杯與筆記本"
+  className="about-story__photo"
+  loading="lazy"
+/>
+```
+
+Home與About的三種生活方式改讀 `LIFESTYLE_ITEMS`，共用主題、圖片來源、分類入口與各頁文案；Home仍用LifestyleCard，About仍用原圖文分區卡片，不改成相同section模板。Product／Article真實圖片繼續讀取API的imageUrl／imagesUrl／image，不加入這份網站情境素材表。
+
+SiteImage處理img元素；尚未遷移的Hero背景將依其結構另行接入，不代表所有CSS背景圖已具備相同備援。
 
 ## Article 公開資格
 
@@ -88,3 +107,14 @@ Garden Tips 的入選不足／過多依全集公開資格與排程計算，同�
 ## 實作與視覺文件
 
 [版面規範](../specs/FRONT-LAYOUT-INTERACTION-RULES.md) 保存跨頁規則；[版面實作](FRONT-LAYOUT.md) 保存修補原因；[Toast](TOAST.md) 保存通知的完整使用方式。新的局部修改應整合進對應功能文件，不再新增逐版補丁指南。
+
+### About共用LifestyleCard（2026-10-20）
+About的三種生活方式直接以LIFESTYLE_ITEMS.map渲染LifestyleCard，沿用Home的滿版情境圖片、漸層疊字與探索連結；移除About原有白底資訊卡樣板及對應樣式。保留About區塊標題、背景、間距與響應式網格。SiteImage仍在LifestyleCard內負責ImageKit優先／本地備援，不負責卡片版型。
+
+### About V3｜單次淡入與生活卡片變體
+About沿用既有AOS，加入about-reveal，550ms、向上12px、每組只播放一次：Hero小標／標題／副標依序進場；理念與兩段故事圖文分組；Lifestyle標題與三卡依序進場；結尾理念與CTA輕量收尾。不改全站AOS初始化。
+LifestyleCard新增variant="about"及revealDelay；預設仍為Home版。About使用暖白標題、淡米白英文與生活短句、綠黑漸層，描述與探索入口直接顯示，hover沿用輕量圖片縮放。沒有更改LIFESTYLE_ITEMS資料，直接使用既有aboutDescription。About卡片保留最小高度且可隨內容長高，避免大字級被絕對定位內容裁切。平板第三卡置中，桌面三欄。
+減少動態效果模式停用About淡入、Hero既有呼吸動畫與生活卡片縮放／transition，所有文字直接可見；鍵盤聚焦卡片也直接顯示。來源路徑及ImageKit／本地備援沿用V2。
+
+### About V3.1｜整卡縮放與薄幕亮起
+About卡片的AOS移到about-lifestyle__item外層，LifestyleCard只接收variant；進場transform與內層整卡hover縮放分開。細指標hover及鍵盤focus-visible時，整卡scale(1.018)加柔和陰影，移開後恢復；圖片不再單獨放大。綠色薄幕改成圖片偽元素rgba(145,167,113,.12)，互動時opacity歸零，底部中性閱讀漸層維持。減少動態效果時保留陰影／薄幕狀態但停用縮放與過渡。Home預設不變。此節更新前述V3卡片hover及revealDelay說明。

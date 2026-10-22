@@ -1,5 +1,13 @@
 # UIUX 整體測試規範
 
+## Site assets CDN／本地備援（2026-10-20）
+
+隔離元件頁以可控的本機HTTP圖片代表主要來源，確認：主要來源成功時保持主要圖；主要圖404時改用本地圖且正常載入；由失敗來源改成成功來源後重新顯示主要圖；主要與備援皆404時停在備援src、不來回改寫。元件測試頁不是正式路由，不放交付包。
+
+Home／About各在375／768／1440px檢查，共6組；各頁網站素材全部載入、未量到水平溢出，Home三張分類連結維持DeskLiving／SpaceStyling／BalconyMood。實際預覽時六個配置的CDN網址皆落入本地備援，故此輪不宣告正式ImageKit圖片已上傳或可達。上傳後應再以Network／圖片目前src確認走CDN，而不是僅看畫面有圖。
+
+重測時可暫時阻擋指定CDN圖片確認備援，再恢復網址並重整確認優先來源；不要把測試用localhost路徑填入正式資料。檢查About故事3:2／生活1:1／結尾取景與Home原版型不變。
+
 ## About 圖片整合檢查（2026-10-20）
 
 隔離預覽於320／375／414／768／1024／1440px六尺寸，根字級16／32px各一輪，共12組。兩張故事、三張生活與結尾背景皆載入，故事維持3:2、生活圖維持1:1；未量到全頁水平溢出、main／Footer重疊，六個占位圖片均已移除。375px結尾取景調整為70%後另行目視檢查，白色文案仍置於深色區，右側保留植栽；「探索商品」實際導向/products。
@@ -115,3 +123,13 @@ node --test --test-reporter=spec docs/guides/scripts/TOAST-LIFECYCLE-REGRESSION-
 5. 使用者本人驗收的明確範圍。
 
 任何一項通過都不能代替其他項目。文件整理本身不等於重跑 build 或瀏覽器驗收；歷史修補的量測只能證明當次記錄的範圍。
+
+### About共用LifestyleCard回歸（2026-10-20）
+About三卡直接共用LifestyleCard；375／768／1440px分別一／二／三欄，均三張圖片載入且無整頁水平溢出。三個連結分別為/products?theme=DeskLiving、SpaceStyling、BalconyMood。修改AboutPage的ESLint及完整production build通過。沿用既有Home卡片互動及來源備援；真機驗收仍保留。
+
+### About V3驗證（2026-10-20）
+修改AboutPage／LifestyleCard的ESLint及完整build通過。320／375／768／1024／1440px各測16／32px根字級，共10組，無整頁水平溢出，About三卡文字未超出容器；手機與桌面實際圖片載入可見。書桌探索連結實測到達對應商品篩選，Home三卡仍無About變體、短句及動畫屬性。AOS進場前後class與data-aos-once確認。
+預覽環境prefers-reduced-motion:reduce為true，已確認所有動畫內容直接顯示、卡片transition為0；一般動態模式的550ms視覺節奏未實測，需使用者套用後確認，不宣告動畫全情境通過。前批所有圖片備援控制案例未重跑，正式CDN可達性、真機及最終整合驗收仍保留。
+
+### About V3.1驗證（2026-10-21）
+修改兩JSX的lint與完整production build通過。375／768／1440px各三卡／三個進場wrapper且無水平溢出。預覽環境減少動態效果=true，實際hover與鍵盤聚焦確認陰影出現、薄幕opacity由1變0，移開後陰影none／薄幕回1；此模式transform維持none符合設計。一般動態模式scale(1.018)與350ms過渡已實作，視覺動態節奏仍待使用者正常模式確認，未宣告全動畫情境通過。未修改API／圖片路徑／Home變體，未重跑所有前批圖片控制案例。
