@@ -11,13 +11,18 @@ import lifestyleDesk from '@/assets/images/site-assets/branding/lifestyle/desk.p
 import lifestyleSpace from '@/assets/images/site-assets/branding/lifestyle/space.png';
 import lifestyleBalcony from '@/assets/images/site-assets/branding/lifestyle/balcony.png';
 
-export const SITE_ASSET_BASE_URL =
-  'https://ik.imagekit.io/linassets/between-green/site-assets';
+// 未設定時沿用現有 ImageKit；移除結尾斜線，避免拼接出雙斜線。
+const primaryOrigin = (
+  import.meta.env.VITE_SITE_ASSET_PRIMARY_ORIGIN?.trim() || 'https://ik.imagekit.io/linassets'
+).replace(/\/+$/, '');
 
-const siteAsset = (relativePath, fallbackSrc) => Object.freeze({
-  src: `${SITE_ASSET_BASE_URL}/${relativePath}`,
-  fallbackSrc,
-});
+export const SITE_ASSET_BASE_URL = `${primaryOrigin}/between-green/site-assets`;
+
+const siteAsset = (relativePath, fallbackSrc) =>
+  Object.freeze({
+    src: `${SITE_ASSET_BASE_URL}/${relativePath}`,
+    fallbackSrc,
+  });
 
 // 網站情境素材使用 CDN＋本地備援；Product／Article 圖片仍由 API 欄位提供。
 export const SITE_ASSETS = Object.freeze({
@@ -34,4 +39,3 @@ export const SITE_ASSETS = Object.freeze({
   lifestyleSpace: siteAsset('branding/lifestyle/space.png', lifestyleSpace),
   lifestyleBalcony: siteAsset('branding/lifestyle/balcony.png', lifestyleBalcony),
 });
-
