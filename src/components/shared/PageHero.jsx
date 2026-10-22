@@ -1,10 +1,12 @@
 import clsx from 'clsx';
+import SiteImage from '@/components/shared/SiteImage';
 
 const PageHero = ({
   eyebrow = 'Between Green',
   title,
   text,
   backgroundImage,
+  backgroundAsset,
   imagePosition,
   variant,
   className,
@@ -27,7 +29,11 @@ const PageHero = ({
       aria-labelledby={titleId}
     >
       {/* background image */}
-      {backgroundImage && (
+      {backgroundAsset ? (
+        <div className="page-hero__bg" aria-hidden="true">
+          <SiteImage asset={backgroundAsset} alt="" style={{ objectPosition: imagePosition }} />
+        </div>
+      ) : backgroundImage && (
         <div
           className="page-hero__bg"
           style={{

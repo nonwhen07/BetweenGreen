@@ -133,3 +133,6 @@ About三卡直接共用LifestyleCard；375／768／1440px分別一／二／三�
 
 ### About V3.1驗證（2026-10-21）
 修改兩JSX的lint與完整production build通過。375／768／1440px各三卡／三個進場wrapper且無水平溢出。預覽環境減少動態效果=true，實際hover與鍵盤聚焦確認陰影出現、薄幕opacity由1變0，移開後陰影none／薄幕回1；此模式transform維持none符合設計。一般動態模式scale(1.018)與350ms過渡已實作，視覺動態節奏仍待使用者正常模式確認，未宣告全動畫情境通過。未修改API／圖片路徑／Home變體，未重跑所有前批圖片控制案例。
+
+### Hero來源整理驗證（2026-10-22）
+8個修改JS／JSX的lint與完整build通過。Home／About／Products／Articles／CustomerOrders×375／768／1440px共15組無整頁水平溢出；短版Hero高度仍320／336／360px，圖片object-position為50% 58%。五頁Hero、Home四張輪播及品牌故事圖均實際載入本地site-assets備援。未宣告新增正式CDN可達／已上傳。PageHero舊backgroundImage分支保留但本輪沒有另造舊分支瀏覽器案例。前批SiteImage控制案例未重跑；真機、正式流程與Home Hero風格驗收不屬本批來源整理。

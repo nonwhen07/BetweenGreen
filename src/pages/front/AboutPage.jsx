@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 // assets
-import heroAbout from '@/assets/images/about/hero-about.png';
+
 import SiteImage from '@/components/shared/SiteImage';
 import LifestyleCard from '@/components/front/home/Lifestyle/LifestyleCard';
 import { SITE_ASSETS } from '@/constants/siteAssets';
@@ -26,8 +26,7 @@ const AboutPage = () => {
         <div className="about-hero__overlay" aria-hidden="true" />
 
         <div className="about-hero__bg" aria-hidden="true">
-          <img
-            src={heroAbout}
+          <SiteImage asset={SITE_ASSETS.aboutHero}
             alt=""
           />
         </div>
@@ -188,6 +187,8 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
+
+
 
 
 

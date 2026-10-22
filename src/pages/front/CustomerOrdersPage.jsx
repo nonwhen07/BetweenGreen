@@ -17,7 +17,7 @@ import ReadonlyOrderItems from '@/components/front/Cart/ReadonlyOrderItems';
 import BrandPagination from '@/components/shared/BrandPagination';
 import PageHero from '@/components/shared/PageHero';
 // 暫用既有素材，正式子頁圖片留待集中圖片整合時替換。
-import ordersBanner from '@/assets/images/brand/hero/hero-desk.png';
+import { SITE_ASSETS } from '@/constants/siteAssets';
 // services
 import { getOrders } from '@/services/orderService';
 // hooks
@@ -155,7 +155,7 @@ const CustomerOrdersPage = () => {
         title="歷次訂單"
         titleId="customer-orders-page-title"
         text="查看訂單內容、付款狀態與後續操作。"
-        backgroundImage={ordersBanner}
+        backgroundAsset={SITE_ASSETS.homeHeroDesk}
         imagePosition="center 58%"
         variant="subpage"
         className="page-hero--orders"
@@ -348,3 +348,4 @@ const CustomerOrdersPage = () => {
 };
 
 export default CustomerOrdersPage;
+

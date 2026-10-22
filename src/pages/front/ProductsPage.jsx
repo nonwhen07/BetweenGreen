@@ -8,7 +8,7 @@ import {
   parseCategoryParts,
 } from '@/constants/productConstants';
 
-import productsBanner from '@/assets/images/brand/hero/hero-desk.png';
+import { SITE_ASSETS } from '@/constants/siteAssets';
 
 import { useProducts } from '@/hooks/product/useProducts';
 import { useAddToCart } from '@/hooks/cart/useAddToCart';
@@ -138,7 +138,7 @@ const ProductsPage = () => {
         title="探索植感生活選物"
         titleId="products-page-title"
         text="從書桌陪伴、陽台生活到空間造景，找到適合你日常節奏的植物與生活提案。"
-        backgroundImage={productsBanner}
+        backgroundAsset={SITE_ASSETS.homeHeroDesk}
         imagePosition="center 58%"
         variant="subpage"
         className="page-hero--products"
@@ -237,3 +237,4 @@ const ProductsPage = () => {
 };
 
 export default ProductsPage;
+

@@ -2,11 +2,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
-// assets
-import heroMain from '@/assets/images/brand/hero/hero-main.png';
-import heroDesk from '@/assets/images/brand/hero/hero-desk.png';
-import heroSpace from '@/assets/images/brand/hero/hero-space.png';
-import heroBalcony from '@/assets/images/brand/hero/hero-balcony.png';
+import SiteImage from '@/components/shared/SiteImage';
+import { SITE_ASSETS } from '@/constants/siteAssets';
 
 const bannerData = [
   {
@@ -15,7 +12,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常。',
-    img: heroMain,
+    imageAsset: SITE_ASSETS.homeHeroMain,
     alt: '生活意境.png',
   },
   {
@@ -24,7 +21,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸2',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常2。',
-    img: heroDesk,
+    imageAsset: SITE_ASSETS.homeHeroDesk,
     alt: '書桌陪伴.png',
   },
   {
@@ -33,7 +30,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸3',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常3。',
-    img: heroSpace,
+    imageAsset: SITE_ASSETS.homeHeroSpace,
     alt: '空間造景.png',
   },
   {
@@ -42,7 +39,7 @@ const bannerData = [
     eyebrow: 'Plant styling for your home',
     title: '把綠意帶進日常，讓空間慢慢呼吸4',
     desc: '從桌上盆栽到居家植栽搭配，找到適合你的植物日常4。',
-    img: heroBalcony,
+    imageAsset: SITE_ASSETS.homeHeroBalcony,
     alt: '陽台生活.png',
   },
 ];
@@ -75,7 +72,7 @@ const HeroBanner = () => {
             {({ isActive }) => (
               <div className="hero-banner__slide" aria-hidden={isActive ? undefined : true}>
                 <div className="hero-banner__bg">
-                  <img src={item.img} alt={item.alt} />
+                  <SiteImage asset={item.imageAsset} alt={item.alt} />
                 </div>
                 <div className="hero-banner__overlay" />
                 <div className="ui-container hero-banner__content">
@@ -113,3 +110,4 @@ const HeroBanner = () => {
 };
 
 export default HeroBanner;
+

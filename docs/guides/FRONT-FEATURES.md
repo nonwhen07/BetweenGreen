@@ -118,3 +118,8 @@ LifestyleCard新增variant="about"及revealDelay；預設仍為Home版。About�
 
 ### About V3.1｜整卡縮放與薄幕亮起
 About卡片的AOS移到about-lifestyle__item外層，LifestyleCard只接收variant；進場transform與內層整卡hover縮放分開。細指標hover及鍵盤focus-visible時，整卡scale(1.018)加柔和陰影，移開後恢復；圖片不再單獨放大。綠色薄幕改成圖片偽元素rgba(145,167,113,.12)，互動時opacity歸零，底部中性閱讀漸層維持。減少動態效果時保留陰影／薄幕狀態但停用縮放與過渡。Home預設不變。此節更新前述V3卡片hover及revealDelay說明。
+
+### Hero與首頁品牌故事的網站素材來源（2026-10-22）
+Home四張Hero、About Hero與Home品牌故事圖改讀SITE_ASSETS＋SiteImage，ImageKit優先、載入錯誤轉本地。新增site-assets/banners/home/hero-{main,desk,space,balcony}.png、banners/about/hero-about.png與branding/home/story-desk.png。CDN根維持https://ik.imagekit.io/linassets/between-green/site-assets/，根後路徑與本地相同。
+PageHero新增可選backgroundAsset，以SiteImage顯示背景；backgroundImage舊字串介面保留，兩者同時給時優先backgroundAsset。背景img採object-fit:cover及既有imagePosition，其他遮罩／濾鏡／Hero尺寸不變。商品／文章／歷次訂單現仍共用homeHeroDesk暫代圖，未分別產新圖。
+原檔保留，沒有遷移Product／Article API圖片、修改Home Hero輪播內容、CTA或版面。這段取代前述「其他Hero暫不遷移」的實作狀態。

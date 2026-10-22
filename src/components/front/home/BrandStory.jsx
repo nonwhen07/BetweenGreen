@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
-import brandStoryImg from '@/assets/images/about/story-desk.png';
+import SiteImage from '@/components/shared/SiteImage';
+import { SITE_ASSETS } from '@/constants/siteAssets';
 
 const BrandStory = () => {
   return (
@@ -12,7 +13,7 @@ const BrandStory = () => {
         <div className="brand-story-section__layout">
           <div className="brand-story-section__media" data-aos="fade-up" data-aos-duration="1000">
             <div className="brand-story-section__media-inner">
-              <img src={brandStoryImg} alt="Between Green 品牌植感生活空間" />
+              <SiteImage asset={SITE_ASSETS.homeBrandStory} alt="Between Green 品牌植感生活空間" />
             </div>
           </div>
 
@@ -50,3 +51,4 @@ const BrandStory = () => {
 };
 
 export default BrandStory;
+
