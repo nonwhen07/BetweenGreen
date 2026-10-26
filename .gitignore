@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .env
 .env.production
+# Private planning, acceptance records and temporary deliveries
+/local-notes/
+/outputs/
+/work/

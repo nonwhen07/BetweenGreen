@@ -155,7 +155,7 @@ const CustomerOrdersPage = () => {
         title="歷次訂單"
         titleId="customer-orders-page-title"
         text="查看訂單內容、付款狀態與後續操作。"
-        backgroundAsset={SITE_ASSETS.homeHeroDesk}
+        backgroundAsset={SITE_ASSETS.ordersHero}
         imagePosition="center 58%"
         variant="subpage"
         className="page-hero--orders"
@@ -348,4 +348,5 @@ const CustomerOrdersPage = () => {
 };
 
 export default CustomerOrdersPage;
+
 

@@ -138,7 +138,7 @@ const ProductsPage = () => {
         title="探索植感生活選物"
         titleId="products-page-title"
         text="從書桌陪伴、陽台生活到空間造景，找到適合你日常節奏的植物與生活提案。"
-        backgroundAsset={SITE_ASSETS.homeHeroDesk}
+        backgroundAsset={SITE_ASSETS.productsHero}
         imagePosition="center 58%"
         variant="subpage"
         className="page-hero--products"
@@ -237,4 +237,5 @@ const ProductsPage = () => {
 };
 
 export default ProductsPage;
+
 

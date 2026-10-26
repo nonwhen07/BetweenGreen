@@ -1,3 +1,6 @@
+import productsHero from '@/assets/images/site-assets/banners/products/products-hero.png';
+import articlesHero from '@/assets/images/site-assets/banners/articles/articles-hero.png';
+import ordersHero from '@/assets/images/site-assets/banners/customer-orders/customer-orders-hero.png';
 import homeHeroMain from '@/assets/images/site-assets/banners/home/hero-main.png';
 import homeHeroDesk from '@/assets/images/site-assets/banners/home/hero-desk.png';
 import homeHeroSpace from '@/assets/images/site-assets/banners/home/hero-space.png';
@@ -26,6 +29,9 @@ const siteAsset = (relativePath, fallbackSrc) =>
 
 // 網站情境素材使用 CDN＋本地備援；Product／Article 圖片仍由 API 欄位提供。
 export const SITE_ASSETS = Object.freeze({
+  productsHero: siteAsset('banners/products/products-hero.png', productsHero),
+  articlesHero: siteAsset('banners/articles/articles-hero.png', articlesHero),
+  ordersHero: siteAsset('banners/customer-orders/customer-orders-hero.png', ordersHero),
   homeHeroMain: siteAsset('banners/home/hero-main.png', homeHeroMain),
   homeHeroDesk: siteAsset('banners/home/hero-desk.png', homeHeroDesk),
   homeHeroSpace: siteAsset('banners/home/hero-space.png', homeHeroSpace),

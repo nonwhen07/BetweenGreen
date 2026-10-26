@@ -92,7 +92,7 @@ const ArticlesPage = () => {
         title="植栽生活筆記"
         titleId="articles-page-title"
         text="從光照、澆水到換盆，整理植物與日常共處時值得慢慢讀懂的細節。"
-        backgroundAsset={SITE_ASSETS.homeHeroDesk}
+        backgroundAsset={SITE_ASSETS.articlesHero}
         imagePosition="center 58%"
         variant="subpage"
         className="page-hero--articles"
@@ -176,4 +176,5 @@ const ArticlesPage = () => {
 };
 
 export default ArticlesPage;
+
 
