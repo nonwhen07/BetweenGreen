@@ -23,6 +23,7 @@
 - `src/constants/siteAssets.js` 的 `SITE_ASSETS` 集中提供主要圖片 `src` 與 Vite 匯入的本地 `fallbackSrc`。
 - 主要站由 `VITE_SITE_ASSET_PRIMARY_ORIGIN` 取得，未設定時使用 `https://ik.imagekit.io/linassets`；去除結尾斜線後接 `/between-green/site-assets`。
 - 本地 `src/assets/images/site-assets/` 與遠端 `between-green/site-assets/` 根目錄以下採相同相對路徑。
+- `SITE_ASSET_VERSION` 為網站素材共用版本號，主要來源網址統一附加 `?v=版本號`。同路徑更新圖片後，集中更新版本號以取得新圖；不更改檔案路徑或本地備援，Product／Article 的 API 圖片不受影響。
 - `SiteImage` 先讀主要來源；收到圖片載入錯誤後切換本地備援。本地也失敗時不反覆重試；來源組合改變會重設載入狀態。這不是自訂逾時或整站故障切換。
 - 各頁負責圖片 alt、尺寸、載入方式與樣式；有意義的圖片提供描述，裝飾圖使用空 alt。
 - Product／Article 的真實圖片仍讀 API `imageUrl`／`imagesUrl`／`image`，不納入網站情境素材表。

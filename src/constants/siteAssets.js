@@ -21,9 +21,13 @@ const primaryOrigin = (
 
 export const SITE_ASSET_BASE_URL = `${primaryOrigin}/between-green/site-assets`;
 
+// 同路徑更新圖片時只改這個版本號，讓瀏覽器重新取得整批網站素材。
+// 同一天再次更新可遞增尾碼；Product／Article 的 API 圖片不受影響。
+export const SITE_ASSET_VERSION = '20261028-01';
+
 const siteAsset = (relativePath, fallbackSrc) =>
   Object.freeze({
-    src: `${SITE_ASSET_BASE_URL}/${relativePath}`,
+    src: `${SITE_ASSET_BASE_URL}/${relativePath}?v=${encodeURIComponent(SITE_ASSET_VERSION)}`,
     fallbackSrc,
   });
 
