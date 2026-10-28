@@ -1,204 +1,59 @@
-@use '@/styles/helpers/mixins' as *;
-@use '@/styles/helpers/breakpoints' as *;
-@use '@/styles/helpers/variables' as *;
-
+@use '@/styles/helpers/hero-day-theme' as *;
 .hero-banner {
-  --hero-text-primary: #2f3e2f;
-  --hero-text-secondary: #5c6b5c;
-
+  @include hero-day-theme;
+  --home-hero-height: clamp(540px, 82svh, 620px);
+  position: relative;
   padding: 0;
-  height: 92vh;
-  height: 92svh;
-
-  position: relative;
-  min-height: clamp(520px, 72vh, 760px);
-  min-height: clamp(520px, 72svh, 760px);
-  display: flex;
-  align-items: center;
   overflow: hidden;
-  background: var(--section-bg);
-
-  // 為了讓Hero-Banner能夠滿版所以swiper組件必須先撐滿
-  .swiper {
-    width: 100%;
-    height: 100%;
-  }
-
-  .swiper-wrapper {
-    height: 100%;
-  }
-
-  .swiper-slide {
-    height: 100%;
-  }
+  background: #e9eee5;
+  .swiper { width: 100%; }
+  .swiper-slide { height: auto; display: flex; }
 }
-
-.hero-banner__slide {
-  position: relative;
-  height: 100%;
-  isolation: isolate;
+.hero-banner__slide { position: relative; width: 100%; isolation: isolate; overflow: hidden; }
+.hero-banner__bg, .hero-banner__overlay { position: absolute; inset: 0; overflow: hidden; }
+.hero-banner__bg img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 65% center;
+  animation: heroZoom 22s ease-in-out infinite alternate;
 }
-
-/* ========================================
-  hero-banner Swiper（動態呼吸）
-======================================== */
-// .hero-banner__swiper {
-// }
-
-/* ========================================
-  Hero-Banner Background（動態呼吸）
-======================================== */
-.hero-banner__bg {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-
-    transform: scale(1);
-    transform-origin: center;
-
-    will-change: transform; // 避免某些裝置掉幀（尤其手機）
-
-    // heroZoom一次「呼吸」= 16 秒
-    // 非 alternate 16s = 一次動畫週期（0s → 8s，8s → 16s）
-    // alternate 16s = 一次動畫週期來回
-    animation: heroZoom 16s ease-in-out infinite alternate; // alternate（來回更自然）
-  }
-  /* 無障礙：減少動畫 */
-  @media (prefers-reduced-motion: reduce) {
-    img {
-      animation: none;
-    }
-  }
-}
-
-/* ========================================
-  Overlay（控光）
-======================================== */
 .hero-banner__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.25) 35%,
-    rgba(0, 0, 0, 0.1) 55%,
-    rgba(0, 0, 0, 0) 75%
-  );
-
-  animation: overlayBreath 16s ease-in-out infinite alternate; // 光感調整
+  background: linear-gradient(to bottom, rgba(35, 51, 35, 0.08), transparent 28%);
+  pointer-events: none;
 }
-@keyframes overlayBreath {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.92;
-  }
-}
-
-/* ========================================
-  Content
-======================================== */
 .hero-banner__content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  // 版面由容器負責，動畫只位移卡片本身；不再用 absolute 百分比置中。
-  padding-top: clamp(132px, 24vh, 228px);
-  padding-top: clamp(132px, 24svh, 228px);
-  padding-bottom: $space-8;
+  position: relative; z-index: 1; display: flex; align-items: center;
+  min-height: var(--home-hero-height);
+  padding-inline: 24px;
+  padding-top: calc(var(--header-height) + 40px); padding-bottom: 64px;
 }
-
-/* ===== Glass Card ===== */
 .hero-banner__text {
-  position: relative;
-  width: 100%;
-  max-width: 350px;
-  margin-inline: auto;
-  padding: $space-4;
-
-  backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: $radius-md;
-
-  color: $text-on-primary;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
-
-  /* 進場動畫（可開可關） */
-  opacity: 0;
-  transform: translateY(12px);
-  animation: heroTextIn 1s ease-out forwards;
-  animation-delay: 0.3s;
-
-  @include respond($breakpoints, desktop) {
-    margin-inline: 0;
-    max-width: 720px;
-    min-height: 280px;
-    padding: $space-6;
-  }
+  position: relative; isolation: isolate; width: 100%; max-width: 620px;
+  animation: heroTextIn 800ms ease-out both;
+  &::before { @include hero-day-fog; }
 }
-
-.hero-banner__eyebrow,
-.hero-banner__title,
+.hero-banner__eyebrow, .hero-banner__title, .hero-banner__desc { margin: 0; }
+.hero-banner__eyebrow { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.hero-banner__title {
+  margin-top: 20px; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 600;
+  line-height: 1.28; letter-spacing: 0.025em;
+  span { display: block; }
+}
 .hero-banner__desc {
-  margin: 0;
+  max-width: 30em; margin-top: 20px; color: var(--hero-copy); font-size: 1rem; line-height: 1.9;
 }
-
-.hero-banner__title,
-.hero-banner__desc {
-  margin-top: $space-2;
+.hero-banner__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 28px; }
+.hero-banner .hero-banner__explore {
+  color: var(--hero-ink); background: transparent; border: 0;
+  border-bottom: 1px solid currentColor; border-radius: 0; padding-inline: 4px;
+  &:hover { color: #1b3524; background: rgba(250, 249, 242, 0.2); }
 }
-
-/* 按鈕區 */
-.hero-banner__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $space-3;
-  margin-top: $space-6;
-
-  .ui-btn {
-    transition: all 0.25s ease;
-
-    &:hover {
-      transform: translateY(-2px) scale(1.02);
-    }
-  }
+@media (min-width: 768px) { .hero-banner { --home-hero-height: clamp(580px, 78svh, 640px); } }
+@media (min-width: 992px) {
+  .hero-banner { --home-hero-height: clamp(580px, 78svh, 680px); }
+  .hero-banner__content { padding-bottom: 80px; }
 }
-
-/* ========================================
-  Animations
-======================================== */
-/* 背景呼吸 */
-@keyframes heroZoom {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.04);
-  }
-}
-
-/* 文字進場 */
-@keyframes heroTextIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+@keyframes heroZoom { from { transform: scale(1); } to { transform: scale(1.025); } }
+@keyframes heroTextIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .hero-banner__text,
-  .hero-banner__overlay {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
+  .hero-banner__bg img, .hero-banner__text { animation: none; }
 }
+

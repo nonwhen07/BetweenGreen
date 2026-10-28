@@ -1,0 +1,16 @@
+// 共用日版：換圖沿用同一套控光；日夜切換未實作。
+@mixin hero-day-theme {
+  --hero-ink: #294733;
+  --hero-copy: #243c2b;
+  --hero-fog: 0.56;
+  color: var(--hero-ink);
+}
+@mixin hero-day-fog {
+  position: absolute;
+  z-index: -1;
+  inset: -100px -130px;
+  background: radial-gradient(ellipse at 42% 50%, rgba(250, 249, 242, var(--hero-fog)) 0%, rgba(250, 249, 242, var(--hero-fog)) 48%, rgba(250, 249, 242, 0) 76%);
+  pointer-events: none;
+  content: '';
+}
+

@@ -6,7 +6,7 @@
 
 Articles、產品目錄與歷次訂單使用 `PageHero variant="subpage"`，以短幅圖片銜接 main。背景全寬，文字與內容共用 `ui-container`；最小高度為 767px 以下 320px、768–991px 336px、992px 起 360px，放大文字時依內容長高。背景採左側可讀性遮罩、底部淡入 main 底色，停用 hover 放大。
 
-元件新增可選的 `variant`、`className`、`imagePosition`。子頁局部變數為 `--page-hero-min-height`、`--page-hero-surface`，頁面差異可放在 BEM modifier；不變更原有 sm／md／lg 預設樣式。三頁暫用既有 `hero-desk.png`，圖片位置為 `center 58%`；各頁分別保留 articles／products／orders modifier。
+元件新增可選的 `variant`、`className`、`imagePosition`。子頁局部變數為 `--page-hero-min-height`、`--page-hero-surface`，頁面差異可放在 BEM modifier；不變更原有 sm／md／lg 預設樣式。三頁使用各自的主題圖片；各頁分別保留 articles／products／orders modifier。
 
 Header 與 FrontLayout 都使用 `frontPageConfig.js` 的 Hero 路徑判定。三頁 main 為零頂部 padding，遮擋參考由 Hero 內部 `calc(var(--header-height) + spacing)` 承擔，避免兩份留白疊加。歷次訂單移除原容器內的重複文字頁首，Hero 放在全寬層；下方訂單容器保留原來的內容寬度、卡片與分頁。Home／About 的獨立 Hero 與非 Hero 頁面的留白維持既有行為。
 
@@ -53,16 +53,15 @@ AOS `fade-up-left` 會在尚未進場時造成水平位移，右側空間不足�
 
 原修補紀錄在 375、393、414、575、576、768、991、992、1024、1032、1280、1296、1440px 檢查首頁動畫前的 scrollWidth／clientWidth 一致；此為該修補當時的本機量測範圍，不等同於目前全站與正式資料的重新驗收。
 
-## Home Hero 定位修補
+## Home／About Hero
 
-`_hero.scss` 將文字卡從 absolute left:27% 與固定 translateX(-50%) 的衝突，改為內容容器內正常排版：
+Home 以正常流內容取代玻璃卡片，四張輪播使用同一套日版樣式。`helpers/_hero-day-theme.scss` 集中深綠主字色、內文色及暖白霧濃度，霧由文字容器的偽元素羽化，不設定逐張圖的外觀參數。
 
-- slide 建立自身定位與層級邊界，背景／遮罩不依賴其他 Swiper 樣式偶然定位。
-- content 控制頂部留白，採 `clamp(132px, 24svh, 228px)`，保留 vh fallback。
-- text 在手機最大 350px 且置中，desktop 最大 720px 並靠內容容器左側。
-- 水平定位與動畫分開；動畫只控制垂直位移與 opacity。
-- Hero 保留既有約 92% 視窗高度及最小高度，增加 svh 支援。
-- 移除重複高度規則與 `_hero` 對全域 `--header-height` 的覆寫。
-- 減少動態時文字顯式可見，避免套錯 selector 後內容消失。
+- Home 文字最大寬度 620px、左右內距 24px，標題以兩段 span 排版；主按鈕引導選購，次按鈕以底線呈現分類入口。
+- Home 最小高度依斷點為 `clamp(540px, 82svh, 620px)`、768px 起 `clamp(580px, 78svh, 640px)`、992px 起 `clamp(580px, 78svh, 680px)`。內容放大可繼續撐高。
+- About 沿用獨立 Hero，以較小字級、靠下文字及較短高度建立品牌敘事；文字與其淡霧以 AOS 整組進場，英文短句置於文案下方。最小高度為 `clamp(480px, 72svh, 540px)`，768px 起 `clamp(520px, 72svh, 580px)`。
+- 頂部以 `calc(var(--header-height) + 40px)` 避開 Header；不覆寫 Header token。
+- 圖片採共用 `65% center` 取景。Home 背景 22 秒於 1 至 1.025 倍來回，About 保留既有輕量呼吸；文字不跟著縮放。
+- 減少動態時直接顯示文字，停用呼吸／進場，首頁區塊捲動改為即時定位。
 
-這裡記錄已套用的定位實作，不宣告整體 Hero 視覺已完成全尺寸驗收。測試方式統一見 [UIUX 測試規範](UIUX-TESTING.md)。
+測試方法見 [UIUX 測試規範](UIUX-TESTING.md)。

@@ -1,6 +1,7 @@
 @use '@/styles/helpers/mixins' as *;
 @use '@/styles/helpers/breakpoints' as *;
 @use '@/styles/helpers/variables' as *;
+@use '@/styles/helpers/hero-day-theme' as *;
 
 // About 圖片整合：故事採3:2、生活卡採1:1，頁首沿用既有獨立Hero。
 .about-page {
@@ -10,16 +11,16 @@
 
 /* Hero */
 .about-hero {
+  @include hero-day-theme;
+  --about-hero-height: clamp(480px, 72svh, 540px);
   position: relative;
   display: flex;
   max-width: 100%;
-  min-height: 70svh;
+  min-height: var(--about-hero-height);
   align-items: center;
   overflow: hidden;
   padding: 0 !important;
   scroll-margin-top: 0;
-  color: $text-on-primary;
-
   &__bg,
   &__overlay {
     position: absolute;
@@ -33,33 +34,41 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: 68% center;
+      object-position: 65% center;
       animation: about-hero-breath 24s ease-in-out infinite;
     }
   }
 
   &__overlay {
     z-index: 2;
-    background: linear-gradient(to top, $overlay-dark-heavy, $overlay-dark-soft 72%);
+    background: linear-gradient(to bottom, rgba(35, 51, 35, 0.08), transparent 28%);
   }
 
   .ui-container {
     position: relative;
     z-index: 3;
+    padding-inline: 24px;
   }
 
   &__inner {
     display: flex;
-    min-height: 70svh;
+    min-height: var(--about-hero-height);
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
     gap: $space-3;
-    padding: $space-20 0 $space-10;
+    padding: calc(var(--header-height) + 40px) 0 56px;
   }
 
   &__content {
-    max-width: 34rem;
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 32rem;
+
+    &::before {
+      @include hero-day-fog;
+    }
   }
 
   &__eyebrow {
@@ -72,7 +81,7 @@
 
   &__title {
     margin-bottom: $space-4;
-    font-size: clamp(2.5rem, 12vw, 4rem);
+    font-size: clamp(2.125rem, 4vw, 2.75rem);
     font-weight: $font-weight-semibold;
     line-height: 1.12;
 
@@ -86,6 +95,7 @@
   }
 
   &__subtitle {
+    color: var(--hero-copy);
     max-width: 28rem;
     margin-bottom: 0;
     font-size: $font-size-sm;
@@ -93,6 +103,9 @@
   }
 
   &__aside {
+    position: relative;
+    max-width: 100%;
+    color: var(--hero-copy);
     padding-left: $space-10;
     font-size: $font-size-xs;
     letter-spacing: 0.16em;
@@ -107,6 +120,16 @@
       background: currentColor;
       content: '';
     }
+  }
+}
+
+@media (min-width: 768px) {
+  .about-hero {
+    --about-hero-height: clamp(520px, 72svh, 580px);
+  }
+
+  .about-hero__subtitle {
+    font-size: 1rem;
   }
 }
 
@@ -298,23 +321,7 @@
 }
 
 @include respond($breakpoints, pad) {
-  .about-hero {
-    min-height: 76svh;
 
-    &__bg img {
-      object-position: center;
-    }
-
-    &__inner {
-      min-height: 76svh;
-      gap: $space-4;
-      padding-bottom: $space-16;
-    }
-
-    &__subtitle {
-      font-size: $font-size-base;
-    }
-  }
 
   .about-story,
   .about-lifestyle {
@@ -347,34 +354,7 @@
 }
 
 @include respond($breakpoints, desktop) {
-  .about-hero {
-    min-height: 86svh;
 
-    &__overlay {
-      background: linear-gradient(to right, $overlay-dark-strong, $overlay-dark-soft 72%);
-    }
-
-    &__inner {
-      min-height: 86svh;
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: space-between;
-      padding-bottom: $space-16;
-    }
-
-    &__content {
-      padding-left: $space-3;
-    }
-
-    &__title span {
-      font-size: $font-size-base;
-    }
-
-    &__aside {
-      margin-bottom: $space-3;
-      margin-right: $space-10;
-    }
-  }
 
   .about-story {
     padding-top: $section-space-xl;
@@ -601,3 +581,4 @@
     transition: none;
   }
 }
+

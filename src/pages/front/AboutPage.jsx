@@ -33,15 +33,15 @@ const AboutPage = () => {
 
         <div className="ui-container">
           <div className="about-hero__inner">
-            <div className="about-hero__content">
-              <p className="about-hero__eyebrow" {...reveal()}>About Between Green</p>
+            <div className="about-hero__content" {...reveal()}>
+              <p className="about-hero__eyebrow">About Between Green</p>
 
-              <h1 className="about-hero__title" id="about-page-title" {...reveal(100)}>
+              <h1 className="about-hero__title" id="about-page-title">
                 植間生活
                 <span>Between Green</span>
               </h1>
 
-              <p className="about-hero__subtitle" {...reveal(200)}>
+              <p className="about-hero__subtitle">
                 讓空間長出生活感，
                 <br />
                 讓日常慢慢被綠意填滿。

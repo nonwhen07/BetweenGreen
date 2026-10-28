@@ -42,7 +42,8 @@
 
 目標：以共用版型維持一致性，透過圖片及局部變體表達頁面用途。
 
-- Home 保留四張情境輪播與選購／分類入口；About 使用獨立的大幅敘事 Hero。
+- Home 保留四張情境輪播與選購／分類入口，以兩行主標、深綠文字及局部暖白霧引導探索；About 採較短的獨立敘事 Hero，文字較小且靠下，保持主次。
+- Home 四張輪播共用日版文字色、霧濃度及取景規則，不依圖片分別設定。Home／About 共用 `hero-day-theme`；背景緩慢呼吸，文字進場後維持穩定。Hero 依內容自然長高，減少動態時停用呼吸與進場。
 - 商品、文章及歷次訂單共用 `PageHero variant="subpage"`，各自使用獨立主題圖片。背景全寬、文字與 main 共用容器，底部淡化銜接內容。
 - 短 Hero 最小高度為 767px 以下 320px、768–991px 336px、992px 起 360px；文字放大時可自然長高，不套用背景 hover 放大。
 - `PageHero` 接受 `backgroundAsset` 以使用圖片備援，並保留 `backgroundImage` 字串介面；同時提供時以 `backgroundAsset` 優先。
