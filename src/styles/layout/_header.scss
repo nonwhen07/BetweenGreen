@@ -6,16 +6,23 @@
 // 取代 Bootstrap navbar／btn 的混用；品牌高度不再污染 :root 或其他頁面。
 .front-header {
   --front-brand-height: #{$front-header-brand-mobile};
+  --front-header-ink: #294733;
+  --front-header-text-shadow: none;
   position: fixed;
   inset: 0 0 auto;
   z-index: $z-dropdown;
   padding: $front-header-padding 0;
+  // Hero 頂部讓照片完整透出；不對整條 Header 設 opacity，以保留品牌實色。
   background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
   transition: transform $transition-base, background-color $transition-base, box-shadow $transition-base;
 
   @include respond($breakpoints, desktop) { --front-brand-height: #{$front-header-brand-desktop}; }
   &--scroll-top {
-    @include respond($breakpoints, desktop) { box-shadow: $shadow-sm; }
+    --front-header-ink: #f5f3eb;
+    --front-header-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    box-shadow: none;
   }
   &--scroll-down {
     transform: translateY(-100%);
@@ -26,6 +33,8 @@
   }
   &--scroll-active,
   &--solid {
+    --front-header-ink: #f5f3eb;
+    --front-header-text-shadow: none;
     background: rgba($color-primary, 0.8);
     backdrop-filter: blur(10px);
     box-shadow: $shadow-md;
@@ -34,6 +43,8 @@
   // 保留一版修正原因：切頁後 NavLink 可保留焦點，不能用 focus-within
   // 將整條 Header 染色或強制顯示；鍵盤提示由下方 focus-visible 負責。
   &:hover {
+    --front-header-ink: #f5f3eb;
+    --front-header-text-shadow: none;
     background: $color-primary;
     box-shadow: $shadow-sm;
   }
@@ -42,20 +53,46 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: $space-6;
+    gap: 16px;
     width: 100%;
     max-width: $content-width;
-    padding-inline: $space-6;
+    padding-inline: 24px;
     margin-inline: auto;
-    @include respond($breakpoints, desktop) { gap: $space-12; }
+    @include respond($breakpoints, desktop) { gap: 32px; }
   }
   &__brand {
     flex-shrink: 0;
+    min-height: var(--front-brand-height);
+    display: flex;
+    align-items: center;
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      color: var(--front-header-ink);
+      text-decoration: none;
+      border-radius: $radius-xs;
+      &:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+    }
     .logo__img {
-      height: var(--front-brand-height);
-      width: auto;
-      border: 1px solid transparent;
-      &:hover { border-color: $text-on-primary; box-shadow: $shadow-sm; }
+      display: block;
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(245, 243, 235, 0.65);
+      @include respond($breakpoints, desktop) { width: 56px; height: 56px; }
+    }
+    .logo__wordmark {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      white-space: nowrap;
+      text-shadow: var(--front-header-text-shadow);
+      @include respond($breakpoints, desktop) { font-size: 28px; }
     }
   }
   &__desktop {
@@ -65,13 +102,14 @@
       flex: 1;
       align-items: center;
       justify-content: space-between;
-      gap: $space-6;
+      gap: 16px;
       min-width: 0;
     }
   }
   &__nav,
   &__menu-list { list-style: none; margin: 0; padding: 0; }
-  &__nav { display: flex; align-items: center; flex-wrap: wrap; gap: $space-6; }
+  // 結構間距不隨根字級倍增，把可用寬度留給放大的導覽文字。
+  &__nav { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
 
   &__link {
     display: inline-flex;
@@ -80,9 +118,10 @@
     min-height: 36px;
     text-decoration: none;
     font-weight: $font-weight-bold;
-    color: $text-muted;
+    color: var(--front-header-ink);
+    text-shadow: var(--front-header-text-shadow);
     &.is-active,
-    &:hover { color: $text-on-primary; }
+    &:hover { color: var(--front-header-ink); text-decoration: underline; text-underline-offset: 6px; }
   }
   &__link:focus-visible,
   &__toggle:focus-visible { outline: 2px solid $color-accent; outline-offset: 4px; }
@@ -112,7 +151,7 @@
     position: absolute;
     width: 20px;
     height: 2px;
-    background: $text-on-primary;
+    background: var(--front-header-ink);
     transition: transform $transition-base, opacity $transition-base;
     &:nth-child(1) { transform: translateY(-6px); }
     &:nth-child(3) { transform: translateY(6px); }
@@ -127,6 +166,8 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     background: $color-primary-light;
+    --front-header-ink: #294733;
+    --front-header-text-shadow: none;
     box-shadow: $shadow-lg;
     visibility: hidden;
     opacity: 0;

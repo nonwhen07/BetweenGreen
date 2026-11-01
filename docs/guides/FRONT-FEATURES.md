@@ -129,3 +129,14 @@
 - [UIUX 測試](UIUX-TESTING.md)：測試方法、結果與驗證邊界。
 
 私人目標、方案討論、過程筆記與交接保存在版本庫外的工作備忘，不納入本文件。
+
+## 品牌圖標與 Header Logo
+
+- favicon 與 Header 使用同一份三葉窗光向量造型，色票為深綠 `#294733`／暖白 `#f5f3eb`。圓外透明，圓內實色；葉脈為底色負空間。
+- Header 採圓標與單行 `BetweenGreen` 文字組合，使用既有 Playfair Display；圓標手機 40px、桌機 56px。品牌區保留原 60px／80px 最小高度及既有版面遮擋參考，不使用舊 PNG 的透明留白控制尺寸。
+- Hero 頂部背景完全透明，無模糊與全幅陰影；Logo 與導覽入口保持可見、不對整條 Header 設定透明度，頂部使用暖白字與局部文字陰影維持照片上的辨識，既有實色／捲動顯示與 hover 使用暖白字，手機抽屜維持深綠字；Logo 有獨立鍵盤焦點與回首頁名稱。導覽入口與捲動規則維持原設計；Header結構間距不隨根字級倍增，避免導覽放大後把整列撐高。
+- `public` 提供 SVG、16／32／48px PNG、16／32／48px ICO 及 180px Apple touch icon。HTML 以 Vite `BASE_URL` 兼容根目錄與 `/BetweenGreen/`，圖示網址共用本批版本參數；Apple touch icon 使用暖白底，避免透明區在主畫面成為黑底。
+- 分享預覽圖使用正式 GitHub Pages 的 `/BetweenGreen/og-image.png` 網址。
+
+
+

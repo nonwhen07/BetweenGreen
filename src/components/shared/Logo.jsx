@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import logo from '@/assets/images/brand/logo/logoBG.png';
+import brandMark from '@/assets/images/brand/logo/brand-mark.svg';
 
-//{ variant = 'logo--light、logo--muted' }
 const Logo = () => {
   return (
-    <NavLink to="/" className={`logo`} title="回到首頁">
-      <img src={logo} alt="Between Green.png" className="logo__img" />
+    <NavLink to="/" className="logo" title="回到首頁" aria-label="BetweenGreen，回到首頁">
+      <img src={brandMark} alt="" className="logo__img" width="56" height="56" />
+      <span className="logo__wordmark" aria-hidden="true">BetweenGreen</span>
     </NavLink>
   );
 };
