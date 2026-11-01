@@ -18,7 +18,11 @@
   box-shadow: none;
   transition: transform $transition-base, background-color $transition-base, box-shadow $transition-base;
 
-  @include respond($breakpoints, desktop) { --front-brand-height: #{$front-header-brand-desktop}; }
+  // 桌機各狀態統一 80 + 18 * 2；只滑動整條，不在滑入途中改高度。
+  @include respond($breakpoints, desktop) {
+    --front-brand-height: #{$front-header-brand-desktop};
+    padding: $front-header-solid-padding-desktop 0;
+  }
   &--scroll-top {
     --front-header-ink: #f5f3eb;
     --front-header-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
@@ -38,15 +42,16 @@
     background: rgba($color-primary, 0.8);
     backdrop-filter: blur(10px);
     box-shadow: $shadow-md;
-    @include respond($breakpoints, desktop) { padding: $front-header-solid-padding-desktop 0; }
   }
   // 保留一版修正原因：切頁後 NavLink 可保留焦點，不能用 focus-within
   // 將整條 Header 染色或強制顯示；鍵盤提示由下方 focus-visible 負責。
-  &:hover {
-    --front-header-ink: #f5f3eb;
-    --front-header-text-shadow: none;
-    background: $color-primary;
-    box-shadow: $shadow-sm;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      --front-header-ink: #f5f3eb;
+      --front-header-text-shadow: none;
+      background: $color-primary;
+      box-shadow: $shadow-sm;
+    }
   }
 
   &__content {
@@ -132,16 +137,20 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     border: 1px solid transparent;
-    border-radius: $radius-xs;
-    background: transparent;
+    border-radius: 14px;
+    background: rgba(245, 243, 235, 0.08);
+    transition: background-color $transition-base, border-color $transition-base;
     cursor: pointer;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover { background: rgba(245, 243, 235, 0.16); }
+    }
     @include respond($breakpoints, desktop) { display: none; }
     &.is-open {
-      border-color: $text-on-primary;
+      border-color: rgba(245, 243, 235, 0.4);
       .front-header__bar:nth-child(1) { transform: rotate(-45deg); }
       .front-header__bar:nth-child(2) { opacity: 0; }
       .front-header__bar:nth-child(3) { transform: rotate(45deg); }
@@ -152,6 +161,7 @@
     width: 20px;
     height: 2px;
     background: var(--front-header-ink);
+    border-radius: 2px;
     transition: transform $transition-base, opacity $transition-base;
     &:nth-child(1) { transform: translateY(-6px); }
     &:nth-child(3) { transform: translateY(6px); }
@@ -159,16 +169,18 @@
 
   &__menu {
     position: absolute;
-    top: 100%;
-    right: 0;
-    width: min(75%, 320px);
-    max-height: calc(100dvh - var(--front-brand-height) - #{$space-4});
+    top: calc(100% + 8px);
+    right: 24px;
+    width: min(calc(100vw - 48px), 340px);
+    max-height: calc(100dvh - var(--front-brand-height) - #{$front-header-padding * 2} - 24px);
     overflow-y: auto;
     overscroll-behavior: contain;
-    background: $color-primary-light;
+    background: #f8f7f2;
+    border: 1px solid rgba(41, 71, 51, 0.14);
+    border-radius: 18px;
     --front-header-ink: #294733;
     --front-header-text-shadow: none;
-    box-shadow: $shadow-lg;
+    box-shadow: 0 12px 32px rgba(25, 46, 32, 0.16);
     visibility: hidden;
     opacity: 0;
     // 關閉時不移出 viewport，避免隱藏抽屜仍撐出水平捲軸。
@@ -177,15 +189,42 @@
     &.is-open { visibility: visible; opacity: 1; transform: translateY(0); }
     @include respond($breakpoints, desktop) { display: none; }
   }
-  &__menu-list { display: flex; flex-direction: column; gap: $space-3; padding: $space-3 $space-6; }
-  &__item {
-    opacity: 0;
-    transform: translateX(20px);
-    transition: transform $transition-base, opacity $transition-base;
-    transition-delay: calc(var(--i) * 0.08s);
+  &__menu-list { display: flex; flex-direction: column; gap: 4px; padding: 12px; }
+  // 面板一次淡入，不逐列延遲飛入，避免等待最後一個入口。
+  &__menu &__item--separated {
+    border-top: 1px solid rgba(41, 71, 51, 0.12);
+    margin-top: 4px;
+    padding-top: 8px;
   }
-  &__menu.is-open &__item { opacity: 1; transform: translateX(0); }
-  &__menu &__link { display: flex; gap: $space-4; min-height: 44px; }
+  &__menu &__link {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    min-height: 48px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color $transition-base;
+    &.is-active {
+      background: #e8eee5;
+      font-weight: $font-weight-bold;
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 3px;
+        height: 18px;
+        border-radius: 3px;
+        background: #4f6f52;
+        transform: translateY(-50%);
+      }
+    }
+    @media (hover: hover) and (pointer: fine) {
+      &:hover { background: #e8eee5; }
+    }
+  }
 
   &__icon {
     position: relative;
@@ -219,8 +258,8 @@
     z-index: 900;
     opacity: 0;
     pointer-events: none;
-    background: $overlay-dark-base;
-    backdrop-filter: blur(6px);
+    background: rgba(20, 35, 25, 0.22);
+    backdrop-filter: blur(2px);
     transition: opacity $transition-base;
     &.is-active { opacity: 1; pointer-events: auto; }
     @include respond($breakpoints, desktop) { display: none; }
@@ -231,6 +270,8 @@
     &__menu,
     &__item,
     &__bar,
+    &__toggle,
+    &__link,
     &__overlay { transition: none; }
   }
 }

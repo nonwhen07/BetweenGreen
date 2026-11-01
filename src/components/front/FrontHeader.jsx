@@ -45,17 +45,38 @@ const FrontHeader = () => {
   useEffect(() => {
     if (!isHeroPage) return undefined;
     let previousY = window.scrollY;
+    let direction = 0;
+    let directionDistance = 0;
     const handleScroll = () => {
       const currentY = Math.max(0, window.scrollY);
-      const value = currentY <= 150 ? 'top' : currentY < previousY ? 'active' : 'down';
+      const delta = currentY - previousY;
       previousY = currentY;
+      let value;
+      if (currentY <= 150) {
+        value = 'top';
+        direction = 0;
+        directionDistance = 0;
+      } else {
+        // 累積同方向距離；微幅反向不立即觸發顯示／隱藏。
+        if (delta === 0) return;
+        const nextDirection = Math.sign(delta);
+        directionDistance = nextDirection === direction
+          ? directionDistance + Math.abs(delta)
+          : Math.abs(delta);
+        direction = nextDirection;
+        if (directionDistance < (direction < 0 ? 12 : 20)) return;
+        value = direction < 0 ? 'active' : 'down';
+      }
       setScroll((previous) =>
         previous.routeKey === location.key && previous.value === value
           ? previous
           : { routeKey: location.key, value },
       );
     };
-    const frame = window.requestAnimationFrame(handleScroll);
+    const frame = window.requestAnimationFrame(() => {
+      previousY = Math.max(0, window.scrollY);
+      setScroll({ routeKey: location.key, value: previousY <= 150 ? 'top' : 'active' });
+    });
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.cancelAnimationFrame(frame);
@@ -166,8 +187,8 @@ const FrontHeader = () => {
             inert={!isMenuOpen}
           >
             <ul className="front-header__menu-list">
-              {menuItems.filter((item) => !item.auth || isAuth).map((item, index) => (
-                <li key={item.path} className="front-header__item" style={{ '--i': index }}>{renderLink(item, true)}</li>
+              {menuItems.filter((item) => !item.auth || isAuth).map((item) => (
+                <li key={item.path} className={`front-header__item${item.path === '/cart/step1' || item.auth ? ' front-header__item--separated' : ''}`}>{renderLink(item, true)}</li>
               ))}
             </ul>
           </nav>
