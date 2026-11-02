@@ -1,5 +1,4 @@
-// base/_base.scss 與 reset.scss 合併而成，
-// 小專案可以不用特意reset.scss，只用這個_base.scss 就好
+// 共用最小 reset 與基礎樣式由本檔統一維護。
 @use '@/styles/helpers/variables' as *;
 
 /* === 最小 reset 區 === */
@@ -12,11 +11,6 @@
 
 body {
   margin: 0;
-}
-
-body.is-nav-open {
-  overflow: hidden;
-  touch-action: none; // mobile 補強
 }
 
 p {

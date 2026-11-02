@@ -1,62 +1,59 @@
 @use '@/styles/helpers/variables' as *;
-@use 'sass:color';
 
-// 預設（沒有 theme）
+// CSS 自訂屬性需插值，才會輸出 Sass 色票而非變數名稱文字。
 :root {
-  --season-primary: #$color-primary;
-  --season-bg: #$color-bg-main;
+  --season-primary: #{$color-primary};
+  --season-bg: #{$color-bg-main};
 }
 
 .theme-light {
-  --color-bg: #$color-bg-main;
-  --color-text: #$color-text;
-  --color-primary: #$color-primary;
+  --color-bg: #{$color-bg-main};
+  --color-text: #{$color-text};
+  --color-primary: #{$color-primary};
 }
 
+// 僅保留既有色票，尚未串接全站日夜切換。
 .theme-dark {
   --color-bg: #1a1a1a;
   --color-text: #f1f1f1;
   --color-primary: #4caf50;
 }
 
-// 🧧 春節
-.theme-lunar {
-  --season-primary: #c1121f;
-  --season-accent: #fcbf49;
-}
-
-//  櫻花
-.theme-lunar {
-  --season-primary: #f4acb7;
-  --season-accent: #f4acb7;
-}
-
-// ❤️ Valentine
-.theme-valentine {
-  --season-primary: #e63946;
-  --season-bg: #fff0f3;
-}
-
+// 季節主題草稿（未啟用、不輸出 CSS）。
+// 未來啟用前須確認 scope、文字對比、消費端及 FrontLayout 類名的空格分隔。
+// 草稿使用各自名稱，避免櫻花／母親節／畢業季覆蓋春節 theme-lunar。
+// 春節
+// .theme-lunar {
+//   --season-primary: #c1121f;
+//   --season-accent: #fcbf49;
+// }
+// 櫻花
+// .theme-sakura {
+//   --season-primary: #f4acb7;
+//   --season-accent: #f4acb7;
+// }
+// 情人節
+// .theme-valentine {
+//   --season-primary: #e63946;
+//   --season-bg: #fff0f3;
+// }
 // 母親節
-.theme-lunar {
-  --season-primary: #e5989b;
-  --season-accent: #e5989b;
-}
-
+// .theme-mothers-day {
+//   --season-primary: #e5989b;
+//   --season-accent: #e5989b;
+// }
 // 畢業季
-.theme-lunar {
-  --season-primary: #8ecae6;
-  --season-accent: #8ecae6;
-}
-
-// 🎃 Halloween
-.theme-halloween {
-  --season-primary: #ff6b00;
-  --season-bg: #2b1d16;
-}
-
-// 🎄 Christmas
-.theme-christmas {
-  --season-primary: #2a9d8f;
-  --season-accent: #e63946;
-}
+// .theme-graduation {
+//   --season-primary: #8ecae6;
+//   --season-accent: #8ecae6;
+// }
+// 萬聖節
+// .theme-halloween {
+//   --season-primary: #ff6b00;
+//   --season-bg: #2b1d16;
+// }
+// 聖誕節
+// .theme-christmas {
+//   --season-primary: #2a9d8f;
+//   --season-accent: #e63946;
+// }

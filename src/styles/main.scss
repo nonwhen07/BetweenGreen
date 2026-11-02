@@ -2,8 +2,7 @@
 @use '@/styles/helpers/variables' as *;
 @use '@/styles/helpers/custom-text' as *;
 
-// 多人協作reset 由框架組維護，base 由設計組維護
-// @use '@/styles/base/base'; // 已合併到 base.scss，保留作為參考(小專案無須拆分)
+// 前後台共用 reset 與 base，統一載入一次。
 @use '@/styles/base/base';
 
 @use '@/styles/layout/layout';

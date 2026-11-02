@@ -1,3 +1,6 @@
+@use 'sass:map';
+@use 'sass:string';
+
 // TC-1
 $TC-1-Heading01-Regular: (
   'family': 'Chiron GoRound TC',
@@ -306,10 +309,10 @@ $TC-2-Tiny-Bold: (
 );
 
 @mixin apply-font($config) {
-  font-family: unquote(map-get($config, 'family'));
-  font-weight: map-get($config, 'weight');
-  font-style: map-get($config, 'style');
-  font-size: map-get($config, 'size');
-  line-height: map-get($config, 'line-height');
-  letter-spacing: map-get($config, 'letter-spacing');
+  font-family: string.unquote(map.get($config, 'family'));
+  font-weight: map.get($config, 'weight');
+  font-style: map.get($config, 'style');
+  font-size: map.get($config, 'size');
+  line-height: map.get($config, 'line-height');
+  letter-spacing: map.get($config, 'letter-spacing');
 }
